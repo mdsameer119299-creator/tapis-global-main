@@ -1,0 +1,43 @@
+{
+  "name": "Tapis Global International Pvt Ltd",
+  "short_name": "Tapis Global",
+  "description": "Premium handmade carpet manufacturer & exporter from Bhadohi, India. Hand tufted, hand knotted, flat weave rugs. Wholesale to 45+ countries.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#4A1414",
+  "theme_color": "#4A1414",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["business", "shopping"],
+  "icons": [
+    {
+      "src": "/logos/tgi-header-logo1.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "/logos/tgi-header-logo1.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/images/tgi-banner-1.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide",
+      "label": "Tapis Global Homepage — Desktop"
+    },
+    {
+      "src": "/images/tgi-banner-7.jpg",
+      "sizes": "390x844",
+      "type": "image/jpeg",
+      "form_factor": "narrow",
+      "label": "Tapis Global Homepage — Mobile"
+    }
+  ]
+}
