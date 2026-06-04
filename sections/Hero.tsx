@@ -164,7 +164,7 @@ export default function Hero() {
         className="absolute left-7 top-1/2 -translate-y-1/2 -rotate-90 z-[6] text-[9px] tracking-[0.42em] uppercase whitespace-nowrap max-lg:hidden"
         style={{ color: 'rgba(255,255,255,0.22)' }}
       >
-        Manufacturer · Pan India · Worldwide
+        Specification-Led · Pan India · Worldwide
       </div>
 
       {/* ── Main hero content ── */}
@@ -182,14 +182,14 @@ export default function Hero() {
           className="font-light leading-[1.05] sm:leading-[1.02] tracking-tight text-white mb-5 sm:mb-6 max-w-3xl pointer-events-auto"
           style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(34px, 8.5vw, 88px)', textShadow: '0 2px 32px rgba(0,0,0,0.4)' }}
         >
-          Premium Carpet Solutions.
+          Premium Flooring Solutions.
           <br />
           <em className="font-light not-italic" style={{ color: 'var(--gp)', fontStyle: 'italic' }}>Crafted in Bhadohi.</em>
           <span
             className="block mt-2 sm:mt-3 font-body font-light uppercase leading-relaxed"
             style={{ fontSize: 'clamp(10px,2.8vw,15px)', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.55)' }}
           >
-            For Architects, Projects &amp; Premium Interiors
+            For Architects, Hospitality &amp; Luxury Interiors
             <span className="hidden sm:inline"> — India &amp; Worldwide</span>
           </span>
         </h1>
@@ -200,14 +200,14 @@ export default function Hero() {
             className="px-6 sm:px-8 py-3.5 text-[11px] sm:text-[11.5px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-medium border transition-all duration-300 text-center active:opacity-90"
             style={{ background: 'var(--g)', color: 'var(--ink)', borderColor: 'var(--g)' }}
           >
-            Start Your Project
+            Start Your Design Journey
           </a>
           <a
             href="/products"
             className="px-6 sm:px-8 py-3.5 text-[11px] sm:text-[11.5px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-medium border transition-all duration-300 text-center active:text-white"
             style={{ border: '1px solid rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.65)' }}
           >
-            View Collections
+            Explore Collections
           </a>
         </div>
 

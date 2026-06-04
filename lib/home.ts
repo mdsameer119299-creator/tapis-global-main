@@ -9,11 +9,11 @@ export type TrustItem = {
 export const TRUST_RIBBON_ITEMS: Omit<TrustItem, 'icon'>[] = [
   { text: 'ISO 9001:2015 Certified'           },
   { text: 'OEKO-TEX Standard 100'             },
-  { text: 'Pan India Project Supply'          },
+  { text: 'Pan India Project Execution'       },
   { text: 'Architect & Designer Support'      },
   { text: 'Hospitality & Commercial Flooring' },
   { text: 'GoodWeave Fair Labour'             },
-  { text: 'Export Quality Manufacturing'      },
+  { text: 'Global Supply Programmes'          },
 ]
 
 // ─── WHO WE ARE ───────────────────────────────────────────────
@@ -29,22 +29,23 @@ export const WHO_WE_ARE = {
   badgeLbl: 'Generation\nArtisans',
   headline: 'Crafted in Bhadohi.',
   headlineEm: 'Designed for Every Space.',
-  lead:     'From a single loom in 1998 to an 80,000 sq ft vertically integrated campus, Tapis Global has evolved into a complete luxury carpet and flooring solutions brand — serving architects, interior designers, hospitality groups, developers, institutional buyers and international clients with equal dedication.',
+  lead:     'Tapis Global International Pvt. Ltd. combines generations of Bhadohi craftsmanship with contemporary manufacturing expertise to create premium flooring solutions for residential, hospitality, commercial and international markets. From bespoke rugs and handcrafted carpets to large-scale project flooring, every product is developed with precision, material integrity and an uncompromising commitment to quality.',
+  lead2:    'Serving architects, interior designers, hospitality groups, developers and global buyers, we transform ideas into flooring solutions tailored to each project\'s vision, performance requirements and design language.',
   points: [
     {
       icon: 'factory' as const,
-      title: 'Vertically Integrated Manufacturing',
-      body:  'Raw fibre to finished carpet — dyeing, weaving, tufting, washing, QC and project packing under one roof in Bhadohi. Full traceability for residential, commercial and export programmes.',
+      title: 'Integrated Manufacturing',
+      body:  'Specification-led production under one Bhadohi campus — material integrity, documented quality control and full traceability from development through dispatch for residential, hospitality and commercial programmes.',
     },
     {
       icon: 'globe' as const,
-      title: 'Pan India & International Operations',
-      body:  'Project execution across India for hotels, offices, retail and luxury homes — alongside export-quality manufacturing and documentation for buyers in 45+ countries worldwide.',
+      title: 'Pan India & Global Supply',
+      body:  'Project execution across India for hotels, corporate interiors, retail and luxury residences — alongside export-ready manufacturing and compliance documentation for international supply partnerships.',
     },
     {
       icon: 'layers' as const,
-      title: 'Design-Led Custom Capabilities',
-      body:  'In-house studio support for architects and designers. Pantone colour matching, sample development, tender specifications and bespoke manufacturing at any scale.',
+      title: 'Design-Led Custom Development',
+      body:  'In-house studio support for bespoke dimensions, colour development, tender specifications and tailored solutions — from statement residential pieces to multi-phase hospitality roll-outs.',
     },
   ] satisfies WhoPoint[],
 }
@@ -105,7 +106,7 @@ export const EXPORT_DESTINATION_TAGS = [
 
 export const MFG_HEADER = {
   image: '/images/manufacturing-rug-img.png',
-  lead:  '80,000 sq ft. 500+ artisans. Zero subcontracting. Every step from fibre to finished floor covering happens under our roof — giving architects, project teams and buyers complete quality control and supply chain transparency.',
+  lead:  'An 80,000 sq ft integrated campus where specification-led production, quality control and batch consistency are managed end-to-end — giving architects, developers and project teams traceability, reliability and confidence at every milestone.',
 }
 
 export const EXPORT_INLINE_STATS = [
@@ -119,7 +120,7 @@ export const MARKETS_HEADER = {
   eyebrow:   'India & Global Reach',
   title:     'Serving Premium Interiors',
   titleEm:   'Across India & Worldwide.',
-  quote:     'From architect-specified projects in India to luxury floors across 45 countries — one manufacturer, complete solutions.',
+  quote:     'From specification-led projects across India to luxury interiors in 45+ markets — one partner for design capability, project execution and global supply.',
   tickerTitle: 'Markets We Serve',
   tickerSubtitle: 'Pan India Projects & International Partnerships',
 }

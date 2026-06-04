@@ -10,16 +10,16 @@ export default function Testimonials() {
       className="py-24 px-12 max-lg:px-6"
       style={{ background: 'var(--iv)' }}
     >
-      <div className="text-center max-w-[460px] mx-auto mb-16">
+      <div className="text-center max-w-[480px] mx-auto mb-16">
         <Reveal>
-          <Eyebrow className="justify-center">Client Testimonials</Eyebrow>
+          <Eyebrow className="justify-center">Client Voices</Eyebrow>
           <h2
-            className="font-medium leading-[1.06] tracking-tight"
+            className="font-medium leading-[1.06] tracking-tight mt-2"
             style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 'clamp(36px,3.8vw,56px)', color: 'var(--ink)' }}
           >
-            Our Partners
+            Trusted on
             <br />
-            <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>Speak</em>
+            <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>Premium Projects</em>
           </h2>
         </Reveal>
       </div>

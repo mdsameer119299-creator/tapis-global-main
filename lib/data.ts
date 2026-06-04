@@ -1,12 +1,44 @@
 // ─── SITE METADATA ────────────────────────────────────────────
+export type ContactLocation = {
+  label: string
+  lines: string[]
+}
+
+export type ContactEmail = {
+  label: string
+  address: string
+}
+
 export const SITE = {
   name:        'Tapis Global International Pvt Ltd',
   tagline:     'Premium Carpets. Pan India. Worldwide.',
   description: 'Premium handmade carpet and flooring solutions from Bhadohi, India — serving architects, interior designers, hospitality projects, commercial interiors, tenders and international buyers across India and 45+ countries.',
-  phone:       '+91 9415 234 567',
-  email:       'exports@tapisglobal.com',
-  address:     'Carpet Mandi, Bhadohi – 221 401, Uttar Pradesh, India',
-  whatsapp:    'https://wa.me/919415234567',
+  phone:       '+91 84482 91631',
+  phoneTel:    '+918448291631',
+  email:       'sales@tapisglobalinternational.com',
+  emails: [
+    { label: 'Sales',   address: 'sales@tapisglobalinternational.com' },
+    { label: 'Enquiry', address: 'enquiry@tapisglobalinternational.com' },
+  ] satisfies ContactEmail[],
+  whatsapp:    'https://wa.me/918448291631',
+  corporateOffice: {
+    label: 'Corporate Office',
+    lines: [
+      '438/13, TKD Extension,',
+      'Kalkaji, New Delhi – 110019,',
+      'India',
+    ],
+  } satisfies ContactLocation,
+  manufacturingFacility: {
+    label: 'Manufacturing Facility',
+    lines: [
+      'Industrial Estate,',
+      'Bhadohi – 221401,',
+      'Uttar Pradesh, India',
+    ],
+  } satisfies ContactLocation,
+  /** Primary address (manufacturing) — used where a single line is required */
+  address: 'Industrial Estate, Bhadohi – 221401, Uttar Pradesh, India',
   established: '1998',
 }
 
@@ -17,17 +49,17 @@ export type NavLink = {
   dropdown?: boolean
   highlight?: boolean
   cta?:      boolean
+  badge?:    string
 }
 
 export const NAV_LINKS: NavLink[] = [
-  { label: 'About',      href: '/about' },
-  { label: 'Products',   href: '/products', dropdown: true },
-  { label: 'Custom',     href: '/custom' },
-  { label: 'Gallery',    href: '/gallery' },
-  { label: 'Catalogue',  href: '/catalogue' },
-  { label: 'Blogs',      href: '/blogs' },
-  { label: 'Color',      href: '/samples', highlight: true },
-  { label: 'Contact Us', href: '/contact', cta: true },
+  { label: 'About',         href: '/about' },
+  { label: 'Products',      href: '/products', dropdown: true },
+  { label: 'Custom',        href: '/custom' },
+  { label: 'Gallery',       href: '/gallery' },
+  { label: 'Catalogue',     href: '/catalogue' },
+  { label: 'Design Studio', href: '/design-studio', highlight: true, badge: 'New' },
+  { label: 'Contact Us',    href: '/contact', cta: true },
 ]
 
 export const PRODUCT_DROPDOWN = [
@@ -46,41 +78,41 @@ export const PRODUCT_DROPDOWN = [
 export const HERO_SLIDES = [
   {
     id: 0,
-    label: 'Artisan Loom Weaving',
+    label: 'Luxury Interiors',
     poster: '/images/tgi-banner-1.png',
   },
   {
     id: 1,
-    label: 'Hand Knotted Texture',
+    label: 'Signature Collections',
     poster: '/images/tgi-banner-2.png',
   },
   {
     id: 2,
-    label: 'Dyeing & Colour Lab',
+    label: 'Colour & Material Library',
     poster: '/images/tgi-banner-3.png',
   },
   {
     id: 3,
-    label: 'Luxury Hotel Installation',
+    label: 'Hospitality Environments',
     poster: '/images/tgi-banner-4.png',
   },
   {
     id: 4,
-    label: 'Master Artisan — Bhadohi',
+    label: 'Bhadohi Craft Heritage',
     poster: '/images/tgi-banner-5.png',
   },
   {
     id: 5,
-    label: 'Finished Collection',
+    label: 'Project Installations',
     poster: '/images/tgi-banner-6.png',
   },
 ]
 
 export const HERO_STATS = [
-  { value: '25',  suffix: '+', label: 'Years of Craft'      },
-  { value: '500', suffix: '+', label: 'Master Artisans'     },
-  { value: '80',  suffix: 'K', label: 'Sq Ft Facility'      },
-  { value: '45',  suffix: '+', label: 'Countries & India'   },
+  { value: '25',  suffix: '+', label: 'Years of Excellence'  },
+  { value: '500', suffix: '+', label: 'Specialist Artisans'  },
+  { value: '80',  suffix: 'K', label: 'Sq Ft Campus'         },
+  { value: '45',  suffix: '+', label: 'Markets Served'       },
 ]
 
 // ─── COLLECTIONS (homepage story blocks) ─────────────────────
@@ -103,18 +135,18 @@ export const EXPORT_STATS = [
 export const EXPORT_SEGMENTS = [
   {
     icon: 'hotel',
-    title: 'Architects & Interior Designers',
-    desc:  'Custom carpets, colour matching, sample development and specification support for luxury residential, boutique commercial and designer-led interiors across India and abroad.',
+    title: 'Hotels, Resorts & Hospitality',
+    desc:  'Lobby statements, suite programmes, corridors and F&B zones — specification-led carpets with fire-rated options, custom medallions and multi-phase roll-outs for 5-star environments.',
   },
   {
     icon: 'truck',
-    title: 'Hospitality & Commercial Projects',
-    desc:  'Fire-rated broadloom, corridor programmes, lobby installations and phased delivery for hotels, resorts, corporate offices, retail spaces and institutional interiors.',
+    title: 'Corporate & Institutional Interiors',
+    desc:  'Boardrooms, headquarters, retail flagships and public-sector spaces — durable, design-driven flooring with documented QC and coordinated on-site delivery.',
   },
   {
     icon: 'label',
-    title: 'Tenders, Developers & Global Buyers',
-    desc:  'Bulk project execution, tender supply, builder partnerships and export programmes — with documented QC, compliance and reliable dispatch timelines.',
+    title: 'Developers, Tenders & Global Supply',
+    desc:  'Pan India project execution for builders and institutional buyers — plus export-ready programmes, compliance documentation and international supply partnerships.',
   },
 ]
 
@@ -179,32 +211,32 @@ export const TESTIMONIALS = [
 export const MFG_STEPS = [
   {
     num:   '01',
-    title: 'Raw Material',
-    desc:  'NZ Wool, Indian Silk, certified AZO-free dyes — every batch tested before production entry. No shortcuts on input quality.',
+    title: 'Integrated Campus',
+    desc:  'Single-roof production with full material traceability — premium fibres and specification-grade inputs approved before every programme begins.',
     img:   '/images/wool-drying-pic.png',
   },
   {
     num:   '02',
-    title: 'Dyeing & Colour Lab',
-    desc:  'Pantone-matched dyeing. Lab-dip approval before bulk starts. Colour consistency guaranteed across the full order.',
+    title: 'Colour & Specification Control',
+    desc:  'Lab-dip development, batch consistency and documented shade approval — aligned to architect palettes and hospitality brand standards.',
     img:   '/images/vibrant-wool-dying.png',
   },
   {
     num:   '03',
-    title: 'Weaving & Knotting',
-    desc:  '500+ skilled artisans across hand knotting, tufting, flatweave and broadloom on traditional and modern looms.',
+    title: 'Production Programme',
+    desc:  'Coordinated manufacturing across bespoke, hospitality and contract volumes — managed to agreed timelines with milestone visibility.',
     img:   '/images/tufting-carpet.png',
   },
   {
     num:   '04',
-    title: 'Washing & Finishing',
-    desc:  'Hand washing, stretching, trimming, pile calibration and backing for a premium hand feel on every finished piece.',
+    title: 'Finishing Standard',
+    desc:  'Premium hand-feel, surface consistency and backing specifications calibrated for residential luxury and high-traffic commercial use.',
     img:   '/images/rug4.jpg',
   },
   {
     num:   '05',
     title: 'QC & Project Dispatch',
-    desc:  'Multi-stage inspection, measurement logs, project-wise packing and coordinated dispatch — for pan-India deliveries and international shipments alike.',
+    desc:  'Multi-stage inspection, measurement logs and phased dispatch — pan-India project delivery and international supply with full documentation.',
     img:   '/images/videoframe_15503.png',
   },
 ]
@@ -215,32 +247,32 @@ export type WhyIcon = 'shield' | 'check' | 'globe' | 'flag' | 'layers' | 'users'
 export const WHY_ITEMS: { title: string; desc: string; icon: WhyIcon }[] = [
   {
     icon:  'shield',
-    title: 'Third-Generation Craftsmanship',
-    desc:  "Twenty-five years of manufacturing excellence passed through three generations. We honour Bhadohi's weaving heritage while delivering the precision architects, designers and project teams expect.",
+    title: 'Heritage & Design Integrity',
+    desc:  'Three generations of Bhadohi craftsmanship underpin a contemporary, specification-led studio — trusted by architects, designers and project teams for material integrity and finish.',
   },
   {
     icon:  'check',
     title: 'Specification-Led Quality',
-    desc:  'What you approve in the sample is what arrives on site. Photographic QC, measurement logs and documented inspection at every stage — for residential, commercial and export orders.',
+    desc:  'What you approve in the sample is what arrives on site. Documented QC, measurement logs and traceability at every stage — for residential, hospitality and international programmes.',
   },
   {
     icon:  'globe',
     title: 'Pan India & Global Reach',
-    desc:  'Project supply across India — metros, hospitality corridors and institutional sites — alongside export programmes to 45+ countries with full compliance documentation.',
+    desc:  'Project execution across India alongside global supply partnerships in 45+ markets — with compliance documentation tailored to each destination.',
   },
   {
     icon:  'flag',
-    title: 'Trusted Project Partner',
-    desc:  'From first sample to multi-phase hospitality roll-outs and tender fulfilment. Our client retention reflects partnerships built on reliability, design support and on-time execution.',
+    title: 'Project Execution Partner',
+    desc:  'From concept development to multi-phase hospitality roll-outs and tender fulfilment — partnerships built on reliability, design support and disciplined delivery.',
   },
   {
     icon:  'layers',
-    title: 'Custom at Every Scale',
-    desc:  'Bespoke rugs for a single penthouse or bulk manufacturing for a hotel chain. Your artwork, your palette, your timeline — with lab-dip approval and NDA-backed exclusivity.',
+    title: 'Bespoke at Every Scale',
+    desc:  'Statement pieces for a single penthouse or coordinated volumes for a hotel group — your design language, your palette, your timeline, with NDA-backed exclusivity available.',
   },
   {
     icon:  'users',
-    title: '500+ Master Artisans',
-    desc:  'GoodWeave-certified fair labour across tufting, knotting, flatweave and finishing. Ethical sourcing documentation available for CSR and project compliance requirements.',
+    title: 'Dedicated Specialist Teams',
+    desc:  'GoodWeave-certified fair labour and skilled production teams — with ethical sourcing documentation for CSR, hospitality and institutional compliance requirements.',
   },
 ]

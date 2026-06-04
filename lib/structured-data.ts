@@ -296,7 +296,7 @@ const DEFAULT_FAQS: FaqItem[] = [
     },
     {
       q: 'How do I request a sample from Tapis Global International?',
-      a: 'You can request samples by contacting our export team at exports@tapisglobal.com or via our website contact form. Standard samples are dispatched within 5–7 working days. Custom samples require 2–3 weeks production time.',
+      a: 'You can request samples by emailing sales@tapisglobalinternational.com or enquiry@tapisglobalinternational.com, or via our website contact form. Standard samples are dispatched within 5–7 working days. Custom samples require 2–3 weeks production time.',
     },
   ]
 

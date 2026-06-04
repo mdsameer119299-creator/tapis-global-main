@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { BUYER_TYPES, CATALOGUE_SUCCESS } from '@/lib/catalogue'
+import { submitEnquiry } from '@/lib/submit-enquiry'
 import { Reveal } from '@/components/ui'
 
 type FormState = {
@@ -113,6 +114,7 @@ export default function CatalogueForm() {
   const [errors, setErrors]       = useState<Partial<Record<keyof FormState, string>>>({})
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted]   = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -127,9 +129,20 @@ export default function CatalogueForm() {
       setErrors(nextErrors)
       return
     }
+    setSubmitError(null)
     setSubmitting(true)
-    await new Promise((r) => setTimeout(r, 1500))
+    const result = await submitEnquiry('catalogue', {
+      name: form.name,
+      mobile: form.mobile,
+      email: form.email,
+      company: form.company,
+      buyerType: form.buyerType,
+    })
     setSubmitting(false)
+    if (!result.ok) {
+      setSubmitError(result.error)
+      return
+    }
     setSubmitted(true)
   }
 
@@ -194,6 +207,7 @@ export default function CatalogueForm() {
                 boxShadow: '0 32px 80px rgba(0,0,0,0.4)',
               }}
             >
+              <input type="text" name="website" tabIndex={-1} autoComplete="off" className="absolute opacity-0 pointer-events-none h-0 w-0" aria-hidden />
               <p className="text-[10px] tracking-[0.28em] uppercase text-center mb-2 font-medium" style={{ color: 'var(--gp)' }}>
                 Complete to Receive Catalogue
               </p>
@@ -240,6 +254,12 @@ export default function CatalogueForm() {
                   <p className="text-[11px] mt-1.5 pl-1" style={{ color: 'rgba(220,120,120,0.85)' }}>{errors.buyerType}</p>
                 )}
               </div>
+
+              {submitError && (
+                <p className="text-[13px] font-light text-center" style={{ color: 'rgba(220,120,120,0.9)' }}>
+                  {submitError}
+                </p>
+              )}
 
               <button
                 type="submit"

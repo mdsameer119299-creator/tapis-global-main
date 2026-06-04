@@ -544,7 +544,8 @@ export const SWATCHES: Swatch[] = [
 export const SAMPLE_STATS = {
   totalSwatches: SWATCHES.length,
   totalCategories: SWATCH_CATEGORIES.length,
-  headline: '430+ Pom Pom Swatches',
+  headline: '1600+ Curated Colors',
+  displayTotal: 1600,
 } as const
 
 const CATEGORY_MAP = Object.fromEntries(
@@ -567,4 +568,36 @@ export function swatchesForCategory(id: SwatchCategoryId): Swatch[] {
 export function categoriesToShow(filter: SwatchFilterId): SwatchCategory[] {
   if (filter === 'all') return SWATCH_CATEGORIES
   return SWATCH_CATEGORIES.filter((c) => c.id === filter)
+}
+
+const WARM_NAMES = /brown|gold|honey|caramel|copper|ochre|orange|mango|tomato|flame|ruby|rouge|cinnamon|tobacco|amber|mustard|wheat|lion|mandarin|burnt/i
+const COOL_NAMES = /blue|ice|lavender|lilac|violet|orchid|silver|slate|steel|smoke|aqua|clover|mint|jade|fog|grey|gray|tin|metal|eiffel|glaciar/i
+const NEUTRAL_NAMES = /white|ivory|cream|sand|beige|taupe|angora|seashell|corn|powder|ash|overcast|cement|dove|dirty/i
+const DEEP_NAMES = /black|anthracite|dark|aubergine|chocolate|iron|wine|moss/i
+
+export type ToneFilter = 'all' | 'neutral' | 'warm' | 'cool' | 'deep'
+
+export function filterSwatchesAdvanced(opts: {
+  material: SwatchFilterId
+  tone: ToneFilter
+  query: string
+}): Swatch[] {
+  let list = filterSwatches(opts.material)
+  const q = opts.query.trim().toLowerCase()
+  if (q) {
+    list = list.filter(
+      (s) =>
+        s.name.toLowerCase().includes(q) ||
+        s.code.toLowerCase().includes(q),
+    )
+  }
+  if (opts.tone === 'all') return list
+  return list.filter((s) => {
+    const n = s.name
+    if (opts.tone === 'warm') return WARM_NAMES.test(n)
+    if (opts.tone === 'cool') return COOL_NAMES.test(n)
+    if (opts.tone === 'neutral') return NEUTRAL_NAMES.test(n)
+    if (opts.tone === 'deep') return DEEP_NAMES.test(n)
+    return true
+  })
 }

@@ -11,7 +11,7 @@ const FOOTER_EXPLORE = [
   { label: 'Gallery',       href: '/gallery' },
   { label: 'Catalogue',     href: '/catalogue' },
   { label: 'Blogs',         href: '/blogs' },
-  { label: 'Color Samples', href: '/samples' },
+  { label: 'Design Studio', href: '/design-studio' },
   { label: 'Contact Us',    href: '/contact' },
 ]
 
@@ -87,15 +87,17 @@ export default function Footer() {
 
           {/* Brand */}
           <div>
-            <Link href="/" className="inline-block mb-6">
+            <Link href="/" className="inline-block mb-8 max-w-full" aria-label="Tapis Global home">
               <Image
                 src="/logos/tgi-footer-logo1.png"
-                alt="Tapis Global International"
-                width={240}
-                height={68}
+                alt="Tapis Global International Pvt Ltd"
+                width={1024}
+                height={245}
                 loading="lazy"
-                quality={90}
-                className="block h-[62px] max-md:h-[54px] w-auto max-w-[240px] max-md:max-w-[200px] object-contain object-left"
+                quality={95}
+                sizes="(max-width: 640px) 100vw, 194px"
+                className="block h-[59px] sm:h-[64px] w-auto max-w-full object-contain object-left"
+                style={{ filter: 'drop-shadow(0 2px 12px rgba(0,0,0,0.35))' }}
               />
             </Link>
             <p
@@ -105,33 +107,39 @@ export default function Footer() {
               Premium handmade carpets & rugs from the heartland of Indian weaving — Bhadohi, UP.
             </p>
 
-            <div className="flex flex-col gap-2.5 mb-7">
-              {[
-                { icon: <MapPinIcon />, text: SITE.address, href: undefined },
-                { icon: <PhoneIconSm />, text: SITE.phone, href: `tel:${SITE.phone.replace(/\s/g, '')}` },
-                { icon: <MailIconSm />, text: SITE.email, href: `mailto:${SITE.email}` },
-              ].map(({ icon, text, href }) => {
-                const inner = (
-                  <>
-                    <span className="mt-0.5 flex-shrink-0" style={{ color: 'var(--g)' }}>{icon}</span>
-                    <span>{text}</span>
-                  </>
-                )
-                return href ? (
+            <div className="flex flex-col gap-4 mb-7">
+              <FooterContactBlock icon={<MapPinIcon />} label={SITE.corporateOffice.label}>
+                {SITE.corporateOffice.lines.map((line) => (
+                  <span key={line} className="block">{line}</span>
+                ))}
+              </FooterContactBlock>
+              <FooterContactBlock icon={<MapPinIcon />} label={SITE.manufacturingFacility.label}>
+                {SITE.manufacturingFacility.lines.map((line) => (
+                  <span key={line} className="block">{line}</span>
+                ))}
+              </FooterContactBlock>
+              <a
+                href={`tel:${SITE.phoneTel}`}
+                className="flex items-start gap-2.5 text-[13px] transition-colors duration-200 hover:text-[var(--gl)]"
+                style={{ color: 'rgba(255,255,255,0.42)' }}
+              >
+                <span className="mt-0.5 flex-shrink-0" style={{ color: 'var(--g)' }}><PhoneIconSm /></span>
+                <span>
+                  <span className="block text-[10px] tracking-[0.14em] uppercase mb-0.5" style={{ color: 'var(--gd)' }}>Phone</span>
+                  {SITE.phone}
+                </span>
+              </a>
+              <FooterContactBlock icon={<MailIconSm />} label="Email Us">
+                {SITE.emails.map((item) => (
                   <a
-                    key={text}
-                    href={href}
-                    className="flex items-start gap-2.5 text-[13px] transition-colors duration-200 hover:text-[var(--gl)]"
-                    style={{ color: 'rgba(255,255,255,0.42)' }}
+                    key={item.address}
+                    href={`mailto:${item.address}`}
+                    className="block transition-colors duration-200 hover:text-[var(--gl)]"
                   >
-                    {inner}
+                    {item.address}
                   </a>
-                ) : (
-                  <div key={text} className="flex items-start gap-2.5 text-[13px]" style={{ color: 'rgba(255,255,255,0.42)' }}>
-                    {inner}
-                  </div>
-                )
-              })}
+                ))}
+              </FooterContactBlock>
             </div>
 
             {/* Social — brand colours */}
@@ -200,6 +208,26 @@ export default function Footer() {
         </div>
       </div>
     </footer>
+  )
+}
+
+function FooterContactBlock({
+  icon,
+  label,
+  children,
+}: {
+  icon: React.ReactNode
+  label: string
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex items-start gap-2.5 text-[13px]" style={{ color: 'rgba(255,255,255,0.42)' }}>
+      <span className="mt-0.5 flex-shrink-0" style={{ color: 'var(--g)' }}>{icon}</span>
+      <span>
+        <span className="block text-[10px] tracking-[0.14em] uppercase mb-1" style={{ color: 'var(--gd)' }}>{label}</span>
+        {children}
+      </span>
+    </div>
   )
 }
 

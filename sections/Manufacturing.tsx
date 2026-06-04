@@ -59,16 +59,16 @@ export default function Manufacturing() {
       </section>
 
       <section id="why" className="py-24 px-12 max-lg:px-6" style={{ background: 'var(--ivd)' }}>
-        <div className="text-center max-w-[520px] mx-auto mb-[60px]">
+        <div className="text-center max-w-[520px] mx-auto mb-[68px]">
           <Reveal>
             <Eyebrow className="justify-center">Why Tapis Global</Eyebrow>
             <h2
-              className="font-medium leading-[1.06]"
+              className="font-medium leading-[1.06] mt-2"
               style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 'clamp(36px,3.8vw,56px)', color: 'var(--ink)' }}
             >
               The Tapis
               <br />
-              <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>Difference</em>
+              <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>Standard</em>
             </h2>
           </Reveal>
         </div>

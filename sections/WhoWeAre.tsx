@@ -82,20 +82,28 @@ export default function WhoWeAre() {
       </div>
 
       {/* Content column */}
-      <div className="flex flex-col justify-center px-10 max-lg:px-6 py-16 lg:py-20 lg:pl-16 lg:pr-[4.5rem] bg-white">
+      <div className="flex flex-col justify-center px-10 max-lg:px-6 py-16 lg:py-24 lg:pl-16 lg:pr-[4.5rem] bg-white">
         <Reveal direction="right">
           <Eyebrow>Who We Are</Eyebrow>
           <h2
-            className="font-medium leading-[1.06] tracking-tight mb-5"
+            className="font-medium leading-[1.06] tracking-tight mb-7"
             style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 'clamp(36px,3.8vw,56px)', color: 'var(--ink)' }}
           >
             {WHO_WE_ARE.headline}
             <br />
             <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{WHO_WE_ARE.headlineEm}</em>
           </h2>
-          <p className="text-[15.5px] font-light leading-[1.85] mb-10" style={{ color: 'var(--inkm)' }}>
+          <p
+            className={`text-[15.5px] font-light leading-[1.85] max-w-[58ch] ${WHO_WE_ARE.lead2 ? 'mb-5' : 'mb-12'}`}
+            style={{ color: 'var(--inkm)' }}
+          >
             {WHO_WE_ARE.lead}
           </p>
+          {WHO_WE_ARE.lead2 ? (
+            <p className="text-[15.5px] font-light leading-[1.85] max-w-[58ch] mb-12" style={{ color: 'var(--inkm)' }}>
+              {WHO_WE_ARE.lead2}
+            </p>
+          ) : null}
 
           <div className="flex flex-col divide-y" style={{ borderColor: 'var(--bd)' }}>
             {WHO_WE_ARE.points.map((pt, i) => (
@@ -129,7 +137,7 @@ export default function WhoWeAre() {
               className="inline-flex items-center gap-3 text-[12px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--gd)] group"
               style={{ color: 'var(--inks)' }}
             >
-              Full Company Story
+              Discuss Your Project
               <span className="block h-px w-9 bg-current transition-all duration-300 group-hover:w-14" />
             </Link>
           </div>

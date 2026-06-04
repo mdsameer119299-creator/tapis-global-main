@@ -54,10 +54,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority:         0.85,
     },
     {
-      url:              `${SEO_BASE_URL}/samples`,
+      url:              `${SEO_BASE_URL}/design-studio`,
       lastModified:     now,
       changeFrequency:  'weekly',
-      priority:         0.85,
+      priority:         0.9,
     },
     {
       url:              `${SEO_BASE_URL}/contact`,

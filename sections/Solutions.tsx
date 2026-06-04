@@ -8,18 +8,18 @@ export default function Solutions() {
   return (
     <section id="solutions" style={{ background: 'var(--iv)' }}>
       {/* Header */}
-      <div className="px-5 sm:px-6 lg:px-12 pt-14 sm:pt-20 pb-10 sm:pb-12 max-w-[1280px] mx-auto">
+      <div className="px-5 sm:px-6 lg:px-12 pt-14 sm:pt-20 pb-12 sm:pb-14 max-w-[1280px] mx-auto">
         <Reveal>
           <Eyebrow>{SOLUTIONS_HEADER.eyebrow}</Eyebrow>
           <h2
-            className="font-medium leading-[1.06] mb-5 max-w-2xl"
+            className="font-medium leading-[1.06] mb-7 max-w-3xl"
             style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(36px, 3.8vw, 56px)', color: 'var(--ink)' }}
           >
             {SOLUTIONS_HEADER.title}
             <br />
             <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{SOLUTIONS_HEADER.titleEm}</em>
           </h2>
-          <p className="text-[15.5px] font-light leading-[1.85] max-w-2xl mb-10" style={{ color: 'var(--inkm)' }}>
+          <p className="text-[15.5px] font-light leading-[1.85] max-w-[58ch] mb-10" style={{ color: 'var(--inkm)' }}>
             {SOLUTIONS_HEADER.lead}
           </p>
           <div className="flex flex-wrap gap-2">
@@ -74,13 +74,13 @@ export default function Solutions() {
                   {pillar.eyebrow}
                 </p>
                 <h3
-                  className="font-medium leading-[1.08] mb-4"
+                  className="font-medium leading-[1.08] mb-5"
                   style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(28px, 2.8vw, 40px)', color: 'var(--ink)' }}
                 >
                   {pillar.title}{' '}
                   <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{pillar.titleEm}</em>
                 </h3>
-                <p className="text-[15px] font-light leading-[1.82] mb-6" style={{ color: 'var(--inkm)' }}>
+                <p className="text-[15px] font-light leading-[1.82] max-w-[58ch] mb-6" style={{ color: 'var(--inkm)' }}>
                   {pillar.desc}
                 </p>
                 <ul className="flex flex-col gap-2.5 mb-8">
@@ -96,7 +96,7 @@ export default function Solutions() {
                   className="inline-flex items-center gap-3 text-[11px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--c)] group"
                   style={{ color: 'var(--inks)' }}
                 >
-                  Discuss Your Project
+                  {pillar.cta}
                   <span className="block h-px w-8 bg-current transition-all duration-300 group-hover:w-12" />
                 </Link>
               </Reveal>

@@ -2,6 +2,7 @@
 
 import { useState, useRef, useCallback } from 'react'
 import { SITE } from '@/lib/data'
+import { submitEnquiryWithFile } from '@/lib/submit-enquiry'
 import { Reveal, Eyebrow } from '@/components/ui'
 
 type FormState = {
@@ -73,6 +74,7 @@ export default function CustomForm() {
   const [dragging, setDragging] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -91,9 +93,27 @@ export default function CustomForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
     setSubmitting(true)
-    await new Promise((r) => setTimeout(r, 1200))
+    const result = await submitEnquiryWithFile(
+      'custom',
+      {
+        name: form.name,
+        mobile: form.mobile,
+        email: form.email,
+        company: form.company,
+        location: form.location,
+        size: form.size,
+        message: form.message,
+        attachment: file ? file.name : '',
+      },
+      file,
+    )
     setSubmitting(false)
+    if (!result.ok) {
+      setError(result.error)
+      return
+    }
     setSubmitted(true)
   }
 
@@ -163,6 +183,7 @@ export default function CustomForm() {
                 boxShadow: '0 32px 80px rgba(0,0,0,0.4)',
               }}
             >
+              <input type="text" name="website" tabIndex={-1} autoComplete="off" className="absolute opacity-0 pointer-events-none h-0 w-0" aria-hidden />
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                 <FloatField id="c-name" label="Full Name" name="name" value={form.name} onChange={handleChange} />
                 <FloatField id="c-mobile" label="Mobile Number" name="mobile" type="tel" value={form.mobile} onChange={handleChange} />
@@ -233,6 +254,12 @@ export default function CustomForm() {
                   }}
                 />
               </div>
+
+              {error && (
+                <p className="text-[13px] font-light text-center" style={{ color: 'rgba(220,120,120,0.9)' }}>
+                  {error}
+                </p>
+              )}
 
               <button
                 type="submit"

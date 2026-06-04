@@ -8,6 +8,7 @@ import {
   ORDER_SIZES,
   INQUIRY_PRODUCTS,
 } from '@/lib/home'
+import { submitEnquiry } from '@/lib/submit-enquiry'
 import { Reveal, Eyebrow } from '@/components/ui'
 
 type InquiryForm = {
@@ -47,6 +48,8 @@ const inputStyle = {
 export default function Inquiry() {
   const [form, setForm]       = useState<InquiryForm>(INITIAL)
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
@@ -54,8 +57,25 @@ export default function Inquiry() {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    setError(null)
+    setSubmitting(true)
+    const result = await submitEnquiry('inquiry', {
+      company: form.company,
+      name: form.name,
+      email: form.email,
+      country: form.country,
+      buyerType: form.buyer,
+      product: form.product,
+      orderSize: form.quantity,
+      message: form.message,
+    })
+    setSubmitting(false)
+    if (!result.ok) {
+      setError(result.error)
+      return
+    }
     setSubmitted(true)
   }
 
@@ -75,76 +95,49 @@ export default function Inquiry() {
         <Reveal direction="left">
           <Eyebrow white>Project Enquiry</Eyebrow>
           <h2
-            className="font-normal leading-[1.1] mb-5"
+            className="font-normal leading-[1.1] mb-7"
             style={{
               fontFamily: '"Cormorant Garamond",serif',
               fontSize:   'clamp(32px,3.2vw,50px)',
               color:      '#fff',
             }}
           >
-            Ready to Specify
+            Request Project
             <br />
-            <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Your Next Floor?</em>
+            <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Consultation</em>
           </h2>
           <p
-            className="text-[15.5px] font-light leading-[1.85] mb-9"
+            className="text-[15.5px] font-light leading-[1.85] max-w-[58ch] mb-9"
             style={{ color: 'rgba(255,255,255,0.42)' }}
           >
-            Share your project brief, specifications and timeline. Our team responds within 12 working hours — with sampling guidance, production feasibility and a tailored quotation for India or international delivery.
+            Share your brief, specifications and timeline. Our team responds within 12 working hours with design guidance, feasibility and a tailored proposal for pan India or international delivery.
           </p>
 
           <div className="flex flex-col gap-[18px] mb-8">
-            {[
-              {
-                label: 'Email',
-                value: SITE.email,
-                icon: (
-                  <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                ),
-              },
-              {
-                label: 'Phone / WhatsApp',
-                value: SITE.phone,
-                icon: (
-                  <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14z" />
-                ),
-              },
-              {
-                label: 'Factory',
-                value: 'Industrial Estate, Bhadohi – 221401, U.P., India',
-                icon: (
-                  <>
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-                    <circle cx="12" cy="10" r="3" />
-                  </>
-                ),
-              },
-            ].map(({ label, value, icon }) => (
-              <div key={label} className="flex items-start gap-3">
-                <svg
-                  className="flex-shrink-0 mt-0.5"
-                  width="14"
-                  height="14"
-                  fill="none"
-                  stroke="var(--g)"
-                  strokeWidth="1.5"
-                  viewBox="0 0 24 24"
+            <InquiryContactBlock label={SITE.corporateOffice.label} icon="map">
+              {SITE.corporateOffice.lines.map((line) => (
+                <span key={line} className="block">{line}</span>
+              ))}
+            </InquiryContactBlock>
+            <InquiryContactBlock label={SITE.manufacturingFacility.label} icon="map">
+              {SITE.manufacturingFacility.lines.map((line) => (
+                <span key={line} className="block">{line}</span>
+              ))}
+            </InquiryContactBlock>
+            <InquiryContactBlock label="Phone / WhatsApp" icon="phone">
+              <a href={`tel:${SITE.phoneTel}`} className="hover:text-[var(--gp)] transition-colors">{SITE.phone}</a>
+            </InquiryContactBlock>
+            <InquiryContactBlock label="Email Us" icon="mail">
+              {SITE.emails.map((item) => (
+                <a
+                  key={item.address}
+                  href={`mailto:${item.address}`}
+                  className="block hover:text-[var(--gp)] transition-colors"
                 >
-                  {icon}
-                </svg>
-                <div>
-                  <span
-                    className="block text-[9.5px] tracking-[0.2em] uppercase mb-0.5"
-                    style={{ color: 'var(--gd)' }}
-                  >
-                    {label}
-                  </span>
-                  <span className="text-[13.5px]" style={{ color: 'rgba(255,255,255,0.7)' }}>
-                    {value}
-                  </span>
-                </div>
-              </div>
-            ))}
+                  {item.address}
+                </a>
+              ))}
+            </InquiryContactBlock>
           </div>
 
           <div className="flex flex-wrap gap-2">
@@ -195,6 +188,7 @@ export default function Inquiry() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <input type="text" name="website" tabIndex={-1} autoComplete="off" className="absolute opacity-0 pointer-events-none h-0 w-0" aria-hidden />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <FieldLabel>Company *</FieldLabel>
@@ -261,12 +255,19 @@ export default function Inquiry() {
                   />
                 </div>
 
+                {error && (
+                  <p className="text-[13px] font-light" style={{ color: 'rgba(220,120,120,0.9)' }}>
+                    {error}
+                  </p>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full py-4 text-[11.5px] tracking-[0.2em] uppercase font-bold transition-all duration-250 hover:opacity-90 mt-1"
+                  disabled={submitting}
+                  className="w-full py-4 text-[11.5px] tracking-[0.2em] uppercase font-bold transition-all duration-250 hover:opacity-90 mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
                   style={{ background: 'var(--g)', color: 'var(--ink)' }}
                 >
-                  Submit Enquiry →
+                  {submitting ? 'Sending…' : 'Request Project Consultation →'}
                 </button>
                 <p className="text-[11.5px] font-light leading-relaxed text-center" style={{ color: 'rgba(255,255,255,0.28)' }}>
                   Response within 12 working hours. Your data is strictly confidential and never shared with third parties.
@@ -277,5 +278,57 @@ export default function Inquiry() {
         </Reveal>
       </div>
     </section>
+  )
+}
+
+function InquiryContactBlock({
+  label,
+  icon,
+  children,
+}: {
+  label: string
+  icon: 'map' | 'phone' | 'mail'
+  children: React.ReactNode
+}) {
+  const paths = {
+    map: (
+      <>
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
+        <circle cx="12" cy="10" r="3" />
+      </>
+    ),
+    phone: (
+      <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14z" />
+    ),
+    mail: (
+      <path d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+    ),
+  }
+
+  return (
+    <div className="flex items-start gap-3">
+      <svg
+        className="flex-shrink-0 mt-0.5"
+        width="14"
+        height="14"
+        fill="none"
+        stroke="var(--g)"
+        strokeWidth="1.5"
+        viewBox="0 0 24 24"
+      >
+        {paths[icon]}
+      </svg>
+      <div>
+        <span
+          className="block text-[9.5px] tracking-[0.2em] uppercase mb-0.5"
+          style={{ color: 'var(--gd)' }}
+        >
+          {label}
+        </span>
+        <span className="text-[13.5px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          {children}
+        </span>
+      </div>
+    </div>
   )
 }

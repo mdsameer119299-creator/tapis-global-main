@@ -10,15 +10,15 @@ export default function ManufacturingHeader() {
       <Reveal direction="left">
         <Eyebrow white>Manufacturing</Eyebrow>
         <h2
-          className="font-medium leading-[1.06] mb-5"
+          className="font-medium leading-[1.06] mb-7"
           style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 'clamp(36px,3.8vw,56px)', color: '#fff' }}
         >
-          Everything Made
+          Integrated
           <br />
-          <em style={{ fontStyle: 'italic', color: 'var(--gl)' }}>In-House.</em>
+          <em style={{ fontStyle: 'italic', color: 'var(--gl)' }}>Manufacturing.</em>
         </h2>
         <p
-          className="text-[15.5px] font-light leading-[1.85] max-w-xl mb-7"
+          className="text-[15.5px] font-light leading-[1.85] max-w-[58ch] mb-7"
           style={{ color: 'rgba(255,255,255,0.44)' }}
         >
           {MFG_HEADER.lead}
@@ -28,7 +28,7 @@ export default function ManufacturingHeader() {
           className="inline-flex items-center gap-3 text-[12px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-white group"
           style={{ color: 'rgba(255,255,255,0.48)' }}
         >
-          View Factory Infrastructure
+          Explore Production Capability
           <span className="block h-px w-9 bg-current transition-all duration-300 group-hover:w-14" />
         </Link>
       </Reveal>

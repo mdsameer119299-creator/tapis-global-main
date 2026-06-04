@@ -22,21 +22,21 @@ export default function Collections({ sectionId = 'collections' }: CollectionsPr
     <section id={sectionId}>
       {/* ── Header ── */}
       <div
-        className="px-12 max-lg:px-6 py-24 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-end"
+        className="px-12 max-lg:px-6 py-24 lg:py-28 grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-end"
         style={{ borderBottom: '1px solid var(--bd)' }}
       >
         <Reveal>
           <Eyebrow>Our Range</Eyebrow>
           <h2
-            className="font-medium leading-[1.06] tracking-tight mb-4"
+            className="font-medium leading-[1.06] tracking-tight mb-7"
             style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 'clamp(36px,3.8vw,56px)', color: 'var(--ink)' }}
           >
             Nine Collections.
             <br />
-            <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>One Manufacturer.</em>
+            <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>One Design Studio.</em>
           </h2>
-          <p className="text-[15.5px] font-light leading-[1.85] max-w-xl" style={{ color: 'var(--inkm)' }}>
-            From hand-knotted silk masterpieces to contract-grade broadloom — crafted for luxury homes, hotels, offices and designer interiors across India and worldwide.
+          <p className="text-[15.5px] font-light leading-[1.85] max-w-[58ch]" style={{ color: 'var(--inkm)' }}>
+            Specification-led carpets and flooring for luxury residences, hospitality environments, corporate interiors and designer projects — developed in Bhadohi for pan India execution and global supply.
           </p>
         </Reveal>
 

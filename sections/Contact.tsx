@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { SITE } from '@/lib/data'
+import { submitEnquiry } from '@/lib/submit-enquiry'
 import { Reveal, Eyebrow } from '@/components/ui'
 
 type FormState = {
@@ -26,6 +27,8 @@ export default function Contact() {
     product: '', quantity: '', message: '', agree: false,
   })
   const [submitted, setSubmitted] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -35,10 +38,26 @@ export default function Contact() {
     }))
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.agree) { alert('Please agree to the Terms & Conditions.'); return }
-    // In production: call your API route here
+    setError(null)
+    setSubmitting(true)
+    const result = await submitEnquiry('contact', {
+      name: form.name,
+      company: form.company,
+      email: form.email,
+      country: form.country,
+      product: form.product,
+      quantity: form.quantity,
+      message: form.message,
+      termsAccepted: form.agree ? 'Yes' : 'No',
+    })
+    setSubmitting(false)
+    if (!result.ok) {
+      setError(result.error)
+      return
+    }
     setSubmitted(true)
   }
 
@@ -69,25 +88,33 @@ export default function Contact() {
           </p>
 
           <div className="flex flex-col gap-[18px] mb-7">
-            {[
-              { label: 'Address',  value: SITE.address,  icon: <MapIcon /> },
-              { label: 'Phone',    value: SITE.phone,    icon: <PhoneIcon /> },
-              { label: 'Email',    value: SITE.email,    icon: <MailIcon /> },
-              { label: 'Hours',    value: 'Mon–Sat, 9 AM – 6 PM IST', icon: <ClockIcon /> },
-            ].map(({ label, value, icon }) => (
-              <div key={label} className="flex items-start gap-3">
-                <div
-                  className="w-11 h-11 flex-shrink-0 flex items-center justify-center border mt-0.5"
-                  style={{ border: '1px solid rgba(192,155,74,0.22)', color: 'var(--g)' }}
+            <ContactInfoRow label={SITE.corporateOffice.label} icon={<MapIcon />}>
+              {SITE.corporateOffice.lines.map((line) => (
+                <span key={line} className="block">{line}</span>
+              ))}
+            </ContactInfoRow>
+            <ContactInfoRow label={SITE.manufacturingFacility.label} icon={<MapIcon />}>
+              {SITE.manufacturingFacility.lines.map((line) => (
+                <span key={line} className="block">{line}</span>
+              ))}
+            </ContactInfoRow>
+            <ContactInfoRow label="Phone" icon={<PhoneIcon />}>
+              <a href={`tel:${SITE.phoneTel}`} className="hover:text-[var(--gp)] transition-colors">{SITE.phone}</a>
+            </ContactInfoRow>
+            <ContactInfoRow label="Email Us" icon={<MailIcon />}>
+              {SITE.emails.map((item) => (
+                <a
+                  key={item.address}
+                  href={`mailto:${item.address}`}
+                  className="block hover:text-[var(--gp)] transition-colors"
                 >
-                  {icon}
-                </div>
-                <div>
-                  <p className="text-[10px] tracking-[0.2em] uppercase mb-1" style={{ color: 'var(--gd)' }}>{label}</p>
-                  <p className="text-[14px] font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>{value}</p>
-                </div>
-              </div>
-            ))}
+                  {item.address}
+                </a>
+              ))}
+            </ContactInfoRow>
+            <ContactInfoRow label="Hours" icon={<ClockIcon />}>
+              Mon–Sat, 9 AM – 6 PM IST
+            </ContactInfoRow>
           </div>
 
           {/* Certifications */}
@@ -134,6 +161,7 @@ export default function Contact() {
               </h3>
 
               <form onSubmit={handleSubmit}>
+                <input type="text" name="website" tabIndex={-1} autoComplete="off" className="absolute opacity-0 pointer-events-none h-0 w-0" aria-hidden />
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <FormField label="Full Name *"    name="name"    type="text"   value={form.name}    onChange={handleChange} placeholder="Your name" required />
                   <FormField label="Company"        name="company" type="text"   value={form.company} onChange={handleChange} placeholder="Company name" />
@@ -202,13 +230,20 @@ export default function Contact() {
                     </label>
                   </div>
 
+                  {error && (
+                    <p className="col-span-2 text-[13px] font-light" style={{ color: 'rgba(220,120,120,0.9)' }}>
+                      {error}
+                    </p>
+                  )}
+
                   {/* Submit */}
                   <button
                     type="submit"
-                    className="col-span-2 py-3.5 text-[12px] tracking-[0.2em] uppercase font-semibold transition-all duration-300 hover:bg-[var(--gd)] hover:text-white mt-2"
+                    disabled={submitting}
+                    className="col-span-2 py-3.5 text-[12px] tracking-[0.2em] uppercase font-semibold transition-all duration-300 hover:bg-[var(--gd)] hover:text-white mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     style={{ background: 'var(--g)', color: 'var(--ink)', border: 'none', width: '100%' }}
                   >
-                    Send Enquiry
+                    {submitting ? 'Sending…' : 'Send Enquiry'}
                   </button>
                 </div>
               </form>
@@ -221,6 +256,33 @@ export default function Contact() {
         </div>
       </div>
     </section>
+  )
+}
+
+function ContactInfoRow({
+  label,
+  icon,
+  children,
+}: {
+  label: string
+  icon: React.ReactNode
+  children: React.ReactNode
+}) {
+  return (
+    <div className="flex items-start gap-3">
+      <div
+        className="w-11 h-11 flex-shrink-0 flex items-center justify-center border mt-0.5"
+        style={{ border: '1px solid rgba(192,155,74,0.22)', color: 'var(--g)' }}
+      >
+        {icon}
+      </div>
+      <div>
+        <p className="text-[10px] tracking-[0.2em] uppercase mb-1" style={{ color: 'var(--gd)' }}>{label}</p>
+        <div className="text-[14px] font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
+          {children}
+        </div>
+      </div>
+    </div>
   )
 }
 

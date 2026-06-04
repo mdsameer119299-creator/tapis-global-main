@@ -60,7 +60,7 @@ export default function Navbar() {
         }}
       >
         <div className="flex gap-3 sm:gap-6 items-center min-w-0">
-          <a href={`tel:${SITE.phone.replace(/\s/g, '')}`} className="min-w-0">
+          <a href={`tel:${SITE.phoneTel}`} className="min-w-0">
             <TopbarItem icon={<PhoneIcon />} className="truncate max-w-[140px] sm:max-w-none">
               <span className="hidden sm:inline">{SITE.phone}</span>
               <span className="sm:hidden text-[11px]">Call Us</span>
@@ -80,7 +80,7 @@ export default function Navbar() {
           </a>
           <span className="w-px h-3 opacity-20 max-sm:hidden" style={{ background: '#fff' }} />
           <Link
-            href="/samples"
+            href="/design-studio"
             className="text-[11px] sm:text-[12.5px] tracking-wide transition-colors duration-200 max-sm:hidden"
             style={{ color: 'var(--gp)' }}
           >
@@ -169,6 +169,7 @@ export default function Navbar() {
                     active={isActivePath(pathname, link.href)}
                     highlight={link.highlight}
                     cta={link.cta}
+                    badge={link.badge}
                   >
                     {link.label}
                   </NavLink>
@@ -355,12 +356,12 @@ export default function Navbar() {
             WhatsApp
           </a>
           <Link
-            href="/samples"
+            href="/design-studio"
             onClick={() => setMobile(false)}
             className="py-3 text-center text-[10px] tracking-[0.12em] uppercase font-semibold touch-target border"
             style={{ borderColor: 'rgba(192,155,74,0.35)', color: 'var(--inks)' }}
           >
-            Color Samples
+            Design Studio
           </Link>
         </div>
       </div>
@@ -416,6 +417,7 @@ function NavLink({
   active = false,
   highlight = false,
   cta = false,
+  badge,
   className = '',
   icon,
 }: {
@@ -424,6 +426,7 @@ function NavLink({
   active?: boolean
   highlight?: boolean
   cta?: boolean
+  badge?: string
   className?: string
   icon?: React.ReactNode
 }) {
@@ -435,7 +438,17 @@ function NavLink({
       data-active={active || highlight || cta ? 'true' : undefined}
     >
       <span className="nav-tab-orbit" aria-hidden />
-      <span className="nav-tab-label">{children}</span>
+      <span className="nav-tab-label inline-flex items-center gap-1.5">
+        {children}
+        {badge && (
+          <span
+            className="nav-tab-badge text-[8px] tracking-[0.14em] uppercase font-bold px-1.5 py-0.5 leading-none"
+            style={{ background: 'var(--g)', color: 'var(--ink)' }}
+          >
+            {badge}
+          </span>
+        )}
+      </span>
       {icon}
     </Link>
   )

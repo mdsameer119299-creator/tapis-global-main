@@ -12,7 +12,9 @@ function rm(rel) {
   }
 }
 
-// Webpack cache dirs that corrupt most often
+// Webpack cache dirs that corrupt most often on Windows
 rm('.next/cache/webpack')
 rm('.next/cache/client-development-fallback')
 rm('.next/cache/server-development')
+rm('.next/server')
+rm('.next/static/chunks')

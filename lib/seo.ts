@@ -26,25 +26,34 @@ export const BRAND = {
   locale:      'en_US',
 
   // Contact
-  phone:    '+91-9415-234-567',
-  email:    'exports@tapisglobal.com',
-  whatsapp: 'https://wa.me/919415234567',
+  phone:    '+91-84482-91631',
+  email:    'sales@tapisglobalinternational.com',
+  emailEnquiry: 'enquiry@tapisglobalinternational.com',
+  whatsapp: 'https://wa.me/918448291631',
 
-  // Address (structured)
+  // Address (structured — manufacturing facility)
   address: {
-    street:   'Carpet Mandi',
+    street:   'Industrial Estate',
     city:     'Bhadohi',
     state:    'Uttar Pradesh',
-    postal:   '221 401',
+    postal:   '221401',
     country:  'IN',
     region:   'UP',
+  },
+
+  corporateOffice: {
+    street:   '438/13, TKD Extension',
+    city:     'New Delhi',
+    state:    'Delhi',
+    postal:   '110019',
+    country:  'IN',
   },
 
   // Social handles
   social: {
     linkedin:  'https://www.linkedin.com/company/tapis-global-international',
-    instagram: 'https://www.instagram.com/tapisglobal',
-    facebook:  'https://www.facebook.com/tapisglobal',
+    instagram: 'https://www.instagram.com/tapisglobalinternational',
+    facebook:  'https://www.facebook.com/Tapisglobalinternational/',
     twitter:   '@TapisGlobal',
   },
 
@@ -111,8 +120,8 @@ export const KEYWORDS_ALL = [
 export const PAGE_META = {
 
   home: {
-    title:       `${BRAND.legalName} | Premium Carpet Manufacturer — Pan India & Global Projects`,
-    description: `Tapis Global International — luxury handmade carpet and flooring solutions from Bhadohi. Custom carpets for architects, interior designers, hospitality, commercial projects and tenders across India — with export-quality manufacturing for international buyers.`,
+    title:       `${BRAND.legalName} | Premium Flooring & Carpet Solutions — Pan India & Worldwide`,
+    description: `Tapis Global International — specification-led carpets and flooring from Bhadohi. Bespoke and project solutions for architects, interior designers, hospitality, developers and global buyers across India and international markets.`,
     keywords:    KEYWORDS_ALL,
     canonical:   SEO_BASE_URL,
   },
@@ -133,7 +142,7 @@ export const PAGE_META = {
 
   contact: {
     title:       `Contact Tapis Global | Project Enquiries & Custom Carpet Solutions`,
-    description: `Contact Tapis Global for custom carpet projects, hospitality supply, pan India enquiries, tender specifications and international orders. Our team responds within 12 hours. Call +91-9415-234-567.`,
+    description: `Contact Tapis Global — corporate office New Delhi, manufacturing Bhadohi. Call +91 84482 91631 or email sales@tapisglobalinternational.com for projects, samples and enquiries.`,
     keywords:    [...KEYWORDS_PRIMARY, 'carpet project enquiry', 'custom rug supplier India'],
     canonical:   `${SEO_BASE_URL}/contact`,
   },
@@ -146,10 +155,17 @@ export const PAGE_META = {
   },
 
   samples: {
-    title:       `Carpet Sample Swatches | 430+ Pom Pom Shades — Tapis Global International`,
-    description: `Browse 430+ pom pom carpet swatches across wool, silk, viscose, cotton and jute collections. Request free trade samples dispatched within 3–5 working days. Tapis Global International, Bhadohi, India.`,
+    title:       `Carpet Sample Swatches | 1600+ Curated Shades — Tapis Global International`,
+    description: `Browse 1600+ curated carpet colours across wool, silk, viscose, cotton and jute collections. Request colour cards and trade samples from Tapis Global International, Bhadohi, India.`,
     keywords:    [...KEYWORDS_PRODUCT, 'carpet sample swatches', 'rug colour samples wholesale', 'wool carpet samples India', 'free carpet samples trade'],
     canonical:   `${SEO_BASE_URL}/samples`,
+  },
+
+  designStudio: {
+    title:       `Design Studio | 1600+ Colours & Custom Carpet Development — Tapis Global`,
+    description: `Explore the Tapis Global Design Studio — 1600+ curated yarn colours, custom shade matching, premium materials and full design development for architects, hotels and luxury projects. Bhadohi, India.`,
+    keywords:    [...KEYWORDS_PRODUCT, 'carpet design studio India', 'custom rug colour matching', 'yarn colour library', 'architect carpet samples', 'Pantone carpet matching'],
+    canonical:   `${SEO_BASE_URL}/design-studio`,
   },
 
   blogs: {

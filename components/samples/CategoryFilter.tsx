@@ -26,7 +26,7 @@ export default function CategoryFilter({
 
   return (
     <div
-      className="sticky top-[72px] z-[50] py-4 -mx-6 px-6 lg:-mx-12 lg:px-12 border-b backdrop-blur-md"
+      className="sticky top-[120px] lg:top-[128px] z-[50] py-4 -mx-6 px-6 lg:-mx-12 lg:px-12 border-b backdrop-blur-md"
       style={{
         background: 'rgba(248,244,238,0.92)',
         borderColor: 'var(--bd)',

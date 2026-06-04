@@ -90,7 +90,7 @@ export default function Exports() {
           <Reveal>
             <Eyebrow>{MARKETS_HEADER.eyebrow}</Eyebrow>
             <h2
-              className="font-medium leading-[1.06] mb-8"
+              className="font-medium leading-[1.06] mb-10"
               style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 'clamp(32px,3vw,48px)', color: 'var(--ink)' }}
             >
               {MARKETS_HEADER.title}
