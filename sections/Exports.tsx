@@ -51,7 +51,7 @@ export default function Exports() {
               <p className="font-normal leading-none" style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 52, color: 'var(--gp)' }}>
                 {s.value}<sup style={{ fontSize: 20, color: 'var(--g)', verticalAlign: 'super' }}>{s.suffix}</sup>
               </p>
-              <p className="text-[10px] tracking-[0.16em] uppercase mt-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</p>
+              <p className="text-[15px] tracking-[0.16em] uppercase mt-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</p>
             </div>
           ))}
         </div>
@@ -64,7 +64,7 @@ export default function Exports() {
           <div className="absolute inset-0">
             <div className="relative w-full h-full fill-frame">
               <Image
-                src="/images/tgi-banner-4.png"
+                src="/images/tgi-banner-4.webp"
                 alt="Luxury hospitality and commercial carpet projects — Tapis Global India"
                 fill
                 loading="lazy"
@@ -104,7 +104,7 @@ export default function Exports() {
                   <p className="font-normal leading-none" style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 36, color: 'var(--c)' }}>
                     {s.value}<sup style={{ fontSize: 14, verticalAlign: 'super' }}>{s.suffix}</sup>
                   </p>
-                  <p className="text-[10px] tracking-[0.12em] uppercase mt-1" style={{ color: 'var(--inkm)' }}>{s.label}</p>
+                  <p className="text-[15px] tracking-[0.12em] uppercase mt-1" style={{ color: 'var(--inkm)' }}>{s.label}</p>
                 </div>
               ))}
             </div>
@@ -120,8 +120,8 @@ export default function Exports() {
                     <SegmentIcon type={seg.icon} />
                   </span>
                   <div>
-                    <p className="text-[14.5px] font-medium mb-1" style={{ color: 'var(--ink)' }}>{seg.title}</p>
-                    <p className="text-[13px] font-light leading-[1.7]" style={{ color: 'var(--inkm)' }}>{seg.desc}</p>
+                    <p className="text-[19px] font-medium mb-1" style={{ color: 'var(--ink)' }}>{seg.title}</p>
+                    <p className="text-[15px] font-light leading-[1.7]" style={{ color: 'var(--inkm)' }}>{seg.desc}</p>
                   </div>
                 </div>
               ))}

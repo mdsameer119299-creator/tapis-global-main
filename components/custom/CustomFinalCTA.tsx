@@ -9,7 +9,7 @@ export default function CustomFinalCTA() {
       <div className="absolute inset-0">
         <div className="relative w-full h-full fill-frame">
           <OptimizedImage
-            src="/images/rug4.jpg"
+            src="/images/rug4.webp"
             alt="Luxury custom carpet — Tapis Global International"
             fill
             loading="lazy"
@@ -40,14 +40,14 @@ export default function CustomFinalCTA() {
             <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>{CUSTOM_FINAL_CTA.titleEm}</em>
           </h2>
           <p
-            className="text-[16px] font-light leading-[1.85] max-w-xl mx-auto mb-10"
+            className="text-[18px] font-light leading-[1.85] max-w-xl mx-auto mb-10"
             style={{ color: 'rgba(248,244,238,0.55)' }}
           >
             {CUSTOM_FINAL_CTA.lead}
           </p>
           <Link
             href={CUSTOM_FINAL_CTA.ctaHref}
-            className="inline-block px-12 py-4 text-[11px] tracking-[0.22em] uppercase font-semibold rounded-sm transition-all duration-400 hover:tracking-[0.26em] hover:brightness-110"
+            className="inline-block px-12 py-4 text-[15px] tracking-[0.22em] uppercase font-semibold rounded-sm transition-all duration-400 hover:tracking-[0.26em] hover:brightness-110"
             style={{
               background: 'linear-gradient(135deg, var(--g) 0%, #a8843a 100%)',
               color: 'var(--ink)',

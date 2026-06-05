@@ -9,7 +9,10 @@
     "build": "next build",
     "start": "next start",
     "preview": "npm run build && next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "favicon": "node scripts/generate-favicon.mjs",
+    "optimize:images": "node scripts/optimize-images.mjs && node scripts/replace-image-paths.mjs",
+    "analyze": "ANALYZE=true next build"
   },
   "dependencies": {
     "next": "14.2.0",
@@ -18,12 +21,14 @@
     "react-dom": "^18"
   },
   "devDependencies": {
+    "@next/bundle-analyzer": "^16.2.7",
     "@types/node": "^20",
     "@types/nodemailer": "^8.0.0",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "autoprefixer": "^10",
     "postcss": "^8",
+    "sharp": "^0.34.5",
     "tailwindcss": "^3",
     "typescript": "^5"
   }

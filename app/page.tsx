@@ -6,7 +6,6 @@ import {
   webPageSchema,
   breadcrumbSchema,
   faqSchema,
-  aggregateRatingSchema,
   buildJsonLd,
   productSchema,
 } from '@/lib/structured-data'
@@ -43,7 +42,7 @@ const PAGE_JSONLD = JSON.stringify(
     productSchema({
       name:        'Hand Tufted Carpets — Premium Flooring Collection',
       description: 'Specification-led hand tufted carpets for luxury residences, hospitality and commercial interiors. Custom dimensions, colours and design development from Bhadohi.',
-      imageUrl:    `${SEO_BASE_URL}/images/handtufted-img-2.png`,
+      imageUrl:    `${SEO_BASE_URL}/images/handtufted-img-2.webp`,
       url:         `${SEO_BASE_URL}/#tufted`,
       material:    'New Zealand Wool, Viscose, Polyester, Cotton',
       moq:         '100 Pieces',
@@ -51,13 +50,12 @@ const PAGE_JSONLD = JSON.stringify(
     productSchema({
       name:        'Hand Knotted Carpets — Luxury Bespoke Collection',
       description: 'Bespoke hand knotted carpets for distinguished residential, hospitality and designer projects. Premium wool and silk constructions with specification-led development from Bhadohi.',
-      imageUrl:    `${SEO_BASE_URL}/images/rug2.jpg`,
+      imageUrl:    `${SEO_BASE_URL}/images/rug2.webp`,
       url:         `${SEO_BASE_URL}/#knotted`,
       material:    'New Zealand Wool, Pure Silk, Wool-Silk Blend',
       moq:         '50 Pieces',
     }),
     faqSchema(),
-    aggregateRatingSchema(),
   )
 )
 

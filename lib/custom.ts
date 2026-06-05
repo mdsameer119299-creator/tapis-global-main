@@ -7,7 +7,7 @@ export const CUSTOM_HERO = {
   lead:     'We transform your ideas into handcrafted luxury carpets tailored to your style, brand, and space.',
   cta:      'Request Custom Design',
   ctaHref:  '#custom-form',
-  image:    '/images/tgi-banner-7.jpg',
+  image:    '/images/tgi-banner-7.webp',
   imageAlt: 'Luxury custom carpet in premium interior — Tapis Global International',
 }
 
@@ -41,14 +41,14 @@ export type CustomGalleryItem = {
 }
 
 export const CUSTOM_GALLERY: CustomGalleryItem[] = [
-  { src: '/images/handtufted-img-2.png', alt: 'Modern luxury hand tufted carpet', caption: 'Contemporary Hand Tufted', span: 'wide' },
-  { src: '/images/rug1.jpg', alt: 'Luxury handmade wool rug texture', caption: 'Wool Texture Detail', span: 'tall' },
-  { src: '/images/tgi-banner-4.png', alt: 'Hotel lobby custom carpet installation', caption: 'Hospitality Installation', span: 'square' },
-  { src: '/images/tgi-banner-5.png', alt: 'Artisan weaving custom carpet Bhadohi', caption: 'Master Artisan at Work', span: 'square' },
-  { src: '/images/rug3.jpg', alt: 'Custom patterned luxury rug close-up', caption: 'Pattern & Colour Detail', span: 'tall' },
-  { src: '/images/tufting-carpet.png', alt: 'Tufting production custom carpet', caption: 'In-House Tufting Line', span: 'square' },
-  { src: '/images/rug2.jpg', alt: 'Premium knotted carpet collection', caption: 'Hand Knotted Excellence', span: 'square' },
-  { src: '/images/manufacturing-rug-img.png', alt: 'Custom carpet manufacturing workshop', caption: 'Premium Project Finishing', span: 'wide' },
+  { src: '/images/handtufted-img-2.webp', alt: 'Modern luxury hand tufted carpet', caption: 'Contemporary Hand Tufted', span: 'wide' },
+  { src: '/images/rug1.webp', alt: 'Luxury handmade wool rug texture', caption: 'Wool Texture Detail', span: 'tall' },
+  { src: '/images/tgi-banner-4.webp', alt: 'Hotel lobby custom carpet installation', caption: 'Hospitality Installation', span: 'square' },
+  { src: '/images/tgi-banner-5.webp', alt: 'Artisan weaving custom carpet Bhadohi', caption: 'Master Artisan at Work', span: 'square' },
+  { src: '/images/rug3.webp', alt: 'Custom patterned luxury rug close-up', caption: 'Pattern & Colour Detail', span: 'tall' },
+  { src: '/images/tufting-carpet.webp', alt: 'Tufting production custom carpet', caption: 'In-House Tufting Line', span: 'square' },
+  { src: '/images/rug2.webp', alt: 'Premium knotted carpet collection', caption: 'Hand Knotted Excellence', span: 'square' },
+  { src: '/images/manufacturing-rug-img.webp', alt: 'Custom carpet manufacturing workshop', caption: 'Premium Project Finishing', span: 'wide' },
 ]
 
 export const CUSTOM_TRUST = [

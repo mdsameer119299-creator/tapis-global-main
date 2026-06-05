@@ -75,7 +75,7 @@ function FloatField({ id, label, name, iconKey, type = 'text', value, onChange, 
           value={value}
           onChange={onChange}
           placeholder=" "
-          className="peer w-full bg-transparent border rounded-md pl-11 pr-4 pt-6 pb-2.5 text-[14px] font-light outline-none transition-all duration-300 focus:border-[rgba(212,181,116,0.55)] focus:shadow-[0_0_0_3px_rgba(192,155,74,0.08)]"
+          className="peer w-full bg-transparent border rounded-md pl-11 pr-4 pt-6 pb-2.5 text-[16px] font-light outline-none transition-all duration-300 focus:border-[rgba(212,181,116,0.55)] focus:shadow-[0_0_0_3px_rgba(192,155,74,0.08)]"
           style={{
             borderColor: error ? 'rgba(180,60,60,0.6)' : 'rgba(255,255,255,0.12)',
             color: 'rgba(248,244,238,0.9)',
@@ -85,15 +85,15 @@ function FloatField({ id, label, name, iconKey, type = 'text', value, onChange, 
           htmlFor={id}
           className={`absolute left-11 transition-all duration-300 pointer-events-none ${
             filled
-              ? 'top-2 text-[9px] tracking-[0.18em] uppercase'
-              : 'top-4 text-[13px] peer-focus:top-2 peer-focus:text-[9px] peer-focus:tracking-[0.18em] peer-focus:uppercase'
+              ? 'top-2 text-[14px] tracking-[0.18em] uppercase'
+              : 'top-4 text-[15px] peer-focus:top-2 peer-focus:text-[14px] peer-focus:tracking-[0.18em] peer-focus:uppercase'
           }`}
           style={{ color: error ? 'rgba(220,120,120,0.9)' : filled ? 'var(--gp)' : 'rgba(248,244,238,0.4)' }}
         >
           {label}{optional ? ' (Optional)' : ''}
         </label>
       </div>
-      {error && <p className="text-[11px] mt-1.5 pl-1" style={{ color: 'rgba(220,120,120,0.85)' }}>{error}</p>}
+      {error && <p className="text-[15px] mt-1.5 pl-1" style={{ color: 'rgba(220,120,120,0.85)' }}>{error}</p>}
     </div>
   )
 }
@@ -183,13 +183,13 @@ export default function CatalogueForm() {
               >
                 {CATALOGUE_SUCCESS.title}
               </h2>
-              <p className="text-[15px] font-light leading-[1.85] mb-2" style={{ color: 'rgba(248,244,238,0.58)' }}>
+              <p className="text-[17px] font-light leading-[1.85] mb-2" style={{ color: 'rgba(248,244,238,0.58)' }}>
                 {CATALOGUE_SUCCESS.message}
               </p>
-              <p className="text-[14px] font-light" style={{ color: 'rgba(248,244,238,0.42)' }}>
+              <p className="text-[16px] font-light" style={{ color: 'rgba(248,244,238,0.42)' }}>
                 {CATALOGUE_SUCCESS.subline}
               </p>
-              <p className="text-[13px] mt-5 pt-5" style={{ color: 'rgba(248,244,238,0.3)', borderTop: '1px solid rgba(192,155,74,0.15)' }}>
+              <p className="text-[15px] mt-5 pt-5" style={{ color: 'rgba(248,244,238,0.3)', borderTop: '1px solid rgba(192,155,74,0.15)' }}>
                 Delivery address: <span style={{ color: 'var(--gl)' }}>{form.email}</span>
               </p>
             </div>
@@ -208,7 +208,7 @@ export default function CatalogueForm() {
               }}
             >
               <input type="text" name="website" tabIndex={-1} autoComplete="off" className="absolute opacity-0 pointer-events-none h-0 w-0" aria-hidden />
-              <p className="text-[10px] tracking-[0.28em] uppercase text-center mb-2 font-medium" style={{ color: 'var(--gp)' }}>
+              <p className="text-[15px] tracking-[0.28em] uppercase text-center mb-2 font-medium" style={{ color: 'var(--gp)' }}>
                 Complete to Receive Catalogue
               </p>
 
@@ -230,7 +230,7 @@ export default function CatalogueForm() {
                     name="buyerType"
                     value={form.buyerType}
                     onChange={handleChange}
-                    className="peer w-full bg-transparent border rounded-md pl-11 pr-10 pt-6 pb-2.5 text-[14px] font-light outline-none transition-all duration-300 appearance-none cursor-pointer focus:border-[rgba(212,181,116,0.55)]"
+                    className="peer w-full bg-transparent border rounded-md pl-11 pr-10 pt-6 pb-2.5 text-[16px] font-light outline-none transition-all duration-300 appearance-none cursor-pointer focus:border-[rgba(212,181,116,0.55)]"
                     style={{
                       borderColor: errors.buyerType ? 'rgba(180,60,60,0.6)' : 'rgba(255,255,255,0.12)',
                       color: form.buyerType ? 'rgba(248,244,238,0.9)' : 'rgba(248,244,238,0.35)',
@@ -243,20 +243,20 @@ export default function CatalogueForm() {
                   </select>
                   <label
                     htmlFor="cat-buyer"
-                    className="absolute left-11 top-2 text-[9px] tracking-[0.18em] uppercase pointer-events-none"
+                    className="absolute left-11 top-2 text-[14px] tracking-[0.18em] uppercase pointer-events-none"
                     style={{ color: errors.buyerType ? 'rgba(220,120,120,0.9)' : 'var(--gp)' }}
                   >
                     What best describes you?
                   </label>
-                  <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[10px]" style={{ color: 'rgba(248,244,238,0.3)' }}>▾</span>
+                  <span className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-[15px]" style={{ color: 'rgba(248,244,238,0.3)' }}>▾</span>
                 </div>
                 {errors.buyerType && (
-                  <p className="text-[11px] mt-1.5 pl-1" style={{ color: 'rgba(220,120,120,0.85)' }}>{errors.buyerType}</p>
+                  <p className="text-[15px] mt-1.5 pl-1" style={{ color: 'rgba(220,120,120,0.85)' }}>{errors.buyerType}</p>
                 )}
               </div>
 
               {submitError && (
-                <p className="text-[13px] font-light text-center" style={{ color: 'rgba(220,120,120,0.9)' }}>
+                <p className="text-[15px] font-light text-center" style={{ color: 'rgba(220,120,120,0.9)' }}>
                   {submitError}
                 </p>
               )}
@@ -264,7 +264,7 @@ export default function CatalogueForm() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-4 mt-2 flex items-center justify-center gap-3 text-[11px] tracking-[0.22em] uppercase font-semibold rounded-md transition-all duration-400 disabled:opacity-70 hover:brightness-110 hover:tracking-[0.26em]"
+                className="w-full py-4 mt-2 flex items-center justify-center gap-3 text-[15px] tracking-[0.22em] uppercase font-semibold rounded-md transition-all duration-400 disabled:opacity-70 hover:brightness-110 hover:tracking-[0.26em]"
                 style={{
                   background: submitting
                     ? 'rgba(192,155,74,0.45)'
@@ -282,7 +282,7 @@ export default function CatalogueForm() {
                 {submitting ? 'Processing…' : 'Get Catalogue'}
               </button>
 
-              <p className="text-[11px] text-center pt-1 font-light" style={{ color: 'rgba(248,244,238,0.28)' }}>
+              <p className="text-[15px] text-center pt-1 font-light" style={{ color: 'rgba(248,244,238,0.28)' }}>
                 Your details are kept confidential. Catalogue delivered within 24 hours.
               </p>
             </form>

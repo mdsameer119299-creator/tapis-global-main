@@ -58,10 +58,10 @@ export const COLLECTIONS: CollectionItem[] = [
     slideTag:      'Hand Tufted',
     slideTagVariant: 'gold',
     images: [
-      '/images/collection-tufted-factory.png',
-      '/images/collection-tufted-dyeing.png',
-      '/images/collection-tufted-finishing.png',
-      '/images/collection-tufted-hotel.png',
+      '/images/collection-tufted-factory.webp',
+      '/images/collection-tufted-dyeing.webp',
+      '/images/collection-tufted-finishing.webp',
+      '/images/collection-tufted-hotel.webp',
     ],
     bullets: [
       { label: 'Interior Applications', text: 'Living spaces, suites, boardrooms and boutique hospitality — rich pile and colour depth suited to specification-led residential and commercial interiors.' },
@@ -86,10 +86,10 @@ export const COLLECTIONS: CollectionItem[] = [
     slideTag:      'Hand Knotted',
     slideTagVariant: 'dark',
     images: [
-      '/images/collection-knotted-weaving.png',
-      '/images/collection-knotted-dyeing.png',
-      '/images/collection-knotted-finishing.png',
-      '/images/collection-knotted-luxury-room.png',
+      '/images/collection-knotted-weaving.webp',
+      '/images/collection-knotted-dyeing.webp',
+      '/images/collection-knotted-finishing.webp',
+      '/images/collection-knotted-luxury-room.webp',
     ],
     bullets: [
       { label: 'Project Suitability', text: 'Grand residences, hotel suites, galleries and collector interiors — enduring presence and tactile luxury for spaces that demand permanence.' },
@@ -113,10 +113,10 @@ export const COLLECTIONS: CollectionItem[] = [
     slideTag:      'Jute · Sisal',
     slideTagVariant: 'light',
     images: [
-      '/images/collection-jute-factory.png',
-      '/images/collection-jute-dyeing.png',
-      '/images/collection-jute-interior.png',
-      '/images/collection-jute-artisan.png',
+      '/images/collection-jute-factory.webp',
+      '/images/collection-jute-dyeing.webp',
+      '/images/collection-jute-interior.webp',
+      '/images/collection-jute-artisan.webp',
     ],
     bullets: [
       { label: 'Design Applications', text: 'Coastal villas, boutique hotels, retail and lifestyle interiors — organic texture with a refined, contemporary sensibility.' },
@@ -140,10 +140,10 @@ export const COLLECTIONS: CollectionItem[] = [
     slideTag:      'Hospitality',
     slideTagVariant: 'dark',
     images: [
-      '/images/tgi-banner-4.png',
-      '/images/tgi-banner-3.png',
-      '/images/tgi-banner-1.png',
-      '/images/tgi-banner-6.png',
+      '/images/tgi-banner-4.webp',
+      '/images/tgi-banner-3.webp',
+      '/images/tgi-banner-1.webp',
+      '/images/tgi-banner-6.webp',
     ],
     bullets: [
       { label: 'Hotel & Resort', text: 'Suites, lobbies, corridors and banquet spaces — bespoke programmes for luxury hospitality brands across India, the GCC and international markets.' },
@@ -167,10 +167,10 @@ export const COLLECTIONS: CollectionItem[] = [
     slideTag:      'Wall-to-Wall',
     slideTagVariant: 'dark',
     images: [
-      '/images/collection-broadloom-ballroom.png',
-      '/images/collection-broadloom-lounge.png',
-      '/images/collection-broadloom-corridor.png',
-      '/images/collection-broadloom-production.png',
+      '/images/collection-broadloom-ballroom.webp',
+      '/images/collection-broadloom-lounge.webp',
+      '/images/collection-broadloom-corridor.webp',
+      '/images/collection-broadloom-production.webp',
     ],
     bullets: [
       { label: 'Project Capability', text: 'Corridors, banquet halls, offices and residential towers — broadloom programmes up to 4 metres wide, cut to project length.' },
@@ -194,10 +194,10 @@ export const COLLECTIONS: CollectionItem[] = [
     slideTag:      'Custom OEM',
     slideTagVariant: 'gold',
     images: [
-      '/images/rug2.jpg',
-      '/images/videoframe_15503.png',
-      '/images/tgi-banner-5.png',
-      '/images/rug5.jpg',
+      '/images/rug2.webp',
+      '/images/videoframe_15503.webp',
+      '/images/tgi-banner-5.webp',
+      '/images/rug5.webp',
     ],
     bullets: [
       { label: 'Private Label Programmes', text: 'Produce under your brand with custom packaging and documentation — NDA-backed exclusivity and design registration available.' },

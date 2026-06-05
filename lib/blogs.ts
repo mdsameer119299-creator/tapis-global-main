@@ -17,7 +17,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Heritage',
     date:     '2025-11-12',
     readTime: '5 min read',
-    image:    '/images/tgi-banner-5.png',
+    image:    '/images/tgi-banner-5.webp',
     imageAlt: 'Artisan weaving carpets in Bhadohi — Tapis Global International',
   },
   {
@@ -27,7 +27,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Product Guide',
     date:     '2025-10-28',
     readTime: '6 min read',
-    image:    '/images/handtufted-img-2.png',
+    image:    '/images/handtufted-img-2.webp',
     imageAlt: 'Hand tufted luxury rug — Tapis Global International',
   },
   {
@@ -37,7 +37,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Projects',
     date:     '2025-09-15',
     readTime: '7 min read',
-    image:    '/images/tgi-banner-4.png',
+    image:    '/images/tgi-banner-4.webp',
     imageAlt: 'Luxury hospitality carpet installation — hotel project',
   },
   {
@@ -47,7 +47,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Quality',
     date:     '2025-08-03',
     readTime: '4 min read',
-    image:    '/images/vibrant-wool-dying.png',
+    image:    '/images/vibrant-wool-dying.webp',
     imageAlt: 'Wool dyeing and quality control — carpet manufacturing',
   },
   {
@@ -57,7 +57,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Design',
     date:     '2025-07-20',
     readTime: '5 min read',
-    image:    '/images/rug3.jpg',
+    image:    '/images/rug3.webp',
     imageAlt: 'Custom luxury rug design — Tapis Global International',
   },
   {
@@ -67,7 +67,7 @@ export const BLOG_POSTS: BlogPost[] = [
     category: 'Sustainability',
     date:     '2025-06-08',
     readTime: '4 min read',
-    image:    '/images/jute-rugs-manufacturing.png',
+    image:    '/images/jute-rugs-manufacturing.webp',
     imageAlt: 'Jute and natural fibre rug manufacturing — Bhadohi India',
   },
 ]

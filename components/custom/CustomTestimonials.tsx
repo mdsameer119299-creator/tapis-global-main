@@ -37,20 +37,20 @@ export default function CustomTestimonials() {
                 }}
               >
                 <span
-                  className="inline-block self-start px-3 py-1 text-[9px] tracking-[0.2em] uppercase mb-5 rounded-sm"
+                  className="inline-block self-start px-3 py-1 text-[14px] tracking-[0.2em] uppercase mb-5 rounded-sm"
                   style={{ background: 'rgba(192,155,74,0.1)', color: 'var(--gd)' }}
                 >
                   {t.type}
                 </span>
                 <p
-                  className="text-[15px] font-light leading-[1.82] italic flex-1 mb-6"
+                  className="text-[17px] font-light leading-[1.82] italic flex-1 mb-6"
                   style={{ fontFamily: '"EB Garamond", serif', color: 'var(--inkm)' }}
                 >
                   &ldquo;{t.quote}&rdquo;
                 </p>
                 <footer>
-                  <p className="text-[14px] font-medium" style={{ color: 'var(--inks)' }}>{t.name}</p>
-                  <p className="text-[12px] mt-0.5" style={{ color: 'var(--inkl)' }}>{t.role}</p>
+                  <p className="text-[16px] font-medium" style={{ color: 'var(--inks)' }}>{t.name}</p>
+                  <p className="text-[14px] mt-0.5" style={{ color: 'var(--inkl)' }}>{t.role}</p>
                 </footer>
               </blockquote>
             </Reveal>

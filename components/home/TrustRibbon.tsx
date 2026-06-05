@@ -49,7 +49,7 @@ export default function TrustRibbon() {
       {TRUST_RIBBON_ITEMS.map((item, i) => (
         <div
           key={item.text}
-          className="flex-1 min-w-[140px] px-4 py-3.5 flex items-center gap-2.5 text-[11.5px] sm:text-[12px] tracking-[0.06em] transition-colors duration-200 hover:bg-[rgba(192,155,74,0.07)] flex-shrink-0"
+          className="flex-1 min-w-[140px] px-4 py-3.5 flex items-center gap-2.5 text-[16px] sm:text-[14px] tracking-[0.06em] transition-colors duration-200 hover:bg-[rgba(192,155,74,0.07)] flex-shrink-0"
           style={{
             color:      'rgba(255,255,255,0.55)',
             borderRight: i < TRUST_RIBBON_ITEMS.length - 1 ? '1px solid rgba(255,255,255,0.06)' : 'none',

@@ -40,7 +40,7 @@ export default function CategoryFilter({
               key={item.id}
               type="button"
               onClick={() => onChange(item.id)}
-              className="text-[10px] tracking-[0.16em] uppercase font-medium px-4 py-2.5 border transition-all duration-200"
+              className="text-[15px] tracking-[0.16em] uppercase font-medium px-4 py-2.5 border transition-all duration-200"
               style={{
                 borderColor: isActive ? 'var(--g)' : 'var(--bd)',
                 background:  isActive ? 'var(--cd)' : 'transparent',

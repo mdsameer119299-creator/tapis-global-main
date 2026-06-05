@@ -8,9 +8,22 @@ export default function StickyBar() {
   const [dismissed, setDismissed] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => {
-      if (!dismissed) setVisible(window.scrollY > 600)
+    let lastY = 0
+    let ticking = false
+
+    const update = () => {
+      if (!dismissed) setVisible(lastY > 600)
+      ticking = false
     }
+
+    const onScroll = () => {
+      lastY = window.scrollY
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(update)
+      }
+    }
+
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [dismissed])
@@ -32,7 +45,7 @@ export default function StickyBar() {
         transform: visible ? 'translateY(0)' : 'translateY(100%)',
       }}
     >
-      <p className="text-[12px] sm:text-[13.5px] tracking-[0.02em] sm:tracking-[0.03em] flex-1 min-w-0" style={{ color: 'rgba(255,255,255,0.55)' }}>
+      <p className="text-[14px] sm:text-[18px] tracking-[0.02em] sm:tracking-[0.03em] flex-1 min-w-0" style={{ color: 'rgba(255,255,255,0.55)' }}>
         <span className="hidden sm:inline">Planning a project? </span>
         <strong style={{ color: 'var(--gp)', fontWeight: 500 }}>Get a quote in 12 hours.</strong>
       </p>
@@ -42,7 +55,7 @@ export default function StickyBar() {
           href={SITE.whatsapp}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center justify-center w-10 h-10 sm:w-auto sm:h-auto sm:gap-2 sm:px-5 sm:py-2.5 text-[10px] sm:text-[11px] tracking-[0.14em] uppercase font-medium touch-target rounded-sm sm:rounded-none"
+          className="flex items-center justify-center w-10 h-10 sm:w-auto sm:h-auto sm:gap-2 sm:px-5 sm:py-2.5 text-[15px] sm:text-[15px] tracking-[0.14em] uppercase font-medium touch-target rounded-sm sm:rounded-none"
           style={{ background: '#25D366', color: '#fff' }}
           aria-label="WhatsApp"
         >
@@ -51,7 +64,7 @@ export default function StickyBar() {
         </a>
         <Link
           href="/contact"
-          className="px-4 sm:px-5 py-2.5 text-[10px] sm:text-[11px] tracking-[0.12em] sm:tracking-[0.14em] uppercase font-medium whitespace-nowrap touch-target"
+          className="px-4 sm:px-5 py-2.5 text-[15px] sm:text-[15px] tracking-[0.12em] sm:tracking-[0.14em] uppercase font-medium whitespace-nowrap touch-target"
           style={{ background: 'var(--g)', color: 'var(--ink)' }}
         >
           Contact

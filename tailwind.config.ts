@@ -35,6 +35,13 @@ const config: Config = {
         body:    ['"Outfit"', 'sans-serif'],
         serif:   ['"EB Garamond"', 'serif'],
       },
+      fontSize: {
+        '2xs': ['0.8125rem', { lineHeight: '1.5' }],   /* 13px — minimum UI text */
+        xs:    ['0.875rem',  { lineHeight: '1.55' }],  /* 14px */
+        sm:    ['1rem',      { lineHeight: '1.6' }],    /* 16px */
+        base:  ['1.0625rem', { lineHeight: '1.65' }],  /* 17px */
+        md:    ['1.125rem',  { lineHeight: '1.65' }],  /* 18px */
+      },
       letterSpacing: {
         wide:    '0.1em',
         wider:   '0.2em',
@@ -52,6 +59,10 @@ const config: Config = {
         ldbar: {
           from: { width: '0' },
           to:   { width: '110px' },
+        },
+        'ldbar-scale': {
+          from: { transform: 'scaleX(0)' },
+          to:   { transform: 'scaleX(1)' },
         },
         kbzoom: {
           from: { transform: 'scale(1.06)' },
@@ -71,8 +82,9 @@ const config: Config = {
         },
       },
       animation: {
-        ldfade:  'ldfade 0.6s ease forwards',
+        ldfade:  'ldfade 0.45s ease forwards',
         ldbar:   'ldbar 0.9s ease 0.6s forwards',
+        'ldbar-scale': 'ldbar-scale 0.55s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.15s forwards',
         kbzoom:  'kbzoom 10s ease forwards',
         ticker:  'ticker 28s linear infinite',
         pulse2:  'pulse2 2.2s ease infinite',

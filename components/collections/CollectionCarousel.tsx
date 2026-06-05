@@ -72,7 +72,7 @@ export default function CollectionCarousel({
 
       {current === 0 && (
         <span
-          className="absolute top-5 left-5 z-[3] text-[9.5px] tracking-[0.22em] uppercase px-3.5 py-1.5 font-medium"
+          className="absolute top-5 left-5 z-[3] text-[14px] tracking-[0.22em] uppercase px-3.5 py-1.5 font-medium"
           style={TAG_STYLES[slideTagVariant]}
         >
           {slideTag}

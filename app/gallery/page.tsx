@@ -45,7 +45,7 @@ export default function GalleryPage() {
           </>
         }
         lead="Handcrafted carpets and rugs from our Bhadohi factory — installed across hotels, residences and bespoke commissions worldwide."
-        image="/images/tgi-banner-4.png"
+        image="/images/tgi-banner-4.webp"
         imageAlt="Handmade carpet gallery — Tapis Global International"
         priority
       />

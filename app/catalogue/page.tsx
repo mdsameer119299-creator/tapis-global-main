@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { buildMetadata } from '@/lib/metadata'
 import { PAGE_META, SEO_BASE_URL, OG_IMAGE } from '@/lib/seo'
 import {
@@ -7,10 +8,11 @@ import {
   buildJsonLd,
 } from '@/lib/structured-data'
 import CatalogueHero from '@/components/catalogue/CatalogueHero'
-import CatalogueForm from '@/components/catalogue/CatalogueForm'
-import CatalogueWhy from '@/components/catalogue/CatalogueWhy'
-import CataloguePreview from '@/components/catalogue/CataloguePreview'
-import CatalogueTrust from '@/components/catalogue/CatalogueTrust'
+
+const CatalogueForm = dynamic(() => import('@/components/catalogue/CatalogueForm'))
+const CatalogueWhy = dynamic(() => import('@/components/catalogue/CatalogueWhy'))
+const CataloguePreview = dynamic(() => import('@/components/catalogue/CataloguePreview'))
+const CatalogueTrust = dynamic(() => import('@/components/catalogue/CatalogueTrust'))
 
 export const metadata: Metadata = buildMetadata(PAGE_META.catalogue)
 

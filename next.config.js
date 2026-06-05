@@ -31,6 +31,39 @@ const nextConfig = {
 
   compress: true,
 
+  async headers() {
+    return [
+      {
+        source: '/logos/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        source: '/images/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        source: '/:path*.webp',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+    ]
+  },
+
+  async redirects() {
+    return [
+      {
+        source:      '/samples',
+        destination: '/design-studio',
+        permanent:   true,
+      },
+    ]
+  },
+
   // Reduce Windows dev cache corruption (ENOENT on .next/cache/webpack)
   webpack: (config, { dev }) => {
     if (dev) {
@@ -43,4 +76,8 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
+
+module.exports = withBundleAnalyzer(nextConfig)

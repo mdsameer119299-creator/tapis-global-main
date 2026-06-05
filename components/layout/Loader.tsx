@@ -1,38 +1,27 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
 
 const SESSION_KEY = 'tgi-loader-seen'
-const MAX_MS      = 650
+const MAX_MS      = 280
 
 export default function Loader() {
   const [gone, setGone] = useState(true)
 
   useEffect(() => {
     if (sessionStorage.getItem(SESSION_KEY)) return
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      sessionStorage.setItem(SESSION_KEY, '1')
+      return
+    }
 
     setGone(false)
-    let done = false
-
-    const finish = () => {
-      if (done) return
-      done = true
+    const timer = window.setTimeout(() => {
       sessionStorage.setItem(SESSION_KEY, '1')
       setGone(true)
-    }
+    }, MAX_MS)
 
-    const timer = window.setTimeout(finish, MAX_MS)
-    if (document.readyState === 'complete') {
-      finish()
-    } else {
-      window.addEventListener('load', finish, { once: true })
-    }
-
-    return () => {
-      window.clearTimeout(timer)
-      window.removeEventListener('load', finish)
-    }
+    return () => window.clearTimeout(timer)
   }, [])
 
   if (gone) return null
@@ -40,20 +29,20 @@ export default function Loader() {
   return (
     <div
       id="loader"
-      className="fixed inset-0 z-[9998] flex flex-col items-center justify-center gap-5"
+      className="fixed inset-0 z-[9998] flex flex-col items-center justify-center gap-4 pointer-events-none"
       style={{ background: 'var(--cd)' }}
       aria-hidden="true"
     >
-      <Image
-        src="/logos/tgi-footer-logo1.png"
-        alt=""
-        width={200}
-        height={60}
-        priority
-        quality={75}
-        className="block h-[60px] w-auto max-w-[200px] object-contain animate-ldfade"
-      />
-      <div className="h-px w-0 animate-ldbar" style={{ background: 'var(--g)' }} />
+      <div
+        className="font-display text-[42px] font-normal tracking-[0.08em] animate-ldfade"
+        style={{ color: 'var(--gp)' }}
+        aria-hidden
+      >
+        TG
+      </div>
+      <div className="h-px w-[110px] overflow-hidden bg-white/10">
+        <div className="h-full w-full origin-left animate-ldbar-scale" style={{ background: 'var(--g)' }} />
+      </div>
     </div>
   )
 }

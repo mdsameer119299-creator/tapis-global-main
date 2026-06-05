@@ -39,7 +39,7 @@ export default function Testimonials() {
 
             <div className="flex gap-1 mb-5">
               {Array.from({ length: featured.stars }).map((_, i) => (
-                <span key={i} className="text-[14px]" style={{ color: 'var(--gp)' }}>★</span>
+                <span key={i} className="text-[16px]" style={{ color: 'var(--gp)' }}>★</span>
               ))}
             </div>
 
@@ -51,10 +51,10 @@ export default function Testimonials() {
             </blockquote>
 
             <footer>
-              <p className="text-[14px] font-medium tracking-[0.03em]" style={{ color: 'var(--gp)' }}>
+              <p className="text-[16px] font-medium tracking-[0.03em]" style={{ color: 'var(--gp)' }}>
                 {featured.name}
               </p>
-              <p className="text-[12px] mt-1" style={{ color: 'rgba(255,255,255,0.42)' }}>
+              <p className="text-[14px] mt-1" style={{ color: 'rgba(255,255,255,0.42)' }}>
                 {featured.role}
               </p>
             </footer>
@@ -70,7 +70,7 @@ export default function Testimonials() {
               >
                 <div className="flex gap-1 mb-3">
                   {Array.from({ length: t.stars }).map((_, j) => (
-                    <span key={j} className="text-[13px]" style={{ color: 'var(--g)' }}>★</span>
+                    <span key={j} className="text-[15px]" style={{ color: 'var(--g)' }}>★</span>
                   ))}
                 </div>
                 <blockquote
@@ -84,7 +84,7 @@ export default function Testimonials() {
                   style={{ borderTop: '1px solid var(--bd)' }}
                 >
                   <div
-                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[11px] font-semibold tracking-wide border"
+                    className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0 text-[15px] font-semibold tracking-wide border"
                     style={{
                       fontFamily: '"Outfit",sans-serif',
                       background: 'var(--ivd)',
@@ -95,8 +95,8 @@ export default function Testimonials() {
                     {t.initials}
                   </div>
                   <div>
-                    <p className="text-[13.5px] font-medium" style={{ color: 'var(--ink)' }}>{t.name}</p>
-                    <p className="text-[12px] mt-0.5 leading-snug" style={{ color: 'var(--inkl)' }}>{t.role}</p>
+                    <p className="text-[18px] font-medium" style={{ color: 'var(--ink)' }}>{t.name}</p>
+                    <p className="text-[14px] mt-0.5 leading-snug" style={{ color: 'var(--inkl)' }}>{t.role}</p>
                   </div>
                 </footer>
               </div>

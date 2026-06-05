@@ -1,3 +1,5 @@
+import { ENQUIRY_SUBMIT_ERROR } from '@/lib/enquiry-form'
+
 export type EnquiryFormType = 'contact' | 'inquiry' | 'custom' | 'catalogue'
 
 export type SubmitEnquiryResult =
@@ -18,15 +20,12 @@ export async function submitEnquiry(
     const data = (await res.json()) as { ok?: boolean; error?: string }
 
     if (!res.ok || !data.ok) {
-      return { ok: false, error: data.error ?? 'Unable to send your enquiry. Please try again or email us directly.' }
+      return { ok: false, error: data.error ?? ENQUIRY_SUBMIT_ERROR }
     }
 
     return { ok: true }
   } catch {
-    return {
-      ok: false,
-      error: 'Network error. Please check your connection or contact us by phone or email.',
-    }
+    return { ok: false, error: ENQUIRY_SUBMIT_ERROR }
   }
 }
 
@@ -46,14 +45,11 @@ export async function submitEnquiryWithFile(
     const data = (await res.json()) as { ok?: boolean; error?: string }
 
     if (!res.ok || !data.ok) {
-      return { ok: false, error: data.error ?? 'Unable to send your enquiry. Please try again or email us directly.' }
+      return { ok: false, error: data.error ?? ENQUIRY_SUBMIT_ERROR }
     }
 
     return { ok: true }
   } catch {
-    return {
-      ok: false,
-      error: 'Network error. Please check your connection or contact us by phone or email.',
-    }
+    return { ok: false, error: ENQUIRY_SUBMIT_ERROR }
   }
 }

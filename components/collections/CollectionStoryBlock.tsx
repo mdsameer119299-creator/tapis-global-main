@@ -49,7 +49,7 @@ export default function CollectionStoryBlock({ col, index, isPriority = false }:
     >
       <Reveal direction={isLeft ? 'right' : 'left'} delay={index * 80}>
         <div
-          className="flex items-center gap-3 mb-4 text-[9.5px] tracking-[0.38em] uppercase font-medium"
+          className="flex items-center gap-3 mb-4 text-[14px] tracking-[0.38em] uppercase font-medium"
           style={{ color: isDark ? 'var(--gl)' : 'var(--gd)' }}
         >
           <span
@@ -75,7 +75,7 @@ export default function CollectionStoryBlock({ col, index, isPriority = false }:
         </h3>
 
         <p
-          className="text-[15px] italic mb-7"
+          className="text-[17px] italic mb-7"
           style={{
             fontFamily: '"EB Garamond",serif',
             color:      isDark ? 'var(--gl)' : 'var(--inkm)',
@@ -88,7 +88,7 @@ export default function CollectionStoryBlock({ col, index, isPriority = false }:
           {col.bullets.map((b) => (
             <li
               key={b.label}
-              className="flex items-start gap-3 text-[14px] font-light leading-[1.75]"
+              className="flex items-start gap-3 text-[16px] font-light leading-[1.75]"
               style={{ color: isDark ? 'rgba(255,255,255,0.55)' : 'var(--inkm)' }}
             >
               <span
@@ -113,14 +113,14 @@ export default function CollectionStoryBlock({ col, index, isPriority = false }:
           style={{ borderTop: `1px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'var(--bd)'}` }}
         >
           <span
-            className="inline-flex items-center gap-2 text-[11px] tracking-[0.08em]"
+            className="inline-flex items-center gap-2 text-[15px] tracking-[0.08em]"
             style={{ color: isDark ? 'rgba(255,255,255,0.4)' : 'var(--inkm)' }}
           >
             <SpecIcon type="time" />
             Lead: {col.leadTime}
           </span>
           <span
-            className="inline-flex items-center gap-2 text-[11px] tracking-[0.08em]"
+            className="inline-flex items-center gap-2 text-[15px] tracking-[0.08em]"
             style={{ color: isDark ? 'rgba(255,255,255,0.4)' : 'var(--inkm)' }}
           >
             <SpecIcon type="moq" />
@@ -128,7 +128,7 @@ export default function CollectionStoryBlock({ col, index, isPriority = false }:
           </span>
           <a
             href="/contact"
-            className="text-[13px] tracking-[0.12em] uppercase inline-flex items-center gap-2 transition-all duration-200 hover:gap-3.5 ml-auto max-lg:ml-0"
+            className="text-[15px] tracking-[0.12em] uppercase inline-flex items-center gap-2 transition-all duration-200 hover:gap-3.5 ml-auto max-lg:ml-0"
             style={{ color: isDark ? 'var(--gl)' : 'var(--c)' }}
           >
             {col.ctaText}

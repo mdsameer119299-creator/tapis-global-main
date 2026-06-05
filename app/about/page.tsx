@@ -48,7 +48,7 @@ export default function AboutPage() {
         style={{ background: '#080605', borderTop: '1px solid rgba(192,155,74,0.2)' }}
       >
         <p
-          className="text-[10px] tracking-[0.38em] uppercase mb-4"
+          className="text-[15px] tracking-[0.38em] uppercase mb-4"
           style={{ color: 'var(--gl)' }}
         >
           Ready to Source?
@@ -66,14 +66,14 @@ export default function AboutPage() {
         <div className="flex flex-wrap gap-4 justify-center">
           <Link
             href="/contact"
-            className="px-10 py-4 text-[11px] tracking-[0.2em] uppercase font-medium"
+            className="px-10 py-4 text-[15px] tracking-[0.2em] uppercase font-medium"
             style={{ background: 'var(--g)', color: 'var(--ink)' }}
           >
             Request B2B Quote
           </Link>
           <Link
             href="/products"
-            className="px-10 py-4 text-[11px] tracking-[0.2em] uppercase font-medium border transition-colors duration-300 hover:border-[var(--g)] hover:text-[var(--gp)]"
+            className="px-10 py-4 text-[15px] tracking-[0.2em] uppercase font-medium border transition-colors duration-300 hover:border-[var(--g)] hover:text-[var(--gp)]"
             style={{ borderColor: 'rgba(192,155,74,0.35)', color: 'rgba(255,255,255,0.55)' }}
           >
             View Collections

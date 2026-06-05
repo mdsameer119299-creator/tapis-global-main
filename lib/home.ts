@@ -7,13 +7,13 @@ export type TrustItem = {
 }
 
 export const TRUST_RIBBON_ITEMS: Omit<TrustItem, 'icon'>[] = [
-  { text: 'ISO 9001:2015 Certified'           },
-  { text: 'OEKO-TEX Standard 100'             },
-  { text: 'Pan India Project Execution'       },
-  { text: 'Architect & Designer Support'      },
-  { text: 'Hospitality & Commercial Flooring' },
-  { text: 'GoodWeave Fair Labour'             },
-  { text: 'Global Supply Programmes'          },
+  { text: 'Established 1998'              },
+  { text: 'Made in Bhadohi'               },
+  { text: 'Worldwide Export'              },
+  { text: 'Custom Manufacturing'          },
+  { text: 'Hospitality Projects'           },
+  { text: 'Luxury Residential Projects'   },
+  { text: 'ISO 9001:2015 Certified'       },
 ]
 
 // ─── WHO WE ARE ───────────────────────────────────────────────
@@ -24,7 +24,7 @@ export type WhoPoint = {
 }
 
 export const WHO_WE_ARE = {
-  image:    '/images/tgi-banner-5.png',
+  image:    '/images/tgi-banner-5.webp',
   badgeNum: '3rd',
   badgeLbl: 'Generation\nArtisans',
   headline: 'Crafted in Bhadohi.',
@@ -105,7 +105,7 @@ export const EXPORT_DESTINATION_TAGS = [
 ]
 
 export const MFG_HEADER = {
-  image: '/images/manufacturing-rug-img.png',
+  image: '/images/manufacturing-rug-img.webp',
   lead:  'An 80,000 sq ft integrated campus where specification-led production, quality control and batch consistency are managed end-to-end — giving architects, developers and project teams traceability, reliability and confidence at every milestone.',
 }
 

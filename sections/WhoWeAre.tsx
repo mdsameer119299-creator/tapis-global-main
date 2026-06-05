@@ -48,7 +48,7 @@ export default function WhoWeAre() {
               loading="lazy"
               placeholder="blur"
               blurDataURL={BLUR_PLACEHOLDER}
-              quality={85}
+              quality={78}
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover object-center"
               style={{ filter: 'brightness(0.82) saturate(0.88) sepia(0.06)' }}
@@ -57,7 +57,7 @@ export default function WhoWeAre() {
         </div>
 
         <div
-          className="absolute bottom-10 -right-6 z-[2] text-center px-7 py-6 min-w-[150px]"
+          className="absolute bottom-8 right-4 sm:bottom-10 sm:right-6 z-[2] text-center px-5 sm:px-7 py-5 sm:py-6 min-w-[130px] sm:min-w-[150px] max-w-[calc(100%-2rem)]"
           style={{
             background:   'var(--c)',
             color:        '#fff',
@@ -70,7 +70,7 @@ export default function WhoWeAre() {
           >
             {WHO_WE_ARE.badgeNum}
           </div>
-          <div className="text-[10px] tracking-[0.14em] uppercase leading-snug">
+          <div className="text-[15px] tracking-[0.14em] uppercase leading-snug">
             {badgeLines.map((line, i) => (
               <span key={line}>
                 {line}
@@ -94,13 +94,13 @@ export default function WhoWeAre() {
             <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{WHO_WE_ARE.headlineEm}</em>
           </h2>
           <p
-            className={`text-[15.5px] font-light leading-[1.85] max-w-[58ch] ${WHO_WE_ARE.lead2 ? 'mb-5' : 'mb-12'}`}
+            className={`text-[20px] font-light leading-[1.85] max-w-[58ch] ${WHO_WE_ARE.lead2 ? 'mb-5' : 'mb-12'}`}
             style={{ color: 'var(--inkm)' }}
           >
             {WHO_WE_ARE.lead}
           </p>
           {WHO_WE_ARE.lead2 ? (
-            <p className="text-[15.5px] font-light leading-[1.85] max-w-[58ch] mb-12" style={{ color: 'var(--inkm)' }}>
+            <p className="text-[20px] font-light leading-[1.85] max-w-[58ch] mb-12" style={{ color: 'var(--inkm)' }}>
               {WHO_WE_ARE.lead2}
             </p>
           ) : null}
@@ -119,10 +119,10 @@ export default function WhoWeAre() {
                     <PointIcon type={pt.icon} />
                   </div>
                   <div>
-                    <p className="text-[15px] font-medium mb-1.5" style={{ color: 'var(--ink)' }}>
+                    <p className="text-[17px] font-medium mb-1.5" style={{ color: 'var(--ink)' }}>
                       {pt.title}
                     </p>
-                    <p className="text-[14px] font-light leading-[1.78]" style={{ color: 'var(--inkm)' }}>
+                    <p className="text-[16px] font-light leading-[1.78]" style={{ color: 'var(--inkm)' }}>
                       {pt.body}
                     </p>
                   </div>
@@ -134,7 +134,7 @@ export default function WhoWeAre() {
           <div className="mt-8">
             <Link
               href="/about"
-              className="inline-flex items-center gap-3 text-[12px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--gd)] group"
+              className="inline-flex items-center gap-3 text-[14px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--gd)] group"
               style={{ color: 'var(--inks)' }}
             >
               Discuss Your Project

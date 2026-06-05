@@ -2,12 +2,15 @@
 import { useState } from 'react'
 import { SITE } from '@/lib/data'
 import { submitEnquiry } from '@/lib/submit-enquiry'
+import { validateContactChannel } from '@/lib/enquiry-validation'
+import EnquirySuccessModal from '@/components/enquiry/EnquirySuccessModal'
 import { Reveal, Eyebrow } from '@/components/ui'
 
 type FormState = {
   name: string
   company: string
   email: string
+  mobile: string
   country: string
   product: string
   quantity: string
@@ -23,12 +26,13 @@ const PRODUCTS = [
 
 export default function Contact() {
   const [form, setForm] = useState<FormState>({
-    name: '', company: '', email: '', country: '',
+    name: '', company: '', email: '', mobile: '', country: '',
     product: '', quantity: '', message: '', agree: false,
   })
-  const [submitted, setSubmitted] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; mobile?: string }>({})
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value, type } = e.target
@@ -41,12 +45,22 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!form.agree) { alert('Please agree to the Terms & Conditions.'); return }
+
+    const contact = validateContactChannel(form.email, form.mobile)
+    if (contact.email || contact.mobile) {
+      setFieldErrors(contact)
+      setError(contact.email ?? contact.mobile ?? 'Please enter a valid email or mobile number.')
+      return
+    }
+
     setError(null)
+    setFieldErrors({})
     setSubmitting(true)
     const result = await submitEnquiry('contact', {
       name: form.name,
       company: form.company,
-      email: form.email,
+      email: form.email.trim(),
+      mobile: form.mobile.trim(),
       country: form.country,
       product: form.product,
       quantity: form.quantity,
@@ -58,15 +72,21 @@ export default function Contact() {
       setError(result.error)
       return
     }
-    setSubmitted(true)
+    setShowSuccess(true)
+    setForm({
+      name: '', company: '', email: '', mobile: '', country: '',
+      product: '', quantity: '', message: '', agree: false,
+    })
   }
 
   return (
-    <section
-      id="contact"
-      className="grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden"
-      style={{ background: 'var(--ink)' }}
-    >
+    <>
+      <EnquirySuccessModal open={showSuccess} onClose={() => setShowSuccess(false)} />
+      <section
+        id="contact"
+        className="grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden"
+        style={{ background: 'var(--ink)' }}
+      >
       {/* Decorative radial */}
       <div
         className="absolute inset-0 pointer-events-none"
@@ -74,7 +94,7 @@ export default function Contact() {
       />
 
       {/* Left — info side */}
-      <div className="px-12 max-lg:px-6 py-20 flex flex-col justify-center relative z-[1]">
+      <div className="px-5 sm:px-6 lg:px-12 py-12 sm:py-16 lg:py-20 flex flex-col justify-center relative z-[1]">
         <Reveal direction="left">
           <Eyebrow white>Get in Touch</Eyebrow>
           <h2
@@ -83,7 +103,7 @@ export default function Contact() {
           >
             Ready to <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Source?</em>
           </h2>
-          <p className="text-[15px] font-light leading-[1.75] mb-9" style={{ color: 'rgba(255,255,255,0.42)' }}>
+          <p className="text-[17px] font-light leading-[1.75] mb-9" style={{ color: 'rgba(255,255,255,0.42)' }}>
             Send us your project requirements — our team responds within 12 hours with pricing, sampling and lead time.
           </p>
 
@@ -122,7 +142,7 @@ export default function Contact() {
             {['ISO 9001:2015','OEKO-TEX','AZO-Free','GOTS Eligible'].map((cert) => (
               <span
                 key={cert}
-                className="text-[10.5px] tracking-[0.07em] px-3 py-1.5 border"
+                className="text-[15px] tracking-[0.07em] px-3 py-1.5 border"
                 style={{ border: '1px solid rgba(255,255,255,0.1)', color: 'rgba(255,255,255,0.28)' }}
               >
                 {cert}
@@ -133,25 +153,11 @@ export default function Contact() {
       </div>
 
       {/* Right — form */}
-      <div className="px-12 max-lg:px-6 py-20 relative z-[1]">
+      <div className="px-5 sm:px-6 lg:px-12 py-12 sm:py-16 lg:py-20 relative z-[1]">
         <div
-          className="p-10 max-sm:p-6"
+          className="p-6 sm:p-8 lg:p-10"
           style={{ background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}
         >
-          {submitted ? (
-            <div className="text-center py-12">
-              <p className="text-[52px] mb-5">✓</p>
-              <h3
-                className="font-medium mb-3"
-                style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 34, color: '#fff' }}
-              >
-                Enquiry Received
-              </h3>
-              <p className="text-[14.5px] font-light" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                Our team will respond within 12 business hours.
-              </p>
-            </div>
-          ) : (
             <>
               <h3
                 className="mb-7 font-normal italic"
@@ -165,12 +171,13 @@ export default function Contact() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <FormField label="Full Name *"    name="name"    type="text"   value={form.name}    onChange={handleChange} placeholder="Your name" required />
                   <FormField label="Company"        name="company" type="text"   value={form.company} onChange={handleChange} placeholder="Company name" />
-                  <FormField label="Email *"        name="email"   type="email"  value={form.email}   onChange={handleChange} placeholder="you@company.com" required />
+                  <FormField label="Email (email or mobile required)" name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@company.com" error={fieldErrors.email} />
+                  <FormField label="Mobile (email or mobile required)" name="mobile" type="tel" value={form.mobile} onChange={handleChange} placeholder="+91 XXX XXX XXXX" error={fieldErrors.mobile} />
                   <FormField label="Country *"      name="country" type="text"   value={form.country} onChange={handleChange} placeholder="Your country" required />
 
                   {/* Product select */}
                   <div className="flex flex-col gap-1.5 mb-3.5">
-                    <label className="text-[10px] tracking-[0.2em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                    <label className="text-[15px] tracking-[0.2em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
                       Product Category *
                     </label>
                     <select
@@ -178,7 +185,7 @@ export default function Contact() {
                       value={form.product}
                       onChange={handleChange}
                       required
-                      className="text-[13.5px] px-3.5 py-3 outline-none transition-colors duration-200 appearance-none"
+                      className="text-[18px] px-3.5 py-3 outline-none transition-colors duration-200 appearance-none"
                       style={{
                         background: 'rgba(255,255,255,0.05)',
                         border: '1px solid rgba(255,255,255,0.12)',
@@ -194,7 +201,7 @@ export default function Contact() {
 
                   {/* Message */}
                   <div className="col-span-2 flex flex-col gap-1.5 mb-3.5">
-                    <label className="text-[10px] tracking-[0.2em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
+                    <label className="text-[15px] tracking-[0.2em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
                       Message / Requirements
                     </label>
                     <textarea
@@ -203,7 +210,7 @@ export default function Contact() {
                       onChange={handleChange}
                       rows={4}
                       placeholder="Describe your design, size, colour requirements..."
-                      className="text-[13.5px] px-3.5 py-3 outline-none resize-y transition-colors duration-200 min-h-[88px]"
+                      className="text-[18px] px-3.5 py-3 outline-none resize-y transition-colors duration-200 min-h-[88px]"
                       style={{
                         background: 'rgba(255,255,255,0.05)',
                         border: '1px solid rgba(255,255,255,0.12)',
@@ -223,15 +230,15 @@ export default function Contact() {
                       className="mt-0.5 w-4 h-4 cursor-pointer flex-shrink-0"
                       style={{ accentColor: 'var(--g)' }}
                     />
-                    <label htmlFor="agree" className="text-[11.5px] leading-relaxed cursor-pointer" style={{ color: 'rgba(255,255,255,0.38)' }}>
+                    <label htmlFor="agree" className="text-[16px] leading-relaxed cursor-pointer" style={{ color: 'rgba(255,255,255,0.38)' }}>
                       I agree to the{' '}
-                      <a href="#" className="underline" style={{ color: 'var(--gl)' }}>Terms & Conditions</a>
+                      <a href="/terms-and-conditions" className="underline" style={{ color: 'var(--gl)' }}>Terms & Conditions</a>
                       {' '}and consent to Tapis Global contacting me with information relevant to my enquiry.
                     </label>
                   </div>
 
                   {error && (
-                    <p className="col-span-2 text-[13px] font-light" style={{ color: 'rgba(220,120,120,0.9)' }}>
+                    <p className="col-span-2 text-[15px] font-light" style={{ color: 'rgba(220,120,120,0.9)' }}>
                       {error}
                     </p>
                   )}
@@ -240,7 +247,7 @@ export default function Contact() {
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="col-span-2 py-3.5 text-[12px] tracking-[0.2em] uppercase font-semibold transition-all duration-300 hover:bg-[var(--gd)] hover:text-white mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
+                    className="col-span-2 py-3.5 text-[14px] tracking-[0.2em] uppercase font-semibold transition-all duration-300 hover:bg-[var(--gd)] hover:text-white mt-2 disabled:opacity-60 disabled:cursor-not-allowed"
                     style={{ background: 'var(--g)', color: 'var(--ink)', border: 'none', width: '100%' }}
                   >
                     {submitting ? 'Sending…' : 'Send Enquiry'}
@@ -248,14 +255,14 @@ export default function Contact() {
                 </div>
               </form>
 
-              <p className="mt-2.5 text-[11.5px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.2)' }}>
+              <p className="mt-2.5 text-[16px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.2)' }}>
                 We respond within 12 hours. Your information is kept confidential.
               </p>
             </>
-          )}
         </div>
       </div>
     </section>
+    </>
   )
 }
 
@@ -277,8 +284,8 @@ function ContactInfoRow({
         {icon}
       </div>
       <div>
-        <p className="text-[10px] tracking-[0.2em] uppercase mb-1" style={{ color: 'var(--gd)' }}>{label}</p>
-        <div className="text-[14px] font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
+        <p className="text-[15px] tracking-[0.2em] uppercase mb-1" style={{ color: 'var(--gd)' }}>{label}</p>
+        <div className="text-[16px] font-light leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
           {children}
         </div>
       </div>
@@ -288,15 +295,15 @@ function ContactInfoRow({
 
 // ─── Form Field sub-component ──────────────────────────────
 function FormField({
-  label, name, type, value, onChange, placeholder, required,
+  label, name, type, value, onChange, placeholder, required, error,
 }: {
   label: string; name: string; type: string; value: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
-  placeholder?: string; required?: boolean
+  placeholder?: string; required?: boolean; error?: string
 }) {
   return (
     <div className="flex flex-col gap-1.5 mb-3.5">
-      <label htmlFor={name} className="text-[10px] tracking-[0.2em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
+      <label htmlFor={name} className="text-[15px] tracking-[0.2em] uppercase" style={{ color: 'rgba(255,255,255,0.35)' }}>
         {label}
       </label>
       <input
@@ -307,13 +314,18 @@ function FormField({
         onChange={onChange}
         placeholder={placeholder}
         required={required}
-        className="text-[13.5px] px-3.5 py-3 outline-none transition-colors duration-200 focus:border-[var(--g)]"
+        className="text-[18px] px-3.5 py-3 min-h-[48px] outline-none transition-colors duration-200 focus:border-[var(--g)]"
         style={{
           background: 'rgba(255,255,255,0.05)',
-          border: '1px solid rgba(255,255,255,0.12)',
+          border: error ? '1px solid rgba(200,120,90,0.55)' : '1px solid rgba(255,255,255,0.12)',
           color: 'rgba(255,255,255,0.85)',
         }}
       />
+      {error && (
+        <p className="text-[14px] font-light" style={{ color: 'rgba(210,145,110,0.92)' }} role="alert">
+          {error}
+        </p>
+      )}
     </div>
   )
 }

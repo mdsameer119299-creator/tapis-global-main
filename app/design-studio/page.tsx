@@ -9,11 +9,11 @@ import {
 } from '@/lib/structured-data'
 import DesignStudioHero from '@/components/design-studio/DesignStudioHero'
 import DesignStudioSubNav from '@/components/design-studio/DesignStudioSubNav'
-import ColorLibrary from '@/components/design-studio/ColorLibrary'
 import DesignStudioFeatures from '@/components/design-studio/DesignStudioFeatures'
 import DesignStudioHowItWorks from '@/components/design-studio/DesignStudioHowItWorks'
 import DesignStudioCTA from '@/components/design-studio/DesignStudioCTA'
 
+const ColorLibrary = dynamic(() => import('@/components/design-studio/ColorLibrary'))
 const SamplesStrip   = dynamic(() => import('@/sections/samples/SamplesStrip'))
 const SamplesCatalog = dynamic(() => import('@/sections/samples/SamplesCatalog'))
 

@@ -50,8 +50,8 @@ export default function Manufacturing() {
                 <p className="leading-none mb-3.5" style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 46, fontWeight: 300, color: 'rgba(192,155,74,0.22)' }}>
                   {step.num}
                 </p>
-                <p className="text-[14px] font-medium mb-2" style={{ color: 'rgba(255,255,255,0.82)' }}>{step.title}</p>
-                <p className="text-[12.5px] font-light leading-[1.72]" style={{ color: 'rgba(255,255,255,0.37)' }}>{step.desc}</p>
+                <p className="text-[16px] font-medium mb-2" style={{ color: 'rgba(255,255,255,0.82)' }}>{step.title}</p>
+                <p className="text-[17px] font-light leading-[1.72]" style={{ color: 'rgba(255,255,255,0.37)' }}>{step.desc}</p>
               </div>
             </Reveal>
           ))}
@@ -87,12 +87,12 @@ export default function Manufacturing() {
                   <WhyIcon type={item.icon} />
                 </div>
                 <h3
-                  className="mb-3 text-[17px] font-medium leading-snug"
+                  className="mb-3 text-[19px] font-medium leading-snug"
                   style={{ fontFamily: '"Cormorant Garamond",serif', color: 'var(--ink)' }}
                 >
                   {item.title}
                 </h3>
-                <p className="text-[13.5px] font-light leading-[1.78]" style={{ color: 'var(--inkm)' }}>
+                <p className="text-[18px] font-light leading-[1.78]" style={{ color: 'var(--inkm)' }}>
                   {item.desc}
                 </p>
               </div>

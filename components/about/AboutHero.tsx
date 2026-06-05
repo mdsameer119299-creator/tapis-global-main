@@ -41,7 +41,7 @@ export default function AboutHero() {
 
       <div className="relative z-[4] px-12 max-lg:px-6 pb-20 pt-36 max-w-6xl">
         <div
-          className="inline-flex items-center gap-2.5 px-4 py-2 mb-8 text-[10px] tracking-[0.32em] uppercase border"
+          className="inline-flex items-center gap-2.5 px-4 py-2 mb-8 text-[15px] tracking-[0.32em] uppercase border"
           style={{
             borderColor: 'rgba(192,155,74,0.35)',
             background:  'rgba(13,10,8,0.45)',
@@ -54,7 +54,7 @@ export default function AboutHero() {
         </div>
 
         <p
-          className="text-[10px] tracking-[0.42em] uppercase mb-5"
+          className="text-[15px] tracking-[0.42em] uppercase mb-5"
           style={{ color: 'var(--gl)' }}
         >
           {ABOUT_HERO.eyebrow}
@@ -75,7 +75,7 @@ export default function AboutHero() {
         </h1>
 
         <p
-          className="text-[16px] font-light leading-[1.92] max-w-2xl mb-14"
+          className="text-[18px] font-light leading-[1.92] max-w-2xl mb-14"
           style={{ color: 'rgba(255,255,255,0.58)' }}
         >
           {ABOUT_HERO.lead}
@@ -107,7 +107,7 @@ export default function AboutHero() {
                 )}
               </p>
               <p
-                className="text-[9px] tracking-[0.16em] uppercase mt-2 leading-snug"
+                className="text-[14px] tracking-[0.16em] uppercase mt-2 leading-snug"
                 style={{ color: 'rgba(255,255,255,0.35)' }}
               >
                 {stat.label}
@@ -127,7 +127,7 @@ export default function AboutHero() {
           }}
         />
         <span
-          className="text-[9px] tracking-[0.32em] uppercase"
+          className="text-[14px] tracking-[0.32em] uppercase"
           style={{ color: 'rgba(255,255,255,0.28)', writingMode: 'vertical-rl' }}
         >
           Scroll

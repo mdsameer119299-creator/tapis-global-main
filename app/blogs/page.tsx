@@ -45,7 +45,7 @@ export default function BlogsPage() {
           </>
         }
         lead="Expert perspectives on handmade carpets, export sourcing, hospitality projects and the craft behind every Tapis Global collection."
-        image="/images/tgi-banner-3.png"
+        image="/images/tgi-banner-3.webp"
         imageAlt="Carpet manufacturing and design insights — Tapis Global International blog"
         priority
       />

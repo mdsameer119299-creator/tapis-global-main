@@ -40,8 +40,10 @@ export function buildMetadata(input: PageMetaInput): Metadata {
   } = input
 
   return {
+    metadataBase: new URL(SEO_BASE_URL),
+
     // ── Core ──────────────────────────────────────────────────────────────
-    title,
+    title: { absolute: title },
     description,
     keywords,
     authors: [{ name: BRAND.legalName, url: SEO_BASE_URL }],
@@ -125,11 +127,15 @@ export function buildMetadata(input: PageMetaInput): Metadata {
     // ── Icons ─────────────────────────────────────────────────────────────
     icons: {
       icon: [
-        { url: '/logos/tgi-header-logo1.png' },
+        { url: '/logos/favicon.ico', sizes: 'any' },
+        { url: '/logos/favicon-16.png', sizes: '16x16', type: 'image/png' },
+        { url: '/logos/favicon-32.png', sizes: '32x32', type: 'image/png' },
+        { url: '/logos/favicon-48.png', sizes: '48x48', type: 'image/png' },
       ],
       apple: [
-        { url: '/logos/tgi-header-logo1.png', sizes: '180x180', type: 'image/png' },
+        { url: '/logos/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
       ],
+      shortcut: '/logos/favicon.ico',
     },
 
     // ── Manifest ──────────────────────────────────────────────────────────

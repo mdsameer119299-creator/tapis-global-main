@@ -19,15 +19,29 @@ export default function Navbar() {
   const [dropOpen, setDrop]             = useState(false)
 
   useEffect(() => {
-    const onScroll = () => {
-      setScrolled(window.scrollY > 50)
+    let ticking = false
+    let scrollPct = 0
+
+    const updateProgress = () => {
       const bar = document.getElementById('scroll-progress')
       if (bar) {
-        const pct = (window.scrollY / (document.body.scrollHeight - window.innerHeight)) * 100
-        bar.style.width = `${pct}%`
+        const max = document.body.scrollHeight - window.innerHeight
+        scrollPct = max > 0 ? window.scrollY / max : 0
+        bar.style.transform = `scaleX(${scrollPct})`
+      }
+      ticking = false
+    }
+
+    const onScroll = () => {
+      setScrolled(window.scrollY > 50)
+      if (!ticking) {
+        ticking = true
+        requestAnimationFrame(updateProgress)
       }
     }
+
     window.addEventListener('scroll', onScroll, { passive: true })
+    updateProgress()
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
@@ -49,7 +63,11 @@ export default function Navbar() {
 
   return (
     <>
-      <div id="scroll-progress" className="fixed top-0 left-0 h-0.5 z-[9999] transition-none" style={{ background: 'var(--g)' }} />
+      <div
+        id="scroll-progress"
+        className="fixed top-0 left-0 h-0.5 w-full z-[9999] origin-left will-change-transform"
+        style={{ background: 'var(--g)', transform: 'scaleX(0)' }}
+      />
 
       <div
         id="topbar"
@@ -63,7 +81,7 @@ export default function Navbar() {
           <a href={`tel:${SITE.phoneTel}`} className="min-w-0">
             <TopbarItem icon={<PhoneIcon />} className="truncate max-w-[140px] sm:max-w-none">
               <span className="hidden sm:inline">{SITE.phone}</span>
-              <span className="sm:hidden text-[11px]">Call Us</span>
+              <span className="sm:hidden text-[15px]">Call Us</span>
             </TopbarItem>
           </a>
           <TopbarItem icon={<MailIcon />} className="max-md:hidden">{SITE.email}</TopbarItem>
@@ -73,7 +91,7 @@ export default function Navbar() {
             href={SITE.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-[11px] sm:text-[12.5px] tracking-wide transition-colors duration-200 touch-target inline-flex items-center"
+            className="text-[15px] sm:text-[17px] tracking-wide transition-colors duration-200 touch-target inline-flex items-center"
             style={{ color: 'var(--gp)' }}
           >
             WhatsApp
@@ -81,7 +99,7 @@ export default function Navbar() {
           <span className="w-px h-3 opacity-20 max-sm:hidden" style={{ background: '#fff' }} />
           <Link
             href="/design-studio"
-            className="text-[11px] sm:text-[12.5px] tracking-wide transition-colors duration-200 max-sm:hidden"
+            className="text-[15px] sm:text-[17px] tracking-wide transition-colors duration-200 max-sm:hidden"
             style={{ color: 'var(--gp)' }}
           >
             Request Sample
@@ -106,7 +124,8 @@ export default function Navbar() {
             width={250}
             height={72}
             priority
-            quality={90}
+            quality={80}
+            sizes="(max-width: 640px) 175px, (max-width: 1024px) 205px, 250px"
             className="block h-[48px] sm:h-[54px] lg:h-[66px] w-auto max-w-[175px] sm:max-w-[205px] lg:max-w-[250px] object-contain object-left"
           />
         </Link>
@@ -152,7 +171,7 @@ export default function Navbar() {
                         <Link
                           key={item.label}
                           href={item.href}
-                          className="block px-[22px] py-3 text-[13.5px] font-medium tracking-[0.02em] transition-all duration-150 border-b hover:bg-[var(--c)] hover:text-white hover:pl-7"
+                          className="block px-[22px] py-3 text-[18px] font-medium tracking-[0.02em] transition-all duration-150 border-b hover:bg-[var(--c)] hover:text-white hover:pl-7"
                           style={{
                             color: 'rgba(255,255,255,0.82)',
                             borderColor: 'rgba(255,255,255,0.08)',
@@ -211,26 +230,28 @@ export default function Navbar() {
         </button>
       </nav>
 
-      {/* Mobile navigation drawer */}
-      <div
-        className={`mobile-nav-backdrop fixed inset-0 z-[700] bg-[rgba(26,19,16,0.45)] backdrop-blur-[2px] lg:hidden ${mobileOpen ? 'is-open' : ''}`}
-        onClick={() => setMobile(false)}
-        aria-hidden={!mobileOpen}
-      />
-      <div
-        className={`mobile-nav-drawer fixed top-0 right-0 z-[710] flex flex-col h-[100dvh] w-[min(100%,360px)] lg:hidden safe-bottom ${mobileOpen ? 'is-open' : ''}`}
-        style={{
-          background: 'rgba(248,244,238,0.98)',
-          boxShadow: mobileOpen ? '-12px 0 48px rgba(26,19,16,0.18)' : 'none',
-          pointerEvents: mobileOpen ? 'auto' : 'none',
-        }}
-        aria-hidden={!mobileOpen}
-      >
+      {/* Mobile navigation drawer — mount only when open (a11y + less DOM) */}
+      {mobileOpen && (
+        <>
+          <div
+            className="mobile-nav-backdrop fixed inset-0 z-[700] bg-[rgba(26,19,16,0.45)] backdrop-blur-[2px] lg:hidden is-open"
+            onClick={() => setMobile(false)}
+          />
+          <div
+            className="mobile-nav-drawer fixed top-0 right-0 z-[710] flex flex-col h-[100dvh] w-[min(100%,360px)] lg:hidden safe-bottom is-open"
+            style={{
+              background: 'rgba(248,244,238,0.98)',
+              boxShadow: '-12px 0 48px rgba(26,19,16,0.18)',
+            }}
+            role="dialog"
+            aria-modal="true"
+            aria-label="Main menu"
+          >
         <div
           className="flex items-center justify-between px-5 py-4 flex-shrink-0"
           style={{ borderBottom: '1px solid rgba(192,155,74,0.2)' }}
         >
-          <p className="text-[10px] tracking-[0.28em] uppercase font-medium" style={{ color: 'var(--gd)' }}>
+          <p className="text-[15px] tracking-[0.28em] uppercase font-medium" style={{ color: 'var(--gd)' }}>
             Menu
           </p>
           <button
@@ -291,7 +312,7 @@ export default function Navbar() {
                       <Link
                         href={link.href}
                         onClick={() => setMobile(false)}
-                        className="block py-2.5 text-[12px] tracking-[0.12em] uppercase font-medium"
+                        className="block py-2.5 text-[14px] tracking-[0.12em] uppercase font-medium"
                         style={{ color: 'var(--c)' }}
                       >
                         All Products →
@@ -301,7 +322,7 @@ export default function Navbar() {
                           key={item.href}
                           href={item.href}
                           onClick={() => setMobile(false)}
-                          className="block py-2.5 text-[14px] font-light border-t"
+                          className="block py-2.5 text-[16px] font-light border-t"
                           style={{
                             color: pathname === item.href ? 'var(--c)' : 'var(--inks)',
                             borderColor: 'rgba(26,19,16,0.06)',
@@ -323,7 +344,7 @@ export default function Navbar() {
                   key={link.label}
                   href={link.href}
                   onClick={() => setMobile(false)}
-                  className="block mt-5 mb-2 py-3.5 text-center text-[12px] tracking-[0.16em] uppercase font-semibold touch-target"
+                  className="block mt-5 mb-2 py-3.5 text-center text-[14px] tracking-[0.16em] uppercase font-semibold touch-target"
                   style={{ background: 'var(--c)', color: '#fff' }}
                 >
                   {link.label}
@@ -350,7 +371,7 @@ export default function Navbar() {
             href={SITE.whatsapp}
             target="_blank"
             rel="noopener noreferrer"
-            className="py-3 text-center text-[10px] tracking-[0.12em] uppercase font-semibold touch-target"
+            className="py-3 text-center text-[15px] tracking-[0.12em] uppercase font-semibold touch-target"
             style={{ background: '#25D366', color: '#fff' }}
           >
             WhatsApp
@@ -358,13 +379,15 @@ export default function Navbar() {
           <Link
             href="/design-studio"
             onClick={() => setMobile(false)}
-            className="py-3 text-center text-[10px] tracking-[0.12em] uppercase font-semibold touch-target border"
+            className="py-3 text-center text-[15px] tracking-[0.12em] uppercase font-semibold touch-target border"
             style={{ borderColor: 'rgba(192,155,74,0.35)', color: 'var(--inks)' }}
           >
             Design Studio
           </Link>
         </div>
-      </div>
+          </div>
+        </>
+      )}
     </>
   )
 }
@@ -442,7 +465,7 @@ function NavLink({
         {children}
         {badge && (
           <span
-            className="nav-tab-badge text-[8px] tracking-[0.14em] uppercase font-bold px-1.5 py-0.5 leading-none"
+            className="nav-tab-badge text-[13px] tracking-[0.14em] uppercase font-bold px-1.5 py-0.5 leading-none"
             style={{ background: 'var(--g)', color: 'var(--ink)' }}
           >
             {badge}
@@ -465,7 +488,7 @@ function TopbarItem({
 }) {
   return (
     <span
-      className={`flex items-center gap-2 text-[12.5px] tracking-[0.04em] ${className}`}
+      className={`flex items-center gap-2 text-[17px] tracking-[0.04em] ${className}`}
       style={{ color: 'rgba(255,255,255,0.5)' }}
     >
       {icon}

@@ -18,14 +18,14 @@ export default function ManufacturingHeader() {
           <em style={{ fontStyle: 'italic', color: 'var(--gl)' }}>Manufacturing.</em>
         </h2>
         <p
-          className="text-[15.5px] font-light leading-[1.85] max-w-[58ch] mb-7"
+          className="text-[20px] font-light leading-[1.85] max-w-[58ch] mb-7"
           style={{ color: 'rgba(255,255,255,0.44)' }}
         >
           {MFG_HEADER.lead}
         </p>
         <Link
           href="#manufacturing"
-          className="inline-flex items-center gap-3 text-[12px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-white group"
+          className="inline-flex items-center gap-3 text-[14px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-white group"
           style={{ color: 'rgba(255,255,255,0.48)' }}
         >
           Explore Production Capability

@@ -35,7 +35,7 @@ export default function Collections({ sectionId = 'collections' }: CollectionsPr
             <br />
             <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>One Design Studio.</em>
           </h2>
-          <p className="text-[15.5px] font-light leading-[1.85] max-w-[58ch]" style={{ color: 'var(--inkm)' }}>
+          <p className="text-[20px] font-light leading-[1.85] max-w-[58ch]" style={{ color: 'var(--inkm)' }}>
             Specification-led carpets and flooring for luxury residences, hospitality environments, corporate interiors and designer projects — developed in Bhadohi for pan India execution and global supply.
           </p>
         </Reveal>
@@ -47,7 +47,7 @@ export default function Collections({ sectionId = 'collections' }: CollectionsPr
                 key={f.id}
                 type="button"
                 onClick={() => setFilter(f.id)}
-                className="text-[11px] tracking-[0.14em] uppercase px-[18px] py-2 border transition-all duration-[220ms]"
+                className="text-[15px] tracking-[0.14em] uppercase px-[18px] py-2 border transition-all duration-[220ms]"
                 style={{
                   background:   activeFilter === f.id ? 'var(--c)' : 'transparent',
                   borderColor:  activeFilter === f.id ? 'var(--c)' : 'var(--bd)',

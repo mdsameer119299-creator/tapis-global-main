@@ -19,14 +19,14 @@ export default function Solutions() {
             <br />
             <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{SOLUTIONS_HEADER.titleEm}</em>
           </h2>
-          <p className="text-[15.5px] font-light leading-[1.85] max-w-[58ch] mb-10" style={{ color: 'var(--inkm)' }}>
+          <p className="text-[20px] font-light leading-[1.85] max-w-[58ch] mb-10" style={{ color: 'var(--inkm)' }}>
             {SOLUTIONS_HEADER.lead}
           </p>
           <div className="flex flex-wrap gap-2">
             {AUDIENCE_TAGS.map((tag) => (
               <span
                 key={tag}
-                className="px-3.5 py-1.5 text-[10px] tracking-[0.14em] uppercase font-medium border"
+                className="px-3.5 py-1.5 text-[15px] tracking-[0.14em] uppercase font-medium border"
                 style={{ borderColor: 'rgba(192,155,74,0.28)', color: 'var(--inks)', background: 'rgba(255,255,255,0.6)' }}
               >
                 {tag}
@@ -70,7 +70,7 @@ export default function Solutions() {
 
             <div className={`flex flex-col justify-center px-5 sm:px-6 lg:px-12 py-10 sm:py-14 lg:py-16 ${imageRight ? 'lg:order-1 lg:pl-16' : 'lg:pr-16'}`}>
               <Reveal direction={imageRight ? 'right' : 'left'}>
-                <p className="text-[9.5px] tracking-[0.28em] uppercase mb-3 font-medium" style={{ color: 'var(--gd)' }}>
+                <p className="text-[14px] tracking-[0.28em] uppercase mb-3 font-medium" style={{ color: 'var(--gd)' }}>
                   {pillar.eyebrow}
                 </p>
                 <h3
@@ -80,12 +80,12 @@ export default function Solutions() {
                   {pillar.title}{' '}
                   <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{pillar.titleEm}</em>
                 </h3>
-                <p className="text-[15px] font-light leading-[1.82] max-w-[58ch] mb-6" style={{ color: 'var(--inkm)' }}>
+                <p className="text-[17px] font-light leading-[1.82] max-w-[58ch] mb-6" style={{ color: 'var(--inkm)' }}>
                   {pillar.desc}
                 </p>
                 <ul className="flex flex-col gap-2.5 mb-8">
                   {pillar.points.map((point) => (
-                    <li key={point} className="flex items-start gap-2.5 text-[13.5px] font-light leading-[1.7]" style={{ color: 'var(--inks)' }}>
+                    <li key={point} className="flex items-start gap-2.5 text-[18px] font-light leading-[1.7]" style={{ color: 'var(--inks)' }}>
                       <span className="mt-2 w-1.5 h-1.5 flex-shrink-0 rotate-45" style={{ background: 'var(--g)' }} />
                       {point}
                     </li>
@@ -93,7 +93,7 @@ export default function Solutions() {
                 </ul>
                 <Link
                   href="/contact"
-                  className="inline-flex items-center gap-3 text-[11px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--c)] group"
+                  className="inline-flex items-center gap-3 text-[15px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--c)] group"
                   style={{ color: 'var(--inks)' }}
                 >
                   {pillar.cta}

@@ -43,7 +43,7 @@ export default function SampleCategorySection({
             />
           </h2>
           <span
-            className="text-[9.5px] tracking-[0.26em] uppercase font-medium px-3 py-1 border"
+            className="text-[14px] tracking-[0.26em] uppercase font-medium px-3 py-1 border"
             style={{
               color: 'var(--g)',
               background: 'rgba(192,155,74,0.1)',

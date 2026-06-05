@@ -1,5 +1,20 @@
 import { NextResponse } from 'next/server'
 import { sendEnquiryEmail } from '@/lib/enquiry-email'
+import {
+  ENQUIRY_ACCEPTED_EXTENSIONS,
+  ENQUIRY_ACCEPTED_MIME_TYPES,
+  ENQUIRY_MAX_FILE_BYTES,
+  ENQUIRY_SUBMIT_ERROR,
+} from '@/lib/enquiry-form'
+import { checkEnquiryRateLimit, getClientIp } from '@/lib/enquiry-rate-limit'
+import {
+  hasEnquiryFieldErrors,
+  normalizeEnquiryFields,
+  validateEnquiryFields,
+  validateContactChannel,
+  validateFullName,
+  validateMessage,
+} from '@/lib/enquiry-validation'
 import type { EnquiryFormType } from '@/lib/submit-enquiry'
 
 export const runtime = 'nodejs'
@@ -32,6 +47,46 @@ function sanitizeFields(raw: Record<string, unknown>): Record<string, string> {
   return out
 }
 
+function validateFieldsForType(formType: EnquiryFormType, fields: Record<string, string>): string | null {
+  if (formType === 'inquiry') {
+    const normalized = normalizeEnquiryFields(fields)
+    const errors = validateEnquiryFields(normalized)
+    if (hasEnquiryFieldErrors(errors)) {
+      return Object.values(errors)[0] ?? 'Please check your enquiry details.'
+    }
+    return null
+  }
+
+  const name = fields.fullName ?? fields.name ?? ''
+  const nameErr = validateFullName(name)
+  if (nameErr) {
+    return nameErr
+  }
+
+  if (formType === 'custom') {
+    const messageErr = validateMessage(fields.message ?? '')
+    if (messageErr) {
+      return messageErr
+    }
+  }
+
+  const contactErrors = validateContactChannel(fields.email ?? '', fields.mobile ?? '')
+  if (contactErrors.email || contactErrors.mobile) {
+    return contactErrors.email ?? contactErrors.mobile ?? 'Please enter a valid email or mobile number.'
+  }
+
+  return null
+}
+
+function isAllowedAttachment(filename: string, mimeType: string): boolean {
+  const ext = filename.includes('.') ? filename.slice(filename.lastIndexOf('.')).toLowerCase() : ''
+  const extOk = ENQUIRY_ACCEPTED_EXTENSIONS.includes(ext as (typeof ENQUIRY_ACCEPTED_EXTENSIONS)[number])
+  const mimeOk = mimeType
+    ? ENQUIRY_ACCEPTED_MIME_TYPES.includes(mimeType as (typeof ENQUIRY_ACCEPTED_MIME_TYPES)[number])
+    : false
+  return extOk || mimeOk
+}
+
 async function parseJsonRequest(req: Request) {
   const body = (await req.json()) as {
     formType?: string
@@ -49,11 +104,15 @@ async function parseJsonRequest(req: Request) {
   }
 
   const fields = sanitizeFields(body.fields ?? {})
-  if (!fields.email && !fields.mobile) {
-    return { error: 'Email or phone is required.' }
+  const validationError = validateFieldsForType(formType, fields)
+  if (validationError) {
+    return { error: validationError }
   }
 
-  return { formType, fields }
+  return {
+    formType,
+    fields: formType === 'inquiry' ? normalizeEnquiryFields(fields) : fields,
+  }
 }
 
 async function parseFormDataRequest(req: Request) {
@@ -76,16 +135,22 @@ async function parseFormDataRequest(req: Request) {
   }
 
   const clean = sanitizeFields(fields)
-  if (!clean.email && !clean.mobile) {
-    return { error: 'Email or phone is required.' }
+  const validationError = validateFieldsForType(formType, clean)
+  if (validationError) {
+    return { error: validationError }
   }
+
+  const normalized = formType === 'inquiry' ? normalizeEnquiryFields(clean) : clean
 
   const file = formData.get('attachment')
   let attachment: { filename: string; content: Buffer; contentType?: string } | undefined
 
   if (file && file instanceof File && file.size > 0) {
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > ENQUIRY_MAX_FILE_BYTES) {
       return { error: 'Attachment must be under 10 MB.' }
+    }
+    if (!isAllowedAttachment(file.name, file.type)) {
+      return { error: 'Only PDF, DOCX, JPG, PNG, and ZIP files are accepted.' }
     }
     const buffer = Buffer.from(await file.arrayBuffer())
     attachment = {
@@ -95,11 +160,21 @@ async function parseFormDataRequest(req: Request) {
     }
   }
 
-  return { formType, fields: clean, attachment }
+  return { formType, fields: normalized, attachment }
 }
 
 export async function POST(req: Request) {
   try {
+    const ip = getClientIp(req)
+    const rate = checkEnquiryRateLimit(ip)
+    if (!rate.allowed) {
+      console.warn('[enquiry] rate limited', { ip, retryAfterMs: rate.retryAfterMs })
+      return NextResponse.json(
+        { ok: false, error: 'Too many submissions. Please wait a moment and try again.' },
+        { status: 429 },
+      )
+    }
+
     const contentType = req.headers.get('content-type') ?? ''
     const parsed = contentType.includes('multipart/form-data')
       ? await parseFormDataRequest(req)
@@ -117,13 +192,25 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: false, error: 'Invalid request.' }, { status: 400 })
     }
 
-    await sendEnquiryEmail(parsed)
+    const delivery = await sendEnquiryEmail(parsed)
 
-    return NextResponse.json({ ok: true })
+    if (delivery.internal.status !== 'sent') {
+      console.error('[enquiry] internal email failed', delivery.internal)
+      return NextResponse.json({ ok: false, error: ENQUIRY_SUBMIT_ERROR }, { status: 500 })
+    }
+
+    console.info('[enquiry] delivery report', {
+      ip,
+      internal: delivery.internal,
+      acknowledgement: delivery.acknowledgement,
+    })
+
+    return NextResponse.json({
+      ok: true,
+      emailDelivery: process.env.NODE_ENV === 'development' ? delivery : undefined,
+    })
   } catch (err) {
     console.error('[enquiry]', err)
-    const message =
-      err instanceof Error ? err.message : 'Failed to send enquiry. Please try again later.'
-    return NextResponse.json({ ok: false, error: message }, { status: 500 })
+    return NextResponse.json({ ok: false, error: ENQUIRY_SUBMIT_ERROR }, { status: 500 })
   }
 }

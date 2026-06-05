@@ -18,7 +18,7 @@ export function Eyebrow({
         style={{ background: white ? 'rgba(192,155,74,0.5)' : 'var(--g)' }}
       />
       <span
-        className="text-[9.5px] tracking-[0.38em] uppercase font-medium"
+        className="text-[14px] tracking-[0.38em] uppercase font-medium"
         style={{ color: white ? 'var(--gl)' : 'var(--gd)' }}
       >
         {children}
@@ -73,7 +73,7 @@ type BtnProps = {
 }
 
 export function BtnPrimary({ children, href, onClick, className = '', type = 'button' }: BtnProps) {
-  const cls = `inline-block px-8 py-3.5 text-[11.5px] tracking-[0.18em] uppercase font-medium border transition-all duration-300 ${className}`
+  const cls = `inline-block px-8 py-3.5 text-[16px] tracking-[0.18em] uppercase font-medium border transition-all duration-300 ${className}`
   const style = {
     background: 'var(--c)',
     color: '#fff',
@@ -88,14 +88,14 @@ export function BtnPrimary({ children, href, onClick, className = '', type = 'bu
 }
 
 export function BtnOutline({ children, href, onClick, className = '' }: BtnProps) {
-  const cls = `inline-block px-8 py-3.5 text-[11.5px] tracking-[0.18em] uppercase font-medium border transition-all duration-300 hover:bg-[var(--c)] hover:text-white hover:border-[var(--c)] ${className}`
+  const cls = `inline-block px-8 py-3.5 text-[16px] tracking-[0.18em] uppercase font-medium border transition-all duration-300 hover:bg-[var(--c)] hover:text-white hover:border-[var(--c)] ${className}`
   const style = { borderColor: 'var(--bd)', color: 'var(--inks)' }
   if (href) return <a href={href} className={cls} style={style}>{children}</a>
   return <button onClick={onClick} className={cls} style={style}>{children}</button>
 }
 
 export function BtnGold({ children, href, onClick, className = '', type = 'button' }: BtnProps) {
-  const cls = `inline-block px-8 py-3.5 text-[11.5px] tracking-[0.18em] uppercase font-semibold transition-all duration-300 ${className}`
+  const cls = `inline-block px-8 py-3.5 text-[16px] tracking-[0.18em] uppercase font-semibold transition-all duration-300 ${className}`
   const style = { background: 'var(--g)', color: 'var(--ink)' }
   if (href) return <a href={href} className={cls} style={style}>{children}</a>
   return (

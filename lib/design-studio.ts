@@ -20,7 +20,7 @@ export const DESIGN_STUDIO_FEATURES = [
   {
     id: 'materials',
     title: 'Materials We Work With',
-    image: '/images/wool-drying-pic.png',
+    image: '/images/wool-drying-pic.webp',
     imageAlt: 'Premium yarn materials — Tapis Global',
     bullets: [
       'New Zealand Wool',
@@ -34,7 +34,7 @@ export const DESIGN_STUDIO_FEATURES = [
   {
     id: 'dyeing',
     title: 'Dyeing & Color Process',
-    image: '/images/vibrant-wool-dying.png',
+    image: '/images/vibrant-wool-dying.webp',
     imageAlt: 'Dyeing and colour development — Bhadohi',
     bullets: [
       'High-quality AZO-free dyes',
@@ -47,7 +47,7 @@ export const DESIGN_STUDIO_FEATURES = [
   {
     id: 'custom-matching',
     title: 'Custom Color Matching',
-    image: '/images/tgi-banner-3.png',
+    image: '/images/tgi-banner-3.webp',
     imageAlt: 'Custom colour matching for interiors',
     bullets: [
       'Pantone & RAL matching',
@@ -60,7 +60,7 @@ export const DESIGN_STUDIO_FEATURES = [
   {
     id: 'design-development',
     title: 'Design Development',
-    image: '/images/tgi-banner-5.png',
+    image: '/images/tgi-banner-5.webp',
     imageAlt: 'Design development and custom carpets',
     bullets: [
       'Concept & moodboard',
@@ -73,7 +73,7 @@ export const DESIGN_STUDIO_FEATURES = [
   {
     id: 'color-card-service',
     title: 'Color Card Service',
-    image: '/images/tgi-banner-6.png',
+    image: '/images/tgi-banner-6.webp',
     imageAlt: 'Tapis Global colour card service',
     bullets: [
       'Physical pom pom samples',

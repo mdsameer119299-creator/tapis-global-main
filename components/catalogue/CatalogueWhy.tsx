@@ -31,11 +31,11 @@ export default function CatalogueWhy() {
                   boxShadow: '0 4px 24px rgba(26,19,16,0.04)',
                 }}
               >
-                <span className="text-[10px] tracking-[0.2em] uppercase mb-3 block" style={{ color: 'var(--gd)' }}>
+                <span className="text-[15px] tracking-[0.2em] uppercase mb-3 block" style={{ color: 'var(--gd)' }}>
                   0{i + 1}
                 </span>
-                <h3 className="text-[15px] font-medium mb-2" style={{ color: 'var(--inks)' }}>{item.title}</h3>
-                <p className="text-[13.5px] font-light leading-[1.72]" style={{ color: 'var(--inkm)' }}>{item.desc}</p>
+                <h3 className="text-[17px] font-medium mb-2" style={{ color: 'var(--inks)' }}>{item.title}</h3>
+                <p className="text-[18px] font-light leading-[1.72]" style={{ color: 'var(--inkm)' }}>{item.desc}</p>
               </div>
             </Reveal>
           ))}

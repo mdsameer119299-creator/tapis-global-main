@@ -29,10 +29,10 @@ export default function CustomIntro() {
             <br />
             <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{CUSTOM_INTRO.titleEm}</em>
           </h2>
-          <p className="text-[16px] font-light leading-[1.9] mb-5" style={{ color: 'var(--inkm)' }}>
+          <p className="text-[18px] font-light leading-[1.9] mb-5" style={{ color: 'var(--inkm)' }}>
             {CUSTOM_INTRO.lead}
           </p>
-          <p className="text-[15px] font-light leading-[1.88]" style={{ color: 'var(--inkm)' }}>
+          <p className="text-[17px] font-light leading-[1.88]" style={{ color: 'var(--inkm)' }}>
             {CUSTOM_INTRO.body}
           </p>
 
@@ -49,7 +49,7 @@ export default function CustomIntro() {
                   {h.value}
                   <sup style={{ fontSize: 13, verticalAlign: 'super' }}>{h.suffix}</sup>
                 </p>
-                <p className="text-[9px] tracking-[0.14em] uppercase mt-2" style={{ color: 'var(--inkl)' }}>
+                <p className="text-[14px] tracking-[0.14em] uppercase mt-2" style={{ color: 'var(--inkl)' }}>
                   {h.label}
                 </p>
               </div>
@@ -67,7 +67,7 @@ export default function CustomIntro() {
             }}
           >
             <p
-              className="text-[10px] tracking-[0.28em] uppercase mb-6 font-medium"
+              className="text-[15px] tracking-[0.28em] uppercase mb-6 font-medium"
               style={{ color: 'var(--gd)' }}
             >
               What We Customize
@@ -76,11 +76,11 @@ export default function CustomIntro() {
               {CUSTOM_INTRO.capabilities.map((item) => (
                 <li
                   key={item}
-                  className="flex items-start gap-3 text-[14px] font-light leading-[1.75]"
+                  className="flex items-start gap-3 text-[16px] font-light leading-[1.75]"
                   style={{ color: 'var(--inkm)' }}
                 >
                   <span
-                    className="w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full mt-0.5 text-[10px]"
+                    className="w-5 h-5 flex-shrink-0 flex items-center justify-center rounded-full mt-0.5 text-[15px]"
                     style={{ background: 'rgba(192,155,74,0.15)', color: 'var(--gd)' }}
                   >
                     ✓

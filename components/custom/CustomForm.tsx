@@ -47,7 +47,7 @@ function FloatField({
         value={value}
         onChange={onChange}
         placeholder=" "
-        className="peer w-full bg-transparent border rounded-md px-4 pt-6 pb-2.5 text-[14px] font-light outline-none transition-all duration-300 focus:border-[rgba(212,181,116,0.55)] focus:shadow-[0_0_0_3px_rgba(192,155,74,0.08)]"
+        className="peer w-full bg-transparent border rounded-md px-4 pt-6 pb-2.5 text-[16px] font-light outline-none transition-all duration-300 focus:border-[rgba(212,181,116,0.55)] focus:shadow-[0_0_0_3px_rgba(192,155,74,0.08)]"
         style={{
           borderColor: 'rgba(255,255,255,0.12)',
           color: 'rgba(248,244,238,0.9)',
@@ -57,8 +57,8 @@ function FloatField({
         htmlFor={id}
         className={`absolute left-4 transition-all duration-300 pointer-events-none ${
           filled
-            ? 'top-2 text-[9px] tracking-[0.18em] uppercase'
-            : 'top-4 text-[13px] peer-focus:top-2 peer-focus:text-[9px] peer-focus:tracking-[0.18em] peer-focus:uppercase'
+            ? 'top-2 text-[14px] tracking-[0.18em] uppercase'
+            : 'top-4 text-[15px] peer-focus:top-2 peer-focus:text-[14px] peer-focus:tracking-[0.18em] peer-focus:uppercase'
         }`}
         style={{ color: filled ? 'var(--gp)' : 'rgba(248,244,238,0.4)' }}
       >
@@ -143,7 +143,7 @@ export default function CustomForm() {
               Share Your
               <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}> Custom Brief</em>
             </h2>
-            <p className="text-[15px] font-light leading-[1.85]" style={{ color: 'rgba(248,244,238,0.45)' }}>
+            <p className="text-[17px] font-light leading-[1.85]" style={{ color: 'rgba(248,244,238,0.45)' }}>
               Complete the form below — attach your design reference and our project team responds within 12 hours.
             </p>
           </div>
@@ -165,7 +165,7 @@ export default function CustomForm() {
               >
                 Requirement Received
               </p>
-              <p className="text-[15px] font-light" style={{ color: 'rgba(248,244,238,0.55)' }}>
+              <p className="text-[17px] font-light" style={{ color: 'rgba(248,244,238,0.55)' }}>
                 Thank you, {form.name || 'there'}. Our custom design team will review your brief and contact you at{' '}
                 {form.email || SITE.email} shortly.
               </p>
@@ -199,7 +199,7 @@ export default function CustomForm() {
 
               {/* Drag & drop upload */}
               <div>
-                <p className="text-[9px] tracking-[0.2em] uppercase mb-2 font-medium" style={{ color: 'var(--gp)' }}>
+                <p className="text-[14px] tracking-[0.2em] uppercase mb-2 font-medium" style={{ color: 'var(--gp)' }}>
                   Upload Your Design / Reference File
                 </p>
                 <div
@@ -224,13 +224,13 @@ export default function CustomForm() {
                     <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                   {file ? (
-                    <p className="text-[13px]" style={{ color: 'var(--gp)' }}>{file.name}</p>
+                    <p className="text-[15px]" style={{ color: 'var(--gp)' }}>{file.name}</p>
                   ) : (
                     <>
-                      <p className="text-[13px] font-light mb-1" style={{ color: 'rgba(248,244,238,0.55)' }}>
+                      <p className="text-[15px] font-light mb-1" style={{ color: 'rgba(248,244,238,0.55)' }}>
                         Drag & drop or click to upload
                       </p>
-                      <p className="text-[11px]" style={{ color: 'rgba(248,244,238,0.28)' }}>
+                      <p className="text-[15px]" style={{ color: 'rgba(248,244,238,0.28)' }}>
                         JPG, PNG, PDF, AI, EPS — max 10 MB
                       </p>
                     </>
@@ -247,7 +247,7 @@ export default function CustomForm() {
                   onChange={handleChange}
                   rows={5}
                   placeholder="Describe your preferred design, colors, material, size, texture, pattern, logo requirement, or inspiration."
-                  className="w-full bg-transparent border rounded-md px-4 py-4 text-[14px] font-light outline-none transition-all duration-300 resize-none focus:border-[rgba(212,181,116,0.55)] focus:shadow-[0_0_0_3px_rgba(192,155,74,0.08)] placeholder:text-[rgba(248,244,238,0.25)]"
+                  className="w-full bg-transparent border rounded-md px-4 py-4 text-[16px] font-light outline-none transition-all duration-300 resize-none focus:border-[rgba(212,181,116,0.55)] focus:shadow-[0_0_0_3px_rgba(192,155,74,0.08)] placeholder:text-[rgba(248,244,238,0.25)]"
                   style={{
                     borderColor: 'rgba(255,255,255,0.12)',
                     color: 'rgba(248,244,238,0.9)',
@@ -256,7 +256,7 @@ export default function CustomForm() {
               </div>
 
               {error && (
-                <p className="text-[13px] font-light text-center" style={{ color: 'rgba(220,120,120,0.9)' }}>
+                <p className="text-[15px] font-light text-center" style={{ color: 'rgba(220,120,120,0.9)' }}>
                   {error}
                 </p>
               )}
@@ -264,7 +264,7 @@ export default function CustomForm() {
               <button
                 type="submit"
                 disabled={submitting}
-                className="w-full py-4 text-[11px] tracking-[0.22em] uppercase font-semibold rounded-md transition-all duration-400 disabled:opacity-60 hover:brightness-110 hover:tracking-[0.26em]"
+                className="w-full py-4 text-[15px] tracking-[0.22em] uppercase font-semibold rounded-md transition-all duration-400 disabled:opacity-60 hover:brightness-110 hover:tracking-[0.26em]"
                 style={{
                   background: submitting
                     ? 'rgba(192,155,74,0.5)'

@@ -1,283 +1,407 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import { SITE } from '@/lib/data'
+import { ENQUIRY_TRUST_INDICATORS, ENQUIRY_SUBMIT_ERROR } from '@/lib/enquiry-form'
 import {
-  INQUIRY_LEGALS,
-  BUYER_TYPES,
-  ORDER_SIZES,
-  INQUIRY_PRODUCTS,
-} from '@/lib/home'
-import { submitEnquiry } from '@/lib/submit-enquiry'
+  type EnquiryFieldErrors,
+  validateFullName,
+  validateMessage,
+  validateContactChannel,
+  hasEnquiryFieldErrors,
+} from '@/lib/enquiry-validation'
+import { INQUIRY_LEGALS } from '@/lib/home'
+import { submitEnquiryWithFile } from '@/lib/submit-enquiry'
+import EnquirySuccessModal from '@/components/enquiry/EnquirySuccessModal'
+import EnquiryAttachmentField from '@/components/enquiry/EnquiryAttachmentField'
+import EnquiryTextField from '@/components/enquiry/EnquiryTextField'
 import { Reveal, Eyebrow } from '@/components/ui'
 
 type InquiryForm = {
-  company:  string
-  name:     string
+  fullName: string
+  mobile:   string
   email:    string
-  country:  string
-  buyer:    string
-  product:  string
-  quantity: string
+  location: string
   message:  string
 }
 
+type FieldKey = keyof EnquiryFieldErrors
+
 const INITIAL: InquiryForm = {
-  company: '', name: '', email: '', country: '',
-  buyer: '', product: '', quantity: '', message: '',
+  fullName: '',
+  mobile: '',
+  email: '',
+  location: '',
+  message: '',
 }
 
-function FieldLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <label
-      className="block text-[9.5px] tracking-[0.2em] uppercase mb-1.5 font-medium"
-      style={{ color: 'var(--gd)' }}
-    >
-      {children}
-    </label>
-  )
-}
+const CLIENT_MIN_SUBMIT_MS = 30_000
 
-const inputCls =
-  'w-full bg-[rgba(255,255,255,0.06)] border px-3.5 py-3 text-[13.5px] font-light outline-none transition-colors duration-200 focus:border-[rgba(192,155,74,0.45)] placeholder:text-[rgba(255,255,255,0.22)]'
-const inputStyle = {
-  borderColor: 'rgba(255,255,255,0.1)',
-  color:       'rgba(255,255,255,0.85)',
+function normalizeName(value: string): string {
+  return value.trim().replace(/\s+/g, ' ')
 }
 
 export default function Inquiry() {
-  const [form, setForm]       = useState<InquiryForm>(INITIAL)
-  const [submitted, setSubmitted] = useState(false)
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const [form, setForm]               = useState<InquiryForm>(INITIAL)
+  const [file, setFile]               = useState<File | null>(null)
+  const [showSuccess, setShowSuccess] = useState(false)
+  const [submitting, setSubmitting]   = useState(false)
+  const [formError, setFormError]     = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<EnquiryFieldErrors>({})
+  const [touched, setTouched]         = useState<Partial<Record<FieldKey, boolean>>>({})
+
+  const fileInputKey = useRef(0)
+  const lastSubmitAt = useRef(0)
+  const fieldRefs = useRef<Partial<Record<FieldKey, HTMLInputElement | HTMLTextAreaElement | null>>>({})
+
+  const validateField = useCallback((key: FieldKey, values: InquiryForm): string | null => {
+    switch (key) {
+      case 'fullName': return validateFullName(values.fullName)
+      case 'message':  return validateMessage(values.message)
+      case 'mobile':
+      case 'email': {
+        const contact = validateContactChannel(values.email, values.mobile)
+        return contact[key] ?? null
+      }
+      default: return null
+    }
+  }, [])
+
+  const runValidation = useCallback(
+    (values: InquiryForm, touchAll = false): EnquiryFieldErrors => {
+      const errors: EnquiryFieldErrors = {}
+      const nameErr = validateFullName(values.fullName)
+      if (nameErr) errors.fullName = nameErr
+
+      const contact = validateContactChannel(values.email, values.mobile)
+      if (contact.email) errors.email = contact.email
+      if (contact.mobile) errors.mobile = contact.mobile
+
+      const messageErr = validateMessage(values.message)
+      if (messageErr) errors.message = messageErr
+
+      if (touchAll) {
+        setTouched({ fullName: true, mobile: true, email: true, message: true })
+      }
+
+      setFieldErrors(errors)
+      return errors
+    },
+    [validateField],
+  )
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    const { name, value } = e.target
+    let nextValue = value
+
+    if (name === 'fullName') {
+      nextValue = value.replace(/\s{2,}/g, ' ')
+    }
+
+    const next = { ...form, [name]: nextValue }
+    setForm(next)
+    setFormError(null)
+
+    const key = name as FieldKey
+    if (touched[key]) {
+      const err = validateField(key, next)
+      setFieldErrors((prev) => {
+        const updated = { ...prev }
+        if (err) updated[key] = err
+        else delete updated[key]
+        return updated
+      })
+    }
+  }
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const key = e.target.name as FieldKey
+    if (key === 'fullName') {
+      setForm((prev) => ({ ...prev, fullName: normalizeName(prev.fullName) }))
+    }
+    setTouched((prev) => ({ ...prev, [key]: true }))
+    const err = validateField(key, {
+      ...form,
+      fullName: key === 'fullName' ? normalizeName(form.fullName) : form.fullName,
+    })
+    setFieldErrors((prev) => {
+      const updated = { ...prev }
+      if (err) updated[key] = err
+      else delete updated[key]
+      return updated
+    })
+  }
+
+  const focusFirstInvalid = (errors: EnquiryFieldErrors) => {
+    const order: FieldKey[] = ['fullName', 'mobile', 'email', 'message']
+    const first = order.find((k) => errors[k])
+    if (!first) return
+    const el = fieldRefs.current[first]
+    if (el) {
+      el.focus()
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }
+  }
+
+  const resetForm = () => {
+    setForm(INITIAL)
+    setFile(null)
+    setFieldErrors({})
+    setTouched({})
+    setFormError(null)
+    fileInputKey.current += 1
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setError(null)
-    setSubmitting(true)
-    const result = await submitEnquiry('inquiry', {
-      company: form.company,
-      name: form.name,
-      email: form.email,
-      country: form.country,
-      buyerType: form.buyer,
-      product: form.product,
-      orderSize: form.quantity,
-      message: form.message,
-    })
-    setSubmitting(false)
-    if (!result.ok) {
-      setError(result.error)
+    setFormError(null)
+
+    const now = Date.now()
+    if (now - lastSubmitAt.current < CLIENT_MIN_SUBMIT_MS) {
+      setFormError('Please wait a moment before submitting again.')
       return
     }
-    setSubmitted(true)
+
+    const normalized = {
+      ...form,
+      fullName: normalizeName(form.fullName),
+      email: form.email.trim(),
+      mobile: form.mobile.trim(),
+      location: form.location.trim(),
+      message: form.message.trim(),
+    }
+
+    setForm(normalized)
+    const errors = runValidation(normalized, true)
+    if (hasEnquiryFieldErrors(errors)) {
+      focusFirstInvalid(errors)
+      return
+    }
+
+    setSubmitting(true)
+    lastSubmitAt.current = now
+
+    const result = await submitEnquiryWithFile(
+      'inquiry',
+      {
+        fullName: normalized.fullName,
+        contactPerson: normalized.fullName,
+        mobile: normalized.mobile,
+        email: normalized.email,
+        location: normalized.location,
+        message: normalized.message,
+        attachment: file ? file.name : '',
+      },
+      file,
+    )
+
+    setSubmitting(false)
+
+    if (!result.ok) {
+      setFormError(result.error ?? ENQUIRY_SUBMIT_ERROR)
+      return
+    }
+
+    resetForm()
+    setShowSuccess(true)
   }
 
   return (
-    <section
-      id="contact"
-      className="grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden"
-      style={{ background: 'var(--ink)' }}
-    >
-      <div
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'radial-gradient(ellipse 50% 60% at 14% 50%, rgba(107,31,31,0.38) 0%, transparent 70%)' }}
+    <>
+      <EnquirySuccessModal
+        open={showSuccess}
+        onClose={() => setShowSuccess(false)}
       />
 
-      {/* Left — B2B pitch */}
-      <div className="px-5 sm:px-6 lg:px-10 py-14 sm:py-16 lg:py-20 flex flex-col justify-center relative z-[1]">
-        <Reveal direction="left">
-          <Eyebrow white>Project Enquiry</Eyebrow>
-          <h2
-            className="font-normal leading-[1.1] mb-7"
-            style={{
-              fontFamily: '"Cormorant Garamond",serif',
-              fontSize:   'clamp(32px,3.2vw,50px)',
-              color:      '#fff',
-            }}
-          >
-            Request Project
-            <br />
-            <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Consultation</em>
-          </h2>
-          <p
-            className="text-[15.5px] font-light leading-[1.85] max-w-[58ch] mb-9"
-            style={{ color: 'rgba(255,255,255,0.42)' }}
-          >
-            Share your brief, specifications and timeline. Our team responds within 12 working hours with design guidance, feasibility and a tailored proposal for pan India or international delivery.
-          </p>
+      <section
+        id="contact"
+        className="grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden"
+        style={{ background: 'var(--ink)' }}
+      >
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse 50% 60% at 14% 50%, rgba(107,31,31,0.38) 0%, transparent 70%)' }}
+        />
 
-          <div className="flex flex-col gap-[18px] mb-8">
-            <InquiryContactBlock label={SITE.corporateOffice.label} icon="map">
-              {SITE.corporateOffice.lines.map((line) => (
-                <span key={line} className="block">{line}</span>
-              ))}
-            </InquiryContactBlock>
-            <InquiryContactBlock label={SITE.manufacturingFacility.label} icon="map">
-              {SITE.manufacturingFacility.lines.map((line) => (
-                <span key={line} className="block">{line}</span>
-              ))}
-            </InquiryContactBlock>
-            <InquiryContactBlock label="Phone / WhatsApp" icon="phone">
-              <a href={`tel:${SITE.phoneTel}`} className="hover:text-[var(--gp)] transition-colors">{SITE.phone}</a>
-            </InquiryContactBlock>
-            <InquiryContactBlock label="Email Us" icon="mail">
-              {SITE.emails.map((item) => (
-                <a
-                  key={item.address}
-                  href={`mailto:${item.address}`}
-                  className="block hover:text-[var(--gp)] transition-colors"
-                >
-                  {item.address}
-                </a>
-              ))}
-            </InquiryContactBlock>
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-            {INQUIRY_LEGALS.map((lp) => (
-              <span
-                key={lp}
-                className="text-[10px] tracking-[0.08em] px-2.5 py-1 border"
-                style={{
-                  borderColor: 'rgba(255,255,255,0.1)',
-                  color:       'rgba(255,255,255,0.28)',
-                }}
-              >
-                {lp}
-              </span>
-            ))}
-          </div>
-        </Reveal>
-      </div>
-
-      {/* Right — form */}
-      <div className="px-5 sm:px-6 lg:px-10 py-14 sm:py-16 lg:py-20 lg:pr-12 lg:pl-14 relative z-[1]">
-        <Reveal direction="right" delay={120}>
-          <div
-            className="p-5 sm:p-8 lg:p-10"
-            style={{
-              background: 'rgba(255,255,255,0.04)',
-              border:       '1px solid rgba(255,255,255,0.08)',
-            }}
-          >
-            <h3
-              className="text-[11px] tracking-[0.22em] uppercase font-semibold mb-7 pb-4"
-              style={{ color: 'var(--gl)', borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+        <div className="px-5 sm:px-6 lg:px-10 py-12 sm:py-16 lg:py-20 flex flex-col justify-center relative z-[1] min-w-0">
+          <Reveal direction="left">
+            <Eyebrow white>Project Enquiry</Eyebrow>
+            <h2
+              className="font-normal leading-[1.08] mb-5"
+              style={{
+                fontFamily: '"Cormorant Garamond",serif',
+                fontSize:   'clamp(30px,3vw,46px)',
+                color:      '#fff',
+              }}
             >
-              Request a Project Quote
-            </h3>
+              Begin Your
+              <br />
+              <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Design Consultation</em>
+            </h2>
+            <p
+              className="text-[17px] font-light leading-[1.8] max-w-[52ch] mb-8"
+              style={{ color: 'rgba(255,255,255,0.4)' }}
+            >
+              Share your vision — our consultants respond within 12 working hours with guidance tailored to your project.
+            </p>
 
-            {submitted ? (
-              <div className="py-12 text-center">
-                <p
-                  className="font-normal mb-3"
-                  style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 28, color: 'var(--gp)' }}
+            <div className="flex flex-col gap-4 mb-7">
+              <InquiryContactBlock label="Phone / WhatsApp" icon="phone">
+                <a href={`tel:${SITE.phoneTel}`} className="hover:text-[var(--gp)] transition-colors">{SITE.phone}</a>
+              </InquiryContactBlock>
+              <InquiryContactBlock label="Email" icon="mail">
+                <a href={`mailto:${SITE.emails[0]?.address}`} className="hover:text-[var(--gp)] transition-colors">
+                  {SITE.emails[0]?.address}
+                </a>
+              </InquiryContactBlock>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {INQUIRY_LEGALS.slice(0, 2).map((lp) => (
+                <span
+                  key={lp}
+                  className="text-[14px] tracking-[0.08em] px-2 py-1 border"
+                  style={{ borderColor: 'rgba(255,255,255,0.08)', color: 'rgba(255,255,255,0.22)' }}
                 >
-                  Inquiry Received
-                </p>
-                <p className="text-[14px] font-light" style={{ color: 'rgba(255,255,255,0.45)' }}>
-                  Our team will respond within 12 working hours.
-                </p>
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <input type="text" name="website" tabIndex={-1} autoComplete="off" className="absolute opacity-0 pointer-events-none h-0 w-0" aria-hidden />
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <FieldLabel>Company *</FieldLabel>
-                    <input name="company" required value={form.company} onChange={handleChange} placeholder="Your company" className={inputCls} style={inputStyle} />
-                  </div>
-                  <div>
-                    <FieldLabel>Contact Name *</FieldLabel>
-                    <input name="name" required value={form.name} onChange={handleChange} placeholder="Your name" className={inputCls} style={inputStyle} />
-                  </div>
-                </div>
+                  {lp}
+                </span>
+              ))}
+            </div>
+          </Reveal>
+        </div>
+
+        <div className="px-5 sm:px-6 lg:px-10 py-12 sm:py-16 lg:py-20 lg:pr-12 lg:pl-10 relative z-[1] flex items-center min-w-0">
+          <Reveal direction="right" delay={100} className="w-full">
+            <div
+              className="p-6 sm:p-8 enquiry-form-panel w-full"
+              style={{
+                background: 'rgba(255,255,255,0.035)',
+                border: '1px solid rgba(255,255,255,0.07)',
+              }}
+            >
+              <p
+                className="text-[15px] tracking-[0.26em] uppercase font-medium mb-5"
+                style={{ color: 'var(--gl)' }}
+              >
+                Project Enquiry
+              </p>
+
+              <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+                <input
+                  type="text"
+                  name="website"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  hidden
+                  defaultValue=""
+                />
+
+                <EnquiryTextField
+                  ref={(el) => { fieldRefs.current.fullName = el }}
+                  label="Full Name"
+                  name="fullName"
+                  value={form.fullName}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Full Name"
+                  autoComplete="name"
+                  error={fieldErrors.fullName}
+                  showError={touched.fullName}
+                />
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <FieldLabel>Email *</FieldLabel>
-                    <input type="email" name="email" required value={form.email} onChange={handleChange} placeholder="you@company.com" className={inputCls} style={inputStyle} />
-                  </div>
-                  <div>
-                    <FieldLabel>Country *</FieldLabel>
-                    <input name="country" required value={form.country} onChange={handleChange} placeholder="Country" className={inputCls} style={inputStyle} />
-                  </div>
-                </div>
-
-                <div>
-                  <FieldLabel>Buyer Type</FieldLabel>
-                  <select name="buyer" value={form.buyer} onChange={handleChange} className={`${inputCls} appearance-none cursor-pointer`} style={inputStyle}>
-                    <option value="">Select buyer type</option>
-                    {BUYER_TYPES.map((t) => (
-                      <option key={t} value={t}>{t}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <FieldLabel>Product Category</FieldLabel>
-                    <select name="product" value={form.product} onChange={handleChange} className={`${inputCls} appearance-none cursor-pointer`} style={inputStyle}>
-                      <option value="">Product type</option>
-                      {INQUIRY_PRODUCTS.map((p) => (
-                        <option key={p} value={p}>{p}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <FieldLabel>Order Size</FieldLabel>
-                    <select name="quantity" value={form.quantity} onChange={handleChange} className={`${inputCls} appearance-none cursor-pointer`} style={inputStyle}>
-                      <option value="">Quantity range</option>
-                      {ORDER_SIZES.map((q) => (
-                        <option key={q} value={q}>{q}</option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-
-                <div>
-                  <FieldLabel>Specifications / Message</FieldLabel>
-                  <textarea
-                    name="message"
-                    rows={4}
-                    value={form.message}
+                  <EnquiryTextField
+                    ref={(el) => { fieldRefs.current.mobile = el }}
+                    label="Mobile Number (email or mobile required)"
+                    name="mobile"
+                    type="tel"
+                    inputMode="tel"
+                    autoComplete="tel"
+                    value={form.mobile}
                     onChange={handleChange}
-                    placeholder="Sizes, materials, colours, application (hotel/office/residential), location, timeline…"
-                    className={`${inputCls} resize-y min-h-[100px]`}
-                    style={inputStyle}
+                    onBlur={handleBlur}
+                    placeholder="+91 XXX XXX XXXX"
+                    error={fieldErrors.mobile}
+                    showError={touched.mobile}
+                  />
+                  <EnquiryTextField
+                    ref={(el) => { fieldRefs.current.email = el }}
+                    label="Email Address (email or mobile required)"
+                    name="email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    value={form.email}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    placeholder="name@company.com"
+                    error={fieldErrors.email}
+                    showError={touched.email}
                   />
                 </div>
 
-                {error && (
-                  <p className="text-[13px] font-light" style={{ color: 'rgba(220,120,120,0.9)' }}>
-                    {error}
+                <EnquiryTextField
+                  label="Location"
+                  name="location"
+                  value={form.location}
+                  onChange={handleChange}
+                  placeholder="City, State, Country"
+                  autoComplete="address-level2"
+                />
+
+                <EnquiryTextField
+                  ref={(el) => { fieldRefs.current.message = el }}
+                  label="Project Requirement / Message"
+                  name="message"
+                  value={form.message}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  placeholder="Tell us about your project, dimensions, quantity, materials or design preferences..."
+                  multiline
+                  rows={3}
+                  error={fieldErrors.message}
+                  showError={touched.message}
+                />
+
+                <EnquiryAttachmentField key={fileInputKey.current} file={file} onFileChange={setFile} />
+
+                <ul className="flex flex-wrap gap-x-5 gap-y-2 pt-0.5">
+                  {ENQUIRY_TRUST_INDICATORS.map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-1.5 text-[15px] font-light tracking-wide"
+                      style={{ color: 'rgba(255,255,255,0.38)' }}
+                    >
+                      <span style={{ color: 'var(--g)', fontSize: 14 }} aria-hidden>✓</span>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+
+                {formError && (
+                  <p className="enquiry-form-error text-[17px] font-light text-center py-2 px-3 rounded-sm" role="alert">
+                    {formError}
                   </p>
                 )}
 
                 <button
                   type="submit"
                   disabled={submitting}
-                  className="w-full py-4 text-[11.5px] tracking-[0.2em] uppercase font-bold transition-all duration-250 hover:opacity-90 mt-1 disabled:opacity-60 disabled:cursor-not-allowed"
-                  style={{ background: 'var(--g)', color: 'var(--ink)' }}
+                  className="w-full py-3.5 text-[15px] tracking-[0.22em] uppercase font-semibold transition-all duration-300 hover:brightness-110 hover:shadow-[0_6px_24px_rgba(192,155,74,0.2)] disabled:opacity-55 disabled:cursor-not-allowed min-h-[48px] mt-0.5"
+                  style={{ background: 'linear-gradient(135deg, var(--g) 0%, #a8843a 100%)', color: 'var(--ink)' }}
                 >
-                  {submitting ? 'Sending…' : 'Request Project Consultation →'}
+                  {submitting ? 'Sending…' : 'Request Consultation'}
                 </button>
-                <p className="text-[11.5px] font-light leading-relaxed text-center" style={{ color: 'rgba(255,255,255,0.28)' }}>
-                  Response within 12 working hours. Your data is strictly confidential and never shared with third parties.
-                </p>
               </form>
-            )}
-          </div>
-        </Reveal>
-      </div>
-    </section>
+            </div>
+          </Reveal>
+        </div>
+      </section>
+    </>
   )
 }
 
@@ -287,16 +411,10 @@ function InquiryContactBlock({
   children,
 }: {
   label: string
-  icon: 'map' | 'phone' | 'mail'
+  icon: 'phone' | 'mail'
   children: React.ReactNode
 }) {
   const paths = {
-    map: (
-      <>
-        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
-        <circle cx="12" cy="10" r="3" />
-      </>
-    ),
     phone: (
       <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.07 1.18 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14z" />
     ),
@@ -306,28 +424,13 @@ function InquiryContactBlock({
   }
 
   return (
-    <div className="flex items-start gap-3">
-      <svg
-        className="flex-shrink-0 mt-0.5"
-        width="14"
-        height="14"
-        fill="none"
-        stroke="var(--g)"
-        strokeWidth="1.5"
-        viewBox="0 0 24 24"
-      >
+    <div className="flex items-start gap-2.5 min-w-0">
+      <svg className="flex-shrink-0 mt-0.5" width="13" height="13" fill="none" stroke="var(--g)" strokeWidth="1.5" viewBox="0 0 24 24">
         {paths[icon]}
       </svg>
-      <div>
-        <span
-          className="block text-[9.5px] tracking-[0.2em] uppercase mb-0.5"
-          style={{ color: 'var(--gd)' }}
-        >
-          {label}
-        </span>
-        <span className="text-[13.5px] leading-relaxed" style={{ color: 'rgba(255,255,255,0.7)' }}>
-          {children}
-        </span>
+      <div className="text-[15px] font-light min-w-0 break-words" style={{ color: 'rgba(255,255,255,0.55)' }}>
+        <span className="text-[14px] tracking-[0.2em] uppercase mr-2 block sm:inline" style={{ color: 'var(--gd)' }}>{label}</span>
+        <span className="break-all sm:break-normal">{children}</span>
       </div>
     </div>
   )

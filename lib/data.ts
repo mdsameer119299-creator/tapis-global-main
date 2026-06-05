@@ -79,32 +79,32 @@ export const HERO_SLIDES = [
   {
     id: 0,
     label: 'Luxury Interiors',
-    poster: '/images/tgi-banner-1.png',
+    poster: '/images/tgi-banner-1.webp',
   },
   {
     id: 1,
     label: 'Signature Collections',
-    poster: '/images/tgi-banner-2.png',
+    poster: '/images/tgi-banner-2.webp',
   },
   {
     id: 2,
     label: 'Colour & Material Library',
-    poster: '/images/tgi-banner-3.png',
+    poster: '/images/tgi-banner-3.webp',
   },
   {
     id: 3,
     label: 'Hospitality Environments',
-    poster: '/images/tgi-banner-4.png',
+    poster: '/images/tgi-banner-4.webp',
   },
   {
     id: 4,
     label: 'Bhadohi Craft Heritage',
-    poster: '/images/tgi-banner-5.png',
+    poster: '/images/tgi-banner-5.webp',
   },
   {
     id: 5,
     label: 'Project Installations',
-    poster: '/images/tgi-banner-6.png',
+    poster: '/images/tgi-banner-6.webp',
   },
 ]
 
@@ -213,31 +213,31 @@ export const MFG_STEPS = [
     num:   '01',
     title: 'Integrated Campus',
     desc:  'Single-roof production with full material traceability — premium fibres and specification-grade inputs approved before every programme begins.',
-    img:   '/images/wool-drying-pic.png',
+    img:   '/images/wool-drying-pic.webp',
   },
   {
     num:   '02',
     title: 'Colour & Specification Control',
     desc:  'Lab-dip development, batch consistency and documented shade approval — aligned to architect palettes and hospitality brand standards.',
-    img:   '/images/vibrant-wool-dying.png',
+    img:   '/images/vibrant-wool-dying.webp',
   },
   {
     num:   '03',
     title: 'Production Programme',
     desc:  'Coordinated manufacturing across bespoke, hospitality and contract volumes — managed to agreed timelines with milestone visibility.',
-    img:   '/images/tufting-carpet.png',
+    img:   '/images/tufting-carpet.webp',
   },
   {
     num:   '04',
     title: 'Finishing Standard',
     desc:  'Premium hand-feel, surface consistency and backing specifications calibrated for residential luxury and high-traffic commercial use.',
-    img:   '/images/rug4.jpg',
+    img:   '/images/rug4.webp',
   },
   {
     num:   '05',
     title: 'QC & Project Dispatch',
     desc:  'Multi-stage inspection, measurement logs and phased dispatch — pan-India project delivery and international supply with full documentation.',
-    img:   '/images/videoframe_15503.png',
+    img:   '/images/videoframe_15503.webp',
   },
 ]
 

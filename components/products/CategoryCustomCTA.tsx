@@ -11,7 +11,7 @@ export default function CategoryCustomCTA() {
       }}
     >
       <Reveal>
-        <p className="text-[10px] tracking-[0.28em] uppercase mb-3 font-medium" style={{ color: 'var(--gd)' }}>
+        <p className="text-[15px] tracking-[0.28em] uppercase mb-3 font-medium" style={{ color: 'var(--gd)' }}>
           Bespoke Programmes
         </p>
         <h2
@@ -24,13 +24,13 @@ export default function CategoryCustomCTA() {
         >
           Looking for Custom Designs?
         </h2>
-        <p className="text-[14px] font-light leading-[1.82] max-w-2xl mb-6" style={{ color: 'var(--inkm)' }}>
+        <p className="text-[16px] font-light leading-[1.82] max-w-2xl mb-6" style={{ color: 'var(--inkm)' }}>
           Custom sizes, colours, patterns, hospitality projects, bulk supply and pan India or international delivery —
           our Bhadohi studio translates your brief into production-ready collections.
         </p>
         <Link
           href="/custom#custom-form"
-          className="inline-block px-10 py-3.5 text-[11px] tracking-[0.2em] uppercase font-semibold rounded-sm transition-all duration-300 hover:brightness-110"
+          className="inline-block px-10 py-3.5 text-[15px] tracking-[0.2em] uppercase font-semibold rounded-sm transition-all duration-300 hover:brightness-110"
           style={{ background: 'var(--g)', color: 'var(--ink)' }}
         >
           Request Custom Carpet

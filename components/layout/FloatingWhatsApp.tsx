@@ -1,4 +1,3 @@
-'use client'
 
 import { SITE } from '@/lib/data'
 

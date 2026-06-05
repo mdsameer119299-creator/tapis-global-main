@@ -43,7 +43,7 @@ export default function CustomHero() {
 
       <div className="relative z-[4] px-12 max-lg:px-6 pb-20 pt-36 max-w-5xl">
         <div
-          className="inline-flex items-center gap-2.5 px-4 py-2 mb-8 text-[10px] tracking-[0.32em] uppercase border rounded-sm"
+          className="inline-flex items-center gap-2.5 px-4 py-2 mb-8 text-[15px] tracking-[0.32em] uppercase border rounded-sm"
           style={{
             borderColor: 'rgba(212,181,116,0.35)',
             background:  'rgba(10,8,6,0.5)',
@@ -69,7 +69,7 @@ export default function CustomHero() {
         </h1>
 
         <p
-          className="text-[16px] font-light leading-[1.92] max-w-2xl mb-12"
+          className="text-[18px] font-light leading-[1.92] max-w-2xl mb-12"
           style={{ color: 'rgba(248,244,238,0.62)' }}
         >
           {CUSTOM_HERO.lead}
@@ -77,7 +77,7 @@ export default function CustomHero() {
 
         <Link
           href={CUSTOM_HERO.ctaHref}
-          className="inline-block px-11 py-4 text-[11px] tracking-[0.22em] uppercase font-semibold rounded-sm transition-all duration-400 hover:tracking-[0.26em] hover:brightness-110"
+          className="inline-block px-11 py-4 text-[15px] tracking-[0.22em] uppercase font-semibold rounded-sm transition-all duration-400 hover:tracking-[0.26em] hover:brightness-110"
           style={{
             background: 'linear-gradient(135deg, var(--g) 0%, #a8843a 100%)',
             color: 'var(--ink)',

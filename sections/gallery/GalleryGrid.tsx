@@ -83,7 +83,7 @@ export default function GalleryGrid() {
               <br />
               <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>Every Fibre.</em> Every Floor.
             </h2>
-            <p className="text-[15.5px] font-light leading-[1.85]" style={{ color: 'var(--inkm)' }}>
+            <p className="text-[20px] font-light leading-[1.85]" style={{ color: 'var(--inkm)' }}>
               Browse our carpet and rug installations across six collections — from hand-knotted silk masterpieces to contract-grade broadloom.
             </p>
           </Reveal>
@@ -96,7 +96,7 @@ export default function GalleryGrid() {
                 key={f.id}
                 type="button"
                 onClick={() => setFilter(f.id)}
-                className="text-[11px] tracking-[0.14em] uppercase px-[18px] py-2 border transition-all duration-[220ms]"
+                className="text-[15px] tracking-[0.14em] uppercase px-[18px] py-2 border transition-all duration-[220ms]"
                 style={{
                   background:  filter === f.id ? 'var(--c)' : 'transparent',
                   borderColor: filter === f.id ? 'var(--c)' : 'var(--bd)',
@@ -149,10 +149,10 @@ export default function GalleryGrid() {
                   <span className="block text-[8.5px] tracking-[0.22em] uppercase mb-1" style={{ color: 'var(--gd)' }}>
                     {item.category}
                   </span>
-                  <span className="block text-[12px] font-medium" style={{ color: 'var(--ink)' }}>
+                  <span className="block text-[14px] font-medium" style={{ color: 'var(--ink)' }}>
                     {item.title}
                   </span>
-                  <span className="block text-[11px] mt-0.5" style={{ color: 'var(--inkl)' }}>
+                  <span className="block text-[15px] mt-0.5" style={{ color: 'var(--inkl)' }}>
                     {item.location}
                   </span>
                 </div>
@@ -210,15 +210,17 @@ export default function GalleryGrid() {
                 src={activeItem.image}
                 alt={activeItem.title}
                 fill
-                priority
                 quality={90}
                 sizes="85vw"
+                loading="eager"
+                placeholder="blur"
+                blurDataURL={BLUR_PLACEHOLDER}
                 className="object-contain object-center"
               />
             </div>
             <div className="pt-4 flex flex-wrap items-center gap-4">
               <div>
-                <p className="text-[10px] tracking-[0.22em] uppercase mb-1" style={{ color: 'var(--gl)' }}>
+                <p className="text-[15px] tracking-[0.22em] uppercase mb-1" style={{ color: 'var(--gl)' }}>
                   {activeItem.category}
                 </p>
                 <p
@@ -227,11 +229,11 @@ export default function GalleryGrid() {
                 >
                   {activeItem.title}
                 </p>
-                <p className="text-[13px] mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
+                <p className="text-[15px] mt-1" style={{ color: 'rgba(255,255,255,0.45)' }}>
                   {activeItem.location}
                 </p>
               </div>
-              <p className="ml-auto text-[12px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
+              <p className="ml-auto text-[14px]" style={{ color: 'rgba(255,255,255,0.35)' }}>
                 {lightboxIndex + 1} / {visible.length}
               </p>
             </div>

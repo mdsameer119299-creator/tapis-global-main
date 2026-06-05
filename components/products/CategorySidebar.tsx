@@ -27,7 +27,7 @@ export default function CategorySidebar({ activeSlug }: Props) {
           }}
         >
           <p
-            className="text-[9px] tracking-[0.32em] uppercase font-medium mb-5 px-2"
+            className="text-[14px] tracking-[0.32em] uppercase font-medium mb-5 px-2"
             style={{ color: 'var(--gp)' }}
           >
             Collections
@@ -39,7 +39,7 @@ export default function CategorySidebar({ activeSlug }: Props) {
                 <li key={cat.slug}>
                   <Link
                     href={`/products/${cat.slug}`}
-                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[13px] font-light transition-all duration-300"
+                    className="flex items-center gap-2.5 px-3 py-2.5 rounded-md text-[15px] font-light transition-all duration-300"
                     style={{
                       background:  active ? 'rgba(192,155,74,0.12)' : 'transparent',
                       color:       active ? 'var(--gp)' : 'rgba(248,244,238,0.48)',
@@ -58,7 +58,7 @@ export default function CategorySidebar({ activeSlug }: Props) {
           </ul>
           <Link
             href="/products"
-            className="block mt-6 pt-5 text-[10px] tracking-[0.18em] uppercase font-medium transition-colors duration-300 hover:text-[var(--gp)]"
+            className="block mt-6 pt-5 text-[15px] tracking-[0.18em] uppercase font-medium transition-colors duration-300 hover:text-[var(--gp)]"
             style={{ color: 'rgba(248,244,238,0.35)', borderTop: '1px solid rgba(192,155,74,0.12)' }}
           >
             ← All Collections
@@ -68,8 +68,9 @@ export default function CategorySidebar({ activeSlug }: Props) {
 
       {/* Mobile horizontal scroll nav */}
       <nav
-        className="lg:hidden overflow-x-auto scrollbar-none -mx-6 px-6 mb-8"
+        className="lg:hidden overflow-x-auto scrollbar-none mb-8 overscroll-x-contain"
         aria-label="Product categories"
+        style={{ WebkitOverflowScrolling: 'touch' }}
       >
         <div className="flex gap-2 min-w-max pb-1">
           {PRODUCT_CATEGORIES.map((cat) => {
@@ -78,7 +79,7 @@ export default function CategorySidebar({ activeSlug }: Props) {
               <Link
                 key={cat.slug}
                 href={`/products/${cat.slug}`}
-                className="whitespace-nowrap px-4 py-2 text-[11px] tracking-[0.12em] uppercase rounded-full transition-all duration-300"
+                className="whitespace-nowrap px-4 py-2 text-[15px] tracking-[0.12em] uppercase rounded-full transition-all duration-300"
                 style={{
                   background: active ? 'var(--g)' : 'rgba(26,19,16,0.06)',
                   color:        active ? 'var(--ink)' : 'var(--inkm)',

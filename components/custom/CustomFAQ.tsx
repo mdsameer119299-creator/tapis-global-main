@@ -48,11 +48,11 @@ export default function CustomFAQ() {
                     className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left"
                     aria-expanded={isOpen}
                   >
-                    <span className="text-[14px] font-medium" style={{ color: isOpen ? 'var(--gp)' : 'rgba(248,244,238,0.85)' }}>
+                    <span className="text-[16px] font-medium" style={{ color: isOpen ? 'var(--gp)' : 'rgba(248,244,238,0.85)' }}>
                       {item.q}
                     </span>
                     <span
-                      className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-[16px] transition-transform duration-300"
+                      className="flex-shrink-0 w-7 h-7 flex items-center justify-center rounded-full text-[18px] transition-transform duration-300"
                       style={{
                         background: 'rgba(192,155,74,0.1)',
                         color: 'var(--gp)',
@@ -67,7 +67,7 @@ export default function CustomFAQ() {
                     style={{ maxHeight: isOpen ? '300px' : '0', opacity: isOpen ? 1 : 0 }}
                   >
                     <p
-                      className="px-6 pb-5 text-[14px] font-light leading-[1.82]"
+                      className="px-6 pb-5 text-[16px] font-light leading-[1.82]"
                       style={{ color: 'rgba(248,244,238,0.48)' }}
                     >
                       {item.a}

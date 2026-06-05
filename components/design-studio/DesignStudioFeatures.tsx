@@ -51,7 +51,7 @@ export default function DesignStudioFeatures() {
                     {card.bullets.map((b) => (
                       <li
                         key={b}
-                        className="flex items-start gap-3 text-[14px] font-light leading-relaxed"
+                        className="flex items-start gap-3 text-[16px] font-light leading-relaxed"
                         style={{ color: 'var(--inks)' }}
                       >
                         <span
@@ -64,7 +64,7 @@ export default function DesignStudioFeatures() {
                   </ul>
                   <Link
                     href={card.cta.href}
-                    className="inline-block px-8 py-3 text-[10px] tracking-[0.16em] uppercase font-semibold border transition-colors hover:bg-[var(--c)] hover:text-white hover:border-[var(--c)]"
+                    className="inline-block px-8 py-3 text-[15px] tracking-[0.16em] uppercase font-semibold border transition-colors hover:bg-[var(--c)] hover:text-white hover:border-[var(--c)]"
                     style={{ borderColor: 'var(--c)', color: 'var(--c)' }}
                   >
                     {card.cta.label}

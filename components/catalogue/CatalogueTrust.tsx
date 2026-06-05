@@ -53,10 +53,10 @@ export default function CatalogueTrust() {
                 >
                   {ICONS[card.icon]}
                 </div>
-                <h3 className="text-[13px] tracking-[0.1em] uppercase font-medium mb-2" style={{ color: 'var(--inks)' }}>
+                <h3 className="text-[15px] tracking-[0.1em] uppercase font-medium mb-2" style={{ color: 'var(--inks)' }}>
                   {card.title}
                 </h3>
-                <p className="text-[12.5px] font-light leading-[1.68]" style={{ color: 'var(--inkm)' }}>
+                <p className="text-[17px] font-light leading-[1.68]" style={{ color: 'var(--inkm)' }}>
                   {card.desc}
                 </p>
               </div>
@@ -80,7 +80,7 @@ export default function CatalogueTrust() {
                   {stat.value}
                   <sup style={{ fontSize: 14, verticalAlign: 'super' }}>{stat.suffix}</sup>
                 </p>
-                <p className="text-[9px] tracking-[0.14em] uppercase mt-2" style={{ color: 'var(--inkl)' }}>
+                <p className="text-[14px] tracking-[0.14em] uppercase mt-2" style={{ color: 'var(--inkl)' }}>
                   {stat.label}
                 </p>
               </div>

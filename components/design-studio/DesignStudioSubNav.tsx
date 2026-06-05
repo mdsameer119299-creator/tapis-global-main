@@ -62,7 +62,7 @@ export default function DesignStudioSubNav() {
               key={item.id}
               type="button"
               onClick={() => scrollTo(item.id)}
-              className="flex items-center gap-2 px-4 sm:px-6 py-4 text-[10px] sm:text-[11px] tracking-[0.12em] uppercase font-medium whitespace-nowrap transition-colors duration-200 border-b-2 flex-shrink-0"
+              className="flex items-center gap-2 px-4 sm:px-6 py-4 text-[15px] sm:text-[15px] tracking-[0.12em] uppercase font-medium whitespace-nowrap transition-colors duration-200 border-b-2 flex-shrink-0"
               style={{
                 color: isActive ? 'var(--c)' : 'var(--inkm)',
                 borderColor: isActive ? 'var(--g)' : 'transparent',

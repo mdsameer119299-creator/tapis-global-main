@@ -115,7 +115,7 @@ function ContentPanel({
     <div className="flex flex-col justify-center px-10 max-lg:px-6 py-16 lg:py-28 lg:px-16 xl:px-[4.5rem] relative">
       {/* Section index */}
       <span
-        className="absolute top-8 right-8 max-lg:top-6 max-lg:right-6 text-[10px] tracking-[0.28em] uppercase font-medium opacity-40"
+        className="absolute top-8 right-8 max-lg:top-6 max-lg:right-6 text-[15px] tracking-[0.28em] uppercase font-medium opacity-40"
         style={{ color: v.eyebrow ? 'var(--gl)' : 'var(--gd)' }}
       >
         {block.sectionNum}
@@ -141,12 +141,12 @@ function ContentPanel({
           )}
         </h2>
 
-        <p className="text-[16px] font-light leading-[1.9] mb-5" style={{ color: v.lead }}>
+        <p className="text-[18px] font-light leading-[1.9] mb-5" style={{ color: v.lead }}>
           {block.lead}
         </p>
 
         {block.body && (
-          <p className="text-[15px] font-light leading-[1.88] mb-8" style={{ color: v.body }}>
+          <p className="text-[17px] font-light leading-[1.88] mb-8" style={{ color: v.body }}>
             {block.body}
           </p>
         )}
@@ -165,7 +165,7 @@ function ContentPanel({
                   {s.value}
                   {s.suffix && <sup style={{ fontSize: 14, verticalAlign: 'super' }}>{s.suffix}</sup>}
                 </p>
-                <p className="text-[9px] tracking-[0.14em] uppercase mt-2" style={{ color: v.body }}>
+                <p className="text-[14px] tracking-[0.14em] uppercase mt-2" style={{ color: v.body }}>
                   {s.label}
                 </p>
               </div>
@@ -184,8 +184,8 @@ function ContentPanel({
                   borderColor: v.eyebrow ? 'rgba(192,155,74,0.15)' : 'var(--bd)',
                 }}
               >
-                <p className="text-[13px] font-medium mb-1" style={{ color: v.strong }}>{p.name}</p>
-                <p className="text-[12.5px] font-light leading-[1.65]" style={{ color: v.product }}>{p.desc}</p>
+                <p className="text-[15px] font-medium mb-1" style={{ color: v.strong }}>{p.name}</p>
+                <p className="text-[17px] font-light leading-[1.65]" style={{ color: v.product }}>{p.desc}</p>
               </div>
             ))}
           </div>
@@ -196,7 +196,7 @@ function ContentPanel({
             {block.bullets.map((b) => (
               <li
                 key={b.label}
-                className="flex items-start gap-3 text-[14px] font-light leading-[1.78]"
+                className="flex items-start gap-3 text-[16px] font-light leading-[1.78]"
                 style={{ color: v.bullet }}
               >
                 <span className="w-1 h-1 rounded-full flex-shrink-0 mt-2.5" style={{ background: 'var(--g)' }} />
@@ -214,10 +214,10 @@ function ContentPanel({
             {block.pillars.map((p) => (
               <li
                 key={p}
-                className="flex items-start gap-3 text-[13.5px] font-light leading-[1.7]"
+                className="flex items-start gap-3 text-[18px] font-light leading-[1.7]"
                 style={{ color: v.pillar }}
               >
-                <span className="text-[11px] mt-0.5 flex-shrink-0" style={{ color: 'var(--g)' }}>◆</span>
+                <span className="text-[15px] mt-0.5 flex-shrink-0" style={{ color: 'var(--g)' }}>◆</span>
                 {p}
               </li>
             ))}
@@ -227,7 +227,7 @@ function ContentPanel({
         {block.cta && (
           <Link
             href={block.cta.href}
-            className="inline-block mt-2 px-10 py-4 text-[11px] tracking-[0.2em] uppercase font-medium transition-all duration-300 hover:brightness-110 hover:tracking-[0.24em]"
+            className="inline-block mt-2 px-10 py-4 text-[15px] tracking-[0.2em] uppercase font-medium transition-all duration-300 hover:brightness-110 hover:tracking-[0.24em]"
             style={{ background: 'var(--g)', color: 'var(--ink)' }}
           >
             {block.cta.label}

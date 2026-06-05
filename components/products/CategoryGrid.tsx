@@ -24,7 +24,7 @@ export default function CategoryGrid() {
             Nine Disciplines of
             <em style={{ fontStyle: 'italic', color: 'var(--c)' }}> Floor Artistry</em>
           </h2>
-          <p className="text-[15px] font-light leading-[1.85] max-w-2xl mb-14" style={{ color: 'var(--inkm)' }}>
+          <p className="text-[17px] font-light leading-[1.85] max-w-2xl mb-14" style={{ color: 'var(--inkm)' }}>
             Select a collection to explore craftsmanship, materials, project applications and specifications — each category manufactured in our Bhadohi campus.
           </p>
         </Reveal>
@@ -68,7 +68,7 @@ export default function CategoryGrid() {
 
                 <div className="absolute bottom-0 left-0 right-0 p-7 z-[2]">
                   <p
-                    className="text-[10px] tracking-[0.28em] uppercase mb-2 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0"
+                    className="text-[15px] tracking-[0.28em] uppercase mb-2 opacity-0 group-hover:opacity-100 transition-all duration-400 translate-y-2 group-hover:translate-y-0"
                     style={{ color: 'var(--gp)' }}
                   >
                     Explore Collection
@@ -84,7 +84,7 @@ export default function CategoryGrid() {
                     {cat.name}
                   </h3>
                   <span
-                    className="inline-flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase font-medium transition-all duration-300 group-hover:gap-3"
+                    className="inline-flex items-center gap-2 text-[15px] tracking-[0.2em] uppercase font-medium transition-all duration-300 group-hover:gap-3"
                     style={{ color: 'var(--gl)' }}
                   >
                     View Details

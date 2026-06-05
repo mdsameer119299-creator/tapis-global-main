@@ -47,16 +47,16 @@ export default function CustomProcess() {
                   }}
                 >
                   <span
-                    className="font-display text-[18px]"
+                    className="font-display text-[20px]"
                     style={{ fontFamily: '"Cormorant Garamond", serif', color: 'var(--gp)' }}
                   >
                     {step.step}
                   </span>
                 </div>
-                <h3 className="text-[13px] font-medium mb-2 tracking-wide" style={{ color: '#fff' }}>
+                <h3 className="text-[15px] font-medium mb-2 tracking-wide" style={{ color: '#fff' }}>
                   {step.title}
                 </h3>
-                <p className="text-[12.5px] font-light leading-[1.7]" style={{ color: 'rgba(248,244,238,0.42)' }}>
+                <p className="text-[17px] font-light leading-[1.7]" style={{ color: 'rgba(248,244,238,0.42)' }}>
                   {step.desc}
                 </p>
               </div>
@@ -77,10 +77,10 @@ export default function CustomProcess() {
                   className="absolute -left-8 top-1 w-7 h-7 rounded-full flex items-center justify-center"
                   style={{ background: '#0d0a08', border: '1px solid rgba(192,155,74,0.4)' }}
                 >
-                  <span className="text-[10px]" style={{ color: 'var(--gp)' }}>{step.step}</span>
+                  <span className="text-[15px]" style={{ color: 'var(--gp)' }}>{step.step}</span>
                 </div>
-                <h3 className="text-[14px] font-medium mb-1.5" style={{ color: '#fff' }}>{step.title}</h3>
-                <p className="text-[13px] font-light leading-[1.72]" style={{ color: 'rgba(248,244,238,0.42)' }}>
+                <h3 className="text-[16px] font-medium mb-1.5" style={{ color: '#fff' }}>{step.title}</h3>
+                <p className="text-[15px] font-light leading-[1.72]" style={{ color: 'rgba(248,244,238,0.42)' }}>
                   {step.desc}
                 </p>
               </div>

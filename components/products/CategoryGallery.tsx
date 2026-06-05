@@ -80,7 +80,7 @@ export default function CategoryGallery({ images, title }: Props) {
                   style={{ filter: 'brightness(0.82) saturate(0.9)' }}
                 />
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/25 transition-colors duration-400 flex items-center justify-center">
-                  <span className="opacity-0 group-hover:opacity-100 text-[10px] tracking-[0.2em] uppercase text-white transition-opacity duration-300">
+                  <span className="opacity-0 group-hover:opacity-100 text-[15px] tracking-[0.2em] uppercase text-white transition-opacity duration-300">
                     View
                   </span>
                 </div>
@@ -111,9 +111,9 @@ export default function CategoryGallery({ images, title }: Props) {
           <button type="button" onClick={(e) => { e.stopPropagation(); goPrev() }} className="absolute left-4 lg:left-8 text-[24px] z-[2] px-3 py-2" style={{ color: 'var(--gp)' }} aria-label="Previous">‹</button>
           <button type="button" onClick={(e) => { e.stopPropagation(); goNext() }} className="absolute right-4 lg:right-8 text-[24px] z-[2] px-3 py-2" style={{ color: 'var(--gp)' }} aria-label="Next">›</button>
           <div className="relative w-full max-w-4xl aspect-[4/3]" onClick={(e) => e.stopPropagation()}>
-            <Image src={active.src} alt={active.alt} fill className="object-contain" quality={90} sizes="90vw" priority />
+            <Image src={active.src} alt={active.alt} fill className="object-contain" quality={90} sizes="90vw" loading="eager" placeholder="blur" blurDataURL={BLUR_PLACEHOLDER} />
           </div>
-          <p className="absolute bottom-6 left-0 right-0 text-center text-[12px] px-6" style={{ color: 'rgba(255,255,255,0.45)' }}>
+          <p className="absolute bottom-6 left-0 right-0 text-center text-[14px] px-6" style={{ color: 'rgba(255,255,255,0.45)' }}>
             {active.alt}
           </p>
         </div>

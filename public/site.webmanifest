@@ -4,7 +4,7 @@
   "description": "Premium handmade carpet manufacturer & exporter from Bhadohi, India. Hand tufted, hand knotted, flat weave rugs. Wholesale to 45+ countries.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#4A1414",
+  "background_color": "#0A0806",
   "theme_color": "#4A1414",
   "orientation": "portrait-primary",
   "scope": "/",
@@ -12,28 +12,34 @@
   "categories": ["business", "shopping"],
   "icons": [
     {
-      "src": "/logos/tgi-header-logo1.png",
+      "src": "/logos/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
     },
     {
-      "src": "/logos/tgi-header-logo1.png",
+      "src": "/logos/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
+    },
+    {
+      "src": "/logos/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ],
   "screenshots": [
     {
-      "src": "/images/tgi-banner-1.png",
+      "src": "/images/tgi-banner-1.webp",
       "sizes": "1280x720",
       "type": "image/png",
       "form_factor": "wide",
       "label": "Tapis Global Homepage — Desktop"
     },
     {
-      "src": "/images/tgi-banner-7.jpg",
+      "src": "/images/tgi-banner-7.webp",
       "sizes": "390x844",
       "type": "image/jpeg",
       "form_factor": "narrow",

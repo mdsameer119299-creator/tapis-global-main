@@ -2,7 +2,7 @@ import { Cormorant_Garamond, EB_Garamond, Outfit } from 'next/font/google'
 
 export const outfit = Outfit({
   subsets:  ['latin'],
-  weight:   ['300', '400', '500', '600', '700'],
+  weight:   ['300', '400', '500', '600'],
   display:  'swap',
   preload:  true,
   variable: '--font-outfit',

@@ -5,6 +5,7 @@ import { PAGE_META, SEO_BASE_URL, OG_IMAGE } from '@/lib/seo'
 import {
   webPageSchema,
   breadcrumbSchema,
+  contactPageSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
 import PageHero from '@/components/layout/PageHero'
@@ -25,6 +26,7 @@ const PAGE_JSONLD = JSON.stringify(
       { name: 'Home',    url: SEO_BASE_URL },
       { name: 'Contact', url: PAGE_META.contact.canonical! },
     ]),
+    contactPageSchema(),
   ),
 )
 
@@ -45,8 +47,9 @@ export default function ContactPage() {
           </>
         }
         lead="Send us your requirements — our export team responds within 12 hours with pricing, sampling and lead time."
-        image="/images/tgi-banner-5.png"
+        image="/images/tgi-banner-5.webp"
         imageAlt="Contact Tapis Global International — carpet exporter Bhadohi India"
+        priority
       />
       <Inquiry />
     </>

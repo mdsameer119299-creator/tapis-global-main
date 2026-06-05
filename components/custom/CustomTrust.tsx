@@ -75,10 +75,10 @@ export default function CustomTrust() {
                 >
                   {ICONS[item.icon]}
                 </div>
-                <h3 className="text-[15px] font-medium mb-2" style={{ color: 'var(--inks)' }}>
+                <h3 className="text-[17px] font-medium mb-2" style={{ color: 'var(--inks)' }}>
                   {item.title}
                 </h3>
-                <p className="text-[13.5px] font-light leading-[1.72]" style={{ color: 'var(--inkm)' }}>
+                <p className="text-[18px] font-light leading-[1.72]" style={{ color: 'var(--inkm)' }}>
                   {item.desc}
                 </p>
               </div>

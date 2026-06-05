@@ -49,12 +49,12 @@ export default function CataloguePreview() {
                   style={{ background: 'rgba(10,8,6,0.45)' }}
                 >
                   <span
-                    className="w-8 h-8 rounded-full flex items-center justify-center mb-3 text-[14px]"
+                    className="w-8 h-8 rounded-full flex items-center justify-center mb-3 text-[16px]"
                     style={{ background: 'rgba(192,155,74,0.2)', color: 'var(--gp)' }}
                   >
                     🔒
                   </span>
-                  <p className="text-[10px] tracking-[0.16em] uppercase" style={{ color: 'rgba(248,244,238,0.5)' }}>
+                  <p className="text-[15px] tracking-[0.16em] uppercase" style={{ color: 'rgba(248,244,238,0.5)' }}>
                     {item.label}
                   </p>
                 </div>
@@ -64,13 +64,13 @@ export default function CataloguePreview() {
         </div>
 
         <Reveal>
-          <p className="text-center text-[14px] font-light mb-6" style={{ color: 'rgba(248,244,238,0.42)' }}>
+          <p className="text-center text-[16px] font-light mb-6" style={{ color: 'rgba(248,244,238,0.42)' }}>
             Full high-resolution catalogue pages available after request.
           </p>
           <div className="text-center">
             <Link
               href="#catalogue-form"
-              className="inline-block px-10 py-3.5 text-[11px] tracking-[0.2em] uppercase font-medium border rounded-sm transition-all duration-300 hover:border-[var(--g)] hover:text-[var(--gp)]"
+              className="inline-block px-10 py-3.5 text-[15px] tracking-[0.2em] uppercase font-medium border rounded-sm transition-all duration-300 hover:border-[var(--g)] hover:text-[var(--gp)]"
               style={{ borderColor: 'rgba(192,155,74,0.35)', color: 'rgba(248,244,238,0.55)' }}
             >
               Unlock Full Catalogue

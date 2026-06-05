@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import dynamic from 'next/dynamic'
 import { buildMetadata } from '@/lib/metadata'
 import { PAGE_META, SEO_BASE_URL, OG_IMAGE } from '@/lib/seo'
 import {
@@ -10,13 +11,14 @@ import {
 import { CUSTOM_FAQ } from '@/lib/custom'
 import CustomHero from '@/components/custom/CustomHero'
 import CustomIntro from '@/components/custom/CustomIntro'
-import CustomGallery from '@/components/custom/CustomGallery'
-import CustomForm from '@/components/custom/CustomForm'
-import CustomTrust from '@/components/custom/CustomTrust'
-import CustomProcess from '@/components/custom/CustomProcess'
-import CustomTestimonials from '@/components/custom/CustomTestimonials'
-import CustomFAQ from '@/components/custom/CustomFAQ'
-import CustomFinalCTA from '@/components/custom/CustomFinalCTA'
+
+const CustomGallery = dynamic(() => import('@/components/custom/CustomGallery'))
+const CustomForm = dynamic(() => import('@/components/custom/CustomForm'))
+const CustomTrust = dynamic(() => import('@/components/custom/CustomTrust'))
+const CustomProcess = dynamic(() => import('@/components/custom/CustomProcess'))
+const CustomTestimonials = dynamic(() => import('@/components/custom/CustomTestimonials'))
+const CustomFAQ = dynamic(() => import('@/components/custom/CustomFAQ'))
+const CustomFinalCTA = dynamic(() => import('@/components/custom/CustomFinalCTA'))
 
 export const metadata: Metadata = buildMetadata(PAGE_META.custom)
 

@@ -66,7 +66,7 @@ export default function SamplesHero() {
 
       <div className="absolute inset-0 z-[3] flex flex-col items-center justify-center text-center px-6">
         <div
-          className="flex items-center gap-3 text-[10px] tracking-[0.44em] uppercase mb-[18px]"
+          className="flex items-center gap-3 text-[15px] tracking-[0.44em] uppercase mb-[18px]"
           style={{ color: 'var(--gl)' }}
         >
           <span className="block w-8 h-px" style={{ background: 'var(--g)' }} />
@@ -86,7 +86,7 @@ export default function SamplesHero() {
         </h1>
 
         <p
-          className="text-[15px] font-light leading-[1.75] max-w-[520px] mb-8"
+          className="text-[17px] font-light leading-[1.75] max-w-[520px] mb-8"
           style={{ color: 'rgba(255,255,255,0.6)' }}
         >
           Touch, feel and compare our premium carpet materials before placing your order.
@@ -96,7 +96,7 @@ export default function SamplesHero() {
         <button
           type="button"
           onClick={scrollToCatalog}
-          className="inline-flex items-center gap-2.5 px-8 py-3.5 text-[11px] tracking-[0.18em] uppercase font-semibold border-none cursor-pointer transition-colors duration-200 hover:brightness-110"
+          className="inline-flex items-center gap-2.5 px-8 py-3.5 text-[15px] tracking-[0.18em] uppercase font-semibold border-none cursor-pointer transition-colors duration-200 hover:brightness-110"
           style={{ background: 'var(--g)', color: 'var(--ink)' }}
         >
           Request Free Samples →

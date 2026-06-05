@@ -19,12 +19,12 @@ export default function PageHero({
 }: PageHeroProps) {
   return (
     <section
-      className="relative overflow-hidden flex items-end px-12 max-lg:px-6"
+      className="relative overflow-hidden flex items-end px-5 sm:px-6 lg:px-12 max-lg:px-6"
       style={{
-        height:        '52vh',
-        minHeight:     380,
+        height:        'min(52vh, 420px)',
+        minHeight:     320,
         background:    '#1a1310',
-        paddingBottom: 56,
+        paddingBottom: 48,
       }}
     >
       <div className="absolute inset-0">
@@ -48,7 +48,7 @@ export default function PageHero({
 
       <div className="relative z-[3] max-w-3xl">
         <div
-          className="flex items-center gap-3 text-[10px] tracking-[0.38em] uppercase mb-4"
+          className="flex items-center gap-3 text-[15px] tracking-[0.38em] uppercase mb-4"
           style={{ color: 'var(--gl)' }}
         >
           <span className="block h-px w-8" style={{ background: 'var(--g)' }} />
@@ -66,7 +66,7 @@ export default function PageHero({
         </h1>
         {lead && (
           <p
-            className="text-[15px] font-light leading-[1.85] max-w-xl mt-4"
+            className="text-[17px] font-light leading-[1.85] max-w-xl mt-4"
             style={{ color: 'rgba(255,255,255,0.62)' }}
           >
             {lead}

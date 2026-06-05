@@ -84,10 +84,10 @@ export function organizationSchema() {
 export function localBusinessSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': ['LocalBusiness', 'Store', 'ExportCompany'],
+    '@type': ['LocalBusiness', 'Store'],
     '@id': `${SEO_BASE_URL}/#localbusiness`,
     name: BRAND.legalName,
-    image: [OG_IMAGE.url, `${SEO_BASE_URL}/images/manufacturing-rug-img.png`],
+    image: [OG_IMAGE.url, `${SEO_BASE_URL}/images/manufacturing-rug-img.webp`],
     url:  SEO_BASE_URL,
     telephone: BRAND.phone,
     email:     BRAND.email,
@@ -134,10 +134,67 @@ export function websiteSchema() {
     publisher: {
       '@id': `${SEO_BASE_URL}/#organization`,
     },
-    potentialAction: {
-      '@type':       'SearchAction',
-      target:        `${SEO_BASE_URL}/search?q={search_term_string}`,
-      'query-input': 'required name=search_term_string',
+  }
+}
+
+// ─── MANUFACTURER ────────────────────────────────────────────────────────────
+export function manufacturerSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type':    'Manufacturer',
+    '@id':      `${SEO_BASE_URL}/#manufacturer`,
+    name:       BRAND.legalName,
+    url:        SEO_BASE_URL,
+    image:      OG_IMAGE.url,
+    description:
+      'Premium carpet manufacturer and flooring solutions exporter from Bhadohi, India — handmade, hand tufted, hand knotted, hospitality and custom rugs.',
+    foundingDate: String(BRAND.established),
+    brand: {
+      '@type': 'Brand',
+      name:    BRAND.shortName,
+    },
+    address: {
+      '@type':           'PostalAddress',
+      streetAddress:     BRAND.address.street,
+      addressLocality:   BRAND.address.city,
+      addressRegion:     BRAND.address.state,
+      postalCode:        BRAND.address.postal,
+      addressCountry:    BRAND.address.country,
+    },
+    areaServed: 'Worldwide',
+    knowsAbout: [
+      'Handmade carpets',
+      'Hand tufted carpets',
+      'Hand knotted carpets',
+      'Hospitality flooring',
+      'Wall to wall carpets',
+      'Custom rug manufacturing',
+    ],
+    parentOrganization: {
+      '@id': `${SEO_BASE_URL}/#organization`,
+    },
+  }
+}
+
+// ─── CONTACT PAGE ────────────────────────────────────────────────────────────
+export function contactPageSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type':    'ContactPage',
+    '@id':      `${SEO_BASE_URL}/contact#contactpage`,
+    url:        `${SEO_BASE_URL}/contact`,
+    name:       'Contact Tapis Global International',
+    description:
+      'Contact Tapis Global for project enquiries, custom carpet manufacturing, samples and export quotes. Corporate office New Delhi; manufacturing Bhadohi, India.',
+    inLanguage: 'en-US',
+    isPartOf:   { '@id': `${SEO_BASE_URL}/#website` },
+    about:      { '@id': `${SEO_BASE_URL}/#organization` },
+    mainEntity: {
+      '@type': 'Organization',
+      '@id':   `${SEO_BASE_URL}/#organization`,
+      name:    BRAND.legalName,
+      telephone: BRAND.phone,
+      email:     BRAND.email,
     },
   }
 }

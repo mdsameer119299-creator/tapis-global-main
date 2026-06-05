@@ -33,13 +33,13 @@ export default function SwatchCard({ swatch, priority = false }: SwatchCardProps
         />
       </div>
       <div
-        className="text-[10px] font-semibold tracking-[0.07em] uppercase leading-snug mb-0.5"
+        className="text-[15px] font-semibold tracking-[0.07em] uppercase leading-snug mb-0.5"
         style={{ color: 'var(--ink)' }}
       >
         {swatch.name}
       </div>
       <div
-        className="text-[9.5px] tracking-[0.05em] font-normal"
+        className="text-[14px] tracking-[0.05em] font-normal"
         style={{ color: 'var(--inkl)' }}
       >
         {swatch.code}

@@ -32,7 +32,7 @@ export default function CatalogueHero() {
       />
 
       <div className="relative z-[3] px-12 max-lg:px-6 pb-14 pt-28 max-w-4xl">
-        <p className="text-[10px] tracking-[0.38em] uppercase mb-4" style={{ color: 'var(--gl)' }}>
+        <p className="text-[15px] tracking-[0.38em] uppercase mb-4" style={{ color: 'var(--gl)' }}>
           {CATALOGUE_HERO.eyebrow}
         </p>
         <h1
@@ -46,7 +46,7 @@ export default function CatalogueHero() {
           Request Our Luxury{' '}
           <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Carpet Catalogue</em>
         </h1>
-        <p className="text-[16px] font-light leading-[1.9] max-w-2xl" style={{ color: 'rgba(248,244,238,0.58)' }}>
+        <p className="text-[18px] font-light leading-[1.9] max-w-2xl" style={{ color: 'rgba(248,244,238,0.58)' }}>
           {CATALOGUE_HERO.lead}
         </p>
       </div>

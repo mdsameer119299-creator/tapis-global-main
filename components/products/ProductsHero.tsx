@@ -9,7 +9,7 @@ export default function ProductsHero() {
       <div className="absolute inset-0">
         <div className="relative w-full h-full fill-frame">
           <OptimizedImage
-            src="/images/tgi-banner-6.png"
+            src="/images/tgi-banner-6.webp"
             alt="Luxury carpet collections — Tapis Global International"
             fill
             priority
@@ -32,7 +32,7 @@ export default function ProductsHero() {
 
       <div className="relative z-[3] px-12 max-lg:px-6 pb-16 pt-32 max-w-4xl">
         <div
-          className="flex items-center gap-3 text-[10px] tracking-[0.38em] uppercase mb-5"
+          className="flex items-center gap-3 text-[15px] tracking-[0.38em] uppercase mb-5"
           style={{ color: 'var(--gl)' }}
         >
           <span className="block h-px w-8" style={{ background: 'var(--g)' }} />
@@ -51,7 +51,7 @@ export default function ProductsHero() {
           <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Collections</em>
         </h1>
         <p
-          className="text-[16px] font-light leading-[1.9] max-w-2xl"
+          className="text-[18px] font-light leading-[1.9] max-w-2xl"
           style={{ color: 'rgba(248,244,238,0.58)' }}
         >
           Explore handcrafted elegance designed for modern interiors, hospitality spaces, and premium living.

@@ -50,7 +50,7 @@ export default function ColorLibrary() {
     >
       <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-12">
         <div className="text-center max-w-2xl mx-auto mb-10">
-          <p className="text-[10px] tracking-[0.32em] uppercase mb-3" style={{ color: 'var(--gd)' }}>
+          <p className="text-[15px] tracking-[0.32em] uppercase mb-3" style={{ color: 'var(--gd)' }}>
             Yarn &amp; Color Library
           </p>
           <h2
@@ -63,7 +63,7 @@ export default function ColorLibrary() {
           >
             Yarn &amp; Color Library
           </h2>
-          <p className="text-[14px] font-light leading-[1.75]" style={{ color: 'var(--inkm)' }}>
+          <p className="text-[16px] font-light leading-[1.75]" style={{ color: 'var(--inkm)' }}>
             Explore our curated range of {SAMPLE_STATS.displayTotal}+ colours across premium yarn qualities.
           </p>
         </div>
@@ -77,7 +77,7 @@ export default function ColorLibrary() {
               setShowAll(false)
             }}
             placeholder="Search color name or code..."
-            className="flex-1 min-w-0 px-4 py-3 text-[14px] border outline-none focus:border-[var(--g)]"
+            className="flex-1 min-w-0 px-4 py-3 text-[16px] border outline-none focus:border-[var(--g)]"
             style={{ borderColor: 'var(--bd)', background: '#fff', color: 'var(--ink)' }}
             aria-label="Search colours"
           />
@@ -116,7 +116,7 @@ export default function ColorLibrary() {
           </div>
           <Link
             href="/contact"
-            className="inline-flex items-center justify-center px-6 py-3 text-[10px] tracking-[0.14em] uppercase font-semibold whitespace-nowrap transition-colors hover:brightness-110"
+            className="inline-flex items-center justify-center px-6 py-3 text-[15px] tracking-[0.14em] uppercase font-semibold whitespace-nowrap transition-colors hover:brightness-110"
             style={{ background: 'var(--c)', color: '#fff' }}
           >
             Request Color Card
@@ -124,7 +124,7 @@ export default function ColorLibrary() {
         </div>
 
         {filtered.length === 0 ? (
-          <p className="text-center py-16 text-[14px]" style={{ color: 'var(--inkm)' }}>
+          <p className="text-center py-16 text-[16px]" style={{ color: 'var(--inkm)' }}>
             No colours match your filters. Try adjusting search or filters.
           </p>
         ) : (
@@ -137,7 +137,7 @@ export default function ColorLibrary() {
             }}
           >
             {visible.map((swatch, i) => (
-              <SwatchCard key={`${swatch.code}-${swatch.categoryId}`} swatch={swatch} priority={i < 12} />
+              <SwatchCard key={`${swatch.code}-${swatch.categoryId}`} swatch={swatch} priority={i < 4} />
             ))}
           </div>
         )}
@@ -147,7 +147,7 @@ export default function ColorLibrary() {
             <button
               type="button"
               onClick={() => setShowAll(true)}
-              className="px-10 py-3.5 text-[11px] tracking-[0.16em] uppercase font-semibold border-none cursor-pointer transition-all hover:brightness-110"
+              className="px-10 py-3.5 text-[15px] tracking-[0.16em] uppercase font-semibold border-none cursor-pointer transition-all hover:brightness-110"
               style={{ background: 'var(--c)', color: '#fff' }}
             >
               View All {SAMPLE_STATS.displayTotal}+ Colors
@@ -157,7 +157,7 @@ export default function ColorLibrary() {
             <button
               type="button"
               onClick={scrollToCatalog}
-              className="px-10 py-3.5 text-[11px] tracking-[0.16em] uppercase font-semibold border transition-colors hover:bg-[var(--g)] hover:text-[var(--ink)]"
+              className="px-10 py-3.5 text-[15px] tracking-[0.16em] uppercase font-semibold border transition-colors hover:bg-[var(--g)] hover:text-[var(--ink)]"
               style={{ borderColor: 'var(--g)', color: 'var(--c)' }}
             >
               Browse By Collection ↓
@@ -165,7 +165,7 @@ export default function ColorLibrary() {
           )}
         </div>
 
-        <p className="text-center mt-6 text-[12px]" style={{ color: 'var(--inkl)' }}>
+        <p className="text-center mt-6 text-[14px]" style={{ color: 'var(--inkl)' }}>
           Showing {visible.length} of {filtered.length} matching shades
           {filtered.length !== SAMPLE_STATS.totalSwatches && ` · ${SAMPLE_STATS.displayTotal}+ colours in studio`}
         </p>
@@ -192,7 +192,7 @@ function FilterSelect({
       value={value}
       onChange={(e) => onChange(e.target.value)}
       aria-label={label}
-      className="px-3 py-3 text-[12px] tracking-[0.06em] border min-w-[140px] cursor-pointer outline-none focus:border-[var(--g)]"
+      className="px-3 py-3 text-[14px] tracking-[0.06em] border min-w-[140px] cursor-pointer outline-none focus:border-[var(--g)]"
       style={{ borderColor: 'var(--bd)', background: '#fff', color: 'var(--ink)' }}
     >
       {options.map((o) => (

@@ -1,21 +1,24 @@
 import type { Metadata, Viewport } from 'next'
+import dynamic from 'next/dynamic'
 import Script from 'next/script'
 import '@/styles/globals.css'
-import { buildMetadata, TITLE_TEMPLATE } from '@/lib/metadata'
+import { buildMetadata } from '@/lib/metadata'
 import { PAGE_META }    from '@/lib/seo'
 import {
   organizationSchema,
   localBusinessSchema,
   websiteSchema,
+  manufacturerSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
-import Loader    from '@/components/layout/Loader'
 import Navbar    from '@/components/layout/Navbar'
 import Footer    from '@/components/layout/Footer'
-import StickyBar from '@/components/layout/StickyBar'
-import FloatingWhatsApp from '@/components/layout/FloatingWhatsApp'
 import HashScroll from '@/components/layout/HashScroll'
 import { fontVariables, outfit } from '@/lib/fonts'
+
+const Loader = dynamic(() => import('@/components/layout/Loader'), { ssr: false })
+const StickyBar = dynamic(() => import('@/components/layout/StickyBar'), { ssr: false })
+const FloatingWhatsApp = dynamic(() => import('@/components/layout/FloatingWhatsApp'), { ssr: false })
 
 export const viewport: Viewport = {
   width:        'device-width',
@@ -27,11 +30,11 @@ export const viewport: Viewport = {
 
 // ── Root metadata exported to Next.js ────────────────────────────────────────
 export const metadata: Metadata = {
+  metadataBase: new URL(PAGE_META.home.canonical!),
   ...buildMetadata(PAGE_META.home),
-  // Title template applies to all child pages automatically
   title: {
     default:  PAGE_META.home.title,
-    template: TITLE_TEMPLATE,
+    template: '%s',
   },
 }
 
@@ -40,6 +43,7 @@ const LAYOUT_JSONLD = JSON.stringify(
   buildJsonLd(
     organizationSchema(),
     localBusinessSchema(),
+    manufacturerSchema(),
     websiteSchema(),
   )
 )
@@ -70,17 +74,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <StickyBar />
         <FloatingWhatsApp />
 
-        {/* Custom cursor — inline to avoid layout shift */}
-        <Script id="cursor-init" strategy="afterInteractive">{`
+        {/* Custom cursor — desktop pointer devices only */}
+        <Script id="cursor-init" strategy="lazyOnload">{`
           (function() {
+            if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
             var cd = document.getElementById('cd');
             var cr = document.getElementById('cr');
             if (!cd || !cr) return;
-            var mx = 0, my = 0;
             document.addEventListener('mousemove', function(e) {
-              mx = e.clientX; my = e.clientY;
-              cd.style.left = mx + 'px'; cd.style.top = my + 'px';
-              cr.style.left = mx + 'px'; cr.style.top = my + 'px';
+              cd.style.left = e.clientX + 'px'; cd.style.top = e.clientY + 'px';
+              cr.style.left = e.clientX + 'px'; cr.style.top = e.clientY + 'px';
             }, { passive: true });
             document.addEventListener('mousedown', function() {
               cr.style.width = '20px'; cr.style.height = '20px';

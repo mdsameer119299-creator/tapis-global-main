@@ -74,8 +74,9 @@ export default function OptimizedImage({
       {...props}
       priority={priority}
       quality={priority ? 80 : 72}
-      placeholder={priority ? undefined : 'empty'}
-      blurDataURL={priority ? BLUR_PLACEHOLDER : undefined}
+      loading={priority ? undefined : 'lazy'}
+      placeholder={priority ? 'blur' : 'empty'}
+      blurDataURL={BLUR_PLACEHOLDER}
       className={`${imgClassName} ${className ?? ''}`.trim()}
       style={{
         filter:     combinedFilter !== 'none' ? combinedFilter : undefined,

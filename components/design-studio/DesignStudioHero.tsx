@@ -16,7 +16,7 @@ export default function DesignStudioHero() {
     <section className="relative overflow-hidden" style={{ minHeight: 'min(72vh, 560px)' }}>
       <div className="absolute inset-0">
         <Image
-          src="/images/vibrant-wool-dying.png"
+          src="/images/vibrant-wool-dying.webp"
           alt="Yarn, colour swatches and design materials — Tapis Global Design Studio"
           fill
           priority
@@ -38,7 +38,7 @@ export default function DesignStudioHero() {
 
       <div className="relative z-[2] max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-12 py-16 sm:py-20 lg:py-24 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-10">
         <div className="max-w-2xl">
-          <p className="text-[10px] tracking-[0.36em] uppercase mb-4" style={{ color: 'var(--gl)' }}>
+          <p className="text-[15px] tracking-[0.36em] uppercase mb-4" style={{ color: 'var(--gl)' }}>
             Design Studio
           </p>
           <h1
@@ -52,7 +52,7 @@ export default function DesignStudioHero() {
             Design with Limitless{' '}
             <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Possibilities</em>
           </h1>
-          <p className="text-[15px] font-light leading-[1.8] max-w-lg" style={{ color: 'rgba(255,255,255,0.65)' }}>
+          <p className="text-[17px] font-light leading-[1.8] max-w-lg" style={{ color: 'rgba(255,255,255,0.65)' }}>
             From yarn selection to custom colour development — we help architects, designers and project teams
             create the perfect carpet for every space.
           </p>
@@ -69,7 +69,7 @@ export default function DesignStudioHero() {
                   {item.value}
                 </p>
               )}
-              <p className="text-[10px] sm:text-[11px] tracking-[0.08em] leading-snug" style={{ color: 'rgba(255,255,255,0.55)' }}>
+              <p className="text-[15px] sm:text-[15px] tracking-[0.08em] leading-snug" style={{ color: 'rgba(255,255,255,0.55)' }}>
                 {item.label}
               </p>
             </div>

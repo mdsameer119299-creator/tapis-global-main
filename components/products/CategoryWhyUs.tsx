@@ -66,8 +66,8 @@ export default function CategoryWhyUs() {
               >
                 {ICONS[item.icon]}
               </div>
-              <h3 className="text-[14px] font-medium mb-2" style={{ color: 'var(--inks)' }}>{item.title}</h3>
-              <p className="text-[13px] font-light leading-[1.7]" style={{ color: 'var(--inkm)' }}>{item.desc}</p>
+              <h3 className="text-[16px] font-medium mb-2" style={{ color: 'var(--inks)' }}>{item.title}</h3>
+              <p className="text-[15px] font-light leading-[1.7]" style={{ color: 'var(--inkm)' }}>{item.desc}</p>
             </div>
           </Reveal>
         ))}
@@ -77,14 +77,14 @@ export default function CategoryWhyUs() {
         <div className="flex flex-wrap gap-4 justify-center">
           <Link
             href="/contact"
-            className="px-10 py-3.5 text-[11px] tracking-[0.2em] uppercase font-medium border transition-colors duration-300 hover:border-[var(--c)] hover:text-[var(--c)]"
+            className="px-10 py-3.5 text-[15px] tracking-[0.2em] uppercase font-medium border transition-colors duration-300 hover:border-[var(--c)] hover:text-[var(--c)]"
             style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
           >
             Request Project Quote
           </Link>
           <Link
             href={SITE.whatsapp}
-            className="px-10 py-3.5 text-[11px] tracking-[0.2em] uppercase font-medium"
+            className="px-10 py-3.5 text-[15px] tracking-[0.2em] uppercase font-medium"
             style={{ background: '#25D366', color: '#fff' }}
           >
             WhatsApp Enquiry

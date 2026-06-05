@@ -14,7 +14,7 @@ export default function ProductsHero() {
       <div className="absolute inset-0">
         <div className="relative w-full h-full fill-frame">
           <OptimizedImage
-            src="/images/tgi-banner-6.png"
+            src="/images/tgi-banner-6.webp"
             alt="Premium handmade carpet collections — Tapis Global International"
             fill
             priority
@@ -32,7 +32,7 @@ export default function ProductsHero() {
 
       <div className="relative z-[3] max-w-3xl">
         <div
-          className="flex items-center gap-3 text-[10px] tracking-[0.38em] uppercase mb-4"
+          className="flex items-center gap-3 text-[15px] tracking-[0.38em] uppercase mb-4"
           style={{ color: 'var(--gl)' }}
         >
           <span className="block h-px w-8" style={{ background: 'var(--g)' }} />
@@ -50,7 +50,7 @@ export default function ProductsHero() {
           <br />
           <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Every Interior.</em>
         </h1>
-        <p className="mt-4 text-[14px] font-light leading-relaxed max-w-xl" style={{ color: 'rgba(255,255,255,0.55)' }}>
+        <p className="mt-4 text-[16px] font-light leading-relaxed max-w-xl" style={{ color: 'rgba(255,255,255,0.55)' }}>
           Luxury carpets for homes, hotels, offices, retail and designer projects — manufactured in Bhadohi for pan India supply and global markets.
         </p>
       </div>

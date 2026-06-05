@@ -10,7 +10,7 @@ export default function SamplesStrip() {
       }}
     >
       <p
-        className="text-[13.5px] leading-[1.7] tracking-[0.04em]"
+        className="text-[18px] leading-[1.7] tracking-[0.04em]"
         style={{ color: 'rgba(255,255,255,0.55)' }}
       >
         <strong style={{ color: 'var(--gp)', fontWeight: 500 }}>
@@ -21,7 +21,7 @@ export default function SamplesStrip() {
       </p>
       <a
         href="#samples-catalog"
-        className="inline-block text-[11px] tracking-[0.16em] uppercase px-[26px] py-2.5 border whitespace-nowrap transition-all duration-200 hover:bg-[var(--g)] hover:text-[var(--ink)]"
+        className="inline-block text-[15px] tracking-[0.16em] uppercase px-[26px] py-2.5 border whitespace-nowrap transition-all duration-200 hover:bg-[var(--g)] hover:text-[var(--ink)]"
         style={{
           borderColor: 'var(--g)',
           color: 'var(--gp)',

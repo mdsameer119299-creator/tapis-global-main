@@ -19,7 +19,7 @@ export default function CountryTicker() {
           >
             <span className="text-[22px]">{r.flag}</span>
             <span
-              className="text-[13.5px] tracking-[0.04em] font-light"
+              className="text-[18px] tracking-[0.04em] font-light"
               style={{ color: 'rgba(255,255,255,0.5)' }}
             >
               {r.country}

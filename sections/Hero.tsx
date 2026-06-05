@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import Image from 'next/image'
 import { HERO_SLIDES, HERO_STATS, SITE } from '@/lib/data'
 import { BLUR_PLACEHOLDER } from '@/components/ui/OptimizedImage'
@@ -8,14 +8,14 @@ const DURATION = 7000
 
 export default function Hero() {
   const [current, setCurrent] = useState(0)
-  const [progress, setProgress] = useState(0)
+  const progressRef = useRef<HTMLDivElement>(null)
 
   const goTo = useCallback((n: number) => {
     setCurrent(((n % HERO_SLIDES.length) + HERO_SLIDES.length) % HERO_SLIDES.length)
-    setProgress(0)
+    if (progressRef.current) progressRef.current.style.width = '0%'
   }, [])
 
-  // Auto-advance + progress bar
+  // Auto-advance + progress bar (DOM updates — no per-frame React re-renders)
   useEffect(() => {
     let start: number
     let raf: number
@@ -24,7 +24,8 @@ export default function Hero() {
     const tick = (ts: number) => {
       if (!start) start = ts
       const elapsed = ts - start
-      setProgress(Math.min((elapsed / DURATION) * 100, 100))
+      const pct = Math.min((elapsed / DURATION) * 100, 100)
+      if (progressRef.current) progressRef.current.style.width = `${pct}%`
       if (elapsed < DURATION) raf = requestAnimationFrame(tick)
     }
 
@@ -90,13 +91,13 @@ export default function Hero() {
       {/* ── Slide label ── */}
       <div className="absolute top-6 sm:top-8 left-5 sm:left-24 max-lg:left-5 z-[6] flex items-center gap-2.5">
         <span className="w-7 h-px" style={{ background: 'var(--g)' }} />
-        <span className="text-[9.5px] tracking-[0.36em] uppercase font-medium" style={{ color: 'var(--gl)' }}>
+        <span className="text-[14px] tracking-[0.36em] uppercase font-medium" style={{ color: 'var(--gl)' }}>
           {HERO_SLIDES[current].label}
         </span>
       </div>
 
       {/* ── Counter ── */}
-      <div className="absolute top-6 sm:top-8 right-5 sm:right-24 max-lg:right-5 z-[6] text-[11px] tracking-[0.2em]" style={{ color: 'rgba(255,255,255,0.38)' }}>
+      <div className="absolute top-6 sm:top-8 right-5 sm:right-24 max-lg:right-5 z-[6] text-[15px] tracking-[0.2em]" style={{ color: 'rgba(255,255,255,0.38)' }}>
         <span style={{ color: 'var(--gl)', fontWeight: 500 }}>
           {String(current + 1).padStart(2, '0')}
         </span>
@@ -144,24 +145,24 @@ export default function Hero() {
         className="absolute bottom-[172px] right-24 max-lg:hidden z-[6] text-center px-6 py-4 min-w-[148px]"
         style={{ background: 'rgba(4,2,1,0.55)', backdropFilter: 'blur(14px)', border: '1px solid rgba(192,155,74,0.3)' }}
       >
-        <p className="text-[9.5px] tracking-[0.28em] uppercase" style={{ color: 'var(--gl)' }}>Established</p>
+        <p className="text-[14px] tracking-[0.28em] uppercase" style={{ color: 'var(--gl)' }}>Established</p>
         <p className="font-display text-[40px] font-normal leading-tight my-0.5" style={{ fontFamily: '"Cormorant Garamond",serif', color: 'var(--gp)' }}>
           {SITE.established}
         </p>
-        <p className="text-[10px] tracking-[0.1em] uppercase" style={{ color: 'rgba(255,255,255,0.38)' }}>Bhadohi, India</p>
+        <p className="text-[15px] tracking-[0.1em] uppercase" style={{ color: 'rgba(255,255,255,0.38)' }}>Bhadohi, India</p>
       </div>
 
       {/* ── Scroll cue ── */}
       <div className="absolute bottom-8 sm:bottom-11 left-5 sm:left-24 max-lg:left-5 z-[6] hidden sm:flex items-center gap-2.5">
         <div className="w-px h-11" style={{ background: 'linear-gradient(to bottom, var(--g), transparent)', animation: 'scpulse 2.2s ease infinite' }} />
-        <span className="text-[9px] tracking-[0.3em] uppercase" style={{ color: 'rgba(255,255,255,0.28)', writingMode: 'vertical-rl' }}>
+        <span className="text-[14px] tracking-[0.3em] uppercase" style={{ color: 'rgba(255,255,255,0.28)', writingMode: 'vertical-rl' }}>
           Scroll
         </span>
       </div>
 
       {/* ── Vertical edge label ── */}
       <div
-        className="absolute left-7 top-1/2 -translate-y-1/2 -rotate-90 z-[6] text-[9px] tracking-[0.42em] uppercase whitespace-nowrap max-lg:hidden"
+        className="absolute left-7 top-1/2 -translate-y-1/2 -rotate-90 z-[6] text-[14px] tracking-[0.42em] uppercase whitespace-nowrap max-lg:hidden"
         style={{ color: 'rgba(255,255,255,0.22)' }}
       >
         Specification-Led · Pan India · Worldwide
@@ -172,7 +173,7 @@ export default function Hero() {
         className="absolute inset-0 z-[5] flex flex-col justify-end pb-8 sm:pb-12 lg:pb-20 px-5 sm:px-6 lg:px-24 pointer-events-none"
       >
         <div
-          className="inline-flex items-center gap-2.5 px-3 sm:px-4 py-2 mb-5 sm:mb-7 w-fit max-w-full text-[9px] sm:text-[11px] tracking-[0.22em] sm:tracking-[0.28em] uppercase pointer-events-auto"
+          className="inline-flex items-center gap-2.5 px-3 sm:px-4 py-2 mb-5 sm:mb-7 w-fit max-w-full text-[14px] sm:text-[15px] tracking-[0.22em] sm:tracking-[0.28em] uppercase pointer-events-auto"
           style={{ border: '1px solid rgba(192,155,74,0.5)', background: 'rgba(26,19,16,0.35)', backdropFilter: 'blur(8px)', color: 'var(--gp)' }}
         >
           Established {SITE.established} · Bhadohi, India
@@ -197,14 +198,14 @@ export default function Hero() {
         <div className="flex gap-2.5 sm:gap-3.5 items-stretch sm:items-center flex-col sm:flex-row mb-6 sm:mb-9 pointer-events-auto w-full sm:w-auto">
           <a
             href="/contact"
-            className="px-6 sm:px-8 py-3.5 text-[11px] sm:text-[11.5px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-medium border transition-all duration-300 text-center active:opacity-90"
+            className="px-6 sm:px-8 py-3.5 text-[15px] sm:text-[16px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-medium border transition-all duration-300 text-center active:opacity-90"
             style={{ background: 'var(--g)', color: 'var(--ink)', borderColor: 'var(--g)' }}
           >
             Start Your Design Journey
           </a>
           <a
             href="/products"
-            className="px-6 sm:px-8 py-3.5 text-[11px] sm:text-[11.5px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-medium border transition-all duration-300 text-center active:text-white"
+            className="px-6 sm:px-8 py-3.5 text-[15px] sm:text-[16px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-medium border transition-all duration-300 text-center active:text-white"
             style={{ border: '1px solid rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.65)' }}
           >
             Explore Collections
@@ -212,18 +213,18 @@ export default function Hero() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 sm:flex gap-y-3 gap-x-2 sm:gap-0 pt-5 sm:pt-7 pointer-events-auto" style={{ borderTop: '1px solid rgba(192,155,74,0.3)' }}>
+        <div className="grid grid-cols-2 md:flex gap-y-3 gap-x-2 md:gap-0 pt-5 sm:pt-7 pointer-events-auto" style={{ borderTop: '1px solid rgba(192,155,74,0.3)' }}>
           {HERO_STATS.map((stat, i) => (
             <div
               key={stat.label}
-              className="sm:flex-1 min-w-0 py-1 sm:py-0 sm:min-w-[120px] sm:pr-5 sm:mr-5 last:sm:pr-0 last:sm:mr-0"
+              className="md:flex-1 min-w-0 py-1 md:py-0 md:min-w-[100px] lg:min-w-[120px] md:pr-4 lg:pr-5 md:mr-4 lg:mr-5 last:md:pr-0 last:md:mr-0"
               style={{ borderRight: i < HERO_STATS.length - 1 ? undefined : undefined }}
             >
               <p className="font-display font-normal leading-none" style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 'clamp(28px,7vw,38px)', color: 'var(--gp)' }}>
                 {stat.value}
-                <sup className="text-[17px]" style={{ color: 'var(--g)', verticalAlign: 'super' }}>{stat.suffix}</sup>
+                <sup className="text-[19px]" style={{ color: 'var(--g)', verticalAlign: 'super' }}>{stat.suffix}</sup>
               </p>
-              <p className="text-[11px] tracking-[0.1em] uppercase mt-1.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
+              <p className="text-[15px] tracking-[0.1em] uppercase mt-1.5" style={{ color: 'rgba(255,255,255,0.45)' }}>
                 {stat.label}
               </p>
             </div>
@@ -232,7 +233,7 @@ export default function Hero() {
       </div>
 
       {/* ── Progress bar ── */}
-      <div className="absolute bottom-0 left-0 z-[7] h-0.5 transition-none" style={{ width: `${progress}%`, background: 'var(--g)' }} />
+      <div ref={progressRef} className="absolute bottom-0 left-0 z-[7] h-0.5 transition-none" style={{ width: '0%', background: 'var(--g)' }} />
 
       <style jsx global>{`
         @keyframes kbzoom { from { transform: scale(1.06) } to { transform: scale(1) } }

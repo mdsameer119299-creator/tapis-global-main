@@ -8,11 +8,11 @@ export const SEO_BASE_URL = 'https://www.tapisglobal.com'  // ← update to live
 // ─── OG IMAGE ────────────────────────────────────────────────────────────────
 // Replace with your actual hosted OG image (1200×630px recommended)
 export const OG_IMAGE = {
-  url:    `${SEO_BASE_URL}/images/tgi-banner-1.png`,
+  url:    `${SEO_BASE_URL}/images/tgi-banner-1.webp`,
   width:  1200,
   height: 630,
   alt:    'Tapis Global International — Premium Carpet & Flooring Solutions from Bhadohi, India',
-  type:   'image/png' as const,
+  type:   'image/webp' as const,
 }
 
 // ─── BRAND IDENTITY ──────────────────────────────────────────────────────────
@@ -20,7 +20,7 @@ export const BRAND = {
   legalName:   'Tapis Global International Pvt Ltd',
   shortName:   'Tapis Global',
   tagline:     'Premium Carpets. Pan India. Worldwide.',
-  established: 1994,
+  established: 1998,
   country:     'IN',
   language:    'en',
   locale:      'en_US',
@@ -120,9 +120,21 @@ export const KEYWORDS_ALL = [
 export const PAGE_META = {
 
   home: {
-    title:       `${BRAND.legalName} | Premium Flooring & Carpet Solutions — Pan India & Worldwide`,
-    description: `Tapis Global International — specification-led carpets and flooring from Bhadohi. Bespoke and project solutions for architects, interior designers, hospitality, developers and global buyers across India and international markets.`,
-    keywords:    KEYWORDS_ALL,
+    title:       'Tapis Global International | Luxury Handmade Carpets & Flooring Solutions',
+    description: 'Premium handmade carpets, custom rugs, wall-to-wall carpets, hospitality flooring and bespoke flooring solutions manufactured in Bhadohi and supplied worldwide.',
+    keywords:    [
+      'Luxury carpets',
+      'Handmade carpets',
+      'Custom rugs',
+      'Hospitality carpets',
+      'Hotel carpets',
+      'Wall to wall carpets',
+      'Hand tufted carpets',
+      'Hand knotted carpets',
+      'Bhadohi carpet manufacturer',
+      'India carpet exporter',
+      ...KEYWORDS_PRIMARY.slice(0, 6),
+    ],
     canonical:   SEO_BASE_URL,
   },
 
@@ -158,7 +170,7 @@ export const PAGE_META = {
     title:       `Carpet Sample Swatches | 1600+ Curated Shades — Tapis Global International`,
     description: `Browse 1600+ curated carpet colours across wool, silk, viscose, cotton and jute collections. Request colour cards and trade samples from Tapis Global International, Bhadohi, India.`,
     keywords:    [...KEYWORDS_PRODUCT, 'carpet sample swatches', 'rug colour samples wholesale', 'wool carpet samples India', 'free carpet samples trade'],
-    canonical:   `${SEO_BASE_URL}/samples`,
+    canonical:   `${SEO_BASE_URL}/design-studio`,
   },
 
   designStudio: {

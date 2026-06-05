@@ -5,7 +5,7 @@ export const CATALOGUE_HERO = {
   title:    'Request Our Luxury',
   titleEm:  'Carpet Catalogue',
   lead:     'Discover our exclusive collection of handcrafted carpets, rugs, and premium flooring solutions tailored for luxury interiors and global projects.',
-  image:    '/images/tgi-banner-6.png',
+  image:    '/images/tgi-banner-6.webp',
   imageAlt: 'Luxury carpet catalogue preview — Tapis Global International',
 }
 
@@ -48,10 +48,10 @@ export const CATALOGUE_WHY = [
 ]
 
 export const CATALOGUE_PREVIEW = [
-  { src: '/images/handtufted-img-2.png', label: 'Hand Tufted Collection' },
-  { src: '/images/tgi-banner-2.png', label: 'Hand Knotted Programme' },
-  { src: '/images/rug4.jpg', label: 'Contemporary Living' },
-  { src: '/images/tgi-banner-4.png', label: 'Hospitality Projects' },
+  { src: '/images/handtufted-img-2.webp', label: 'Hand Tufted Collection' },
+  { src: '/images/tgi-banner-2.webp', label: 'Hand Knotted Programme' },
+  { src: '/images/rug4.webp', label: 'Contemporary Living' },
+  { src: '/images/tgi-banner-4.webp', label: 'Hospitality Projects' },
 ]
 
 export const CATALOGUE_TRUST = [
