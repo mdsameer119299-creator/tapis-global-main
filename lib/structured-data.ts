@@ -72,6 +72,17 @@ export function organizationSchema() {
       '@type': 'AdministrativeArea',
       name: 'Worldwide',
     },
+    knowsAbout: [
+      'Carpet manufacturing',
+      'Rug manufacturing',
+      'Hand tufted carpets',
+      'Hand knotted carpets',
+      'Jute and sisal rugs',
+      'Wall to wall carpets',
+      'Hospitality and commercial carpets',
+      'Custom rug manufacturing',
+      'Carpet export',
+    ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name:    'Handmade Carpet & Rug Collections',
@@ -80,17 +91,20 @@ export function organizationSchema() {
   }
 }
 
-// ─── LOCAL BUSINESS ───────────────────────────────────────────────────────────
+// ─── LOCAL BUSINESS (manufacturing facility) ──────────────────────────────────
+// Kept minimal & accurate for a B2B manufacturer: real facility, contact and
+// hours. "Store" and retail/restaurant signals removed (inappropriate for B2B).
 export function localBusinessSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': ['LocalBusiness', 'Store'],
+    '@type': 'LocalBusiness',
     '@id': `${SEO_BASE_URL}/#localbusiness`,
     name: BRAND.legalName,
     image: [OG_IMAGE.url, `${SEO_BASE_URL}/images/manufacturing-rug-img.webp`],
     url:  SEO_BASE_URL,
     telephone: BRAND.phone,
     email:     BRAND.email,
+    parentOrganization: { '@id': `${SEO_BASE_URL}/#organization` },
     address: {
       '@type':           'PostalAddress',
       streetAddress:     BRAND.address.street,
@@ -112,10 +126,8 @@ export function localBusinessSchema() {
         closes:      '18:00',
       },
     ],
-    priceRange: '₹₹₹',
     currenciesAccepted: 'USD, EUR, GBP, INR',
     paymentAccepted:    'Bank Transfer, LC, DA, DP',
-    servesCuisine:      undefined,
     keywords: 'handmade carpet manufacturer, rug exporter, Bhadohi carpet, hand knotted rugs',
   }
 }
@@ -137,44 +149,10 @@ export function websiteSchema() {
   }
 }
 
-// ─── MANUFACTURER ────────────────────────────────────────────────────────────
-export function manufacturerSchema() {
-  return {
-    '@context': 'https://schema.org',
-    '@type':    'Manufacturer',
-    '@id':      `${SEO_BASE_URL}/#manufacturer`,
-    name:       BRAND.legalName,
-    url:        SEO_BASE_URL,
-    image:      OG_IMAGE.url,
-    description:
-      'Premium carpet manufacturer and flooring solutions exporter from Bhadohi, India — handmade, hand tufted, hand knotted, hospitality and custom rugs.',
-    foundingDate: String(BRAND.established),
-    brand: {
-      '@type': 'Brand',
-      name:    BRAND.shortName,
-    },
-    address: {
-      '@type':           'PostalAddress',
-      streetAddress:     BRAND.address.street,
-      addressLocality:   BRAND.address.city,
-      addressRegion:     BRAND.address.state,
-      postalCode:        BRAND.address.postal,
-      addressCountry:    BRAND.address.country,
-    },
-    areaServed: 'Worldwide',
-    knowsAbout: [
-      'Handmade carpets',
-      'Hand tufted carpets',
-      'Hand knotted carpets',
-      'Hospitality flooring',
-      'Wall to wall carpets',
-      'Custom rug manufacturing',
-    ],
-    parentOrganization: {
-      '@id': `${SEO_BASE_URL}/#organization`,
-    },
-  }
-}
+// NOTE: A dedicated "Manufacturer" schema type was removed — schema.org has no
+// such type, so Google ignored it. Manufacturer identity is expressed through the
+// Organization schema above (Corporation + knowsAbout + hasOfferCatalog), and via
+// `manufacturer` references on each Product.
 
 // ─── CONTACT PAGE ────────────────────────────────────────────────────────────
 export function contactPageSchema() {
@@ -286,24 +264,14 @@ export function productSchema({
       '@id': `${SEO_BASE_URL}/#organization`,
     },
     material,
+    category: 'Carpets & Rugs',
     countryOfOrigin: {
       '@type': 'Country',
       name:    'India',
     },
-    offers: {
-      '@type':           'Offer',
-      availability:      'https://schema.org/InStock',
-      priceCurrency:     'USD',
-      priceSpecification: {
-        '@type':    'UnitPriceSpecification',
-        priceCurrency: 'USD',
-        unitText:      'piece',
-        description:   `Minimum order quantity: ${moq}`,
-      },
-      seller: {
-        '@id': `${SEO_BASE_URL}/#organization`,
-      },
-    },
+    // No Offer node: this is a quote-based B2B product (MOQ, no public price).
+    // Including an Offer without a price triggers Google Merchant listing and
+    // Product snippet warnings. MOQ/origin are exposed via additionalProperty.
     additionalProperty: [
       {
         '@type': 'PropertyValue',
@@ -372,23 +340,9 @@ export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS) {
   }
 }
 
-// ─── AGGREGATE RATING ──────────────────────────────────────────────────────
-export function aggregateRatingSchema() {
-  return {
-    '@context': 'https://schema.org',
-    '@type':    'Organization',
-    '@id':      `${SEO_BASE_URL}/#organization`,
-    name:       BRAND.legalName,
-    aggregateRating: {
-      '@type':       'AggregateRating',
-      ratingValue:   '4.9',
-      bestRating:    '5',
-      worstRating:   '1',
-      ratingCount:   '87',
-      reviewCount:   '87',
-    },
-  }
-}
+// NOTE: aggregateRatingSchema was removed. Self-serving AggregateRating markup
+// without verifiable on-page reviews violates Google's review-snippet policy and
+// risks a manual action. Re-introduce only with genuine, displayed reviews.
 
 // ─── HELPER: combine multiple schemas into a @graph ──────────────────────────
 export function buildJsonLd(...schemas: object[]) {
