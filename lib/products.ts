@@ -108,24 +108,17 @@ export const PRODUCT_WHY_US = [
   { icon: 'artisan',  title: '500+ Skilled Artisans',      desc: 'Master craftspeople across tufting, knotting, flatweave and finishing divisions under one Bhadohi roof.' },
 ]
 
-// Shared FAQ helpers — combined with category-specific FAQs on each page
-function makeBaseFaqs(name: string, moq: string, leadTime: string): ProductFaq[] {
+// Two shared trust FAQs appended after each category's unique FAQs.
+// Kept deliberately short so unique, category-specific content dominates each page.
+function makeBaseFaqs(name: string): ProductFaq[] {
   return [
     {
-      q: `Are you a manufacturer or a supplier of ${name.toLowerCase()}?`,
-      a: `Tapis Global International is a direct manufacturer of ${name.toLowerCase()} from our own integrated facility in Bhadohi, India — we are also a supplier and exporter. Buying direct from the manufacturer means better pricing, full quality control and complete customisation without middlemen.`,
-    },
-    {
-      q: `What is the minimum order quantity (MOQ) for ${name.toLowerCase()}?`,
-      a: `The standard MOQ for ${name.toLowerCase()} is ${moq}. We also accommodate single bespoke pieces for architects and designers, as well as large project and contract volumes for hotels, developers and distributors.`,
-    },
-    {
-      q: `What is the typical lead time for ${name.toLowerCase()}?`,
-      a: `Standard production lead time is ${leadTime} depending on size, construction and quantity. Express timelines may be available subject to factory capacity — please share your project deadline when you enquire.`,
+      q: `Are you a manufacturer of ${name.toLowerCase()} or a reseller?`,
+      a: `Tapis Global International is a direct manufacturer — every ${name.toLowerCase()} is produced at our own integrated facility in Bhadohi, India, established in 1995. We are not a trading company or reseller; buying direct means better pricing, in-house quality control and full customisation.`,
     },
     {
       q: `Do you supply ${name.toLowerCase()} across India and internationally?`,
-      a: `Yes. The majority of our supply serves projects across India — hotels, commercial interiors, builders and designers — alongside export programmes for international buyers. We handle documentation, packing and coordinated delivery for both.`,
+      a: `Yes. The majority of our supply serves projects across India — hotels, commercial interiors, builders and designers — alongside export programmes for international buyers. We handle documentation, packing and coordinated project delivery for both.`,
     },
   ]
 }
@@ -187,6 +180,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'What is the difference between hand tufted and hand knotted carpets?', a: 'Hand tufted carpets are made by punching yarn through a backing with a tufting tool and then latexing a secondary backing — faster to produce and ideal for bold designs at scale. Hand knotted carpets are individually knotted on a loom, taking far longer but lasting generations. As a manufacturer we produce both and can advise which suits your project, budget and durability needs.' },
       { q: 'Can you produce hand tufted carpets to my exact design and colours?', a: 'Yes. We are a custom hand tufted carpet manufacturer — share artwork, a mood board or Pantone references and our Bhadohi studio will create lab-dips and a sample for approval before bulk production.' },
+      { q: 'Can you handle large hotel and hospitality carpet orders?', a: 'Yes. Hospitality is one of our core strengths — we produce hand tufted carpets for guest rooms, suites, lobbies and corridors at project scale, with fire-rated options, custom medallions and phased delivery aligned to your installation programme.' },
+      { q: 'What yarn weight (GSM) do you recommend for high-traffic areas?', a: 'For high-traffic hospitality and commercial spaces we typically recommend 3,500–5,500 GSM with a dense cut-pile for durability. For residential rooms a lighter 2,500–3,500 GSM gives a luxurious feel. We advise the right specification for each zone of your project.' },
     ],
     gallery: gallery(
       ['/images/handtufted-img-2.webp', '/images/tufting-carpet.webp', '/images/rug1.webp'],
@@ -251,6 +246,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'How long does a hand knotted carpet take to make?', a: 'A hand knotted carpet can take anywhere from several weeks to many months depending on size and knot density — a fine silk rug at 200+ KPSI represents thousands of hours of skilled work. We share realistic timelines at the quotation stage.' },
       { q: 'Why are hand knotted rugs considered an investment?', a: 'Because each rug is individually knotted from premium natural fibres, a well-made hand knotted carpet can last for generations and often appreciates in value. As a direct manufacturer we ensure authentic construction and full material transparency.' },
+      { q: 'What knot density (KPSI) should I choose?', a: 'Knot density drives detail and value. 40–80 KPSI suits durable, larger-scale wool pieces; 100–150 KPSI gives refined detail in wool and wool-silk; 200–300+ KPSI is reserved for fine silk masterpieces. We help you balance design intricacy, budget and end use.' },
+      { q: 'Can you reproduce a classical Persian or antique design?', a: 'Yes. Our master weavers in Bhadohi produce classical Persian, Tibetan and antique reproductions to a knot-by-knot graph, as well as bespoke contemporary commissions — matched to your colourway and size.' },
     ],
     gallery: gallery(
       ['/images/tgi-banner-2.webp', '/images/rug2.webp', '/images/tgi-banner-5.webp'],
@@ -315,6 +312,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'Are shaggy rugs easy to maintain?', a: 'Yes — we offer anti-shed treatments and recommend constructions that balance plush feel with practicality. Regular gentle vacuuming and occasional professional cleaning keep them looking new. We advise on the best specification for your use case.' },
       { q: 'Can you make shaggy rugs in custom sizes and shapes?', a: 'Absolutely. As a manufacturer we produce shaggy rugs in any custom size, plus round, oval and irregular shapes to suit designer and project specifications.' },
+      { q: 'Which pile height is best for a bedroom versus a lounge?', a: 'For bedrooms we recommend a longer 50–70 mm shag for sink-in softness underfoot. For lounges and higher-traffic living areas a 30–45 mm pile keeps the plush feel while being easier to maintain. We tailor pile height to each room.' },
+      { q: 'Do you supply shaggy rugs for residential development handovers?', a: 'Yes. We produce coordinated shaggy programmes for show flats, model homes and bulk residential handovers — consistent quality and colour across the full order, delivered to your project schedule.' },
     ],
     gallery: gallery(
       ['/images/rug4.webp', '/images/rug5.webp', '/images/handtufted-img-2.webp'],
@@ -379,6 +378,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'Are jute and sisal rugs suitable for high-traffic areas?', a: 'Sisal is highly durable and well-suited to hallways and high-traffic spaces; jute is softer and best for moderate-traffic living areas. For contract use we add a latex backing for stability. We will recommend the right fibre for your application.' },
       { q: 'Are your jute rugs eco-friendly?', a: 'Yes. Jute, sisal and seagrass are renewable, biodegradable natural fibres. We source from certified suppliers and use AZO-free dyes, making our natural fibre rugs a genuinely sustainable choice.' },
+      { q: 'Can natural fibre rugs be used in coastal or humid climates?', a: 'Sisal and seagrass handle humidity better than jute and are well-suited to coastal resorts and villas. For damp-prone areas we recommend seagrass with a latex backing. We will advise the most resilient fibre for your location.' },
+      { q: 'Do you offer private-label natural fibre collections for retail?', a: 'Yes. As a manufacturer we produce private-label jute, sisal and seagrass collections with custom sizes, borders and packaging for sustainable home and lifestyle retail brands.' },
     ],
     gallery: gallery(
       ['/images/jute-rugs-manufacturing.webp', '/images/rug3.webp', '/images/rug5.webp'],
@@ -443,6 +444,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'Is leather flooring durable enough for commercial use?', a: 'Yes — leather is remarkably durable and develops a beautiful patina over time. With our reinforced stitching and non-slip backing, our leather carpets are suitable for offices, retail and boutique hospitality. We advise on placement for best longevity.' },
       { q: 'Can you emboss our logo into a leather rug?', a: 'Yes. As a custom manufacturer we can emboss logos, create branded inlays and produce bespoke patchwork layouts for retail and corporate clients.' },
+      { q: 'Is each leather patchwork rug unique?', a: 'Yes — because we work with natural hides, every patchwork and hair-on-hide piece has its own character and subtle variation. We can keep a layout consistent across an order or embrace the natural uniqueness, as your project prefers.' },
+      { q: 'How do I care for a leather carpet?', a: 'Leather carpets are low-maintenance — regular dry dusting and occasional conditioning keep them supple, and they develop a beautiful patina over time. We provide care guidance with every order.' },
     ],
     gallery: gallery(
       ['/images/rug3.webp', '/images/tgi-banner-6.webp', '/images/rug1.webp'],
@@ -507,6 +510,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'Do your wall to wall carpets meet fire-safety requirements for hotels?', a: 'Yes. We manufacture fire-rated wall to wall carpets to the relevant contract standards and can provide test documentation. Share your project specification and we will match the required performance class.' },
       { q: 'Can you supply matching broadloom and carpet tiles for a large project?', a: 'Yes — as a manufacturer we control dye-lots across both broadloom rolls and carpet tiles, ensuring colour consistency for multi-phase hospitality and commercial projects with coordinated phased delivery.' },
+      { q: 'Do you provide on-site measurement and installation support?', a: 'Yes. For wall-to-wall contract projects we offer measurement guidance, installation drawings and coordination with your fit-out team — so corridors, patterns and seams align correctly across the property.' },
+      { q: 'What is the maximum order volume you can handle?', a: 'Our 80,000 sq ft Bhadohi campus handles large contract volumes with phased delivery for hotels, offices and developments. Share your total area and programme dates and we will confirm capacity and a delivery schedule.' },
     ],
     gallery: gallery(
       ['/images/tgi-banner-4.webp', '/images/tufting-carpet.webp', '/images/manufacturing-rug-img.webp'],
@@ -571,6 +576,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'What is the difference between a kilim and a dhurrie?', a: 'Both are flatwoven, pile-free rugs. Kilims traditionally use wool with tribal and geometric motifs, while dhurries are often cotton or wool with lighter, more contemporary patterns. As a manufacturer we produce both to custom designs.' },
       { q: 'Are flat weave rugs reversible?', a: 'Yes — most of our flatweaves are fully reversible, which extends their life and offers two looks in one rug. They are also lightweight and easy to move, making them ideal for layering.' },
+      { q: 'Can you weave a custom geometric or tribal pattern?', a: 'Yes. As a flat weave manufacturer we translate custom geometric, tribal and contemporary artwork into woven designs, with bespoke colourways developed and sampled before production.' },
+      { q: 'Are flat weaves durable enough for high-traffic areas?', a: 'Flat weaves are pile-free and hard-wearing, making them well-suited to hallways, dining areas and busy living spaces. Wool flatweaves in particular offer excellent durability and easy maintenance.' },
     ],
     gallery: gallery(
       ['/images/rug5.webp', '/images/rug3.webp', '/images/tgi-banner-3.webp'],
@@ -635,6 +642,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'Can poufs be colour-matched to our carpets?', a: 'Yes. As a single-source manufacturer we colour-match poufs to your rug or carpet order, so hotels and designers can furnish a coordinated scheme from one supplier.' },
       { q: 'Do you offer private-label poufs for retail?', a: 'Yes — we produce private-label and OEM poufs with custom covers, branding and packaging for home and lifestyle retailers.' },
+      { q: 'Are your poufs filled or supplied as covers only?', a: 'We can supply either — fully filled poufs with high-density filling and a reinforced base, or unfilled covers for cost-efficient shipping that are filled locally. Both are made to your specification.' },
+      { q: 'Can poufs be ordered alongside a carpet project?', a: 'Yes. Many hotels and designers add colour-matched poufs to a carpet order so the whole scheme ships from one manufacturer — simplifying procurement and ensuring a coordinated finish.' },
     ],
     gallery: gallery(
       ['/images/rug2.webp', '/images/tgi-banner-6.webp', '/images/handtufted-img-2.webp'],
@@ -699,6 +708,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     faqs: [
       { q: 'Can you print our logo on coir entrance mats?', a: 'Yes. As a manufacturer we print logos and custom messages onto coir mats and can produce branded entrance matting in custom sizes for hotels, retail and corporate clients.' },
       { q: 'Do you supply coco peat and husk products in bulk?', a: 'Yes — alongside coir matting we manufacture coco peat blocks, husk chips and coir logs for horticulture, landscaping and erosion control, available in bulk container quantities.' },
+      { q: 'Are your coir entrance mats suitable for hotel and commercial use?', a: 'Yes. Our coir entrance mats are high-scrape, hard-wearing and available with anti-slip rubber backing and logo printing — ideal for hotel lobbies, retail entrances and commercial doorways with heavy footfall.' },
+      { q: 'Can coir products be used outdoors?', a: 'Yes. We offer UV-resistant treatments and weather-appropriate constructions for covered outdoor entrances and landscaping. We will recommend the right specification for your exposure and climate.' },
     ],
     gallery: gallery(
       ['/images/wool-drying-pic.webp', '/images/manufacturing-rug-img.webp', '/images/jute-rugs-manufacturing.webp'],
@@ -710,7 +721,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
 
 // Append shared base FAQs after the category-specific ones for richer FAQ sections.
 for (const cat of PRODUCT_CATEGORIES) {
-  cat.faqs = [...cat.faqs, ...makeBaseFaqs(cat.name, cat.moq, cat.leadTime)]
+  cat.faqs = [...cat.faqs, ...makeBaseFaqs(cat.name)]
 }
 
 export function getProductCategory(slug: string): ProductCategory | undefined {

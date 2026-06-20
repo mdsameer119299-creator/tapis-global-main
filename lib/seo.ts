@@ -20,7 +20,7 @@ export const BRAND = {
   legalName:   'Tapis Global International Pvt Ltd',
   shortName:   'Tapis Global',
   tagline:     'Premium Carpets. Pan India. Worldwide.',
-  established: 1998,
+  established: 1995,
   country:     'IN',
   language:    'en',
   locale:      'en_US',
@@ -153,7 +153,7 @@ export const PAGE_META = {
 
   about: {
     title:       `About Tapis Global International | Premium Carpet & Flooring Solutions`,
-    description: `Established in 1998, Tapis Global is a premium handmade carpet manufacturer from Bhadohi — serving architects, hospitality projects, commercial interiors, pan India supply and international markets with ISO-certified quality.`,
+    description: `Established in 1995, Tapis Global is a premium handmade carpet manufacturer from Bhadohi — serving architects, hospitality projects, commercial interiors, pan India supply and international markets with ISO-certified quality.`,
     keywords:    KEYWORDS_BRAND,
     canonical:   `${SEO_BASE_URL}/about`,
   },

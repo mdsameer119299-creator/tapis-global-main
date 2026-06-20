@@ -16,6 +16,7 @@ import {
 import CategorySidebar from '@/components/products/CategorySidebar'
 import CategoryHero from '@/components/products/CategoryHero'
 import CategoryContent from '@/components/products/CategoryContent'
+import CategoryTrustSignals from '@/components/products/CategoryTrustSignals'
 import CategoryApplications from '@/components/products/CategoryApplications'
 import CategoryManufacturing from '@/components/products/CategoryManufacturing'
 import CategorySpecs from '@/components/products/CategorySpecs'
@@ -90,6 +91,7 @@ export default function ProductCategoryPage({ params }: Props) {
         <div className="flex-1 min-w-0 rounded-xl overflow-hidden" style={{ border: '1px solid var(--bd)' }}>
           <CategoryHero category={category} />
           <CategoryContent category={category} />
+          <CategoryTrustSignals />
           <CategoryApplications category={category} />
           <CategoryManufacturing category={category} />
           <CategorySpecs category={category} />

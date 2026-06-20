@@ -116,7 +116,7 @@ export function buildAcknowledgementEmailHtml(contactName: string) {
       </div>
       <div style="padding:20px 32px;background:#1A1310;text-align:center;">
         <p style="margin:0 0 6px;font-size: 14px;color:rgba(237,217,154,0.85);">Tapis Global International Pvt Ltd</p>
-        <p style="margin:0;font-size: 13px;color:rgba(255,255,255,0.35);">Bhadohi, India · Crafting premium carpets since 1998</p>
+        <p style="margin:0;font-size: 13px;color:rgba(255,255,255,0.35);">Bhadohi, India · Crafting premium carpets since 1995</p>
       </div>
     </div>
   </div>

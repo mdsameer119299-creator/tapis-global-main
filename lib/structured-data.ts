@@ -23,7 +23,7 @@ export function organizationSchema() {
     },
     image: OG_IMAGE.url,
     description:
-      'Tapis Global International Pvt Ltd is a premium handmade carpet and flooring solutions manufacturer based in Bhadohi, Uttar Pradesh, India. Serving architects, hospitality projects, commercial interiors and pan India supply — with export programmes to 45+ countries since 1998.',
+      'Tapis Global International Pvt Ltd is a premium handmade carpet and flooring solutions manufacturer based in Bhadohi, Uttar Pradesh, India. Serving architects, hospitality projects, commercial interiors and pan India supply — with export programmes to 45+ countries since 1995.',
     foundingDate: String(BRAND.established),
     foundingLocation: {
       '@type': 'Place',

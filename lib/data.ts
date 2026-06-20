@@ -39,7 +39,7 @@ export const SITE = {
   } satisfies ContactLocation,
   /** Primary address (manufacturing) — used where a single line is required */
   address: 'Industrial Estate, Bhadohi – 221401, Uttar Pradesh, India',
-  established: '1998',
+  established: '1995',
 }
 
 // ─── NAV LINKS ────────────────────────────────────────────────
@@ -72,6 +72,50 @@ export const PRODUCT_DROPDOWN = [
   { label: 'Flat Weaves',          href: '/products/flat-weaves' },
   { label: 'Poufs',                href: '/products/poufs' },
   { label: 'Coco Coir',            href: '/products/coco-coir' },
+]
+
+// ─── PRODUCTS MEGA MENU (grouped, with imagery) ──────────────────
+export type MegaMenuItem = {
+  label: string
+  href:  string
+  image: string
+}
+
+export type MegaMenuGroup = {
+  heading: string
+  items:   MegaMenuItem[]
+}
+
+export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
+  {
+    heading: 'Carpets',
+    items: [
+      { label: 'Hand Tufted',   href: '/products/hand-tufted-carpet',  image: '/images/handtufted-img-2.webp' },
+      { label: 'Hand Knotted',  href: '/products/hand-knotted-carpet', image: '/images/tgi-banner-2.webp' },
+      { label: 'Wall-to-Wall',  href: '/products/wall-to-wall-carpets', image: '/images/tgi-banner-4.webp' },
+      { label: 'Leather',       href: '/products/leather-carpets',     image: '/images/rug3.webp' },
+    ],
+  },
+  {
+    heading: 'Rugs',
+    items: [
+      { label: 'Shaggy',        href: '/products/shaggy-rugs',    image: '/images/rug4.webp' },
+      { label: 'Jute & Sisal',  href: '/products/jute-sisal-rugs', image: '/images/jute-rugs-manufacturing.webp' },
+      { label: 'Flat Weaves',   href: '/products/flat-weaves',    image: '/images/rug5.webp' },
+    ],
+  },
+  {
+    heading: 'Lifestyle',
+    items: [
+      { label: 'Poufs',         href: '/products/poufs',          image: '/images/rug2.webp' },
+    ],
+  },
+  {
+    heading: 'Natural Fibre Products',
+    items: [
+      { label: 'Coco Coir',     href: '/products/coco-coir',      image: '/images/wool-drying-pic.webp' },
+    ],
+  },
 ]
 
 // ─── HERO SLIDES ─────────────────────────────────────────────
@@ -109,7 +153,7 @@ export const HERO_SLIDES = [
 ]
 
 export const HERO_STATS = [
-  { value: '25',  suffix: '+', label: 'Years of Excellence'  },
+  { value: '30',  suffix: '+', label: 'Years of Excellence'  },
   { value: '500', suffix: '+', label: 'Specialist Artisans'  },
   { value: '80',  suffix: 'K', label: 'Sq Ft Campus'         },
   { value: '45',  suffix: '+', label: 'Markets Served'       },
@@ -125,7 +169,7 @@ export type {
 
 // ─── STATS / EXPORT ──────────────────────────────────────────
 export const EXPORT_STATS = [
-  { value: '25',  suffix: '+', label: 'Years of Manufacturing' },
+  { value: '30',  suffix: '+', label: 'Years of Manufacturing' },
   { value: '500', suffix: '+', label: 'Specialist Artisans'    },
   { value: '80',  suffix: 'K', label: 'Sq Ft Campus'           },
   { value: 'Pan', suffix: '',  label: 'India Projects'         },
