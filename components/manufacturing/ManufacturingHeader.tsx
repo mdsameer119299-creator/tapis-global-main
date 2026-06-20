@@ -19,14 +19,14 @@ export default function ManufacturingHeader() {
         </h2>
         <p
           className="text-[20px] font-light leading-[1.85] max-w-[58ch] mb-7"
-          style={{ color: 'rgba(255,255,255,0.44)' }}
+          style={{ color: 'rgba(255,255,255,0.68)' }}
         >
           {MFG_HEADER.lead}
         </p>
         <Link
           href="#manufacturing"
           className="inline-flex items-center gap-3 text-[14px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-white group"
-          style={{ color: 'rgba(255,255,255,0.48)' }}
+          style={{ color: 'var(--gl)' }}
         >
           Explore Production Capability
           <span className="block h-px w-9 bg-current transition-all duration-300 group-hover:w-14" />
@@ -45,7 +45,7 @@ export default function ManufacturingHeader() {
             quality={85}
             sizes="(max-width: 1024px) 100vw, 50vw"
             className="object-cover object-center transition-transform duration-[800ms] group-hover:scale-[1.03]"
-            style={{ filter: 'brightness(0.88)', opacity: 0.68 }}
+            style={{ filter: 'brightness(0.96)', opacity: 0.95 }}
           />
         </div>
       </Reveal>

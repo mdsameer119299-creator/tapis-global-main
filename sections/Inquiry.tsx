@@ -136,11 +136,15 @@ export default function Inquiry() {
       <section
         id="contact"
         className="grid grid-cols-1 lg:grid-cols-2 relative overflow-hidden"
-        style={{ background: 'var(--ink)' }}
+        style={{ background: 'linear-gradient(135deg, #3A2A20 0%, #2C2018 55%, #2A1C18 100%)' }}
       >
         <div
           className="absolute inset-0 pointer-events-none"
-          style={{ background: 'radial-gradient(ellipse 50% 60% at 14% 50%, rgba(107,31,31,0.38) 0%, transparent 70%)' }}
+          style={{ background: 'radial-gradient(ellipse 55% 65% at 12% 45%, rgba(140,48,48,0.42) 0%, transparent 70%)' }}
+        />
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'radial-gradient(ellipse 50% 55% at 92% 85%, rgba(192,155,74,0.12) 0%, transparent 65%)' }}
         />
 
         {/* Left — brand messaging */}
@@ -160,8 +164,8 @@ export default function Inquiry() {
               <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>or Get a Quote</em>
             </h2>
             <p
-              className="text-[17px] font-light leading-[1.82] max-w-[48ch] mb-10"
-              style={{ color: 'rgba(255,255,255,0.62)' }}
+              className="text-[18px] font-light leading-[1.85] max-w-[48ch] mb-10"
+              style={{ color: 'rgba(255,255,255,0.78)' }}
             >
               Serving hospitality, commercial and residential projects across India and international markets. Share your requirement — our team responds within 12 working hours.
             </p>
@@ -185,10 +189,10 @@ export default function Inquiry() {
               ].map((item) => (
                 <p
                   key={item}
-                  className="flex items-center gap-2 text-[15px] font-light tracking-wide"
-                  style={{ color: 'rgba(255,255,255,0.50)' }}
+                  className="flex items-center gap-2.5 text-[16px] font-light tracking-wide"
+                  style={{ color: 'rgba(255,255,255,0.72)' }}
                 >
-                  <span style={{ color: 'var(--g)', fontSize: 12 }} aria-hidden>✦</span>
+                  <span style={{ color: 'var(--gl)', fontSize: 13 }} aria-hidden>✦</span>
                   {item}
                 </p>
               ))}
@@ -200,15 +204,16 @@ export default function Inquiry() {
         <div className="px-5 sm:px-8 lg:px-10 py-14 sm:py-18 lg:py-24 lg:pr-14 relative z-[1] flex items-center min-w-0">
           <Reveal direction="right" delay={100} className="w-full">
             <div
-              className="p-7 sm:p-9 enquiry-form-panel w-full"
+              className="p-7 sm:p-9 enquiry-form-panel w-full rounded-sm"
               style={{
-                background: 'rgba(255,255,255,0.04)',
-                border: '1px solid rgba(255,255,255,0.09)',
+                background: 'linear-gradient(160deg, rgba(255,255,255,0.085) 0%, rgba(255,255,255,0.04) 100%)',
+                border: '1px solid rgba(192,155,74,0.28)',
+                boxShadow: '0 24px 60px rgba(0,0,0,0.32), inset 0 1px 0 rgba(255,255,255,0.06)',
               }}
             >
               <p
-                className="text-[13px] tracking-[0.28em] uppercase font-medium mb-6"
-                style={{ color: 'var(--gl)' }}
+                className="text-[14px] tracking-[0.3em] uppercase font-semibold mb-6"
+                style={{ color: 'var(--gp)' }}
               >
                 Get in Touch
               </p>
@@ -310,7 +315,7 @@ export default function Inquiry() {
                   </button>
                 </div>
 
-                <p className="text-[13px] font-light text-center mt-1" style={{ color: 'rgba(255,255,255,0.32)' }}>
+                <p className="text-[14px] font-light text-center mt-1" style={{ color: 'rgba(255,255,255,0.5)' }}>
                   Or{' '}
                   <Link href="/catalogue" className="underline underline-offset-2 hover:text-[var(--gl)] transition-colors">
                     browse our catalogue page
@@ -343,11 +348,11 @@ function Field({
   multiline?: boolean
   rows?: number
 }) {
-  const base = `enquiry-field w-full bg-transparent border px-4 py-3 text-[16px] font-light text-white outline-none transition-all duration-200 ${error ? 'enquiry-field--invalid' : ''}`
+  const base = `enquiry-field w-full bg-[rgba(255,255,255,0.05)] border px-4 py-3.5 text-[16px] font-light text-white outline-none transition-all duration-200 ${error ? 'enquiry-field--invalid' : ''}`
 
   return (
     <div>
-      <label className="block text-[13px] tracking-[0.16em] uppercase font-medium mb-1.5" style={{ color: 'rgba(255,255,255,0.42)' }}>
+      <label className="block text-[13px] tracking-[0.18em] uppercase font-semibold mb-2" style={{ color: 'var(--gl)' }}>
         {label}
       </label>
       {multiline ? (
