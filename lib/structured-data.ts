@@ -185,6 +185,7 @@ export function webPageSchema({
   imageUrl,
   datePublished = '2024-01-01',
   dateModified,
+  hasBreadcrumb = true,
 }: {
   title:       string
   description: string
@@ -192,6 +193,8 @@ export function webPageSchema({
   imageUrl?:   string
   datePublished?: string
   dateModified?:  string
+  /** Set false on pages with no BreadcrumbList (e.g. homepage) to avoid a dangling @id reference */
+  hasBreadcrumb?: boolean
 }) {
   return {
     '@context':     'https://schema.org',
@@ -213,9 +216,25 @@ export function webPageSchema({
         height:  OG_IMAGE.height,
       },
     }),
-    breadcrumb: {
-      '@id': `${url}#breadcrumb`,
-    },
+    ...(hasBreadcrumb && {
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+    }),
+  }
+}
+
+// ─── ITEM LIST (hub / collection pages) ───────────────────────────────────────
+// Valid, warning-free way to enumerate child pages on a hub (e.g. /products).
+// Carries no ecommerce fields, so it raises no Merchant/Product-snippet warnings.
+export function itemListSchema(items: Array<{ name: string; url: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type':    'ItemList',
+    itemListElement: items.map((item, index) => ({
+      '@type':   'ListItem',
+      position:  index + 1,
+      name:      item.name,
+      url:       item.url,
+    })),
   }
 }
 
@@ -233,59 +252,12 @@ export function breadcrumbSchema(items: Array<{ name: string; url: string }>) {
   }
 }
 
-// ─── PRODUCT (carpet/rug item) ────────────────────────────────────────────────
-export function productSchema({
-  name,
-  description,
-  imageUrl,
-  url,
-  material,
-  moq,
-}: {
-  name:        string
-  description: string
-  imageUrl:    string
-  url:         string
-  material:    string
-  moq:         string
-}) {
-  return {
-    '@context':   'https://schema.org',
-    '@type':      'Product',
-    name,
-    description,
-    image:        imageUrl,
-    url,
-    brand: {
-      '@type': 'Brand',
-      name:    BRAND.legalName,
-    },
-    manufacturer: {
-      '@id': `${SEO_BASE_URL}/#organization`,
-    },
-    material,
-    category: 'Carpets & Rugs',
-    countryOfOrigin: {
-      '@type': 'Country',
-      name:    'India',
-    },
-    // No Offer node: this is a quote-based B2B product (MOQ, no public price).
-    // Including an Offer without a price triggers Google Merchant listing and
-    // Product snippet warnings. MOQ/origin are exposed via additionalProperty.
-    additionalProperty: [
-      {
-        '@type': 'PropertyValue',
-        name:    'Minimum Order Quantity',
-        value:   moq,
-      },
-      {
-        '@type': 'PropertyValue',
-        name:    'Country of Manufacture',
-        value:   'India',
-      },
-    ],
-  }
-}
+// NOTE: Product schema was removed sitewide. Tapis Global's catalogue is
+// quote-based B2B (MOQ, no public price / availability / ratings), so Product +
+// Offer markup only produced persistent Google Merchant listing and Product
+// snippet warnings without unlocking valid rich results. Product/category pages
+// now use WebPage + BreadcrumbList + FAQPage, and the hub uses ItemList. The
+// manufacturer relationship is carried by the global Organization schema.
 
 // ─── FAQ PAGE ─────────────────────────────────────────────────────────────────
 type FaqItem = { q: string; a: string }

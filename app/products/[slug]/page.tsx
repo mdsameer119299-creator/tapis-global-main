@@ -5,7 +5,6 @@ import { SEO_BASE_URL } from '@/lib/seo'
 import {
   webPageSchema,
   breadcrumbSchema,
-  productSchema,
   faqSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
@@ -63,14 +62,6 @@ export default function ProductCategoryPage({ params }: Props) {
         { name: 'Products', url: `${SEO_BASE_URL}/products` },
         { name: category.name, url: `${SEO_BASE_URL}/products/${category.slug}` },
       ]),
-      productSchema({
-        name:        `${category.name} — Manufacturer & Supplier India, Tapis Global International`,
-        description: category.intro,
-        imageUrl:    `${SEO_BASE_URL}${category.cardImage}`,
-        url:         `${SEO_BASE_URL}/products/${category.slug}`,
-        material:    category.materials.join(', '),
-        moq:         category.moq,
-      }),
       faqSchema(category.faqs.map((f) => ({ q: f.q, a: f.a }))),
     ),
   )
