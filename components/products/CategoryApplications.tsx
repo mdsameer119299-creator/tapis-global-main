@@ -10,7 +10,7 @@ export default function CategoryApplications({ category }: { category: ProductCa
           className="font-medium leading-[1.1] mb-3"
           style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(26px, 2.8vw, 38px)', color: 'var(--ink)' }}
         >
-          Where Our {category.name} <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>Perform Best</em>
+          Ideal Applications for <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{category.name}</em>
         </h2>
         <p className="text-[16px] font-light leading-[1.85] max-w-2xl mb-10" style={{ color: 'var(--inkm)' }}>
           Trusted by architects, interior designers, hotels, builders, developers and procurement teams across India

@@ -157,7 +157,7 @@ export default function Navbar() {
                       {link.label}
                     </NavLink>
                     <div
-                      className="absolute top-full right-0 w-[min(52rem,calc(100vw-3rem))] transition-all duration-200"
+                      className="absolute top-full left-0 w-[min(52rem,calc(100vw-3rem))] transition-all duration-200"
                       style={{
                         background: 'var(--ink)',
                         boxShadow: '0 18px 60px rgba(26,19,16,0.4)',
