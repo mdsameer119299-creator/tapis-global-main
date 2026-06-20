@@ -37,21 +37,21 @@ export default function Exports() {
     <section id="markets" style={{ background: '#fff' }}>
 
       {/* Stats strip */}
-      <div style={{ background: 'var(--cd)' }}>
+      <div style={{ background: 'var(--iv)', borderBottom: '1px solid var(--ivk)' }}>
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
           {EXPORT_STATS.map((s, i) => (
             <div
               key={s.label}
-              className="py-9 px-6 text-center transition-colors duration-300 hover:bg-[rgba(192,155,74,0.07)]"
+              className="py-10 px-6 text-center transition-colors duration-300 hover:bg-[rgba(192,155,74,0.06)]"
               style={{
-                borderRight:  i < EXPORT_STATS.length - 1 ? '1px solid rgba(192,155,74,0.12)' : 'none',
-                borderBottom: '1px solid rgba(192,155,74,0.12)',
+                borderRight:  i < EXPORT_STATS.length - 1 ? '1px solid var(--ivk)' : 'none',
+                borderBottom: '1px solid var(--ivk)',
               }}
             >
-              <p className="font-normal leading-none" style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 52, color: 'var(--gp)' }}>
-                {s.value}<sup style={{ fontSize: 20, color: 'var(--g)', verticalAlign: 'super' }}>{s.suffix}</sup>
+              <p className="font-normal leading-none" style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 52, color: 'var(--c)' }}>
+                {s.value}<sup style={{ fontSize: 20, color: 'var(--gd)', verticalAlign: 'super' }}>{s.suffix}</sup>
               </p>
-              <p className="text-[15px] tracking-[0.16em] uppercase mt-1.5" style={{ color: 'rgba(255,255,255,0.4)' }}>{s.label}</p>
+              <p className="text-[14px] tracking-[0.18em] uppercase mt-2 font-medium" style={{ color: 'var(--inkm)' }}>{s.label}</p>
             </div>
           ))}
         </div>

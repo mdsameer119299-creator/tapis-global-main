@@ -125,47 +125,47 @@ export type {
 
 // ─── STATS / EXPORT ──────────────────────────────────────────
 export const EXPORT_STATS = [
-  { value: '25',  suffix: '+', label: 'Years of Excellence' },
-  { value: '500', suffix: '+', label: 'Master Artisans'     },
-  { value: '80',  suffix: 'K', label: 'Sq Ft Campus'        },
-  { value: '45',  suffix: '+', label: 'Global Markets'      },
-  { value: 'Pan', suffix: '',  label: 'India Projects'      },
+  { value: '25',  suffix: '+', label: 'Years of Manufacturing' },
+  { value: '500', suffix: '+', label: 'Specialist Artisans'    },
+  { value: '80',  suffix: 'K', label: 'Sq Ft Campus'           },
+  { value: 'Pan', suffix: '',  label: 'India Projects'         },
+  { value: '45',  suffix: '+', label: 'International Markets'  },
 ]
 
 export const EXPORT_SEGMENTS = [
   {
     icon: 'hotel',
     title: 'Hotels, Resorts & Hospitality',
-    desc:  'Lobby statements, suite programmes, corridors and F&B zones — specification-led carpets with fire-rated options, custom medallions and multi-phase roll-outs for 5-star environments.',
+    desc:  'Lobby statements, suite programmes, corridors and F&B zones — specification-led carpets with fire-rated options, custom medallions and multi-phase roll-outs for 5-star hotel projects across India and internationally.',
   },
   {
     icon: 'truck',
     title: 'Corporate & Institutional Interiors',
-    desc:  'Boardrooms, headquarters, retail flagships and public-sector spaces — durable, design-driven flooring with documented QC and coordinated on-site delivery.',
+    desc:  'Boardrooms, headquarters, retail flagships and public-sector spaces — durable, design-driven flooring supplied across India with documented QC, coordinated delivery and full traceability.',
   },
   {
     icon: 'label',
-    title: 'Developers, Tenders & Global Supply',
-    desc:  'Pan India project execution for builders and institutional buyers — plus export-ready programmes, compliance documentation and international supply partnerships.',
+    title: 'Architects, Designers & Developers',
+    desc:  'Bespoke carpets and custom rugs for luxury residential, villa and mixed-use projects — with in-house design studio support, Pantone-matched colour development and pan India project execution.',
   },
 ]
 
 export const REGIONS = [
-  { flag: '🇺🇸', country: 'United States' },
-  { flag: '🇬🇧', country: 'United Kingdom' },
-  { flag: '🇩🇪', country: 'Germany' },
-  { flag: '🇫🇷', country: 'France' },
-  { flag: '🇦🇺', country: 'Australia' },
-  { flag: '🇦🇪', country: 'UAE' },
-  { flag: '🇸🇦', country: 'Saudi Arabia' },
-  { flag: '🇨🇦', country: 'Canada' },
-  { flag: '🇮🇹', country: 'Italy' },
-  { flag: '🇳🇱', country: 'Netherlands' },
-  { flag: '🇸🇪', country: 'Sweden' },
-  { flag: '🇧🇪', country: 'Belgium' },
-  { flag: '🇯🇵', country: 'Japan' },
-  { flag: '🇰🇷', country: 'South Korea' },
-  { flag: '🇿🇦', country: 'South Africa' },
+  { country: 'Hand Tufted Carpets'        },
+  { country: 'Hand Knotted Rugs'          },
+  { country: 'Jute & Natural Fibre Rugs'  },
+  { country: 'Wall-to-Wall Carpets'       },
+  { country: 'Custom Rugs & Bespoke'      },
+  { country: 'Shaggy Rugs'               },
+  { country: 'Flatweave & Kilim'          },
+  { country: 'Hotel & Hospitality Carpet' },
+  { country: 'Leather Carpets'            },
+  { country: 'Broadloom Carpets'          },
+  { country: 'Wool Carpets'              },
+  { country: 'Silk & Viscose Rugs'        },
+  { country: 'Poufs & Accessories'        },
+  { country: 'Contract Flooring'         },
+  { country: 'Coco Coir Matting'          },
 ]
 
 // ─── TESTIMONIALS ─────────────────────────────────────────────

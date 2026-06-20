@@ -62,50 +62,49 @@ export const BRAND = {
 }
 
 // ─── PRIMARY KEYWORDS (research-based, high-intent) ──────────────────────────
-// Tier 1: High commercial intent — buyer searches
+// Tier 1: High commercial intent — manufacturer & supplier searches
 export const KEYWORDS_PRIMARY = [
-  'luxury carpet manufacturer India',
-  'custom carpet manufacturer India',
-  'pan India carpet supplier',
-  'architect carpet solutions India',
-  'interior designer carpet supplier',
-  'hospitality carpet manufacturer India',
-  'commercial flooring solutions India',
-  'handmade carpet manufacturer Bhadohi',
+  'carpet manufacturer India',
+  'rug manufacturer India',
+  'carpet supplier India',
+  'handmade carpet manufacturer India',
+  'Bhadohi carpet manufacturer',
+  'custom rug manufacturer India',
   'hotel carpet supplier India',
-  'premium rugs manufacturer India',
-  'hand tufted carpet manufacturer',
+  'wall to wall carpet manufacturer India',
+  'hand tufted carpet manufacturer India',
   'hand knotted carpet manufacturer India',
+  'jute rug manufacturer India',
+  'luxury carpet manufacturer Bhadohi',
 ]
 
 // Tier 2: Product-specific
 export const KEYWORDS_PRODUCT = [
-  'luxury carpets wholesale',
-  'custom carpets for hotels',
-  'hospitality carpet supplier',
-  'commercial flooring carpets',
-  'hand tufted carpets manufacturer',
-  'hand knotted rugs luxury',
+  'hand tufted carpets',
+  'hand knotted rugs',
+  'jute rugs India',
+  'custom rugs manufacturer',
+  'wall to wall carpets',
+  'hotel carpet supplier',
+  'hospitality carpet manufacturer',
+  'commercial carpet supplier India',
   'wool carpet manufacturer India',
-  'silk carpet custom design',
-  'jute rug manufacturer',
-  'flat weave carpet India',
-  'wall to wall carpet commercial',
-  'hotel carpet manufacturer India',
-  'architect specified carpets',
-  'export quality carpets India',
+  'custom carpet design India',
+  'broadloom carpet manufacturer',
+  'bespoke rug manufacturer India',
+  'carpet supplier for architects',
+  'carpet manufacturer for interior designers',
 ]
 
 // Tier 3: Brand / location
 export const KEYWORDS_BRAND = [
   'Tapis Global International',
-  'carpet manufacturer Bhadohi India',
-  'Bhadohi carpet exporter',
-  'Mirzapur carpet manufacturer',
-  'UP carpet exporter',
-  'Indian handloom carpet exporter',
+  'carpet manufacturer Bhadohi',
+  'Bhadohi carpet supplier',
+  'UP carpet manufacturer',
+  'Indian handloom carpet manufacturer',
   'ISO certified carpet manufacturer India',
-  'OEKO-TEX certified carpet India',
+  'carpet manufacturer for hospitality projects',
 ]
 
 // All keywords combined
@@ -120,20 +119,21 @@ export const KEYWORDS_ALL = [
 export const PAGE_META = {
 
   home: {
-    title:       'Tapis Global International | Luxury Handmade Carpets & Flooring Solutions',
-    description: 'Premium handmade carpets, custom rugs, wall-to-wall carpets, hospitality flooring and bespoke flooring solutions manufactured in Bhadohi and supplied worldwide.',
+    title:       'Carpet Manufacturer India | Handmade Carpets & Rugs — Tapis Global International',
+    description: 'Tapis Global International — handmade carpet and rug manufacturer from Bhadohi, India. Supplying hand tufted carpets, hand knotted rugs, jute rugs, wall-to-wall carpets and custom flooring to architects, hotels, developers and interior designers across India and international markets.',
     keywords:    [
-      'Luxury carpets',
-      'Handmade carpets',
-      'Custom rugs',
-      'Hospitality carpets',
-      'Hotel carpets',
-      'Wall to wall carpets',
-      'Hand tufted carpets',
-      'Hand knotted carpets',
-      'Bhadohi carpet manufacturer',
-      'India carpet exporter',
-      ...KEYWORDS_PRIMARY.slice(0, 6),
+      'Carpet Manufacturer India',
+      'Rug Manufacturer India',
+      'Carpet Supplier India',
+      'Handmade Carpet Manufacturer',
+      'Bhadohi Carpet Manufacturer',
+      'Hand Tufted Carpets',
+      'Hand Knotted Rugs',
+      'Jute Rugs',
+      'Wall to Wall Carpets',
+      'Custom Rugs',
+      'Hotel Carpet Supplier',
+      ...KEYWORDS_PRIMARY.slice(0, 4),
     ],
     canonical:   SEO_BASE_URL,
   },
@@ -204,7 +204,7 @@ export const PAGE_META = {
 
 // ─── DEFAULT TITLE TEMPLATE ───────────────────────────────────────────────────
 // Used for sub-pages. %s is replaced with the page title.
-export const TITLE_TEMPLATE = `%s | Tapis Global International — Carpet Manufacturer India`
+export const TITLE_TEMPLATE = `%s | Tapis Global International — Handmade Carpet Manufacturer, Bhadohi`
 
 // ─── TWITTER CARD CONFIG ──────────────────────────────────────────────────────
 export const TWITTER_META = {

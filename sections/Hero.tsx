@@ -183,32 +183,32 @@ export default function Hero() {
           className="font-light leading-[1.05] sm:leading-[1.02] tracking-tight text-white mb-5 sm:mb-6 max-w-3xl pointer-events-auto"
           style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(34px, 8.5vw, 88px)', textShadow: '0 2px 32px rgba(0,0,0,0.4)' }}
         >
-          Premium Flooring Solutions.
+          Handmade Carpet &amp; Rug Manufacturer
           <br />
-          <em className="font-light not-italic" style={{ color: 'var(--gp)', fontStyle: 'italic' }}>Crafted in Bhadohi.</em>
+          <em className="font-light not-italic" style={{ color: 'var(--gp)', fontStyle: 'italic' }}>from Bhadohi, India.</em>
           <span
             className="block mt-2 sm:mt-3 font-body font-light uppercase leading-relaxed"
             style={{ fontSize: 'clamp(10px,2.8vw,15px)', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.55)' }}
           >
-            For Architects, Hospitality &amp; Luxury Interiors
-            <span className="hidden sm:inline"> — India &amp; Worldwide</span>
+            Serving Hospitality, Commercial &amp; Residential Projects
+            <span className="hidden sm:inline"> — Across India &amp; International Markets</span>
           </span>
         </h1>
 
         <div className="flex gap-2.5 sm:gap-3.5 items-stretch sm:items-center flex-col sm:flex-row mb-6 sm:mb-9 pointer-events-auto w-full sm:w-auto">
           <a
-            href="/contact"
+            href="/catalogue"
             className="px-6 sm:px-8 py-3.5 text-[15px] sm:text-[16px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-medium border transition-all duration-300 text-center active:opacity-90"
             style={{ background: 'var(--g)', color: 'var(--ink)', borderColor: 'var(--g)' }}
           >
-            Start Your Design Journey
+            Request Catalogue
           </a>
           <a
             href="/products"
             className="px-6 sm:px-8 py-3.5 text-[15px] sm:text-[16px] tracking-[0.16em] sm:tracking-[0.18em] uppercase font-medium border transition-all duration-300 text-center active:text-white"
             style={{ border: '1px solid rgba(255,255,255,0.35)', color: 'rgba(255,255,255,0.65)' }}
           >
-            Explore Collections
+            Explore Products
           </a>
         </div>
 

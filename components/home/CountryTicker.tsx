@@ -17,10 +17,14 @@ export default function CountryTicker() {
             className="flex-shrink-0 flex items-center gap-4 px-10 whitespace-nowrap"
             style={{ borderRight: '1px solid rgba(255,255,255,0.07)' }}
           >
-            <span className="text-[22px]">{r.flag}</span>
             <span
-              className="text-[18px] tracking-[0.04em] font-light"
-              style={{ color: 'rgba(255,255,255,0.5)' }}
+              className="w-1 h-1 rounded-full flex-shrink-0"
+              style={{ background: 'var(--g)' }}
+              aria-hidden
+            />
+            <span
+              className="text-[17px] tracking-[0.06em] font-light"
+              style={{ color: 'rgba(255,255,255,0.58)' }}
             >
               {r.country}
             </span>
