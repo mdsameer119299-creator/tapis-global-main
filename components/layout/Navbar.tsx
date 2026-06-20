@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { SITE, NAV_LINKS, PRODUCT_DROPDOWN } from '@/lib/data'
+import { SITE, NAV_LINKS, PRODUCT_MEGA_MENU } from '@/lib/data'
+import type { MegaMenuGroup } from '@/lib/data'
 
 function isActivePath(pathname: string, href: string): boolean {
   if (href.startsWith('/#')) return pathname === '/'
@@ -156,30 +157,47 @@ export default function Navbar() {
                       {link.label}
                     </NavLink>
                     <div
-                      className="absolute top-full left-1/2 min-w-[230px] transition-all duration-200"
+                      className="absolute top-full left-0 w-[min(52rem,calc(100vw-3rem))] transition-all duration-200"
                       style={{
                         background: 'var(--ink)',
-                        boxShadow: '0 8px 40px rgba(26,19,16,0.35)',
+                        boxShadow: '0 18px 60px rgba(26,19,16,0.4)',
+                        borderTop: '2px solid var(--g)',
                         opacity: dropOpen ? 1 : 0,
                         visibility: dropOpen ? 'visible' : 'hidden',
                         pointerEvents: dropOpen ? 'auto' : 'none',
-                        transform: dropOpen ? 'translateX(-50%) translateY(0)' : 'translateX(-50%) translateY(6px)',
+                        transform: dropOpen ? 'translateY(0)' : 'translateY(8px)',
                         zIndex: 9999,
                       }}
+                      role="menu"
+                      aria-label="Products"
                     >
-                      {PRODUCT_DROPDOWN.map((item) => (
+                      <div className="grid grid-cols-3 gap-x-7 gap-y-8 p-7">
+                        {/* Column 1 — Carpets */}
+                        <MegaColumn group={PRODUCT_MEGA_MENU[0]} />
+                        {/* Column 2 — Rugs */}
+                        <MegaColumn group={PRODUCT_MEGA_MENU[1]} />
+                        {/* Column 3 — Lifestyle + Natural Fibre stacked */}
+                        <div className="flex flex-col gap-8">
+                          <MegaColumn group={PRODUCT_MEGA_MENU[2]} />
+                          <MegaColumn group={PRODUCT_MEGA_MENU[3]} />
+                        </div>
+                      </div>
+                      <div
+                        className="flex items-center justify-between px-7 py-4"
+                        style={{ borderTop: '1px solid rgba(192,155,74,0.16)', background: 'rgba(192,155,74,0.04)' }}
+                      >
+                        <span className="text-[14px] tracking-[0.16em] uppercase font-light" style={{ color: 'rgba(255,255,255,0.5)' }}>
+                          Carpet &amp; Rug Manufacturer · Bhadohi, India
+                        </span>
                         <Link
-                          key={item.label}
-                          href={item.href}
-                          className="block px-[22px] py-3 text-[18px] font-medium tracking-[0.02em] transition-all duration-150 border-b hover:bg-[var(--c)] hover:text-white hover:pl-7"
-                          style={{
-                            color: 'rgba(255,255,255,0.82)',
-                            borderColor: 'rgba(255,255,255,0.08)',
-                          }}
+                          href="/products"
+                          className="text-[14px] tracking-[0.16em] uppercase font-medium transition-colors duration-200 hover:text-[var(--gp)] inline-flex items-center gap-2"
+                          style={{ color: 'var(--gl)' }}
                         >
-                          {item.label}
+                          View All Products
+                          <span aria-hidden>→</span>
                         </Link>
-                      ))}
+                      </div>
                     </div>
                   </>
                 ) : (
@@ -306,9 +324,9 @@ export default function Navbar() {
                   </button>
                   <div
                     className="overflow-hidden transition-all duration-300"
-                    style={{ maxHeight: mobileProductsOpen ? `${PRODUCT_DROPDOWN.length * 44 + 16}px` : '0px' }}
+                    style={{ maxHeight: mobileProductsOpen ? '760px' : '0px' }}
                   >
-                    <div className="pb-3 pl-1">
+                    <div className="pb-4 pl-1">
                       <Link
                         href={link.href}
                         onClick={() => setMobile(false)}
@@ -317,19 +335,32 @@ export default function Navbar() {
                       >
                         All Products →
                       </Link>
-                      {PRODUCT_DROPDOWN.map((item) => (
-                        <Link
-                          key={item.href}
-                          href={item.href}
-                          onClick={() => setMobile(false)}
-                          className="block py-2.5 text-[16px] font-light border-t"
-                          style={{
-                            color: pathname === item.href ? 'var(--c)' : 'var(--inks)',
-                            borderColor: 'rgba(26,19,16,0.06)',
-                          }}
-                        >
-                          {item.label}
-                        </Link>
+                      {PRODUCT_MEGA_MENU.map((group) => (
+                        <div key={group.heading} className="mt-3">
+                          <p
+                            className="text-[12px] tracking-[0.24em] uppercase font-semibold mb-1.5"
+                            style={{ color: 'var(--gd)' }}
+                          >
+                            {group.heading}
+                          </p>
+                          {group.items.map((item) => (
+                            <Link
+                              key={item.href}
+                              href={item.href}
+                              onClick={() => setMobile(false)}
+                              className="flex items-center gap-3 py-2"
+                              style={{ color: pathname === item.href ? 'var(--c)' : 'var(--inks)' }}
+                            >
+                              <span
+                                className="relative flex-shrink-0 w-9 h-9 rounded-md overflow-hidden"
+                                style={{ border: '1px solid rgba(192,155,74,0.2)' }}
+                              >
+                                <Image src={item.image} alt={item.label} fill sizes="36px" quality={60} className="object-cover" />
+                              </span>
+                              <span className="text-[16px] font-light">{item.label}</span>
+                            </Link>
+                          ))}
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -421,6 +452,51 @@ function MobileNavLink({
     >
       {children}
     </Link>
+  )
+}
+
+function MegaColumn({ group }: { group: MegaMenuGroup }) {
+  return (
+    <div>
+      <p
+        className="text-[13px] tracking-[0.26em] uppercase font-semibold mb-4 pb-2"
+        style={{ color: 'var(--gl)', borderBottom: '1px solid rgba(192,155,74,0.18)' }}
+      >
+        {group.heading}
+      </p>
+      <ul className="flex flex-col gap-1.5">
+        {group.items.map((item) => (
+          <li key={item.href} role="none">
+            <Link
+              href={item.href}
+              role="menuitem"
+              className="group/mega flex items-center gap-3 rounded-md p-1.5 transition-colors duration-200 hover:bg-[rgba(192,155,74,0.1)]"
+            >
+              <span
+                className="relative flex-shrink-0 w-12 h-12 rounded-md overflow-hidden"
+                style={{ border: '1px solid rgba(192,155,74,0.2)' }}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.label}
+                  fill
+                  sizes="48px"
+                  quality={70}
+                  className="object-cover transition-transform duration-500 group-hover/mega:scale-110"
+                  style={{ filter: 'brightness(0.9) saturate(0.92)' }}
+                />
+              </span>
+              <span
+                className="text-[16px] font-medium tracking-[0.01em] transition-colors duration-200 group-hover/mega:text-[var(--gp)]"
+                style={{ color: 'rgba(255,255,255,0.82)' }}
+              >
+                {item.label}
+              </span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 

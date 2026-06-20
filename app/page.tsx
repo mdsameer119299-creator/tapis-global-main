@@ -34,7 +34,7 @@ const PAGE_JSONLD = JSON.stringify(
       url:           SEO_BASE_URL,
       imageUrl:      OG_IMAGE.url,
       datePublished: '2024-01-01',
-      dateModified:  '2025-01-15',
+      dateModified:  '2026-06-20',
     }),
     breadcrumbSchema([
       { name: 'Home', url: SEO_BASE_URL },

@@ -5,15 +5,24 @@ export default function CategoryContent({ category }: { category: ProductCategor
   return (
     <section className="py-14 lg:py-16 px-8 max-lg:px-5" style={{ background: 'var(--iv)' }}>
       <Reveal>
-        <Eyebrow>Craftsmanship</Eyebrow>
+        <Eyebrow>Product Overview</Eyebrow>
+        <h2
+          className="font-medium leading-[1.1] mb-6 max-w-3xl"
+          style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(26px, 2.8vw, 38px)', color: 'var(--ink)' }}
+        >
+          {category.name} — Manufactured in Bhadohi, India
+        </h2>
         <p className="text-[18px] font-light leading-[1.9] mb-5 max-w-3xl" style={{ color: 'var(--inkm)' }}>
           {category.intro}
         </p>
-        <p className="text-[17px] font-light leading-[1.88] mb-10 max-w-3xl" style={{ color: 'var(--inkm)' }}>
+        <p className="text-[17px] font-light leading-[1.88] mb-5 max-w-3xl" style={{ color: 'var(--inkm)' }}>
           {category.body}
         </p>
+        <p className="text-[17px] font-light leading-[1.88] mb-10 max-w-3xl" style={{ color: 'var(--inkm)' }}>
+          {category.overview}
+        </p>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10">
           <ul className="flex flex-col gap-4">
             {category.bullets.map((b) => (
               <li key={b.label} className="flex items-start gap-3 text-[16px] font-light leading-[1.78]" style={{ color: 'var(--inkm)' }}>
@@ -31,7 +40,7 @@ export default function CategoryContent({ category }: { category: ProductCategor
             style={{ background: '#fff', border: '1px solid var(--bd)', boxShadow: '0 8px 32px rgba(26,19,16,0.04)' }}
           >
             <p className="text-[15px] tracking-[0.24em] uppercase mb-4 font-medium" style={{ color: 'var(--gd)' }}>
-              Specifications
+              MOQ &amp; Lead Time
             </p>
             <div className="grid grid-cols-2 gap-4 mb-6">
               <div>

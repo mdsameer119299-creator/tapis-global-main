@@ -36,25 +36,27 @@ export default function ProductsHero() {
           style={{ color: 'var(--gl)' }}
         >
           <span className="block h-px w-8" style={{ background: 'var(--g)' }} />
-          Tapis Global International
+          Manufacturer · Supplier · Exporter
         </div>
         <h1
           className="font-display font-light leading-[1.02] tracking-tight mb-6"
           style={{
             fontFamily: '"Cormorant Garamond", serif',
-            fontSize: 'clamp(40px, 5.5vw, 72px)',
+            fontSize: 'clamp(38px, 5vw, 68px)',
             color: '#fff',
           }}
         >
-          Luxury Carpet
+          Carpet &amp; Rug
           <br />
-          <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Collections</em>
+          <em style={{ fontStyle: 'italic', color: 'var(--gp)' }}>Manufacturer in India</em>
         </h1>
         <p
           className="text-[18px] font-light leading-[1.9] max-w-2xl"
-          style={{ color: 'rgba(248,244,238,0.58)' }}
+          style={{ color: 'rgba(248,244,238,0.6)' }}
         >
-          Explore handcrafted elegance designed for modern interiors, hospitality spaces, and premium living.
+          Handmade carpets and rugs crafted in Bhadohi, India — hand tufted, hand knotted, jute, wall-to-wall, flat weaves
+          and custom designs for architects, interior designers, hotels, builders and commercial projects across India and
+          international markets.
         </p>
       </div>
 

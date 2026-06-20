@@ -35,11 +35,11 @@ const SOCIAL_LINKS = [
 ]
 
 const BRAND_STATEMENT =
-  'Premium handmade carpets, rugs and flooring solutions crafted in Bhadohi and supplied worldwide.'
+  'Handmade carpet and rug manufacturer from Bhadohi, India — supplying premium flooring to hospitality, commercial and residential projects across India and international markets.'
 
 export default function Footer() {
   return (
-    <footer className="footer-luxury" style={{ background: '#070504' }}>
+    <footer className="footer-luxury" style={{ background: '#0F0C09' }}>
       {/* Banner strip */}
       <div className="relative h-44 sm:h-48 overflow-hidden">
         <div className="relative w-full h-full">
@@ -53,12 +53,12 @@ export default function Footer() {
             quality={75}
             sizes="(max-width: 768px) 100vw, 1200px"
             className="object-cover object-center"
-            style={{ filter: 'brightness(0.22) saturate(0.5) sepia(0.08)', opacity: 0.88 }}
+            style={{ filter: 'brightness(0.42) saturate(0.7) sepia(0.08)', opacity: 0.92 }}
           />
         </div>
         <div
           className="absolute inset-0"
-          style={{ background: 'linear-gradient(to bottom, rgba(7,5,4,0.08) 0%, rgba(7,5,4,0.96) 100%)' }}
+          style={{ background: 'linear-gradient(to bottom, rgba(15,12,9,0.08) 0%, rgba(15,12,9,0.96) 100%)' }}
         />
         <div className="footer-container absolute bottom-7 sm:bottom-8 left-0 right-0">
           <p className="text-[14px] tracking-[0.32em] uppercase mb-2" style={{ color: 'var(--gl)' }}>
@@ -96,7 +96,7 @@ export default function Footer() {
             </Link>
             <p
               className="text-[16px] sm:text-[17px] font-light leading-[1.75] mb-8 max-w-[30ch] lg:max-w-none"
-              style={{ fontFamily: '"EB Garamond", serif', color: 'rgba(255,255,255,0.48)' }}
+              style={{ fontFamily: '"EB Garamond", serif', color: 'rgba(255,255,255,0.72)' }}
             >
               {BRAND_STATEMENT}
             </p>
@@ -195,7 +195,7 @@ export default function Footer() {
       {/* Bottom bar */}
       <div className="footer-container py-6 sm:py-7">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-6">
-          <p className="text-[14px] sm:text-[15px] text-center md:text-left leading-relaxed" style={{ color: 'rgba(255,255,255,0.32)' }}>
+          <p className="text-[14px] sm:text-[15px] text-center md:text-left leading-relaxed" style={{ color: 'rgba(255,255,255,0.55)' }}>
             © 2026 {SITE.name}. All Rights Reserved.
           </p>
           <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-6 gap-y-2">
@@ -235,9 +235,9 @@ function FooterContactBlock({
 
 function FooterHeading({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="footer-col-heading mb-6 min-h-[2.75rem] flex items-end pb-3 border-b w-full">
+    <h3 className="footer-col-heading mb-6 min-h-[2.75rem] flex items-end pb-3 border-b w-full">
       {children}
-    </h2>
+    </h3>
   )
 }
 

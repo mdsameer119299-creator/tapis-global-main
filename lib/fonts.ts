@@ -22,7 +22,7 @@ export const ebGaramond = EB_Garamond({
   weight:   ['400', '500'],
   style:    ['normal', 'italic'],
   display:  'swap',
-  preload:  false,
+  preload:  true,
   variable: '--font-eb',
 })
 

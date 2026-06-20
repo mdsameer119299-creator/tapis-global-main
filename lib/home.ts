@@ -7,7 +7,7 @@ export type TrustItem = {
 }
 
 export const TRUST_RIBBON_ITEMS: Omit<TrustItem, 'icon'>[] = [
-  { text: 'Established 1998'              },
+  { text: 'Established 1995'              },
   { text: 'Made in Bhadohi'               },
   { text: 'Worldwide Export'              },
   { text: 'Custom Manufacturing'          },
@@ -27,25 +27,25 @@ export const WHO_WE_ARE = {
   image:    '/images/tgi-banner-5.webp',
   badgeNum: '3rd',
   badgeLbl: 'Generation\nArtisans',
-  headline: 'Crafted in Bhadohi.',
-  headlineEm: 'Designed for Every Space.',
-  lead:     'Tapis Global International Pvt. Ltd. combines generations of Bhadohi craftsmanship with contemporary manufacturing expertise to create premium flooring solutions for residential, hospitality, commercial and international markets. From bespoke rugs and handcrafted carpets to large-scale project flooring, every product is developed with precision, material integrity and an uncompromising commitment to quality.',
-  lead2:    'Serving architects, interior designers, hospitality groups, developers and global buyers, we transform ideas into flooring solutions tailored to each project\'s vision, performance requirements and design language.',
+  headline: 'Handmade Carpet Manufacturer.',
+  headlineEm: 'Bhadohi, India.',
+  lead:     'Tapis Global International Pvt. Ltd. is a handmade carpet and rug manufacturer based in Bhadohi, India — combining generations of craft heritage with modern manufacturing capability. From hand tufted carpets and hand knotted rugs to jute rugs, wall-to-wall carpets and custom flooring, every product is developed with precision, material integrity and an uncompromising commitment to quality.',
+  lead2:    'We serve architects, interior designers, hospitality groups, developers and procurement teams — supplying premium carpets and rugs across India and to international markets from our integrated Bhadohi manufacturing facility.',
   points: [
     {
       icon: 'factory' as const,
-      title: 'Integrated Manufacturing',
-      body:  'Specification-led production under one Bhadohi campus — material integrity, documented quality control and full traceability from development through dispatch for residential, hospitality and commercial programmes.',
+      title: 'Integrated Manufacturing Facility',
+      body:  'An 80,000 sq ft Bhadohi campus manufacturing hand tufted carpets, hand knotted rugs, jute rugs, wall-to-wall carpets and custom flooring — with documented quality control and full traceability from development to dispatch.',
     },
     {
       icon: 'globe' as const,
-      title: 'Pan India & Global Supply',
-      body:  'Project execution across India for hotels, corporate interiors, retail and luxury residences — alongside export-ready manufacturing and compliance documentation for international supply partnerships.',
+      title: 'Pan India Projects & International Supply',
+      body:  'Supplying hotels, corporate interiors, luxury residences and retail spaces across India — alongside international market supply for architects, designers and procurement teams worldwide.',
     },
     {
       icon: 'layers' as const,
-      title: 'Design-Led Custom Development',
-      body:  'In-house studio support for bespoke dimensions, colour development, tender specifications and tailored solutions — from statement residential pieces to multi-phase hospitality roll-outs.',
+      title: 'Custom Rug & Carpet Development',
+      body:  'In-house design studio for bespoke dimensions, Pantone-matched colour development and custom carpet specifications — from single statement pieces to large-scale hospitality and commercial roll-outs.',
     },
   ] satisfies WhoPoint[],
 }
@@ -54,7 +54,7 @@ export const WHO_WE_ARE = {
 export const INQUIRY_LEGALS = [
   'GST: 09XXXXX000X1Z5',
   'IEC: TGIPXXXXX',
-  'CIN: U17299UP1998PTC',
+  'CIN: U17299UP1995PTC',
   'MSME: UDYAM-UP-XX',
 ]
 
@@ -90,18 +90,13 @@ export const INQUIRY_PRODUCTS = [
 
 // ─── MARKET REACH TAGS ────────────────────────────────────────
 export const EXPORT_DESTINATION_TAGS = [
-  { flag: '🇮🇳', label: 'Pan India'     },
-  { flag: '🇺🇸', label: 'USA'           },
-  { flag: '🇬🇧', label: 'UK'            },
-  { flag: '🇩🇪', label: 'Germany'       },
-  { flag: '🇦🇪', label: 'UAE'           },
-  { flag: '🇦🇺', label: 'Australia'     },
-  { flag: '🇸🇦', label: 'KSA'           },
-  { flag: '🇫🇷', label: 'France'        },
-  { flag: '🇨🇦', label: 'Canada'        },
-  { flag: '🇸🇬', label: 'Singapore'     },
-  { flag: '🇮🇹', label: 'Italy'         },
-  { flag: null,   label: '+ 35 markets'  },
+  { flag: null, label: 'Pan India Projects'                },
+  { flag: null, label: 'Hospitality & Hotels'             },
+  { flag: null, label: 'Luxury Residential'               },
+  { flag: null, label: 'Corporate & Commercial'           },
+  { flag: null, label: 'Architects & Designers'           },
+  { flag: null, label: 'Developers & Tenders'             },
+  { flag: null, label: 'International Markets'            },
 ]
 
 export const MFG_HEADER = {
@@ -110,17 +105,17 @@ export const MFG_HEADER = {
 }
 
 export const EXPORT_INLINE_STATS = [
-  { value: 'Pan', suffix: '',  label: 'India Supply'        },
-  { value: '45',  suffix: '+', label: 'Global Markets'      },
-  { value: '25',  suffix: '+', label: 'Years of Excellence' },
-  { value: '80',  suffix: '%', label: 'Client Retention'    },
+  { value: 'Pan', suffix: '',  label: 'India Projects'      },
+  { value: '30',  suffix: '+', label: 'Years Manufacturing' },
+  { value: '500', suffix: '+', label: 'Specialist Artisans' },
+  { value: '80',  suffix: 'K', label: 'Sq Ft Campus'        },
 ]
 
 export const MARKETS_HEADER = {
-  eyebrow:   'India & Global Reach',
-  title:     'Serving Premium Interiors',
-  titleEm:   'Across India & Worldwide.',
-  quote:     'From specification-led projects across India to luxury interiors in 45+ markets — one partner for design capability, project execution and global supply.',
-  tickerTitle: 'Markets We Serve',
-  tickerSubtitle: 'Pan India Projects & International Partnerships',
+  eyebrow:   'Projects Across India & International Markets',
+  title:     'Trusted by Architects, Designers',
+  titleEm:   'and Procurement Teams.',
+  quote:     'Serving hospitality, commercial and residential spaces — from specification-led projects across India to premium supply for international markets.',
+  tickerTitle: 'What We Manufacture',
+  tickerSubtitle: 'Handmade Carpets & Rugs — Bhadohi, India',
 }

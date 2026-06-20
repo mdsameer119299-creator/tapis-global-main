@@ -39,7 +39,7 @@ export const SITE = {
   } satisfies ContactLocation,
   /** Primary address (manufacturing) — used where a single line is required */
   address: 'Industrial Estate, Bhadohi – 221401, Uttar Pradesh, India',
-  established: '1998',
+  established: '1995',
 }
 
 // ─── NAV LINKS ────────────────────────────────────────────────
@@ -72,6 +72,50 @@ export const PRODUCT_DROPDOWN = [
   { label: 'Flat Weaves',          href: '/products/flat-weaves' },
   { label: 'Poufs',                href: '/products/poufs' },
   { label: 'Coco Coir',            href: '/products/coco-coir' },
+]
+
+// ─── PRODUCTS MEGA MENU (grouped, with imagery) ──────────────────
+export type MegaMenuItem = {
+  label: string
+  href:  string
+  image: string
+}
+
+export type MegaMenuGroup = {
+  heading: string
+  items:   MegaMenuItem[]
+}
+
+export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
+  {
+    heading: 'Carpets',
+    items: [
+      { label: 'Hand Tufted',   href: '/products/hand-tufted-carpet',  image: '/images/handtufted-img-2.webp' },
+      { label: 'Hand Knotted',  href: '/products/hand-knotted-carpet', image: '/images/tgi-banner-2.webp' },
+      { label: 'Wall-to-Wall',  href: '/products/wall-to-wall-carpets', image: '/images/tgi-banner-4.webp' },
+      { label: 'Leather',       href: '/products/leather-carpets',     image: '/images/rug3.webp' },
+    ],
+  },
+  {
+    heading: 'Rugs',
+    items: [
+      { label: 'Shaggy',        href: '/products/shaggy-rugs',    image: '/images/rug4.webp' },
+      { label: 'Jute & Sisal',  href: '/products/jute-sisal-rugs', image: '/images/jute-rugs-manufacturing.webp' },
+      { label: 'Flat Weaves',   href: '/products/flat-weaves',    image: '/images/rug5.webp' },
+    ],
+  },
+  {
+    heading: 'Lifestyle',
+    items: [
+      { label: 'Poufs',         href: '/products/poufs',          image: '/images/rug2.webp' },
+    ],
+  },
+  {
+    heading: 'Natural Fibre Products',
+    items: [
+      { label: 'Coco Coir',     href: '/products/coco-coir',      image: '/images/wool-drying-pic.webp' },
+    ],
+  },
 ]
 
 // ─── HERO SLIDES ─────────────────────────────────────────────
@@ -109,7 +153,7 @@ export const HERO_SLIDES = [
 ]
 
 export const HERO_STATS = [
-  { value: '25',  suffix: '+', label: 'Years of Excellence'  },
+  { value: '30',  suffix: '+', label: 'Years of Excellence'  },
   { value: '500', suffix: '+', label: 'Specialist Artisans'  },
   { value: '80',  suffix: 'K', label: 'Sq Ft Campus'         },
   { value: '45',  suffix: '+', label: 'Markets Served'       },
@@ -125,47 +169,47 @@ export type {
 
 // ─── STATS / EXPORT ──────────────────────────────────────────
 export const EXPORT_STATS = [
-  { value: '25',  suffix: '+', label: 'Years of Excellence' },
-  { value: '500', suffix: '+', label: 'Master Artisans'     },
-  { value: '80',  suffix: 'K', label: 'Sq Ft Campus'        },
-  { value: '45',  suffix: '+', label: 'Global Markets'      },
-  { value: 'Pan', suffix: '',  label: 'India Projects'      },
+  { value: '30',  suffix: '+', label: 'Years of Manufacturing' },
+  { value: '500', suffix: '+', label: 'Specialist Artisans'    },
+  { value: '80',  suffix: 'K', label: 'Sq Ft Campus'           },
+  { value: 'Pan', suffix: '',  label: 'India Projects'         },
+  { value: '45',  suffix: '+', label: 'International Markets'  },
 ]
 
 export const EXPORT_SEGMENTS = [
   {
     icon: 'hotel',
     title: 'Hotels, Resorts & Hospitality',
-    desc:  'Lobby statements, suite programmes, corridors and F&B zones — specification-led carpets with fire-rated options, custom medallions and multi-phase roll-outs for 5-star environments.',
+    desc:  'Lobby statements, suite programmes, corridors and F&B zones — specification-led carpets with fire-rated options, custom medallions and multi-phase roll-outs for 5-star hotel projects across India and internationally.',
   },
   {
     icon: 'truck',
     title: 'Corporate & Institutional Interiors',
-    desc:  'Boardrooms, headquarters, retail flagships and public-sector spaces — durable, design-driven flooring with documented QC and coordinated on-site delivery.',
+    desc:  'Boardrooms, headquarters, retail flagships and public-sector spaces — durable, design-driven flooring supplied across India with documented QC, coordinated delivery and full traceability.',
   },
   {
     icon: 'label',
-    title: 'Developers, Tenders & Global Supply',
-    desc:  'Pan India project execution for builders and institutional buyers — plus export-ready programmes, compliance documentation and international supply partnerships.',
+    title: 'Architects, Designers & Developers',
+    desc:  'Bespoke carpets and custom rugs for luxury residential, villa and mixed-use projects — with in-house design studio support, Pantone-matched colour development and pan India project execution.',
   },
 ]
 
 export const REGIONS = [
-  { flag: '🇺🇸', country: 'United States' },
-  { flag: '🇬🇧', country: 'United Kingdom' },
-  { flag: '🇩🇪', country: 'Germany' },
-  { flag: '🇫🇷', country: 'France' },
-  { flag: '🇦🇺', country: 'Australia' },
-  { flag: '🇦🇪', country: 'UAE' },
-  { flag: '🇸🇦', country: 'Saudi Arabia' },
-  { flag: '🇨🇦', country: 'Canada' },
-  { flag: '🇮🇹', country: 'Italy' },
-  { flag: '🇳🇱', country: 'Netherlands' },
-  { flag: '🇸🇪', country: 'Sweden' },
-  { flag: '🇧🇪', country: 'Belgium' },
-  { flag: '🇯🇵', country: 'Japan' },
-  { flag: '🇰🇷', country: 'South Korea' },
-  { flag: '🇿🇦', country: 'South Africa' },
+  { country: 'Hand Tufted Carpets'        },
+  { country: 'Hand Knotted Rugs'          },
+  { country: 'Jute & Natural Fibre Rugs'  },
+  { country: 'Wall-to-Wall Carpets'       },
+  { country: 'Custom Rugs & Bespoke'      },
+  { country: 'Shaggy Rugs'               },
+  { country: 'Flatweave & Kilim'          },
+  { country: 'Hotel & Hospitality Carpet' },
+  { country: 'Leather Carpets'            },
+  { country: 'Broadloom Carpets'          },
+  { country: 'Wool Carpets'              },
+  { country: 'Silk & Viscose Rugs'        },
+  { country: 'Poufs & Accessories'        },
+  { country: 'Contract Flooring'         },
+  { country: 'Coco Coir Matting'          },
 ]
 
 // ─── TESTIMONIALS ─────────────────────────────────────────────

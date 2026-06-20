@@ -518,7 +518,7 @@ body[data-sticky-bar='open'] .wa-float-btn {
 
   .footer-link {
     @apply text-[15px] leading-relaxed transition-all duration-300 inline-block;
-    color: rgba(255, 255, 255, 0.46);
+    color: rgba(255, 255, 255, 0.68);
   }
   .footer-link:hover {
     color: var(--gl);
@@ -600,11 +600,11 @@ body[data-sticky-bar='open'] .wa-float-btn {
 
   .footer-contact-label {
     display: block;
-    font-size: 0.75rem;
+    font-size: 0.875rem;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     font-weight: 600;
-    color: var(--gd);
+    color: var(--gl);
     margin-bottom: 0.35rem;
     line-height: 1.4;
   }
@@ -613,7 +613,7 @@ body[data-sticky-bar='open'] .wa-float-btn {
     display: block;
     font-size: 0.9375rem;
     line-height: 1.65;
-    color: rgba(255, 255, 255, 0.58);
+    color: rgba(255, 255, 255, 0.78);
     transition: color 0.3s ease;
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -629,7 +629,7 @@ body[data-sticky-bar='open'] .wa-float-btn {
     font-size: 0.8125rem;
     letter-spacing: 0.14em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.36);
+    color: rgba(255, 255, 255, 0.58);
     transition: color 0.3s ease;
   }
 
