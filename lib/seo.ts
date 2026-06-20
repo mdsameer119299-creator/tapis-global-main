@@ -3,7 +3,7 @@
 // Edit this file to update titles, descriptions, OG images, keywords etc.
 // ─────────────────────────────────────────────────────────────────────────────
 
-export const SEO_BASE_URL = 'https://www.tapisglobal.com'  // ← update to live domain
+export const SEO_BASE_URL = 'https://www.tapisglobalinternational.com'  // Production domain
 
 // ─── OG IMAGE ────────────────────────────────────────────────────────────────
 // Replace with your actual hosted OG image (1200×630px recommended)
