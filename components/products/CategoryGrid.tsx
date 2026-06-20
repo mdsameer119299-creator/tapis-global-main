@@ -12,7 +12,7 @@ export default function CategoryGrid() {
     >
       <div className="max-w-7xl mx-auto">
         <Reveal>
-          <Eyebrow>Our Range</Eyebrow>
+          <Eyebrow>Our Product Range</Eyebrow>
           <h2
             className="font-medium leading-[1.06] mb-4"
             style={{
@@ -21,11 +21,13 @@ export default function CategoryGrid() {
               color: 'var(--ink)',
             }}
           >
-            Nine Disciplines of
-            <em style={{ fontStyle: 'italic', color: 'var(--c)' }}> Floor Artistry</em>
+            Carpet &amp; Rug Categories We
+            <em style={{ fontStyle: 'italic', color: 'var(--c)' }}> Manufacture</em>
           </h2>
           <p className="text-[17px] font-light leading-[1.85] max-w-2xl mb-14" style={{ color: 'var(--inkm)' }}>
-            Select a collection to explore craftsmanship, materials, project applications and specifications — each category manufactured in our Bhadohi campus.
+            As a carpet manufacturer, supplier and exporter in India, we produce nine specialist categories — each with
+            its own materials, applications, technical specifications and customisation options. Select a collection to
+            explore craftsmanship and request a catalogue or quote.
           </p>
         </Reveal>
 

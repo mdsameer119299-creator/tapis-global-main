@@ -139,9 +139,15 @@ export const PAGE_META = {
   },
 
   products: {
-    title:       `Luxury Carpet Collections | Hotels, Homes & Commercial Projects — Tapis Global`,
-    description: `Nine premium carpet categories — hand tufted, knotted, shaggy, jute, leather, wall-to-wall, flat weaves, poufs and coco coir. For hotels, villas, offices, retail and designer interiors across India and worldwide.`,
-    keywords:    KEYWORDS_PRODUCT,
+    title:       `Carpet & Rug Manufacturer India | Product Collections — Tapis Global International`,
+    description: `Explore carpet and rug collections from Tapis Global International — hand tufted carpets, hand knotted rugs, jute & sisal rugs, wall-to-wall carpets, flat weaves, shaggy rugs, leather carpets, poufs and coco coir. Manufacturer, supplier and exporter from Bhadohi, India.`,
+    keywords:    [
+      'Carpet Manufacturer India',
+      'Rug Manufacturer India',
+      'Carpet Supplier India',
+      'Bhadohi Carpet Manufacturer',
+      ...KEYWORDS_PRODUCT,
+    ],
     canonical:   `${SEO_BASE_URL}/products`,
   },
 

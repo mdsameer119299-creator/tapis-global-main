@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { buildMetadata } from '@/lib/metadata'
-import { SEO_BASE_URL, OG_IMAGE } from '@/lib/seo'
+import { SEO_BASE_URL } from '@/lib/seo'
 import {
   webPageSchema,
   breadcrumbSchema,
   productSchema,
+  faqSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
 import {
@@ -15,8 +16,13 @@ import {
 import CategorySidebar from '@/components/products/CategorySidebar'
 import CategoryHero from '@/components/products/CategoryHero'
 import CategoryContent from '@/components/products/CategoryContent'
+import CategoryApplications from '@/components/products/CategoryApplications'
+import CategoryManufacturing from '@/components/products/CategoryManufacturing'
+import CategorySpecs from '@/components/products/CategorySpecs'
 import CategoryGallery from '@/components/products/CategoryGallery'
-import CategoryCustomCTA from '@/components/products/CategoryCustomCTA'
+import CategoryFAQ from '@/components/products/CategoryFAQ'
+import CategoryCTA from '@/components/products/CategoryCTA'
+import RelatedProducts from '@/components/products/RelatedProducts'
 import CategoryWhyUs from '@/components/products/CategoryWhyUs'
 
 type Props = {
@@ -31,13 +37,10 @@ export function generateMetadata({ params }: Props): Metadata {
   const category = getProductCategory(params.slug)
   if (!category) return {}
 
-  const title = `${category.name} | Luxury Carpet Manufacturer — Tapis Global International`
-  const description = category.intro
-
   return buildMetadata({
-    title,
-    description,
-    keywords:    [category.name, 'carpet manufacturer India', 'wholesale export', ...category.materials],
+    title:       category.seoTitle,
+    description: category.seoDescription,
+    keywords:    category.seoKeywords,
     canonical:   `${SEO_BASE_URL}/products/${category.slug}`,
   })
 }
@@ -49,8 +52,8 @@ export default function ProductCategoryPage({ params }: Props) {
   const PAGE_JSONLD = JSON.stringify(
     buildJsonLd(
       webPageSchema({
-        title:       category.name,
-        description: category.intro,
+        title:       category.seoTitle,
+        description: category.seoDescription,
         url:         `${SEO_BASE_URL}/products/${category.slug}`,
         imageUrl:    `${SEO_BASE_URL}${category.heroImage}`,
       }),
@@ -60,13 +63,14 @@ export default function ProductCategoryPage({ params }: Props) {
         { name: category.name, url: `${SEO_BASE_URL}/products/${category.slug}` },
       ]),
       productSchema({
-        name:        `${category.name} — Tapis Global International`,
+        name:        `${category.name} — Manufacturer & Supplier India, Tapis Global International`,
         description: category.intro,
         imageUrl:    `${SEO_BASE_URL}${category.cardImage}`,
         url:         `${SEO_BASE_URL}/products/${category.slug}`,
         material:    category.materials.join(', '),
         moq:         category.moq,
       }),
+      faqSchema(category.faqs.map((f) => ({ q: f.q, a: f.a }))),
     ),
   )
 
@@ -86,8 +90,13 @@ export default function ProductCategoryPage({ params }: Props) {
         <div className="flex-1 min-w-0 rounded-xl overflow-hidden" style={{ border: '1px solid var(--bd)' }}>
           <CategoryHero category={category} />
           <CategoryContent category={category} />
+          <CategoryApplications category={category} />
+          <CategoryManufacturing category={category} />
+          <CategorySpecs category={category} />
           <CategoryGallery images={category.gallery} title={category.name} />
-          <CategoryCustomCTA />
+          <CategoryFAQ category={category} />
+          <CategoryCTA category={category} />
+          <RelatedProducts slug={category.slug} />
           <CategoryWhyUs />
         </div>
       </div>
