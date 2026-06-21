@@ -27,7 +27,7 @@ export type LandingFaq = {
 
 export type SeoLanding = {
   slug:        string
-  kind:        'industry' | 'solution'
+  kind:        'industry' | 'solution' | 'country'
   /** Short label used in nav, breadcrumbs and related-link cards */
   label:       string
   heroImage:   string
@@ -49,6 +49,7 @@ export type SeoLanding = {
   relatedProducts:   string[]
   relatedIndustries: string[]
   relatedSolutions?: string[]
+  relatedCountries?: string[]
 }
 
 // ─── REGISTRY ────────────────────────────────────────────────────────────────
@@ -56,6 +57,7 @@ export type SeoLanding = {
 // cycles between this file and the data files.
 import { INDUSTRIES } from './industries'
 import { SOLUTIONS } from './solutions-seo'
+import { COUNTRIES } from './countries'
 
 export function getIndustry(slug: string): SeoLanding | undefined {
   return INDUSTRIES.find((i) => i.slug === slug)
@@ -63,6 +65,10 @@ export function getIndustry(slug: string): SeoLanding | undefined {
 
 export function getSolution(slug: string): SeoLanding | undefined {
   return SOLUTIONS.find((s) => s.slug === slug)
+}
+
+export function getCountry(slug: string): SeoLanding | undefined {
+  return COUNTRIES.find((c) => c.slug === slug)
 }
 
 export function getAllIndustrySlugs(): string[] {
@@ -73,16 +79,26 @@ export function getAllSolutionSlugs(): string[] {
   return SOLUTIONS.map((s) => s.slug)
 }
 
-export function getRelatedIndustries(slugs: string[]): SeoLanding[] {
+export function getAllCountrySlugs(): string[] {
+  return COUNTRIES.map((c) => c.slug)
+}
+
+export function getRelatedIndustries(slugs: string[] = []): SeoLanding[] {
   return slugs
     .map((s) => INDUSTRIES.find((i) => i.slug === s))
     .filter((x): x is SeoLanding => Boolean(x))
 }
 
-export function getRelatedSolutions(slugs: string[]): SeoLanding[] {
+export function getRelatedSolutions(slugs: string[] = []): SeoLanding[] {
   return slugs
     .map((s) => SOLUTIONS.find((i) => i.slug === s))
     .filter((x): x is SeoLanding => Boolean(x))
 }
 
-export { INDUSTRIES, SOLUTIONS }
+export function getRelatedCountries(slugs: string[] = []): SeoLanding[] {
+  return slugs
+    .map((s) => COUNTRIES.find((i) => i.slug === s))
+    .filter((x): x is SeoLanding => Boolean(x))
+}
+
+export { INDUSTRIES, SOLUTIONS, COUNTRIES }

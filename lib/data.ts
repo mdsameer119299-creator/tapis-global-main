@@ -93,15 +93,19 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
       { label: 'Hand Tufted',   href: '/products/hand-tufted-carpet',  image: '/images/handtufted-img-2.webp' },
       { label: 'Hand Knotted',  href: '/products/hand-knotted-carpet', image: '/images/tgi-banner-2.webp' },
       { label: 'Wall-to-Wall',  href: '/products/wall-to-wall-carpets', image: '/images/tgi-banner-4.webp' },
+      { label: 'Carpet Tiles',  href: '/products/carpet-tiles',        image: '/images/tufting-carpet.webp' },
       { label: 'Leather',       href: '/products/leather-carpets',     image: '/images/rug3.webp' },
     ],
   },
   {
     heading: 'Rugs',
     items: [
+      { label: 'Area Rugs',     href: '/products/area-rugs',      image: '/images/rug1.webp' },
       { label: 'Shaggy',        href: '/products/shaggy-rugs',    image: '/images/rug4.webp' },
       { label: 'Jute & Sisal',  href: '/products/jute-sisal-rugs', image: '/images/jute-rugs-manufacturing.webp' },
       { label: 'Flat Weaves',   href: '/products/flat-weaves',    image: '/images/rug5.webp' },
+      { label: 'Kilim',         href: '/products/kilim-rugs',     image: '/images/rug5.webp' },
+      { label: 'Dhurrie',       href: '/products/dhurrie-rugs',   image: '/images/rug3.webp' },
     ],
   },
   {

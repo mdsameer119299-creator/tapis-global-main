@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { SeoLanding } from '@/lib/seo-landing'
-import { getRelatedIndustries, getRelatedSolutions } from '@/lib/seo-landing'
+import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries } from '@/lib/seo-landing'
 import { getProductCategory } from '@/lib/products'
 import { SITE } from '@/lib/data'
 import { Reveal, Eyebrow } from '@/components/ui'
@@ -12,11 +12,13 @@ import CategoryTrustSignals from '@/components/products/CategoryTrustSignals'
 const BASE_PATH: Record<SeoLanding['kind'], string> = {
   industry: '/industries',
   solution: '/solutions',
+  country:  '/countries',
 }
 
 const BASE_LABEL: Record<SeoLanding['kind'], string> = {
   industry: 'Industries',
   solution: 'Solutions',
+  country:  'Export Markets',
 }
 
 export default function LandingPage({ page }: { page: SeoLanding }) {
@@ -26,13 +28,14 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
   const relatedProducts = page.relatedProducts
     .map((slug) => getProductCategory(slug))
     .filter((c): c is NonNullable<typeof c> => Boolean(c))
-  // Cross-link to the *other* cluster: industries link to solutions and vice-versa,
-  // plus same-cluster siblings — guaranteeing 3+ related landing links, no orphans.
-  const relatedLandings =
-    page.kind === 'industry'
-      ? [...getRelatedSolutions(page.relatedSolutions ?? []), ...getRelatedIndustries(page.relatedIndustries)]
-      : [...getRelatedIndustries(page.relatedIndustries), ...getRelatedSolutions(page.relatedSolutions ?? [])]
-  const relatedLandingsTop = relatedLandings.slice(0, 3)
+  // Cross-link across clusters (industry ⇄ solution ⇄ country) — guaranteeing
+  // 3+ related landing links and a Product→Industry→Country→Contact chain, no orphans.
+  const relatedLandings = [
+    ...getRelatedIndustries(page.relatedIndustries),
+    ...getRelatedSolutions(page.relatedSolutions),
+    ...getRelatedCountries(page.relatedCountries),
+  ].filter((l) => !(l.kind === page.kind && l.slug === page.slug))
+  const relatedLandingsTop = relatedLandings.slice(0, 4)
 
   const waHref = `${SITE.whatsapp}?text=${encodeURIComponent(
     `Hello Tapis Global, I'd like to enquire about ${page.label} (manufacturing / supply).`,
