@@ -5,6 +5,7 @@
 import type { MetadataRoute } from 'next'
 import { SEO_BASE_URL } from '@/lib/seo'
 import { getAllProductSlugs } from '@/lib/products'
+import { getAllIndustrySlugs, getAllSolutionSlugs } from '@/lib/seo-landing'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date().toISOString()
@@ -19,6 +20,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     {
       url:              `${SEO_BASE_URL}/products`,
+      lastModified:     now,
+      changeFrequency:  'weekly',
+      priority:         0.9,
+    },
+    {
+      url:              `${SEO_BASE_URL}/industries`,
+      lastModified:     now,
+      changeFrequency:  'weekly',
+      priority:         0.9,
+    },
+    {
+      url:              `${SEO_BASE_URL}/solutions`,
       lastModified:     now,
       changeFrequency:  'weekly',
       priority:         0.9,
@@ -86,5 +99,19 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:        0.85,
   }))
 
-  return [...staticPages, ...productPages]
+  const industryPages: MetadataRoute.Sitemap = getAllIndustrySlugs().map(slug => ({
+    url:             `${SEO_BASE_URL}/industries/${slug}`,
+    lastModified:    now,
+    changeFrequency: 'monthly' as const,
+    priority:        0.8,
+  }))
+
+  const solutionPages: MetadataRoute.Sitemap = getAllSolutionSlugs().map(slug => ({
+    url:             `${SEO_BASE_URL}/solutions/${slug}`,
+    lastModified:    now,
+    changeFrequency: 'monthly' as const,
+    priority:        0.8,
+  }))
+
+  return [...staticPages, ...productPages, ...industryPages, ...solutionPages]
 }
