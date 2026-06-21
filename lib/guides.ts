@@ -679,3 +679,35 @@ export function getRelatedGuides(slugs: string[] = []): Guide[] {
     .map((s) => GUIDES.find((g) => g.slug === s))
     .filter((x): x is Guide => Boolean(x))
 }
+
+// Picks 3 contextually-relevant guides for a landing page (industry/solution/
+// country/dhurrie/company). Slug-specific overrides first, then per-kind defaults.
+// Returns varied links per page (no duplicate link sets) for internal-link depth.
+const GUIDE_DEFAULTS_BY_KIND: Record<string, string[]> = {
+  industry: ['hotel-carpet-buying-guide', 'hand-tufted-vs-hand-knotted-carpet', 'how-carpets-are-manufactured'],
+  solution: ['handmade-vs-machine-made-carpets', 'how-custom-rug-manufacturing-works', 'how-carpets-are-manufactured'],
+  country:  ['how-to-import-carpets-from-india', 'why-buy-carpets-from-india', 'why-bhadohi-carpet-capital'],
+  dhurrie:  ['government-tender-dhurrie-buying-guide', 'kilim-vs-dhurrie', 'school-carpet-buying-guide'],
+  company:  ['how-carpets-are-manufactured', 'why-bhadohi-carpet-capital', 'handmade-vs-machine-made-carpets'],
+}
+const GUIDE_SLUG_OVERRIDES: Record<string, string[]> = {
+  'hotel-carpets': ['hotel-carpet-buying-guide', 'wool-vs-viscose-carpets', 'area-rugs-vs-wall-to-wall-carpets'],
+  'hotel-lobby-carpets': ['hotel-carpet-buying-guide', 'hand-tufted-vs-hand-knotted-carpet', 'carpet-manufacturing-process-explained'],
+  'hotel-room-carpets': ['hotel-carpet-buying-guide', 'area-rugs-vs-wall-to-wall-carpets', 'wool-vs-viscose-carpets'],
+  'auditorium-carpets': ['auditorium-carpet-buying-guide', 'carpet-manufacturing-process-explained', 'wool-vs-viscose-carpets'],
+  'mosque-carpets': ['mosque-carpet-buying-guide', 'how-carpets-are-manufactured', 'hand-tufted-vs-hand-knotted-carpet'],
+  'office-carpets': ['office-carpet-buying-guide', 'area-rugs-vs-wall-to-wall-carpets', 'carpet-manufacturing-process-explained'],
+  'school-carpets': ['school-carpet-buying-guide', 'government-tender-dhurrie-buying-guide', 'kilim-vs-dhurrie'],
+  'conference-room-carpets': ['office-carpet-buying-guide', 'carpet-manufacturing-process-explained', 'wool-vs-viscose-carpets'],
+  'banquet-hall-carpets': ['hotel-carpet-buying-guide', 'auditorium-carpet-buying-guide', 'how-carpets-are-manufactured'],
+  // dhurrie material/intent overrides
+  'cotton-dhurrie-manufacturer': ['kilim-vs-dhurrie', 'how-rugs-are-manufactured', 'government-tender-dhurrie-buying-guide'],
+  'wool-dhurrie-manufacturer': ['kilim-vs-dhurrie', 'wool-vs-viscose-carpets', 'how-rugs-are-manufactured'],
+  'jute-dhurrie-manufacturer': ['jute-vs-sisal-rugs', 'kilim-vs-dhurrie', 'how-rugs-are-manufactured'],
+  'tat-patti-manufacturer': ['school-carpet-buying-guide', 'government-tender-dhurrie-buying-guide', 'kilim-vs-dhurrie'],
+  'handloom-dhurrie-manufacturer': ['kilim-vs-dhurrie', 'handmade-vs-machine-made-carpets', 'how-rugs-are-manufactured'],
+}
+export function guidesForLanding(kind: string, slug: string): Guide[] {
+  const slugs = GUIDE_SLUG_OVERRIDES[slug] ?? GUIDE_DEFAULTS_BY_KIND[kind] ?? GUIDE_DEFAULTS_BY_KIND.industry
+  return getRelatedGuides(slugs)
+}
