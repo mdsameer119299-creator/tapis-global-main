@@ -6,6 +6,7 @@ import type { MetadataRoute } from 'next'
 import { SEO_BASE_URL } from '@/lib/seo'
 import { getAllProductSlugs } from '@/lib/products'
 import { getAllIndustrySlugs, getAllSolutionSlugs, getAllCountrySlugs, getAllDhurrieSlugs, getAllCompanySlugs } from '@/lib/seo-landing'
+import { getAllGuideSlugs } from '@/lib/guides'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date().toISOString()
@@ -53,6 +54,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified:     now,
       changeFrequency:  'monthly',
       priority:         0.8,
+    },
+    {
+      url:              `${SEO_BASE_URL}/guides`,
+      lastModified:     now,
+      changeFrequency:  'weekly',
+      priority:         0.85,
     },
     {
       url:              `${SEO_BASE_URL}/about`,
@@ -152,5 +159,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:        0.7,
   }))
 
-  return [...staticPages, ...productPages, ...industryPages, ...solutionPages, ...countryPages, ...dhurriePages, ...companyPages]
+  const guidePages: MetadataRoute.Sitemap = getAllGuideSlugs().map(slug => ({
+    url:             `${SEO_BASE_URL}/guides/${slug}`,
+    lastModified:    now,
+    changeFrequency: 'monthly' as const,
+    priority:        0.7,
+  }))
+
+  return [...staticPages, ...productPages, ...industryPages, ...solutionPages, ...countryPages, ...dhurriePages, ...companyPages, ...guidePages]
 }

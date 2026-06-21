@@ -222,6 +222,39 @@ export function webPageSchema({
   }
 }
 
+// ─── ARTICLE (guides / editorial) ─────────────────────────────────────────────
+export function articleSchema({
+  title,
+  description,
+  url,
+  imageUrl,
+  datePublished = '2026-01-01',
+  dateModified,
+}: {
+  title:       string
+  description: string
+  url:         string
+  imageUrl:    string
+  datePublished?: string
+  dateModified?:  string
+}) {
+  return {
+    '@context':     'https://schema.org',
+    '@type':        'Article',
+    '@id':          `${url}#article`,
+    headline:       title,
+    description,
+    image:          imageUrl,
+    inLanguage:     'en-US',
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${url}#webpage` },
+    datePublished,
+    dateModified:   dateModified ?? new Date().toISOString().split('T')[0],
+    author:    { '@id': `${SEO_BASE_URL}/#organization` },
+    publisher: { '@id': `${SEO_BASE_URL}/#organization` },
+    isPartOf:  { '@id': `${SEO_BASE_URL}/#website` },
+  }
+}
+
 // ─── ITEM LIST (hub / collection pages) ───────────────────────────────────────
 // Valid, warning-free way to enumerate child pages on a hub (e.g. /products).
 // Carries no ecommerce fields, so it raises no Merchant/Product-snippet warnings.

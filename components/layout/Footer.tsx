@@ -11,6 +11,7 @@ const FOOTER_EXPLORE = [
   { label: 'Industries',      href: '/industries' },
   { label: 'Solutions',       href: '/solutions' },
   { label: 'Dhurries & Tat Patti', href: '/dhurries' },
+  { label: 'Guides',          href: '/guides' },
   { label: 'Export Markets',  href: '/countries' },
   { label: 'Custom Solutions', href: '/custom' },
   { label: 'Gallery',         href: '/gallery' },
