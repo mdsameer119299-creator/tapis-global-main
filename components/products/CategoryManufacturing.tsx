@@ -14,8 +14,8 @@ export default function CategoryManufacturing({ category }: { category: ProductC
           How We Manufacture <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{category.name}</em>
         </h2>
         <p className="text-[16px] font-light leading-[1.85] max-w-2xl mb-10" style={{ color: 'var(--inkm)' }}>
-          Every stage is controlled in-house at our integrated Bhadohi facility — giving project teams a single
-          accountable manufacturer for quality, consistency and customisation.
+          Every stage of {category.name.toLowerCase()} production is controlled in-house at our integrated Bhadohi
+          facility — giving project teams a single accountable manufacturer for quality, consistency and customisation.
         </p>
       </Reveal>
 

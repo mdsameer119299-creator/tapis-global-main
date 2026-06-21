@@ -19,6 +19,7 @@ import CategoryTrustSignals from '@/components/products/CategoryTrustSignals'
 import CategoryApplications from '@/components/products/CategoryApplications'
 import CategoryManufacturing from '@/components/products/CategoryManufacturing'
 import CategorySpecs from '@/components/products/CategorySpecs'
+import CategoryDeepDive from '@/components/products/CategoryDeepDive'
 import CategoryGallery from '@/components/products/CategoryGallery'
 import CategoryFAQ from '@/components/products/CategoryFAQ'
 import CategoryCTA from '@/components/products/CategoryCTA'
@@ -86,6 +87,7 @@ export default function ProductCategoryPage({ params }: Props) {
           <CategoryApplications category={category} />
           <CategoryManufacturing category={category} />
           <CategorySpecs category={category} />
+          <CategoryDeepDive category={category} />
           <CategoryGallery images={category.gallery} title={category.name} />
           <CategoryFAQ category={category} />
           <CategoryCTA category={category} />

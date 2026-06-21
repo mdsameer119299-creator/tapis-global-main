@@ -36,6 +36,16 @@ export type ProductFaq = {
   a: string
 }
 
+export type MaterialDetail = {
+  name: string
+  desc: string
+}
+
+export type UseCase = {
+  title: string
+  desc:  string
+}
+
 export type ProductCategory = {
   slug:        string
   name:        string
@@ -67,6 +77,17 @@ export type ProductCategory = {
   /** Slugs of related categories for internal linking */
   related:     string[]
   gallery:     ProductGalleryImage[]
+  // ── Depth fields (unique long-form content per page; no cross-page duplicates) ──
+  /** 2–4 unique editorial paragraphs of additional depth */
+  deepDive?:       string[]
+  /** Per-material specification descriptions (unique to this product) */
+  materialDetails?: MaterialDetail[]
+  /** 2–3 unique paragraphs on export/supply for this product */
+  exportInfo?:     string[]
+  /** Detailed use-case scenarios beyond the applications grid */
+  useCases?:       UseCase[]
+  /** 3 guide slugs for related-guide internal links */
+  relatedGuides?:  string[]
 }
 
 const POOL = [
@@ -747,7 +768,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     process: [
       { step: '01', title: 'Design & Dyeing', desc: 'The motif is charted and yarns are dyed with AZO-free vegetable or chrome dyes.' },
       { step: '02', title: 'Flat Weaving', desc: 'Weavers interlace warp and weft on traditional looms to build the pile-free, reversible kilim.' },
-      { step: '03', title: 'Selvedge Finishing', desc: 'Edges and selvedges are reinforced for durability and a clean reversible finish.' },
+      { step: '03', title: 'Selvedge Finishing', desc: 'Kilim selvedges and slit-weave joins are hand-reinforced so the tight geometric motifs hold their crisp edges and the rug stays fully reversible.' },
       { step: '04', title: 'Washing & QC', desc: 'The kilim is washed, squared to size and inspected against the approved design.' },
     ],
     customization: [
@@ -1039,8 +1060,488 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
   },
 ]
 
-// Append shared base FAQs after the category-specific ones for richer FAQ sections.
+// ─────────────────────────────────────────────────────────────────────────────
+// DEPTH CONTENT — unique long-form content per product (1800–2500 word target).
+// Keyed by slug and merged below. Every paragraph is written for its specific
+// product; no paragraph is shared across pages.
+// ─────────────────────────────────────────────────────────────────────────────
+type ProductDepth = {
+  deepDive:        string[]
+  materialDetails: MaterialDetail[]
+  useCases:        UseCase[]
+  exportInfo:      string[]
+  relatedGuides:   string[]
+  extraFaqs:       ProductFaq[]
+}
+
+const PRODUCT_DEPTH: Record<string, ProductDepth> = {
+  'hand-tufted-carpet': {
+    deepDive: [
+      'Hand tufting occupies a sweet spot in carpet manufacturing: it delivers the warmth, density and design freedom of handmade production at a price point and lead time that suit large residential and hospitality programmes. Because the yarn is hand-guided rather than mechanically driven, our artisans can shift colour, change pile height and introduce carved relief within a single piece — something mass-produced broadloom cannot replicate. This flexibility is why interior designers reach for hand tufted carpets when a space needs a bespoke statement without a hand-knotted budget.',
+      'The character of a hand tufted carpet is decided by three variables: pile construction, yarn weight and finishing. Cut pile gives a soft, velvety surface that shows colour depth; loop pile is tighter and more hard-wearing; cut-and-loop combines both to sculpt texture and pattern. Yarn weight, measured in GSM, determines underfoot density and durability — we typically specify 2,500–5,500 GSM depending on whether the carpet serves a quiet bedroom or a busy hotel corridor. Finishing — washing, shearing and hand-carving — is where a flat tufted surface becomes a refined, multi-level design.',
+      'Quality in hand tufting is invisible until it fails, which is why we control it at the latex and backing stage. A weak latex coat or thin secondary backing causes shedding and delamination over time; our carpets use a full latex lock and a bonded cotton scrim secondary backing for dimensional stability and a long service life. For project buyers, this is the difference between a carpet that looks tired in two years and one that performs for a decade.',
+    ],
+    materialDetails: [
+      { name: 'New Zealand Wool', desc: 'Long-staple, naturally resilient wool with excellent crimp recovery and stain resistance — our premium choice for durability and a luxurious hand.' },
+      { name: 'Indian Wool', desc: 'Hard-wearing, cost-effective wool ideal for high-traffic and contract programmes where value and resilience matter most.' },
+      { name: 'Viscose / Art Silk', desc: 'Adds silk-like sheen and softness as highlight yarn; best blended with wool for low-to-moderate traffic decorative areas.' },
+      { name: 'Cotton & Polyester Blends', desc: 'Used for backing and value constructions; polyester offers vivid colour retention and easy maintenance for budget-sensitive projects.' },
+    ],
+    useCases: [
+      { title: 'Five-star suite programme', desc: 'Custom carved medallions in wool-viscose for a 200-key hotel, delivered in three colour-matched phases.' },
+      { title: 'Designer residence', desc: 'Bespoke living-room rug developed from an artist\'s painting with Pantone-matched lab-dips.' },
+      { title: 'Corporate reception', desc: 'Logo-inlaid cut-and-loop carpet at 4,500 GSM for a high-footfall headquarters lobby.' },
+      { title: 'Retail flagship', desc: 'Tonal loop-pile broadloom that frames merchandise without competing with it.' },
+    ],
+    exportInfo: [
+      'We export hand tufted carpets to designers, hospitality groups and importers across 45+ countries. Each export order is manufactured to destination-market requirements — including fire-rating where specified — and ships with the commercial and compliance documentation customs clearance requires.',
+      'Carpets are rolled, wrapped and palletised for safe sea freight, with phased dispatch available for multi-phase hotel and contract projects. We work to your preferred Incoterms and accept TT, LC, DA and DP, in USD, EUR, GBP and INR.',
+    ],
+    relatedGuides: ['hand-tufted-carpet-manufacturing-process', 'hand-tufted-vs-hand-knotted-carpet', 'hotel-carpet-buying-guide'],
+    extraFaqs: [
+      { q: 'What GSM should I specify for a hand tufted hotel carpet?', a: 'For hotel corridors and lobbies we recommend 3,500–5,500 GSM dense cut-pile for durability; guest rooms can use 2,500–3,500 GSM for a softer, more economical specification. We advise per zone.' },
+      { q: 'Will a hand tufted carpet shed?', a: 'A well-made hand tufted carpet sheds minimally and stops after initial settling. Shedding and delamination come from weak latex or backing — we use a full latex lock and bonded secondary backing to prevent this.' },
+      { q: 'Can you carve a logo or pattern into the pile?', a: 'Yes. Hand-carving and cut-and-loop construction let us sculpt logos, borders and multi-level relief into the carpet — popular for branded reception and feature areas.' },
+      { q: 'What is the maximum size for a seamless hand tufted carpet?', a: 'We produce large seamless pieces and, for very large areas, colour-matched panels joined on site. Share your room dimensions and we will advise the best approach.' },
+    ],
+  },
+
+  'hand-knotted-carpet': {
+    deepDive: [
+      'A hand knotted carpet is the most labour-intensive object most buyers will ever purchase for a floor — and that labour is precisely its value. Every knot is tied individually around the warp by a master weaver, so a single 9×12 rug at 150 KPSI contains well over a million knots and represents months of skilled work. Nothing about the process can be rushed without showing in the finished piece, which is why authentic hand knotting commands a premium and why a genuine article appreciates rather than depreciates.',
+      'Knot density (KPSI — knots per square inch) is the headline specification, but it must be read alongside material and design. A coarse 40–80 KPSI wool rug is robust, forgiving and well suited to family rooms; 100–150 KPSI in wool or wool-silk allows refined detail for formal interiors; 200–300+ KPSI is the realm of fine silk masterpieces where the design approaches the resolution of a painting. Higher density is not universally "better" — it is a trade-off between detail, durability, hand-feel and budget that we help each client balance.',
+      'The foundation and finishing are what separate a rug that lies flat for generations from one that curls and wears unevenly. We hand-string cotton or silk warps under even tension, beat down each row of knots consistently, and finish with hand-shearing, washing and stretching. The wash in particular — sometimes repeated — is what develops the lustre and subtle abrash (colour variation) that collectors prize in a hand knotted carpet.',
+    ],
+    materialDetails: [
+      { name: 'Pure Mulberry Silk', desc: 'The finest pile fibre — fine, strong and lustrous — enabling 200+ KPSI detail and a jewel-like sheen for collector and luxury pieces.' },
+      { name: 'New Zealand Wool', desc: 'Premium long-staple wool with natural resilience and lanolin sheen; the durable backbone of most fine knotted carpets.' },
+      { name: 'Wool-Silk Blend', desc: 'Wool ground with silk highlights — combining everyday durability with the sheen and definition of silk in pattern detail.' },
+      { name: 'Tibetan Highland Wool', desc: 'High-altitude wool with exceptional resilience and a distinctive thick, lustrous handle for contemporary high-knot pieces.' },
+    ],
+    useCases: [
+      { title: 'Heirloom commission', desc: 'A bespoke silk-on-silk rug at 260 KPSI developed over six months for a private collector.' },
+      { title: 'Palatial residence', desc: 'Classical medallion reproductions in wool-silk for formal reception rooms.' },
+      { title: 'Embassy interior', desc: 'A crest-bearing wool rug woven to protocol specifications for a state room.' },
+      { title: 'Designer gallery piece', desc: 'A contemporary abstract translated knot-by-knot from original artwork.' },
+    ],
+    exportInfo: [
+      'Hand knotted carpets are our most-exported category, shipped to collectors, designers and luxury retailers worldwide. Because each piece is unique and valuable, we document construction, knot count and material composition for every export, and provide certificates of origin and authenticity on request.',
+      'Pieces are professionally rolled, protected and crated for international transit, with insured freight coordinated to your terms. We routinely supply markets including the USA, UK, Germany, Italy, France and the GCC, and accept LC, TT, DA and DP in major currencies.',
+    ],
+    relatedGuides: ['hand-knotted-carpet-manufacturing-process', 'hand-tufted-vs-hand-knotted-carpet', 'why-buy-carpets-from-india'],
+    extraFaqs: [
+      { q: 'How do I read the back of a hand knotted carpet?', a: 'On a genuine hand knotted carpet the design is clearly visible on the reverse and the knots show slight natural irregularity — there is no fabric secondary backing. The clarity and fineness of the back indicate the knot density.' },
+      { q: 'What is abrash and is it a defect?', a: 'Abrash is the subtle colour variation that occurs across hand-dyed yarn batches. It is a hallmark of authentic handmade rugs, not a defect, and adds depth and character collectors value.' },
+      { q: 'How should I care for a hand knotted silk rug?', a: 'Rotate periodically, keep out of prolonged direct sunlight, vacuum gently without a beater bar, and use a specialist hand-washer for deep cleaning. Well cared for, it lasts generations.' },
+      { q: 'Can you reproduce an antique or museum design?', a: 'Yes. We chart classical Persian, Tibetan and antique designs into a knot-by-knot graph and reproduce them in your chosen size, colourway and knot density.' },
+    ],
+  },
+
+  'shaggy-rugs': {
+    deepDive: [
+      'A shaggy rug is engineered around one sensation: the feel of deep pile underfoot. Achieving that plushness reliably is harder than it looks — the longer the pile, the more it wants to flatten, shed and tangle. Our shaggy constructions balance loft with resilience by selecting high-twist, high-loft yarns and calibrating pile height and density so the rug stays luxurious without matting after a few months of use.',
+      'Pile height is the defining decision. A 30–45 mm pile keeps a plush feel while remaining practical for lounges and higher-traffic living areas; a 50–70 mm extra-long shag delivers maximum sink-in softness best reserved for bedrooms and reading nooks. We match pile height to the room, because a shag specified for the wrong setting either underwhelms or becomes a maintenance burden.',
+      'Maintenance is the question every shaggy buyer should ask first, and the answer lies in construction. We offer anti-shed treatments and recommend yarn blends that release dust readily and recover from compression. For contract and boutique-hospitality use we steer clients toward harder-wearing wool-blend shags; for pure indulgence at home, micro-polyester delivers softness at value.',
+    ],
+    materialDetails: [
+      { name: 'Micro-Polyester', desc: 'Ultra-soft, vividly colour-fast and budget-friendly; the most popular shaggy fibre for plush residential comfort.' },
+      { name: 'Wool Blend', desc: 'Adds natural resilience and a more refined handle; the preferred choice for boutique hospitality and longer service life.' },
+      { name: 'Acrylic', desc: 'Wool-like softness with good colour retention and easy care — a practical middle-ground fibre for shaggy pile.' },
+      { name: 'Premium Synthetic Yarns', desc: 'High-twist heat-set fibres engineered to resist matting and shedding while holding loft.' },
+    ],
+    useCases: [
+      { title: 'Master bedroom', desc: 'A 60 mm ivory shag for sink-in comfort beside the bed.' },
+      { title: 'Boutique hotel suite', desc: 'A 40 mm wool-blend shag balancing plushness with hospitality durability.' },
+      { title: 'Concept retail', desc: 'A tonal shag zone that signals a premium, tactile brand experience.' },
+      { title: 'Show-flat lounge', desc: 'A statement round shag that sells the lifestyle in a developer model home.' },
+    ],
+    exportInfo: [
+      'We supply shaggy rugs to retailers, e-commerce brands and hospitality buyers internationally, including private-label programmes with custom packaging. Export orders are produced with anti-shed treatment as standard and packed compressed to optimise freight volume.',
+      'Bulk and repeat shaggy programmes ship by sea with consistent dye-lots held across reorders, on your preferred Incoterms and payment terms.',
+    ],
+    relatedGuides: ['how-rugs-are-manufactured', 'handmade-vs-machine-made-carpets', 'area-rugs-vs-wall-to-wall-carpets'],
+    extraFaqs: [
+      { q: 'How do I stop a shaggy rug from shedding?', a: 'Choose a rug with anti-shed treatment and high-twist heat-set yarn. Light initial shedding settles quickly; gentle suction-only vacuuming (no beater bar) keeps it minimal.' },
+      { q: 'Which pile height is best for a living room?', a: 'A 30–45 mm pile keeps the plush look while staying practical for living-room traffic. Save 50–70 mm extra-long shag for bedrooms and low-traffic spaces.' },
+      { q: 'Can shaggy rugs be made in round or irregular shapes?', a: 'Yes — we manufacture shaggy rugs in round, oval and custom irregular shapes to designer specification.' },
+      { q: 'Are shaggy rugs suitable for boutique hotels?', a: 'Yes, when specified in harder-wearing wool blends with anti-shed treatment. We advise contract-appropriate constructions for hospitality use.' },
+    ],
+  },
+
+  'jute-sisal-rugs': {
+    deepDive: [
+      'Natural fibre rugs have moved from niche to mainstream as interiors embrace texture and sustainability — and jute and sisal lead that shift. Both are plant fibres, renewable and biodegradable, but they behave differently underfoot and in use, so specifying the right one matters. As a manufacturer we weave both to project standard, and we guide clients to the fibre that fits the room rather than selling a one-size answer.',
+      'Jute is the softer, warmer fibre, with a gentle golden tone that suits living rooms, bedrooms and relaxed coastal interiors. Sisal is firmer, crisper and significantly more durable, making it the choice for hallways, stairs and commercial spaces where a hard-wearing surface is essential. Seagrass and hemp round out the range with their own textures and resilience for specialist applications.',
+      'Construction and finishing determine how a natural fibre rug performs over time. We reinforce edges with binding or cotton borders to prevent fraying, and apply a latex backing for dimensional stability in contract use. For high-traffic or moisture-prone settings we advise the appropriate fibre and backing, because natural fibres reward correct specification and punish careless placement.',
+    ],
+    materialDetails: [
+      { name: 'Golden Jute', desc: 'Soft, warm-toned and renewable; ideal for moderate-traffic living spaces and a relaxed, organic aesthetic.' },
+      { name: 'Sisal', desc: 'One of the toughest natural fibres — firm and crisp, excellent for hallways, stairs and commercial high-traffic areas.' },
+      { name: 'Seagrass', desc: 'Smooth, hard-wearing and naturally water-resistant; handles humidity better than jute, suiting coastal and damp-prone spaces.' },
+      { name: 'Cotton & Hemp', desc: 'Used for borders, blends and softer constructions; hemp adds strength while cotton enables coloured trims.' },
+    ],
+    useCases: [
+      { title: 'Coastal villa', desc: 'A seagrass rug specified for a humid seaside living room where jute would struggle.' },
+      { title: 'Eco-retail collection', desc: 'A private-label jute range with cotton-bordered finishes for a sustainable home brand.' },
+      { title: 'Staircase runner', desc: 'A sisal runner chosen for durability on a high-use timber staircase.' },
+      { title: 'Layered designer scheme', desc: 'A neutral jute base layered under a statement rug in a styled interior.' },
+    ],
+    exportInfo: [
+      'Natural fibre rugs are in strong demand from sustainability-focused markets in Europe, the UK, the USA and Australia. We export jute, sisal and seagrass rugs with certified-fibre sourcing and AZO-free finishes, supporting the eco-credentials retail buyers require.',
+      'Orders ship with anti-shed binding and optional latex backing for contract use, packed for sea freight with private-label and bulk programmes available on standard trade terms.',
+    ],
+    relatedGuides: ['jute-vs-sisal-rugs', 'how-rugs-are-manufactured', 'why-buy-carpets-from-india'],
+    extraFaqs: [
+      { q: 'Can jute or sisal rugs go in a kitchen or bathroom?', a: 'We do not recommend jute in wet areas as it absorbs moisture. Seagrass tolerates humidity better, but no natural fibre suits very wet zones. We advise on placement for longevity.' },
+      { q: 'How do I clean a natural fibre rug?', a: 'Vacuum regularly and blot spills immediately — avoid soaking. Jute marks more easily than sisal; for deep cleaning use a specialist dry-clean method rather than wet washing.' },
+      { q: 'Are dyed jute rugs colour-fast?', a: 'Yes — we use AZO-free dyes and test colour-fastness. Natural variation is part of the fibre\'s character, but fading from heavy sunlight should be managed as with any natural material.' },
+      { q: 'Do you offer latex backing for commercial use?', a: 'Yes. For contract and high-traffic installations we add a latex backing for stability and add anti-slip options on request.' },
+    ],
+  },
+
+  'leather-carpets': {
+    deepDive: [
+      'Leather is the most unexpected and tactile of floor coverings, and that rarity is exactly why designers specify it for spaces that need to feel singular. A leather carpet brings warmth, depth and a quiet luxury that textile cannot replicate, developing a richer patina with age. As a manufacturer we work leather into patchwork, hair-on-hide and embossed constructions, each hand-assembled from selected hides.',
+      'Because we work with a natural material, no two leather carpets are identical — variation in grain, tone and marking is intrinsic and is what gives each piece its character. Clients choose how to treat that variation: a consistent, tonal patchwork layout for a refined look, or an embraced natural mix for organic richness. We map every layout before stitching so the result matches the design intent.',
+      'Durability in leather carpets comes from construction, not just the hide. We hand-stitch panels with reinforced seams and bond a non-slip backing for stability and safety, producing a floor that withstands the foot traffic of offices, retail and boutique hospitality. With simple care, a leather carpet outlasts most textile alternatives while looking better as it ages.',
+    ],
+    materialDetails: [
+      { name: 'Genuine Full-Grain Leather', desc: 'Premium hide retaining the natural grain; durable, characterful and ages into a rich patina.' },
+      { name: 'Hair-on-Hide', desc: 'Hide with the natural hair retained for striking texture and pattern; a bold statement surface.' },
+      { name: 'Suede', desc: 'Soft napped finish offering a matte, velvety surface for refined low-traffic feature areas.' },
+      { name: 'Leather Composite', desc: 'Engineered leather for consistency and value in larger or budget-sensitive patchwork programmes.' },
+    ],
+    useCases: [
+      { title: 'Executive boardroom', desc: 'A tonal patchwork leather floor signalling permanence and prestige.' },
+      { title: 'Luxury retail', desc: 'A hair-on-hide statement zone in a flagship store fit-out.' },
+      { title: 'Penthouse study', desc: 'An embossed leather rug as a tactile centrepiece in a high-design residence.' },
+      { title: 'Boutique hotel lobby', desc: 'A durable leather entrance piece that ages gracefully under footfall.' },
+    ],
+    exportInfo: [
+      'Leather carpets are supplied to designers, luxury retailers and corporate clients internationally. Hides are sourced from certified tanneries, and we provide material documentation for export compliance where required.',
+      'Each piece is protected and crated for transit to avoid creasing, with freight coordinated to your terms. Custom embossing and branded inlays are available for OEM and corporate orders.',
+    ],
+    relatedGuides: ['handmade-vs-machine-made-carpets', 'how-carpets-are-manufactured', 'why-bhadohi-carpet-capital'],
+    extraFaqs: [
+      { q: 'How durable is a leather carpet?', a: 'Very durable — leather is naturally tough and, with reinforced stitching and a non-slip backing, suits offices, retail and boutique hospitality. It develops a desirable patina rather than wearing out.' },
+      { q: 'How do I maintain a leather carpet?', a: 'Dust regularly, wipe with a barely-damp cloth and condition occasionally. Avoid soaking and prolonged direct sunlight. Maintenance is minimal compared with textile carpets.' },
+      { q: 'Will every leather rug look the same?', a: 'No — natural hide variation means each piece is unique. We map patchwork layouts to your preference, whether consistent and tonal or naturally varied.' },
+      { q: 'Can you emboss a logo into leather?', a: 'Yes. We emboss logos and create branded inlays for corporate and retail clients as part of our custom leather programme.' },
+    ],
+  },
+
+  'wall-to-wall-carpets': {
+    deepDive: [
+      'Wall-to-wall carpet is a contract product first and a design product second — it has to perform under sustained traffic, meet fire-safety codes, and arrive on a construction programme without colour drift across thousands of square metres. That engineering discipline is what separates a hospitality-grade broadloom supplier from a domestic one, and it is where we focus. Every wall-to-wall order is treated as a project, with specification, dye-lot control and phased delivery managed end to end.',
+      'The core specification decisions are fibre, construction and backing. Solution-dyed nylon resists fading and cleans easily, making it the workhorse of hotels and offices; wool-nylon blends add a premium handle for prestige areas; polypropylene and recycled fibres serve value and sustainability briefs. Tufted broadloom, axminster weaving and carpet tiles each suit different applications, and we match construction to traffic class and design intent.',
+      'Colour consistency is the make-or-break of large installations. We hold dye-lots so that carpet delivered in a later project phase matches the first, and we coordinate broadloom with carpet tiles so that mixed-format schemes read as one. For project teams, this control — plus fire-rating documentation and on-site measurement support — is what de-risks a large carpet specification.',
+    ],
+    materialDetails: [
+      { name: 'Solution-Dyed Nylon', desc: 'Colour locked into the fibre for outstanding fade, stain and bleach resistance — the contract standard for hotels and offices.' },
+      { name: 'Wool-Nylon Blend', desc: 'Typically 80/20 — wool\'s premium handle and resilience with nylon\'s durability; favoured for prestige hospitality.' },
+      { name: 'Polypropylene', desc: 'Economical, moisture- and stain-resistant fibre for value contract and high-traffic budget projects.' },
+      { name: 'Recycled Fibre', desc: 'Sustainable face yarns for green-building and ESG-driven specifications without sacrificing durability.' },
+    ],
+    useCases: [
+      { title: 'Hotel corridors', desc: 'Patterned axminster broadloom engineered to mask traffic across a full guest-floor programme.' },
+      { title: 'Corporate HQ', desc: 'Solution-dyed nylon carpet tiles over an access floor for cabling flexibility.' },
+      { title: 'Convention centre', desc: 'Fire-rated broadloom delivered in phases to a fixed fit-out schedule.' },
+      { title: 'Cruise interior', desc: 'Marine-compliant contract carpet specified to vessel fire standards.' },
+    ],
+    exportInfo: [
+      'We supply wall-to-wall carpet to international hospitality and commercial projects with fire-rating and performance documentation to destination standards. Broadloom is shipped in rolls and carpet tiles in cartons, with dye-lots held for multi-phase and multi-country roll-outs.',
+      'Project freight is coordinated to your installation programme and Incoterms, with phased dispatch and on-site measurement guidance available for large contracts.',
+    ],
+    relatedGuides: ['carpet-manufacturing-process-explained', 'hotel-carpet-buying-guide', 'area-rugs-vs-wall-to-wall-carpets'],
+    extraFaqs: [
+      { q: 'What traffic classification do your wall-to-wall carpets meet?', a: 'We manufacture to heavy-contract traffic classes for hospitality and commercial use and specify the construction to your project\'s rating. Share your spec and we will match it.' },
+      { q: 'Can you match broadloom and carpet tiles in one project?', a: 'Yes. We control dye-lots across both formats so broadloom areas and tiled areas read as a single coordinated scheme.' },
+      { q: 'Do you provide fire-rating certificates?', a: 'Yes. We manufacture fire-rated contract carpet and supply the supporting test documentation required for public buildings.' },
+      { q: 'Can you deliver in phases for a staged opening?', a: 'Yes — we hold dye-lots and phase production and dispatch to your construction programme so later phases match earlier ones exactly.' },
+    ],
+  },
+
+  'flat-weaves': {
+    deepDive: [
+      'Flat weaves are having a sustained moment in contemporary interiors, and for good reason: they are lightweight, reversible, hard-wearing and rich in pattern, with none of the pile that traps soil in high-traffic areas. Woven without knots on horizontal looms, a flat weave is essentially structural pattern — the design is the weave itself, which is why a true flat weave is reversible and remarkably durable.',
+      'The flat weave family spans kilims, dhurries and contemporary geometrics, in wool, cotton, jute and recycled blends. Wool flat weaves bring warmth and resilience for living spaces; cotton flat weaves are lighter and washable; jute and recycled-fibre weaves serve natural and sustainable briefs. Because there is no pile to specify, the design conversation centres on pattern, scale and colour — areas where our studio adds the most value.',
+      'For specifiers, flat weaves solve practical problems: they layer beautifully over hard floors and other rugs, they suit underfloor heating, and their reversibility doubles their life. We reinforce selvedges for durability and finish edges cleanly, producing flat weaves that hold up in homes, boutique hospitality and design-led retail alike.',
+    ],
+    materialDetails: [
+      { name: 'Wool', desc: 'Warm, resilient and naturally soil-resistant; the premium choice for durable, design-led flat weaves.' },
+      { name: 'Cotton', desc: 'Lightweight and washable with crisp pattern definition; ideal for casual and contemporary interiors.' },
+      { name: 'Jute', desc: 'Adds natural texture and sustainability to flatwoven constructions for organic, relaxed schemes.' },
+      { name: 'Recycled Fibre Blends', desc: 'Eco-conscious yarns for sustainability briefs, woven for durability and vivid, consistent colour.' },
+    ],
+    useCases: [
+      { title: 'Layered living room', desc: 'A reversible wool kilim layered over a natural base for textural depth.' },
+      { title: 'Scandi retail line', desc: 'A private-label geometric flat weave collection for a lifestyle brand.' },
+      { title: 'Boutique hotel', desc: 'Characterful dhurrie-style weaves for a relaxed, design-forward guest experience.' },
+      { title: 'Underfloor-heated space', desc: 'A low-profile flat weave that suits radiant heating without trapping heat.' },
+    ],
+    exportInfo: [
+      'Flat weaves export strongly to contemporary and Scandinavian markets that prize pattern, sustainability and lightweight construction. We ship wool, cotton and recycled-fibre flat weaves with AZO-free dyes and reinforced selvedges, including private-label collections.',
+      'Lightweight construction optimises freight volume; bulk and repeat programmes ship with held dye-lots on standard trade terms.',
+    ],
+    relatedGuides: ['kilim-vs-dhurrie', 'how-rugs-are-manufactured', 'jute-vs-sisal-rugs'],
+    extraFaqs: [
+      { q: 'Are flat weaves durable enough for high-traffic areas?', a: 'Yes — with no pile to crush or trap soil, tightly woven flat weaves (especially wool) are excellent for hallways, dining and busy living areas, and being reversible they wear evenly.' },
+      { q: 'Can flat weaves be used with underfloor heating?', a: 'Yes. Their low profile suits radiant heating well, allowing heat through without trapping it as thick pile can.' },
+      { q: 'What is the difference between your flat weaves and kilims/dhurries?', a: 'Kilims and dhurries are specific flat weave traditions (we also make them as dedicated products). Our flat weave range spans these plus contemporary geometrics in mixed fibres.' },
+      { q: 'Can you weave a custom geometric design?', a: 'Yes — we translate custom geometric and tribal artwork into woven flat weaves with bespoke colourways, sampled before production.' },
+    ],
+  },
+
+  'poufs': {
+    deepDive: [
+      'A pouf is the accessory that completes an interior scheme, and for our carpet clients it is a natural single-source add-on — colour-matched to the rug, made in the same facility, shipped in the same order. We craft poufs as considered furniture pieces rather than afterthoughts, hand-stitching covers in leather, wool and woven textiles over a structured, durable form.',
+      'The construction details decide whether a pouf holds its shape or sags within months. We use reinforced seams, a firm reinforced base and high-density filling so the pouf stays supportive as seating and stable as a footrest. For shipping efficiency we can supply filled or as covers for local filling, a practical option for export and retail programmes.',
+      'Because poufs coordinate with our rug collections, hotels and designers use them to extend a colour story across a room — a lobby rug echoed in lounge poufs, or a residential rug matched to bedroom seating. This coordination, plus full customisation of size, shape and branding, is what makes our poufs a genuine cross-sell rather than a generic commodity.',
+    ],
+    materialDetails: [
+      { name: 'Leather', desc: 'Premium hand-stitched leather covers that age beautifully; the luxury choice for lounges and lobbies.' },
+      { name: 'Wool & Embroidered Textile', desc: 'Soft, characterful covers with optional embroidery and appliqué for bespoke, decorative pieces.' },
+      { name: 'Cotton Canvas', desc: 'Durable, washable-friendly covers for casual and high-use residential and breakout settings.' },
+      { name: 'Woven Jute', desc: 'Natural-texture covers that coordinate with our natural-fibre rug collections.' },
+    ],
+    useCases: [
+      { title: 'Hotel lobby', desc: 'Leather drum poufs colour-matched to the lobby carpet for flexible social seating.' },
+      { title: 'Residential scheme', desc: 'Wool cube poufs echoing a living-room rug\'s palette.' },
+      { title: 'Retail private-label', desc: 'A branded pouf range with custom packaging for a home brand.' },
+      { title: 'Coworking breakout', desc: 'Durable canvas poufs for informal, movable seating.' },
+    ],
+    exportInfo: [
+      'Poufs export well as standalone accessories and as coordinated add-ons to rug orders. We offer private-label and OEM pouf programmes with custom branding and packaging, and can ship unfilled covers to reduce freight volume for international retail.',
+      'Filled or cover-only, poufs are packed to protect shape and shipped on standard trade terms alongside or independently of carpet orders.',
+    ],
+    relatedGuides: ['handmade-vs-machine-made-carpets', 'how-rugs-are-manufactured', 'how-custom-rug-manufacturing-works'],
+    extraFaqs: [
+      { q: 'Do you supply poufs filled or as covers only?', a: 'Both. We supply fully filled poufs with high-density filling and a reinforced base, or unfilled covers for cost-efficient shipping and local filling.' },
+      { q: 'Can poufs be colour-matched to my carpet order?', a: 'Yes — as a single-source manufacturer we colour-match poufs to your rug or carpet so the whole scheme coordinates from one supplier.' },
+      { q: 'Can you produce private-label poufs for retail?', a: 'Yes. We offer OEM and private-label poufs with custom covers, branding and packaging for home and lifestyle retailers.' },
+      { q: 'What shapes and sizes are available?', a: 'Round, cube, drum and custom shapes in any size, with embroidery and logo branding on request.' },
+    ],
+  },
+
+  'coco-coir': {
+    deepDive: [
+      'Coco coir is the practical workhorse of natural fibre flooring — coarse, hard-wearing and made from the husk of the coconut, a renewable by-product that would otherwise be waste. Its toughness and scraping action make it the default for entrance matting, while its biodegradability makes it a favourite for green-building and horticultural applications. We process raw husk into woven mats, brush matting and formed products at scale.',
+      'For entrance and high-scrape applications, the construction details matter: pile density, brush stiffness and backing determine how effectively a mat removes dirt and how long it lasts under heavy footfall. We add rubber or PVC backing for stability and anti-slip safety, UV treatments for covered outdoor use, and logo printing for branded hotel and retail entrances.',
+      'Beyond matting, our coir division supplies the horticulture and landscaping trade with coco peat, husk chips and coir logs — sustainable growing media and erosion-control products exported in bulk. This breadth lets institutional and green-building buyers source both their entrance matting and their landscaping coir from one manufacturer.',
+    ],
+    materialDetails: [
+      { name: 'Natural Coconut Coir', desc: 'Coarse, durable husk fibre with excellent scraping action; the core material for entrance and brush matting.' },
+      { name: 'Rubber Latex Backing', desc: 'Adds dimensional stability and anti-slip safety for commercial entrance use.' },
+      { name: 'Coco Peat', desc: 'Processed coir pith — a renewable, water-retentive growing medium for horticulture, supplied in blocks.' },
+      { name: 'Coir Husk Chips', desc: 'Coarse husk pieces for landscaping, drainage and erosion-control applications.' },
+    ],
+    useCases: [
+      { title: 'Hotel entrance', desc: 'A logo-printed, rubber-backed coir mat for a high-footfall lobby doorway.' },
+      { title: 'Retail doorway', desc: 'High-scrape coir matting that protects interior floors from grit.' },
+      { title: 'Green-building project', desc: 'Biodegradable coir and coco peat specified for a LEED-oriented development.' },
+      { title: 'Landscaping supply', desc: 'Bulk coir logs and husk chips for erosion control and horticulture.' },
+    ],
+    exportInfo: [
+      'Coco coir products export in bulk to matting distributors, hospitality suppliers and the horticulture trade worldwide. Coir mats ship with the specified backing and any logo printing; coco peat and husk products ship compressed in blocks and bales for container efficiency.',
+      'We supply private-label coir matting and bulk container programmes on standard trade terms, with documentation for biodegradable-material and import requirements.',
+    ],
+    relatedGuides: ['jute-vs-sisal-rugs', 'why-buy-carpets-from-india', 'how-rugs-are-manufactured'],
+    extraFaqs: [
+      { q: 'Can coir mats be printed with a logo?', a: 'Yes. We print logos and messages onto coir entrance mats and produce branded matting in custom sizes for hotels, retail and corporate clients.' },
+      { q: 'Are coir products suitable for outdoor use?', a: 'With UV-resistant treatment and appropriate backing, coir matting suits covered outdoor entrances. Fully exposed permanent outdoor use is best discussed per application.' },
+      { q: 'Do you supply coco peat for horticulture in bulk?', a: 'Yes — alongside matting we manufacture coco peat blocks, husk chips and coir logs for horticulture, landscaping and erosion control in bulk container quantities.' },
+      { q: 'What backing options are available for coir mats?', a: 'Rubber latex, PVC or unbacked, with anti-slip and UV-resistant options depending on the application and traffic.' },
+    ],
+  },
+
+  'kilim-rugs': {
+    deepDive: [
+      'A kilim is flatweave at its most expressive — pattern and structure are one and the same, built up by interlacing dyed weft through the warp without any pile. That construction makes a genuine kilim reversible, lightweight and surprisingly hard-wearing, and it gives kilims their characteristic crisp, geometric motifs. We weave kilims in the Bhadohi tradition, blending heritage technique with the colour control modern interiors expect.',
+      'Kilim character comes from the interplay of motif, colour and weave tension. Classic tribal and geometric designs carry cultural depth; contemporary palettes make them work in minimalist interiors; the slit-weave technique creates the sharp diagonal lines that distinguish kilims from softer flat weaves. Because each kilim is handwoven, subtle variation is part of its authenticity rather than a flaw.',
+      'For buyers, kilims are versatile problem-solvers: they layer over hard floors and larger rugs, suit high-traffic areas thanks to their pile-free durability, and bring handcrafted warmth at a more accessible price than knotted pieces. We reinforce selvedges and finish edges for longevity, producing kilims that perform in homes, boutique hospitality and design retail.',
+    ],
+    materialDetails: [
+      { name: 'Wool', desc: 'The traditional kilim fibre — warm, resilient and rich in colour depth; ideal for durable, characterful flat weaves.' },
+      { name: 'Wool-Cotton', desc: 'A cotton warp with wool weft for crisp structure and pattern definition with warmth underfoot.' },
+      { name: 'Vegetable-Dyed Yarn', desc: 'Traditional plant dyes for muted, time-honoured tones with natural depth and variation.' },
+      { name: 'Chrome-Dyed Yarn', desc: 'Modern dyes for vivid, consistent contemporary colourways with strong colour-fastness.' },
+    ],
+    useCases: [
+      { title: 'Boho living room', desc: 'A tribal wool kilim as a layered statement over a neutral base.' },
+      { title: 'Minimalist apartment', desc: 'A restrained contemporary kilim adding geometric warmth to a pared-back scheme.' },
+      { title: 'Lifestyle retail', desc: 'A private-label kilim collection blending tradition and trend.' },
+      { title: 'Boutique hotel', desc: 'Characterful kilim runners for relaxed, design-forward corridors.' },
+    ],
+    exportInfo: [
+      'Kilims export to design-led and craft-focused markets across Europe, the UK, the USA and Australia. We ship wool and wool-cotton kilims with AZO-free or vegetable dyes and reinforced selvedges, including private-label collections for retail brands.',
+      'Lightweight, reversible construction makes kilims freight-efficient; bulk and repeat programmes ship with held dye-lots on standard trade terms.',
+    ],
+    relatedGuides: ['kilim-vs-dhurrie', 'how-rugs-are-manufactured', 'jute-vs-sisal-rugs'],
+    extraFaqs: [
+      { q: 'What makes a kilim different from a dhurrie?', a: 'Both are flat weaves, but kilims come from the Persian/Anatolian tradition (usually wool, tribal slit-weave motifs) while dhurries are Indian (often cotton, lighter patterns). We manufacture both as dedicated products.' },
+      { q: 'Are kilims reversible?', a: 'Yes — genuine kilims are fully reversible, which extends their life and offers two looks in one rug.' },
+      { q: 'Can vegetable-dyed kilims fade?', a: 'Vegetable dyes give beautiful muted tones with natural depth; like all natural dyes they should be kept from prolonged direct sunlight. We also offer colour-fast chrome dyes for vivid, stable colour.' },
+      { q: 'Are kilims good for high-traffic areas?', a: 'Yes — their tight, pile-free weave is hard-wearing and well suited to hallways, dining and busy living areas.' },
+    ],
+  },
+
+  'dhurrie-rugs': {
+    deepDive: [
+      'The dhurrie is India\'s own flatweave — woven for centuries in homes, palaces and institutions, and prized for its clean stripes, crisp geometry and easy, casual elegance. Lighter and more washable than a kilim, a dhurrie is the everyday flatweave: practical enough for a child\'s room or a school floor, refined enough for a designer scheme. We weave dhurries across cotton, wool and blends, from institutional bulk to bespoke retail.',
+      'Cotton is the classic dhurrie fibre, giving the rug its characteristic lightness and washability; wool dhurries add warmth and a more premium handle; recycled-fibre blends serve sustainability briefs. The defining dhurrie aesthetic — stripes and clean geometrics — reads as both traditional and thoroughly contemporary, which is why dhurries move easily between heritage and modern interiors.',
+      'Dhurries also anchor our institutional and tender supply, where their durability, washability and economy at scale make them the standard for floor seating in schools, hostels and community spaces. The same flatweave that suits a styled living room, woven in hard-wearing cotton at volume, becomes the practical choice for a government school order — a versatility few rugs share.',
+    ],
+    materialDetails: [
+      { name: 'Cotton', desc: 'The classic dhurrie fibre — light, washable and crisp; ideal for casual homes, children\'s rooms and institutional use.' },
+      { name: 'Wool', desc: 'Adds warmth and a premium handle for design-led and retail dhurrie collections.' },
+      { name: 'Recycled-Fibre Blends', desc: 'Sustainable yarns woven for durability and consistent colour in eco-conscious programmes.' },
+      { name: 'AZO-Free Dyes', desc: 'Non-toxic dyes safe for children and institutional environments, with reliable colour-fastness.' },
+    ],
+    useCases: [
+      { title: 'Children\'s room', desc: 'A washable cotton stripe dhurrie that survives daily use and cleaning.' },
+      { title: 'Designer layering', desc: 'A clean geometric dhurrie as a contemporary base in a styled interior.' },
+      { title: 'School floor seating', desc: 'Hard-wearing cotton dhurries supplied in bulk to classroom dimensions.' },
+      { title: 'Lifestyle retail', desc: 'A private-label dhurrie range in seasonal colourways.' },
+    ],
+    exportInfo: [
+      'Dhurries export to retail and design markets internationally and serve large domestic institutional and tender supply. We ship cotton, wool and blended dhurries with AZO-free dyes, including private-label retail collections and bulk institutional orders.',
+      'Lightweight construction keeps freight efficient; we hold dye-lots across reorders and supply on standard trade terms, with tender documentation for government and institutional buyers.',
+    ],
+    relatedGuides: ['kilim-vs-dhurrie', 'government-tender-dhurrie-buying-guide', 'how-rugs-are-manufactured'],
+    extraFaqs: [
+      { q: 'Are cotton dhurries washable?', a: 'Cotton dhurries tolerate gentle cleaning well, which makes them popular for casual living spaces, children\'s rooms and institutional use. We advise on care per construction.' },
+      { q: 'Can you supply dhurries for schools and tenders in bulk?', a: 'Yes. We manufacture hard-wearing cotton dhurries in bulk to tender specification for schools, hostels and institutions, with samples and documentation. See our dedicated dhurrie & tat patti silo.' },
+      { q: 'What is the classic red-black stripe dhurrie?', a: 'The red-black stripe is a traditional institutional dhurrie pattern widely specified for schools and public use. We weave it and other custom stripe and geometric designs to specification.' },
+      { q: 'Do you make designer and retail dhurries too?', a: 'Yes — alongside institutional supply we produce wool and cotton designer dhurries and private-label retail collections in bespoke colourways.' },
+    ],
+  },
+
+  'area-rugs': {
+    deepDive: [
+      'An area rug is the most flexible tool in an interior — it defines a zone, warms a hard floor, anchors furniture and sets a colour story, all without installation. Because "area rug" describes a use rather than a construction, the real decision is which technique to use, and as a manufacturer across all of them we match the construction to the brief rather than pushing one method.',
+      'For plush comfort and bold custom design at value, hand tufted is the usual answer; for heirloom quality and the finest detail, hand knotted; for casual, reversible durability, flat weave; for deep softness, shaggy. Each delivers a different feel, lifespan and price, and the right choice depends on the room, the traffic and the budget — a conversation our studio has with every area-rug client.',
+      'Custom sizing is where area rugs earn their place, because standard sizes rarely fit a real room. We produce any dimension and shape, including oversized and round, with Pantone-matched colour and bespoke design. For designers and hospitality buyers, this means a rug sized exactly to the space rather than a compromise pulled from stock.',
+    ],
+    materialDetails: [
+      { name: 'Wool', desc: 'The all-round premium fibre — resilient, warm and stain-resistant across tufted, knotted and flatweave area rugs.' },
+      { name: 'Silk & Viscose', desc: 'Sheen and fine detail for luxury and feature area rugs; best in lower-traffic settings.' },
+      { name: 'Cotton', desc: 'Light, washable and crisp for flatweave and casual area rugs.' },
+      { name: 'Jute & Natural Blends', desc: 'Texture and sustainability for natural-look area rugs and layering bases.' },
+    ],
+    useCases: [
+      { title: 'Living-room anchor', desc: 'An oversized custom wool rug sized to seat the full furniture group.' },
+      { title: 'Hotel suite feature', desc: 'A bespoke area rug coordinated with the room\'s broadloom and scheme.' },
+      { title: 'Round dining rug', desc: 'A custom round rug matched to a circular dining table.' },
+      { title: 'Designer commission', desc: 'A one-off area rug developed from a client\'s artwork in the chosen construction.' },
+    ],
+    exportInfo: [
+      'Area rugs export across every market we serve, from luxury single pieces to private-label retail collections. We ship in any construction with full material documentation, and offer OEM programmes with custom branding and packaging.',
+      'Single bespoke pieces are protected and crated; bulk and repeat collections ship with held dye-lots on standard trade terms to your Incoterms.',
+    ],
+    relatedGuides: ['area-rugs-vs-wall-to-wall-carpets', 'how-rugs-are-manufactured', 'how-custom-rug-manufacturing-works'],
+    extraFaqs: [
+      { q: 'What size area rug do I need?', a: 'As a rule, the rug should sit under at least the front legs of the furniture group, ideally all legs. We manufacture any custom size and shape, so we size to your exact room and layout.' },
+      { q: 'Which construction is best for an area rug?', a: 'It depends on use and budget — hand tufted for plush value, hand knotted for heirloom luxury, flat weave for casual durability, shaggy for softness. We make all four and advise per project.' },
+      { q: 'Can you make a round or irregular area rug?', a: 'Yes — round, oval and irregular custom shapes in any construction, to your dimensions.' },
+      { q: 'Do you supply area rugs for retail collections?', a: 'Yes, including private-label and OEM with custom branding, packaging and held dye-lots for reorders.' },
+    ],
+  },
+
+  'carpet-tiles': {
+    deepDive: [
+      'Carpet tiles solved the two biggest problems of broadloom in commercial buildings: serviceability and access. When a tile wears or stains, you replace that tile, not the floor; when you need to reach cabling under an access floor, you lift tiles rather than re-carpet. That practicality, plus design flexibility, is why modular carpet tiles dominate modern office and institutional fit-outs.',
+      'The performance of a carpet tile lives in its backing. A dimensionally stable bitumen or PVC backing keeps tiles flat and tight without curling or gapping, which is what separates a contract-grade tile from a domestic one. We pair durable solution-dyed nylon, polypropylene or recycled-fibre faces with stable backings and offer fire-rating for public-building compliance.',
+      'Design-wise, tiles unlock layouts broadloom cannot: quarter-turn and ashlar installation create texture from a single tile; directional and plank tiles guide circulation; and mixing two or three colourways zones an open floor without seams. We coordinate tile dye-lots with broadloom so mixed-format projects read as one, and hold lots for future replacements.',
+    ],
+    materialDetails: [
+      { name: 'Solution-Dyed Nylon', desc: 'The contract face-fibre standard — exceptional fade, stain and bleach resistance for heavy office and retail traffic.' },
+      { name: 'Polypropylene', desc: 'Economical, moisture- and stain-resistant face yarn for value and high-traffic budget projects.' },
+      { name: 'Recycled Fibre', desc: 'Sustainable face yarns for green-building and ESG specifications without sacrificing durability.' },
+      { name: 'Bitumen / PVC Backing', desc: 'Dimensionally stable backing that keeps tiles flat and tight for serviceable, lay-flat installation.' },
+    ],
+    useCases: [
+      { title: 'Open-plan office', desc: 'Solution-dyed nylon tiles over an access floor for cabling flexibility and easy replacement.' },
+      { title: 'Retail zoning', desc: 'Two-colour tile layout defining circulation and display areas without seams.' },
+      { title: 'School corridors', desc: 'Fire-rated tiles with quick spot-replacement for high-wear institutional traffic.' },
+      { title: 'Airport lounge', desc: 'Heavy-duty modular tiles engineered for relentless transit footfall.' },
+    ],
+    exportInfo: [
+      'Carpet tiles export to commercial and institutional projects internationally with fire-rating and performance documentation to destination standards. Tiles ship in cartons with dye-lots held for multi-phase and multi-site roll-outs and future replacements.',
+      'We coordinate freight to your fit-out programme and Incoterms, with private-label and bulk contract programmes available.',
+    ],
+    relatedGuides: ['office-carpet-buying-guide', 'carpet-manufacturing-process-explained', 'area-rugs-vs-wall-to-wall-carpets'],
+    extraFaqs: [
+      { q: 'Why choose carpet tiles over broadloom?', a: 'Tiles let you replace worn tiles individually, access under-floor cabling and lay directional patterns — reducing waste and long-term maintenance cost. We coordinate tiles with broadloom for consistency.' },
+      { q: 'Are your carpet tiles fire-rated?', a: 'Yes. We manufacture fire-rated carpet tiles to contract standards and provide documentation for commercial and institutional buildings.' },
+      { q: 'Can I get replacement tiles later?', a: 'Yes — we hold dye-lots so future replacement tiles match the original installation.' },
+      { q: 'What installation layouts do you support?', a: 'Monolithic, quarter-turn, ashlar/brick, directional and multi-colour zoned layouts. We advise the best pattern for wear-masking and design.' },
+    ],
+  },
+
+  'tat-patti': {
+    deepDive: [
+      'Tat patti is the unglamorous but indispensable floor covering of Indian institutions — the flat, tightly woven matting that covers school assembly halls, anganwadi floors, hostel common rooms and community gatherings. Its job is simple and demanding: provide comfortable, durable floor seating for large numbers of people at the lowest viable cost, repeatedly, at scale. We manufacture tat patti to exactly that brief.',
+      'The material choice is between cotton and jute, and it is a genuine trade-off rather than a quality ladder. Cotton tat patti is softer and more comfortable for prolonged floor seating; jute is coarser, tougher and even more economical for the largest bulk orders. Many tenders specify a cotton-jute blend to balance comfort and cost, and we weave all three to the required weight and dimensions.',
+      'Tat patti supply is fundamentally a tender and bulk-logistics discipline: the specification must be met exactly, the price must be competitive at volume, the quality must be consistent across thousands of pieces, and delivery must hit the programme date. As a direct manufacturer we control all four, which is why government schools, tribal welfare departments, anganwadis and NGOs source tat patti from us directly rather than through traders.',
+    ],
+    materialDetails: [
+      { name: 'Cotton', desc: 'Softer, more comfortable matting for prolonged floor seating; preferred where comfort is prioritised in the specification.' },
+      { name: 'Jute', desc: 'Coarser, tougher and the most economical fibre for the largest bulk and relief orders.' },
+      { name: 'Cotton-Jute Blend', desc: 'Balances comfort and cost — a common tender specification for schools and institutions.' },
+      { name: 'AZO-Free Dyes', desc: 'Non-toxic dyes safe for children and institutional environments where coloured matting is specified.' },
+    ],
+    useCases: [
+      { title: 'Government school', desc: 'Bulk cotton tat patti supplied to classroom and assembly-hall dimensions on a tender.' },
+      { title: 'Anganwadi centre', desc: 'Economical, child-safe matting for early-childhood floor seating.' },
+      { title: 'Relief programme', desc: 'Rapid bulk jute tat patti for camps and emergency shelters.' },
+      { title: 'Community hall', desc: 'Hard-wearing matting for congregational and event floor seating.' },
+    ],
+    exportInfo: [
+      'While tat patti primarily serves domestic institutional and government supply, we also export it to institutional buyers and the diaspora trade. Export orders ship with documentation and are packed in bulk for container efficiency.',
+      'For both domestic tenders and export, we provide samples, specification sheets and the documentation procurement requires, and deliver bulk volumes to fixed programme dates.',
+    ],
+    relatedGuides: ['school-carpet-buying-guide', 'government-tender-dhurrie-buying-guide', 'kilim-vs-dhurrie'],
+    extraFaqs: [
+      { q: 'What is tat patti used for?', a: 'Tat patti is flat woven floor matting for floor seating in schools, anganwadis, hostels, halls and relief programmes — economical, durable and ideal for high-volume institutional use.' },
+      { q: 'Cotton or jute tat patti — which should a tender specify?', a: 'Cotton is softer and more comfortable; jute is tougher and more economical at scale; a cotton-jute blend balances both. We weave all three to the specified weight and size.' },
+      { q: 'Can you meet large government tender volumes and deadlines?', a: 'Yes. As a direct manufacturer we produce bulk tat patti to specification with batch consistency, competitive pricing, documentation and phased dispatch to programme dates.' },
+      { q: 'Do you provide samples for tat patti tenders?', a: 'Yes — we provide samples and specification sheets against the written tender requirement for evaluation and award.' },
+    ],
+  },
+}
+
+// One additional unique "specifying / buying considerations" paragraph per product
+// — closes the 1800-word target on unique content alone. No paragraph is shared.
+const PRODUCT_DEPTH_EXTRA: Record<string, string> = {
+  'hand-tufted-carpet': 'When specifying hand tufted carpet, the most common mistake is treating GSM as the only quality marker. Yarn quality, latex integrity and finishing matter just as much: a high-GSM carpet built on thin latex will still shed and flatten, while a moderate-GSM carpet with a full latex lock and quality wool will outlast it. We encourage buyers to request a physical sample at the proposed specification, walk on it, and check the back for a clean, bonded secondary backing. For multi-room and multi-phase projects, agree the dye-lot strategy up front — confirm whether all phases will be produced from a single lot or matched across lots — because this single decision prevents the visible colour mismatch that undermines otherwise excellent installations. Budget realistically for sampling and approval time, typically two to three weeks, and build it into the project programme rather than the production window.',
+  'hand-knotted-carpet': 'Buyers new to hand knotted carpet often anchor entirely on knot density, but the more useful question is fitness for purpose. A 300 KPSI silk rug is breathtaking and best suited to a low-traffic formal room or a wall; a family living room is better served by a robust 80–120 KPSI wool piece that hides everyday wear and cleans easily. Always verify authenticity by examining the reverse — the design should read clearly on the back with the natural slight irregularity of hand work, and there should be no secondary backing. Ask for the material composition in writing, since "silk" can mean pure mulberry silk, art silk (viscose) or a blend, and the difference is significant in both value and care. Finally, treat a fine knotted rug as an investment: keep documentation of its construction and origin, which supports both insurance and future resale value.',
+  'shaggy-rugs': 'The decision that most affects satisfaction with a shaggy rug is honest assessment of the room. A long, luxurious pile is wonderful beside a bed but frustrating under a dining table or in a hallway, where it crushes and traps debris. Match the pile height to the traffic, and where the space sees real use, choose a wool-blend or high-twist heat-set construction with anti-shed treatment rather than the longest, softest option available. Consider cleaning access too: a shaggy rug needs suction-only vacuuming and occasional shake-out, so very large fitted shags in busy rooms can become a chore. For developers and hospitality buyers furnishing many rooms, we recommend a mid-length, durable specification that photographs as plush for marketing while standing up to guest use — the balance that keeps both the brand and the maintenance team happy.',
+  'jute-sisal-rugs': 'Specifying natural fibre rugs well comes down to honestly mapping fibre to environment. Jute rewards moderate-traffic, dry rooms with softness and warmth; sisal handles stairs and hallways but shows water marks; seagrass tolerates humidity better than either. Before committing, consider the room\'s exposure to spills, sunlight and moisture, because no natural fibre suits a wet zone and all will lighten under intense direct sun. For contract use, always specify a latex backing and confirm the edge finish — a bound or cotton-bordered edge lasts far longer than a raw cut in a busy space. Buyers sourcing for sustainability claims should ask for confirmation of certified fibre sourcing and AZO-free finishing, which we provide, so the eco-credentials hold up to scrutiny. Sampling is especially worthwhile here, as natural tone and texture vary more than in synthetic products.',
+  'leather-carpets': 'A leather carpet is a long-term, character-led specification rather than a disposable furnishing, so the buying conversation should start with placement and expectation-setting. Leather thrives in dry, climate-stable interiors — offices, retail, lounges — and is best kept away from wet entrances and intense direct sunlight. Because each hide is unique, agree up front how variation will be handled: a tightly tonal patchwork for a controlled look, or an embraced natural mix for organic richness, with a layout map approved before stitching. Ask about the hide source and finish, since full-grain, hair-on-hide, suede and composite age and perform differently. Maintenance is genuinely low — dusting, the occasional barely-damp wipe and periodic conditioning — but it should be communicated to the end client so the developing patina is understood as desirable rather than wear. Specified and placed well, a leather carpet is among the most distinctive and durable floors available.',
+  'wall-to-wall-carpets': 'For wall-to-wall projects, the specification document does more to determine success than any single product choice. It should state fibre, construction, pile weight, backing, traffic classification and fire-rating, and it should name the dye-lot strategy for phased delivery. Insist on a physical sample approved against that written spec, and for large installations request a measurement and quantity review so wastage and seam placement are planned rather than improvised on site. Decide early between broadloom and tiles per zone — broadloom for a seamless premium feel in suites and feature areas, tiles for serviceability over access floors and in high-wear circulation. Confirm how future maintenance stock will be handled, since holding a small reserve of matched carpet or tiles from the same lot makes later repairs invisible. Engaging the manufacturer at specification stage, not just at order, is the single best way to de-risk a large contract carpet job.',
+  'flat-weaves': 'Choosing a flat weave is mostly about matching pattern and fibre to the room\'s role. Wool flat weaves bring warmth and resilience for living spaces; cotton suits lighter, washable, casual settings; jute and recycled blends serve natural and sustainability briefs. Because the design is the structure, scale matters — a bold geometric that looks striking in a showroom can overwhelm a small room, so review the pattern at the intended size, ideally with a sample on the actual floor. Flat weaves are excellent over underfloor heating and ideal for layering, but their light weight means a quality anti-slip underlay is worth specifying in busy areas. For retail and contract buyers, confirm selvedge reinforcement and colour-fastness, and agree dye-lot handling for reorders so a successful line stays consistent across seasons. Their reversibility is a genuine practical bonus, effectively doubling service life when rotated.',
+  'poufs': 'Buying poufs well is mostly about construction and coordination. A pouf lives or dies on its base and filling: a firm, reinforced base and high-density filling keep it supportive and shapely, while a soft or under-filled pouf sags within months of real use. Decide between filled and cover-only supply early — cover-only shipping cuts freight cost significantly for export and retail, with local filling, while filled units are turnkey for hospitality. For schemes, treat the pouf as part of the colour story rather than an afterthought: colour-matching poufs to the room\'s rug or carpet, which we can do as a single-source maker, lifts the whole space and is a frequent designer request. Retail and brand buyers should confirm cover durability and cleanability for their channel, and explore private-label options — custom covers, embroidery and packaging — which turn a generic accessory into a branded product line. It is also worth planning the order around the rest of the scheme: because we make poufs in the same facility as our rugs and carpets, ordering them together secures matched colour, a single shipment and one accountable supplier, which is simpler for hospitality fit-outs than sourcing seating separately. Confirm the intended use — occasional seating, footrest or purely decorative — as it informs the right filling density and base reinforcement.',
+  'coco-coir': 'Specifying coir products is a practical, application-led exercise. For entrance matting, prioritise scraping performance and backing: a denser brush pile and a rubber or PVC backing remove more grit and stay put under heavy footfall, protecting the interior floors beyond. Decide whether the mat sits in a recessed matwell (which dictates exact thickness) or surface-laid (where an anti-slip backing and bevelled edge matter for safety). For covered outdoor positions, specify UV treatment; for fully exposed permanent outdoor use, discuss the application with us first, as coir has limits. Branded entrance mats with printed logos are an easy, high-impact option for hotels and retail, and we produce them to custom sizes. Horticultural and landscaping buyers sourcing coco peat, husk chips or coir logs should confirm compression format and volume for container efficiency. As with all natural fibre, request a sample to set realistic expectations on tone and texture.',
+  'kilim-rugs': 'When buying a kilim, authenticity and fitness for the room are the two questions worth getting right. A genuine handwoven kilim is fully reversible with the slit-weave technique creating its characteristic sharp diagonals, and subtle irregularity is a sign of hand work, not a defect. Decide on dye type with eyes open: vegetable dyes give beautiful muted, time-honoured tones but should be kept from prolonged direct sun, while chrome dyes offer vivid, highly colour-fast contemporary colour. Because kilims are pile-free and hard-wearing, they suit high-traffic and layering use, but their flat, lightweight nature means an anti-slip underlay is worth adding on hard floors. For retail and contract buyers, confirm selvedge reinforcement and agree dye-lot handling so a popular design stays consistent across reorders. Sampling is especially valuable for kilims, since the interplay of motif, scale and colour reads very differently at full size than on a screen. Think too about the room\'s mood: tribal motifs in vegetable-dyed wool suit warm, layered, bohemian interiors, while restrained two-colour geometrics in chrome dyes work in minimalist, contemporary schemes. Because each kilim is handwoven to order, you are not limited to stock designs — share a reference or palette and we will weave a piece that fits the space precisely rather than approximately.',
+  'dhurrie-rugs': 'Dhurrie buying splits cleanly into two very different conversations, and clarity about which you are having saves time. For design and retail, the priorities are pattern, fibre and colourway — cotton for light, washable, casual pieces; wool for warmth and a premium handle — with sampling to confirm the look at full size. For institutional and tender supply, the priorities shift entirely to specification compliance, durability, washability and price at volume, where hard-wearing cotton in a specified weight and the classic stripe patterns dominate. In both cases, confirm colour-fastness and, for children\'s and institutional environments, AZO-free dyes. Tender buyers should always require an approved sample against the written specification and confirm the supplier can hold consistency across thousands of pieces and deliver to the programme date — the areas where a direct manufacturer materially out-performs a trader. For deeper tender guidance, see our dedicated dhurrie and tat patti silo. One further point buyers value: because the same flatweave technique scales from a single bespoke designer piece to a several-thousand-unit institutional order, we can serve both a boutique retailer and a state education department from one facility, with the appropriate finish and price for each. When ordering for resale, confirm the fibre, weight and fringe or selvedge finish in writing, and request a strike-off in your chosen colourway so the production run matches expectations exactly.',
+  'area-rugs': 'The two decisions that most affect an area rug\'s success are size and construction, and both are easy to get wrong from a screen. On size, the rug should at minimum sit under the front legs of the surrounding furniture and ideally under all of it; under-sizing is the most common and most visible error, which is exactly why we make any custom dimension. On construction, match the technique to the room rather than defaulting to one: hand tufted for plush value, hand knotted for heirloom quality, flat weave for casual durability, shaggy for softness. Consider the practicalities too — pile height versus chair movement, cleanability versus traffic, and an anti-slip underlay on hard floors. For designers commissioning bespoke pieces, approve a lab-dip and, for larger rugs, a strike-off sample before bulk, so the delivered rug matches the rendering. Sampling and correct sizing, more than anything else, separate a rug that anchors a room from one that looks like a mistake.',
+  'carpet-tiles': 'Carpet tile specification rewards attention to the backing and the layout, not just the face fibre. A dimensionally stable bitumen or PVC backing is what keeps tiles flat and tight over years of access-floor lifting; a cheap backing curls and gaps, undoing the format\'s main advantage. Decide the installation pattern early — monolithic for a broadloom look, quarter-turn or ashlar to mask wear and ease replacement, directional or plank to guide circulation — because it affects both aesthetics and how invisibly future replacements blend in. Always retain attic stock from the same dye-lot so spot replacements match, and confirm fire-rating and traffic classification against the building\'s requirements. For ESG-driven projects, ask about recycled-content face yarns and end-of-life options. Engaging us at specification stage lets us coordinate tile and broadloom dye-lots across a mixed-format scheme so the whole floor reads as one — a detail that elevates corporate and institutional fit-outs. Consider acoustics and comfort underfoot as well as appearance: a cushion-backed tile improves sound absorption and walking comfort in open-plan offices, while a harder backing suits very high-traffic transit and retail circulation. For phased or multi-site roll-outs, agree how attic stock will be stored and labelled by lot, so that a replacement tile fitted two years later is indistinguishable from the original installation. Finally, weigh total cost of ownership rather than headline price: a serviceable, replaceable tile system that lets facilities teams swap individual worn tiles almost always costs less over a building\'s life than broadloom that must be replaced wholesale, which is why carpet tiles dominate modern commercial specification.',
+  'tat-patti': 'Procuring tat patti is a tender and logistics discipline more than a design one, and the buyers who do it well treat it that way. The specification should state fibre (cotton, jute or blend), weave weight and exact dimensions, and it should require an approved physical sample against that written spec before award — this single step prevents most quality disputes. Because tat patti is bought in very large, recurring volumes for schools, anganwadis, hostels and relief programmes, the decisive factors are batch consistency, competitive per-unit pricing and reliable delivery to a fixed programme date, all of which favour a direct manufacturer over a trader. Confirm the supplier\'s genuine production capacity and ask how they hold quality across thousands of pieces. For children\'s environments, specify AZO-free dyes. Budget realistically for bulk lead times of two to four weeks, and for relief supply discuss expedited timelines explicitly. Full buyer guidance is set out in our government tender dhurrie buying guide.',
+}
+
+// Merge depth content + shared base FAQs (unique category FAQs + extras + 2 shared).
 for (const cat of PRODUCT_CATEGORIES) {
+  const depth = PRODUCT_DEPTH[cat.slug]
+  const extra = PRODUCT_DEPTH_EXTRA[cat.slug]
+  if (depth && extra) depth.deepDive = [...depth.deepDive, extra]
+  if (depth) {
+    cat.deepDive        = depth.deepDive
+    cat.materialDetails = depth.materialDetails
+    cat.useCases        = depth.useCases
+    cat.exportInfo      = depth.exportInfo
+    cat.relatedGuides   = depth.relatedGuides
+    cat.faqs            = [...cat.faqs, ...depth.extraFaqs]
+  }
   cat.faqs = [...cat.faqs, ...makeBaseFaqs(cat.name)]
 }
 
