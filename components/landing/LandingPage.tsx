@@ -2,7 +2,8 @@ import Link from 'next/link'
 import Image from 'next/image'
 import type { SeoLanding } from '@/lib/seo-landing'
 import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries, getRelatedDhurries, getRelatedCompany } from '@/lib/seo-landing'
-import { getProductCategory } from '@/lib/products'
+import { getProductCategory, PRODUCT_CATEGORIES } from '@/lib/products'
+import { guidesForLanding } from '@/lib/guides'
 import { SITE } from '@/lib/data'
 import { Reveal, Eyebrow } from '@/components/ui'
 import { BLUR_PLACEHOLDER } from '@/components/ui/OptimizedImage'
@@ -29,9 +30,16 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
   const basePath = BASE_PATH[page.kind]
   const baseLabel = BASE_LABEL[page.kind]
 
-  const relatedProducts = page.relatedProducts
+  // 5 related products: page-specific first, topped up from core catalogue (deduped).
+  const PRODUCT_TOPUP = ['hand-tufted-carpet', 'hand-knotted-carpet', 'wall-to-wall-carpets', 'jute-sisal-rugs', 'dhurrie-rugs']
+  const productSlugs = Array.from(new Set([...page.relatedProducts, ...PRODUCT_TOPUP]))
+    .filter((s) => PRODUCT_CATEGORIES.some((c) => c.slug === s))
+    .slice(0, 5)
+  const relatedProducts = productSlugs
     .map((slug) => getProductCategory(slug))
     .filter((c): c is NonNullable<typeof c> => Boolean(c))
+  // 3 contextual guides (requirement: link to 3 guides per page).
+  const relatedGuides = guidesForLanding(page.kind, page.slug)
   // Cross-link across clusters (industry ⇄ solution ⇄ country) — guaranteeing
   // 3+ related landing links and a Product→Industry→Country→Contact chain, no orphans.
   const relatedLandings = [
@@ -251,6 +259,32 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
             </Reveal>
           ))}
         </div>
+
+        {/* Related guides — internal linking to authority cluster */}
+        {relatedGuides.length > 0 && (
+          <div className="mt-12">
+            <Reveal>
+              <p className="text-[14px] tracking-[0.28em] uppercase font-medium mb-5" style={{ color: 'var(--gd)' }}>
+                Helpful Guides
+              </p>
+            </Reveal>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {relatedGuides.map((g) => (
+                <Link
+                  key={g.slug}
+                  href={`/guides/${g.slug}`}
+                  className="group block rounded-lg p-5 transition-colors duration-200"
+                  style={{ background: 'var(--iv)', border: '1px solid var(--bd)' }}
+                >
+                  <span className="text-[12px] tracking-[0.2em] uppercase" style={{ color: 'var(--gd)' }}>Guide</span>
+                  <span className="block text-[16px] font-medium mt-1.5 leading-snug transition-colors group-hover:text-[var(--c)]" style={{ color: 'var(--inks)' }}>
+                    {g.title}
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Related industries / solutions — internal linking */}
         {relatedLandingsTop.length > 0 && (

@@ -56,6 +56,12 @@ const nextConfig = {
         destination: '/design-studio',
         permanent:   true,
       },
+      {
+        // /blogs superseded by the richer /guides authority cluster
+        source:      '/blogs',
+        destination: '/guides',
+        permanent:   true,
+      },
     ]
   },
 

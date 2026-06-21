@@ -74,12 +74,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority:         0.8,
     },
     {
-      url:              `${SEO_BASE_URL}/blogs`,
-      lastModified:     now,
-      changeFrequency:  'weekly',
-      priority:         0.75,
-    },
-    {
       url:              `${SEO_BASE_URL}/custom`,
       lastModified:     now,
       changeFrequency:  'monthly',

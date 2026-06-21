@@ -13,8 +13,8 @@ export default function CategoryApplications({ category }: { category: ProductCa
           Ideal Applications for <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{category.name}</em>
         </h2>
         <p className="text-[16px] font-light leading-[1.85] max-w-2xl mb-10" style={{ color: 'var(--inkm)' }}>
-          Trusted by architects, interior designers, hotels, builders, developers and procurement teams across India
-          and international projects.
+          Where our {category.name.toLowerCase()} are specified — by architects, interior designers, hotels, builders,
+          developers and procurement teams across India and international projects.
         </p>
       </Reveal>
 
