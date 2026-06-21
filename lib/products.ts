@@ -114,7 +114,7 @@ function makeBaseFaqs(name: string): ProductFaq[] {
   return [
     {
       q: `Are you a manufacturer of ${name.toLowerCase()} or a reseller?`,
-      a: `Tapis Global International is a direct manufacturer — every ${name.toLowerCase()} is produced at our own integrated facility in Bhadohi, India, established in 1995. We are not a trading company or reseller; buying direct means better pricing, in-house quality control and full customisation.`,
+      a: `Tapis Global International is a direct manufacturer — every ${name.toLowerCase()} is produced at our own integrated facility in Bhadohi, India, rooted in a three-generation family carpet-making legacy since 1965. We are not a trading company or reseller; buying direct means better pricing, in-house quality control and full customisation.`,
     },
     {
       q: `Do you supply ${name.toLowerCase()} across India and internationally?`,

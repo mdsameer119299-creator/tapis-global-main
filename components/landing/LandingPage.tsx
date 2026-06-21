@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { SeoLanding } from '@/lib/seo-landing'
-import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries, getRelatedDhurries } from '@/lib/seo-landing'
+import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries, getRelatedDhurries, getRelatedCompany } from '@/lib/seo-landing'
 import { getProductCategory } from '@/lib/products'
 import { SITE } from '@/lib/data'
 import { Reveal, Eyebrow } from '@/components/ui'
@@ -14,6 +14,7 @@ const BASE_PATH: Record<SeoLanding['kind'], string> = {
   solution: '/solutions',
   country:  '/countries',
   dhurrie:  '/dhurries',
+  company:  '/company',
 }
 
 const BASE_LABEL: Record<SeoLanding['kind'], string> = {
@@ -21,6 +22,7 @@ const BASE_LABEL: Record<SeoLanding['kind'], string> = {
   solution: 'Solutions',
   country:  'Export Markets',
   dhurrie:  'Dhurries & Tat Patti',
+  company:  'Company',
 }
 
 export default function LandingPage({ page }: { page: SeoLanding }) {
@@ -33,6 +35,7 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
   // Cross-link across clusters (industry ⇄ solution ⇄ country) — guaranteeing
   // 3+ related landing links and a Product→Industry→Country→Contact chain, no orphans.
   const relatedLandings = [
+    ...getRelatedCompany(page.relatedCompany),
     ...getRelatedDhurries(page.relatedDhurries),
     ...getRelatedIndustries(page.relatedIndustries),
     ...getRelatedSolutions(page.relatedSolutions),

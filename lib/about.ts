@@ -38,7 +38,7 @@ export const ABOUT_HERO = {
   image:     '/images/tgi-banner-1.webp',
   imageAlt:  'Premium handmade carpet manufacturing — Tapis Global International Bhadohi',
   stats: [
-    { value: '1995', suffix: '',  label: 'Established'           },
+    { value: '1965', suffix: '',  label: 'Family Heritage'       },
     { value: 'Pan',  suffix: '',  label: 'India Operations'      },
     { value: '500',  suffix: '+', label: 'Master Artisans'       },
     { value: '45',   suffix: '+', label: 'Global Markets Served' },

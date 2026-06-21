@@ -39,7 +39,7 @@ export const SITE = {
   } satisfies ContactLocation,
   /** Primary address (manufacturing) — used where a single line is required */
   address: 'Industrial Estate, Bhadohi – 221401, Uttar Pradesh, India',
-  established: '1995',
+  established: '1965',
 }
 
 // ─── NAV LINKS ────────────────────────────────────────────────
@@ -159,7 +159,7 @@ export const HERO_SLIDES = [
 ]
 
 export const HERO_STATS = [
-  { value: '30',  suffix: '+', label: 'Years of Excellence'  },
+  { value: '60',  suffix: '+', label: 'Years of Heritage'  },
   { value: '500', suffix: '+', label: 'Specialist Artisans'  },
   { value: '80',  suffix: 'K', label: 'Sq Ft Campus'         },
   { value: '45',  suffix: '+', label: 'Markets Served'       },
@@ -175,7 +175,7 @@ export type {
 
 // ─── STATS / EXPORT ──────────────────────────────────────────
 export const EXPORT_STATS = [
-  { value: '30',  suffix: '+', label: 'Years of Manufacturing' },
+  { value: '60',  suffix: '+', label: 'Years of Craft Legacy' },
   { value: '500', suffix: '+', label: 'Specialist Artisans'    },
   { value: '80',  suffix: 'K', label: 'Sq Ft Campus'           },
   { value: 'Pan', suffix: '',  label: 'India Projects'         },

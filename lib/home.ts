@@ -7,7 +7,7 @@ export type TrustItem = {
 }
 
 export const TRUST_RIBBON_ITEMS: Omit<TrustItem, 'icon'>[] = [
-  { text: 'Established 1995'              },
+  { text: 'Family Heritage Since 1965'    },
   { text: 'Made in Bhadohi'               },
   { text: 'Worldwide Export'              },
   { text: 'Custom Manufacturing'          },
@@ -54,7 +54,7 @@ export const WHO_WE_ARE = {
 export const INQUIRY_LEGALS = [
   'GST: 09XXXXX000X1Z5',
   'IEC: TGIPXXXXX',
-  'CIN: U17299UP1995PTC',
+  'CIN: U17299UPXXXXPTC',
   'MSME: UDYAM-UP-XX',
 ]
 
@@ -106,7 +106,7 @@ export const MFG_HEADER = {
 
 export const EXPORT_INLINE_STATS = [
   { value: 'Pan', suffix: '',  label: 'India Projects'      },
-  { value: '30',  suffix: '+', label: 'Years Manufacturing' },
+  { value: '60',  suffix: '+', label: 'Years of Heritage' },
   { value: '500', suffix: '+', label: 'Specialist Artisans' },
   { value: '80',  suffix: 'K', label: 'Sq Ft Campus'        },
 ]

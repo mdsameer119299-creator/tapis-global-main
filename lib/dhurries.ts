@@ -592,7 +592,7 @@ export const DHURRIES: SeoLanding[] = [
     seoKeywords: ['dhurrie manufacturer Bhadohi', 'Bhadohi dhurrie supplier', 'dhurrie manufacturer Uttar Pradesh', 'handwoven dhurrie Bhadohi', 'Bhadohi carpet city dhurrie'],
     h1: 'Dhurrie Manufacturer in Bhadohi, India',
     intro: 'Tapis Global International is a dhurrie manufacturer based in Bhadohi, India — the historic heart of India\'s handwoven carpet and dhurrie industry. Buying from Bhadohi means buying at source, from generations of weaving expertise, with the authenticity, quality and pricing only a true manufacturing hub delivers.',
-    overview: 'Bhadohi, in Uttar Pradesh, is India\'s largest handwoven floor-covering cluster — a GI-recognised carpet city with deep weaving heritage and skilled artisan communities. As an established Bhadohi manufacturer since 1995, we offer authentic source-direct dhurries with the craft, capacity and accountability that define the region.',
+    overview: 'Bhadohi, in Uttar Pradesh, is India\'s largest handwoven floor-covering cluster — a GI-recognised carpet city with deep weaving heritage and skilled artisan communities. As a third-generation, family-owned Bhadohi manufacturer continuing a legacy since 1965, we offer authentic source-direct dhurries with the craft, capacity and accountability that define the region.',
     sections: [
       { h2: 'Authentic Source-Direct', body: 'Manufacturing in Bhadohi means our dhurries come straight from the source — generations of weaving skill, authentic construction and source-direct pricing without intermediaries.' },
       { h2: 'Heritage & Capacity', body: 'Bhadohi combines craft heritage with industrial capacity. Our 80,000 sq ft facility and skilled weaver network deliver everything from bespoke pieces to large tender and export volumes.' },
@@ -606,12 +606,12 @@ export const DHURRIES: SeoLanding[] = [
     ],
     whyPoints: [
       { title: 'Buying at Source', desc: 'Direct from India\'s carpet city.' },
-      { title: 'Since 1995', desc: 'Established Bhadohi manufacturing heritage.' },
+      { title: 'Family Heritage Since 1965', desc: 'Three generations of Bhadohi manufacturing.' },
       { title: 'Craft + Capacity', desc: 'Bespoke to bulk from one hub.' },
     ],
     faqs: [
       { q: 'Why buy dhurries from Bhadohi?', a: 'Bhadohi is India\'s largest handwoven floor-covering cluster with deep weaving heritage. Buying here means authentic source-direct dhurries, craft quality and pricing without intermediaries.' },
-      { q: 'Are you an established Bhadohi manufacturer?', a: 'Yes — Tapis Global has manufactured in Bhadohi since 1995, with an 80,000 sq ft facility and skilled weaver network.' },
+      { q: 'Are you an established Bhadohi manufacturer?', a: 'Yes — Tapis Global is a third-generation, family-owned Bhadohi manufacturer continuing a carpet-making legacy since 1965, with an 80,000 sq ft facility and skilled weaver network.' },
       { q: 'What dhurries do you make in Bhadohi?', a: 'Cotton, wool and jute dhurries, Tat Patti and the wider handwoven carpet range, from bespoke pieces to bulk and export volumes.' },
       { q: 'Do you supply tenders and exports from Bhadohi?', a: 'Yes — source-direct bulk supply for institutional tenders and international export with documentation.' },
       { q: 'Is source-direct pricing better?', a: 'Yes. Manufacturing at source removes intermediary margins, giving better pricing and quality control.' },

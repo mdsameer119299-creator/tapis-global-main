@@ -6,6 +6,7 @@ import { BLUR_PLACEHOLDER } from '@/components/ui/OptimizedImage'
 
 const FOOTER_EXPLORE = [
   { label: 'About Us',        href: '/about' },
+  { label: 'Company',         href: '/company' },
   { label: 'Products',        href: '/products' },
   { label: 'Industries',      href: '/industries' },
   { label: 'Solutions',       href: '/solutions' },

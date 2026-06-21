@@ -38,8 +38,8 @@ const SIGNALS: { title: string; desc: string; icon: React.ReactNode }[] = [
     ),
   },
   {
-    title: `Established since ${SITE.established}`,
-    desc: 'Three decades of handmade carpet manufacturing, supply and export expertise.',
+    title: `Family Heritage Since ${SITE.established}`,
+    desc: 'A third-generation, family-owned business — six decades of handmade carpet-making knowledge.',
     icon: (
       <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
     ),

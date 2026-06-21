@@ -27,7 +27,7 @@ export type LandingFaq = {
 
 export type SeoLanding = {
   slug:        string
-  kind:        'industry' | 'solution' | 'country' | 'dhurrie'
+  kind:        'industry' | 'solution' | 'country' | 'dhurrie' | 'company'
   /** Short label used in nav, breadcrumbs and related-link cards */
   label:       string
   heroImage:   string
@@ -51,6 +51,7 @@ export type SeoLanding = {
   relatedSolutions?: string[]
   relatedCountries?: string[]
   relatedDhurries?:  string[]
+  relatedCompany?:   string[]
 }
 
 // ─── REGISTRY ────────────────────────────────────────────────────────────────
@@ -60,6 +61,7 @@ import { INDUSTRIES } from './industries'
 import { SOLUTIONS } from './solutions-seo'
 import { COUNTRIES } from './countries'
 import { DHURRIES } from './dhurries'
+import { COMPANY_PAGES } from './company'
 
 export function getIndustry(slug: string): SeoLanding | undefined {
   return INDUSTRIES.find((i) => i.slug === slug)
@@ -77,6 +79,10 @@ export function getDhurrie(slug: string): SeoLanding | undefined {
   return DHURRIES.find((d) => d.slug === slug)
 }
 
+export function getCompanyPage(slug: string): SeoLanding | undefined {
+  return COMPANY_PAGES.find((c) => c.slug === slug)
+}
+
 export function getAllIndustrySlugs(): string[] {
   return INDUSTRIES.map((i) => i.slug)
 }
@@ -91,6 +97,10 @@ export function getAllCountrySlugs(): string[] {
 
 export function getAllDhurrieSlugs(): string[] {
   return DHURRIES.map((d) => d.slug)
+}
+
+export function getAllCompanySlugs(): string[] {
+  return COMPANY_PAGES.map((c) => c.slug)
 }
 
 export function getRelatedIndustries(slugs: string[] = []): SeoLanding[] {
@@ -117,4 +127,10 @@ export function getRelatedDhurries(slugs: string[] = []): SeoLanding[] {
     .filter((x): x is SeoLanding => Boolean(x))
 }
 
-export { INDUSTRIES, SOLUTIONS, COUNTRIES, DHURRIES }
+export function getRelatedCompany(slugs: string[] = []): SeoLanding[] {
+  return slugs
+    .map((s) => COMPANY_PAGES.find((i) => i.slug === s))
+    .filter((x): x is SeoLanding => Boolean(x))
+}
+
+export { INDUSTRIES, SOLUTIONS, COUNTRIES, DHURRIES, COMPANY_PAGES }
