@@ -3,18 +3,7 @@ const isDev = process.env.NODE_ENV === 'development'
 
 const nextConfig = {
   images: {
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'images.unsplash.com',
-        pathname: '/**',
-      },
-      {
-        protocol: 'https',
-        hostname: 'rugsociety.eu',
-        pathname: '/img/samples/**',
-      },
-    ],
+    // All imagery is now self-hosted under /public — no remote patterns required.
 
     // Skip on-the-fly optimization in dev — major speedup for local `npm run dev`
     unoptimized: isDev,
@@ -41,6 +30,12 @@ const nextConfig = {
       },
       {
         source: '/images/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
+        source: '/swatches/:path*',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
         ],
