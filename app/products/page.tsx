@@ -4,7 +4,7 @@ import { PAGE_META, SEO_BASE_URL, OG_IMAGE } from '@/lib/seo'
 import {
   webPageSchema,
   breadcrumbSchema,
-  productSchema,
+  itemListSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
 import { PRODUCT_CATEGORIES } from '@/lib/products'
@@ -25,15 +25,13 @@ const PAGE_JSONLD = JSON.stringify(
       { name: 'Home',     url: SEO_BASE_URL },
       { name: 'Products', url: PAGE_META.products.canonical! },
     ]),
-    ...PRODUCT_CATEGORIES.map((cat) =>
-      productSchema({
-        name:        `${cat.name} — Wholesale Manufacturer India`,
-        description: cat.intro,
-        imageUrl:    `${SEO_BASE_URL}${cat.cardImage}`,
-        url:         `${SEO_BASE_URL}/products/${cat.slug}`,
-        material:    cat.materials.join(', '),
-        moq:         cat.moq,
-      }),
+    // ItemList of category pages — valid, warning-free hub markup
+    // (no ecommerce Product/Offer fields required).
+    itemListSchema(
+      PRODUCT_CATEGORIES.map((cat) => ({
+        name: cat.name,
+        url:  `${SEO_BASE_URL}/products/${cat.slug}`,
+      })),
     ),
   ),
 )

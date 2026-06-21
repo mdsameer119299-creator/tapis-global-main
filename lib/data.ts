@@ -39,7 +39,7 @@ export const SITE = {
   } satisfies ContactLocation,
   /** Primary address (manufacturing) — used where a single line is required */
   address: 'Industrial Estate, Bhadohi – 221401, Uttar Pradesh, India',
-  established: '1995',
+  established: '1965',
 }
 
 // ─── NAV LINKS ────────────────────────────────────────────────
@@ -93,15 +93,19 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
       { label: 'Hand Tufted',   href: '/products/hand-tufted-carpet',  image: '/images/handtufted-img-2.webp' },
       { label: 'Hand Knotted',  href: '/products/hand-knotted-carpet', image: '/images/tgi-banner-2.webp' },
       { label: 'Wall-to-Wall',  href: '/products/wall-to-wall-carpets', image: '/images/tgi-banner-4.webp' },
+      { label: 'Carpet Tiles',  href: '/products/carpet-tiles',        image: '/images/tufting-carpet.webp' },
       { label: 'Leather',       href: '/products/leather-carpets',     image: '/images/rug3.webp' },
     ],
   },
   {
     heading: 'Rugs',
     items: [
+      { label: 'Area Rugs',     href: '/products/area-rugs',      image: '/images/rug1.webp' },
       { label: 'Shaggy',        href: '/products/shaggy-rugs',    image: '/images/rug4.webp' },
       { label: 'Jute & Sisal',  href: '/products/jute-sisal-rugs', image: '/images/jute-rugs-manufacturing.webp' },
       { label: 'Flat Weaves',   href: '/products/flat-weaves',    image: '/images/rug5.webp' },
+      { label: 'Kilim',         href: '/products/kilim-rugs',     image: '/images/rug5.webp' },
+      { label: 'Dhurrie',       href: '/products/dhurrie-rugs',   image: '/images/rug3.webp' },
     ],
   },
   {
@@ -114,6 +118,8 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
     heading: 'Natural Fibre Products',
     items: [
       { label: 'Coco Coir',     href: '/products/coco-coir',      image: '/images/wool-drying-pic.webp' },
+      { label: 'Tat Patti',     href: '/products/tat-patti',      image: '/images/jute-rugs-manufacturing.webp' },
+      { label: 'Dhurries & Tat Patti', href: '/dhurries',        image: '/images/manufacturing-rug-img.webp' },
     ],
   },
 ]
@@ -153,7 +159,7 @@ export const HERO_SLIDES = [
 ]
 
 export const HERO_STATS = [
-  { value: '30',  suffix: '+', label: 'Years of Excellence'  },
+  { value: '60',  suffix: '+', label: 'Years of Heritage'  },
   { value: '500', suffix: '+', label: 'Specialist Artisans'  },
   { value: '80',  suffix: 'K', label: 'Sq Ft Campus'         },
   { value: '45',  suffix: '+', label: 'Markets Served'       },
@@ -169,7 +175,7 @@ export type {
 
 // ─── STATS / EXPORT ──────────────────────────────────────────
 export const EXPORT_STATS = [
-  { value: '30',  suffix: '+', label: 'Years of Manufacturing' },
+  { value: '60',  suffix: '+', label: 'Years of Craft Legacy' },
   { value: '500', suffix: '+', label: 'Specialist Artisans'    },
   { value: '80',  suffix: 'K', label: 'Sq Ft Campus'           },
   { value: 'Pan', suffix: '',  label: 'India Projects'         },

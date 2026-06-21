@@ -3,9 +3,9 @@
 //
 // Usage:
 //   import JsonLd from '@/components/seo/JsonLd'
-//   import { productSchema } from '@/lib/structured-data'
+//   import { webPageSchema } from '@/lib/structured-data'
 //
-//   <JsonLd schema={productSchema({ ... })} />
+//   <JsonLd schema={webPageSchema({ ... })} />
 
 type Props = {
   schema: object | object[]

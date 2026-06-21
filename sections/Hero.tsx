@@ -107,7 +107,7 @@ export default function Hero() {
       {/* ── Prev / Next arrows ── */}
       <button
         onClick={() => goTo(current - 1)}
-        className="absolute left-3 sm:left-9 max-lg:left-2.5 top-1/2 -translate-y-1/2 z-[6] w-10 sm:w-[52px] h-10 sm:h-[52px] flex items-center justify-center border transition-all duration-300 active:scale-95"
+        className="absolute left-3 sm:left-9 max-lg:left-2.5 top-1/2 -translate-y-1/2 z-[6] w-10 sm:w-[52px] h-10 sm:h-[52px] hidden sm:flex items-center justify-center border transition-all duration-300 active:scale-95"
         style={{ border: '1px solid rgba(192,155,74,0.35)', background: 'rgba(4,2,1,0.38)', backdropFilter: 'blur(10px)', color: 'rgba(255,255,255,0.7)' }}
         aria-label="Previous slide"
       >
@@ -115,7 +115,7 @@ export default function Hero() {
       </button>
       <button
         onClick={() => goTo(current + 1)}
-        className="absolute right-3 sm:right-9 max-lg:right-2.5 top-1/2 -translate-y-1/2 z-[6] w-10 sm:w-[52px] h-10 sm:h-[52px] flex items-center justify-center border transition-all duration-300 active:scale-95"
+        className="absolute right-3 sm:right-9 max-lg:right-2.5 top-1/2 -translate-y-1/2 z-[6] w-10 sm:w-[52px] h-10 sm:h-[52px] hidden sm:flex items-center justify-center border transition-all duration-300 active:scale-95"
         style={{ border: '1px solid rgba(192,155,74,0.35)', background: 'rgba(4,2,1,0.38)', backdropFilter: 'blur(10px)', color: 'rgba(255,255,255,0.7)' }}
         aria-label="Next slide"
       >
@@ -145,11 +145,11 @@ export default function Hero() {
         className="absolute bottom-[172px] right-24 max-lg:hidden z-[6] text-center px-6 py-4 min-w-[148px]"
         style={{ background: 'rgba(4,2,1,0.55)', backdropFilter: 'blur(14px)', border: '1px solid rgba(192,155,74,0.3)' }}
       >
-        <p className="text-[14px] tracking-[0.28em] uppercase" style={{ color: 'var(--gl)' }}>Established</p>
+        <p className="text-[14px] tracking-[0.28em] uppercase" style={{ color: 'var(--gl)' }}>Family Heritage</p>
         <p className="font-display text-[40px] font-normal leading-tight my-0.5" style={{ fontFamily: '"Cormorant Garamond",serif', color: 'var(--gp)' }}>
-          {SITE.established}
+          Since {SITE.established}
         </p>
-        <p className="text-[15px] tracking-[0.1em] uppercase" style={{ color: 'rgba(255,255,255,0.38)' }}>Bhadohi, India</p>
+        <p className="text-[15px] tracking-[0.1em] uppercase" style={{ color: 'rgba(255,255,255,0.38)' }}>Three Generations</p>
       </div>
 
       {/* ── Scroll cue ── */}
@@ -173,27 +173,27 @@ export default function Hero() {
         className="absolute inset-0 z-[5] flex flex-col justify-end pb-8 sm:pb-12 lg:pb-20 px-5 sm:px-6 lg:px-24 pointer-events-none"
       >
         <div
-          className="inline-flex items-center gap-2.5 px-3 sm:px-4 py-2 mb-5 sm:mb-7 w-fit max-w-full text-[14px] sm:text-[15px] tracking-[0.22em] sm:tracking-[0.28em] uppercase pointer-events-auto"
+          className="inline-flex items-center gap-2.5 px-3 sm:px-4 py-2 mb-5 sm:mb-7 w-fit max-w-full text-[13px] sm:text-[15px] tracking-[0.26em] sm:tracking-[0.3em] uppercase pointer-events-auto"
           style={{ border: '1px solid rgba(192,155,74,0.5)', background: 'rgba(26,19,16,0.35)', backdropFilter: 'blur(8px)', color: 'var(--gp)' }}
         >
-          Established {SITE.established} · Bhadohi, India
+          Family Heritage · Since {SITE.established}
         </div>
 
         <h1
-          className="font-light leading-[1.05] sm:leading-[1.02] tracking-tight text-white mb-5 sm:mb-6 max-w-3xl pointer-events-auto"
-          style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(34px, 8.5vw, 88px)', textShadow: '0 2px 32px rgba(0,0,0,0.4)' }}
+          className="font-light leading-[1.06] sm:leading-[1.02] tracking-tight text-white mb-4 sm:mb-5 max-w-3xl pointer-events-auto text-balance"
+          style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(30px, 7vw, 76px)', textShadow: '0 2px 32px rgba(0,0,0,0.4)' }}
         >
-          Handmade Carpet &amp; Rug Manufacturer
+          Premium Carpets &amp; Rugs
           <br />
-          <em className="font-light not-italic" style={{ color: 'var(--gp)', fontStyle: 'italic' }}>from Bhadohi, India.</em>
-          <span
-            className="block mt-2 sm:mt-3 font-body font-light uppercase leading-relaxed"
-            style={{ fontSize: 'clamp(10px,2.8vw,15px)', letterSpacing: '0.12em', color: 'rgba(255,255,255,0.55)' }}
-          >
-            Serving Hospitality, Commercial &amp; Residential Projects
-            <span className="hidden sm:inline"> — Across India &amp; International Markets</span>
-          </span>
+          <em className="font-light not-italic" style={{ color: 'var(--gp)', fontStyle: 'italic' }}>For Distinctive Spaces</em>
         </h1>
+
+        <p
+          className="font-body font-light uppercase mb-6 sm:mb-8 pointer-events-auto"
+          style={{ fontSize: 'clamp(12px,3.2vw,16px)', letterSpacing: '0.2em', color: 'rgba(255,255,255,0.7)' }}
+        >
+          Manufacturer • Supplier • Exporter
+        </p>
 
         <div className="flex gap-2.5 sm:gap-3.5 items-stretch sm:items-center flex-col sm:flex-row mb-6 sm:mb-9 pointer-events-auto w-full sm:w-auto">
           <a

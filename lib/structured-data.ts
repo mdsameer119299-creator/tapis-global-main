@@ -23,8 +23,8 @@ export function organizationSchema() {
     },
     image: OG_IMAGE.url,
     description:
-      'Tapis Global International Pvt Ltd is a premium handmade carpet and flooring solutions manufacturer based in Bhadohi, Uttar Pradesh, India. Serving architects, hospitality projects, commercial interiors and pan India supply — with export programmes to 45+ countries since 1995.',
-    foundingDate: String(BRAND.established),
+      'Tapis Global International Pvt Ltd is a third-generation, family-owned handmade carpet and rug manufacturer based in Bhadohi, Uttar Pradesh, India — continuing a family carpet-making legacy since 1965. Serving architects, hospitality projects, commercial interiors and pan India supply, with export programmes to 45+ countries.',
+    slogan: 'Third Generation Carpet & Rug Manufacturer — Family Heritage Since 1965',
     foundingLocation: {
       '@type': 'Place',
       name: 'Bhadohi, Uttar Pradesh, India',
@@ -72,6 +72,17 @@ export function organizationSchema() {
       '@type': 'AdministrativeArea',
       name: 'Worldwide',
     },
+    knowsAbout: [
+      'Carpet manufacturing',
+      'Rug manufacturing',
+      'Hand tufted carpets',
+      'Hand knotted carpets',
+      'Jute and sisal rugs',
+      'Wall to wall carpets',
+      'Hospitality and commercial carpets',
+      'Custom rug manufacturing',
+      'Carpet export',
+    ],
     hasOfferCatalog: {
       '@type': 'OfferCatalog',
       name:    'Handmade Carpet & Rug Collections',
@@ -80,17 +91,20 @@ export function organizationSchema() {
   }
 }
 
-// ─── LOCAL BUSINESS ───────────────────────────────────────────────────────────
+// ─── LOCAL BUSINESS (manufacturing facility) ──────────────────────────────────
+// Kept minimal & accurate for a B2B manufacturer: real facility, contact and
+// hours. "Store" and retail/restaurant signals removed (inappropriate for B2B).
 export function localBusinessSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': ['LocalBusiness', 'Store'],
+    '@type': 'LocalBusiness',
     '@id': `${SEO_BASE_URL}/#localbusiness`,
     name: BRAND.legalName,
     image: [OG_IMAGE.url, `${SEO_BASE_URL}/images/manufacturing-rug-img.webp`],
     url:  SEO_BASE_URL,
     telephone: BRAND.phone,
     email:     BRAND.email,
+    parentOrganization: { '@id': `${SEO_BASE_URL}/#organization` },
     address: {
       '@type':           'PostalAddress',
       streetAddress:     BRAND.address.street,
@@ -112,10 +126,8 @@ export function localBusinessSchema() {
         closes:      '18:00',
       },
     ],
-    priceRange: '₹₹₹',
     currenciesAccepted: 'USD, EUR, GBP, INR',
     paymentAccepted:    'Bank Transfer, LC, DA, DP',
-    servesCuisine:      undefined,
     keywords: 'handmade carpet manufacturer, rug exporter, Bhadohi carpet, hand knotted rugs',
   }
 }
@@ -137,44 +149,10 @@ export function websiteSchema() {
   }
 }
 
-// ─── MANUFACTURER ────────────────────────────────────────────────────────────
-export function manufacturerSchema() {
-  return {
-    '@context': 'https://schema.org',
-    '@type':    'Manufacturer',
-    '@id':      `${SEO_BASE_URL}/#manufacturer`,
-    name:       BRAND.legalName,
-    url:        SEO_BASE_URL,
-    image:      OG_IMAGE.url,
-    description:
-      'Premium carpet manufacturer and flooring solutions exporter from Bhadohi, India — handmade, hand tufted, hand knotted, hospitality and custom rugs.',
-    foundingDate: String(BRAND.established),
-    brand: {
-      '@type': 'Brand',
-      name:    BRAND.shortName,
-    },
-    address: {
-      '@type':           'PostalAddress',
-      streetAddress:     BRAND.address.street,
-      addressLocality:   BRAND.address.city,
-      addressRegion:     BRAND.address.state,
-      postalCode:        BRAND.address.postal,
-      addressCountry:    BRAND.address.country,
-    },
-    areaServed: 'Worldwide',
-    knowsAbout: [
-      'Handmade carpets',
-      'Hand tufted carpets',
-      'Hand knotted carpets',
-      'Hospitality flooring',
-      'Wall to wall carpets',
-      'Custom rug manufacturing',
-    ],
-    parentOrganization: {
-      '@id': `${SEO_BASE_URL}/#organization`,
-    },
-  }
-}
+// NOTE: A dedicated "Manufacturer" schema type was removed — schema.org has no
+// such type, so Google ignored it. Manufacturer identity is expressed through the
+// Organization schema above (Corporation + knowsAbout + hasOfferCatalog), and via
+// `manufacturer` references on each Product.
 
 // ─── CONTACT PAGE ────────────────────────────────────────────────────────────
 export function contactPageSchema() {
@@ -207,6 +185,7 @@ export function webPageSchema({
   imageUrl,
   datePublished = '2024-01-01',
   dateModified,
+  hasBreadcrumb = true,
 }: {
   title:       string
   description: string
@@ -214,6 +193,8 @@ export function webPageSchema({
   imageUrl?:   string
   datePublished?: string
   dateModified?:  string
+  /** Set false on pages with no BreadcrumbList (e.g. homepage) to avoid a dangling @id reference */
+  hasBreadcrumb?: boolean
 }) {
   return {
     '@context':     'https://schema.org',
@@ -235,9 +216,58 @@ export function webPageSchema({
         height:  OG_IMAGE.height,
       },
     }),
-    breadcrumb: {
-      '@id': `${url}#breadcrumb`,
-    },
+    ...(hasBreadcrumb && {
+      breadcrumb: { '@id': `${url}#breadcrumb` },
+    }),
+  }
+}
+
+// ─── ARTICLE (guides / editorial) ─────────────────────────────────────────────
+export function articleSchema({
+  title,
+  description,
+  url,
+  imageUrl,
+  datePublished = '2026-01-01',
+  dateModified,
+}: {
+  title:       string
+  description: string
+  url:         string
+  imageUrl:    string
+  datePublished?: string
+  dateModified?:  string
+}) {
+  return {
+    '@context':     'https://schema.org',
+    '@type':        'Article',
+    '@id':          `${url}#article`,
+    headline:       title,
+    description,
+    image:          imageUrl,
+    inLanguage:     'en-US',
+    mainEntityOfPage: { '@type': 'WebPage', '@id': `${url}#webpage` },
+    datePublished,
+    dateModified:   dateModified ?? new Date().toISOString().split('T')[0],
+    author:    { '@id': `${SEO_BASE_URL}/#organization` },
+    publisher: { '@id': `${SEO_BASE_URL}/#organization` },
+    isPartOf:  { '@id': `${SEO_BASE_URL}/#website` },
+  }
+}
+
+// ─── ITEM LIST (hub / collection pages) ───────────────────────────────────────
+// Valid, warning-free way to enumerate child pages on a hub (e.g. /products).
+// Carries no ecommerce fields, so it raises no Merchant/Product-snippet warnings.
+export function itemListSchema(items: Array<{ name: string; url: string }>) {
+  return {
+    '@context': 'https://schema.org',
+    '@type':    'ItemList',
+    itemListElement: items.map((item, index) => ({
+      '@type':   'ListItem',
+      position:  index + 1,
+      name:      item.name,
+      url:       item.url,
+    })),
   }
 }
 
@@ -255,69 +285,12 @@ export function breadcrumbSchema(items: Array<{ name: string; url: string }>) {
   }
 }
 
-// ─── PRODUCT (carpet/rug item) ────────────────────────────────────────────────
-export function productSchema({
-  name,
-  description,
-  imageUrl,
-  url,
-  material,
-  moq,
-}: {
-  name:        string
-  description: string
-  imageUrl:    string
-  url:         string
-  material:    string
-  moq:         string
-}) {
-  return {
-    '@context':   'https://schema.org',
-    '@type':      'Product',
-    name,
-    description,
-    image:        imageUrl,
-    url,
-    brand: {
-      '@type': 'Brand',
-      name:    BRAND.legalName,
-    },
-    manufacturer: {
-      '@id': `${SEO_BASE_URL}/#organization`,
-    },
-    material,
-    countryOfOrigin: {
-      '@type': 'Country',
-      name:    'India',
-    },
-    offers: {
-      '@type':           'Offer',
-      availability:      'https://schema.org/InStock',
-      priceCurrency:     'USD',
-      priceSpecification: {
-        '@type':    'UnitPriceSpecification',
-        priceCurrency: 'USD',
-        unitText:      'piece',
-        description:   `Minimum order quantity: ${moq}`,
-      },
-      seller: {
-        '@id': `${SEO_BASE_URL}/#organization`,
-      },
-    },
-    additionalProperty: [
-      {
-        '@type': 'PropertyValue',
-        name:    'Minimum Order Quantity',
-        value:   moq,
-      },
-      {
-        '@type': 'PropertyValue',
-        name:    'Country of Manufacture',
-        value:   'India',
-      },
-    ],
-  }
-}
+// NOTE: Product schema was removed sitewide. Tapis Global's catalogue is
+// quote-based B2B (MOQ, no public price / availability / ratings), so Product +
+// Offer markup only produced persistent Google Merchant listing and Product
+// snippet warnings without unlocking valid rich results. Product/category pages
+// now use WebPage + BreadcrumbList + FAQPage, and the hub uses ItemList. The
+// manufacturer relationship is carried by the global Organization schema.
 
 // ─── FAQ PAGE ─────────────────────────────────────────────────────────────────
 type FaqItem = { q: string; a: string }
@@ -372,23 +345,9 @@ export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS) {
   }
 }
 
-// ─── AGGREGATE RATING ──────────────────────────────────────────────────────
-export function aggregateRatingSchema() {
-  return {
-    '@context': 'https://schema.org',
-    '@type':    'Organization',
-    '@id':      `${SEO_BASE_URL}/#organization`,
-    name:       BRAND.legalName,
-    aggregateRating: {
-      '@type':       'AggregateRating',
-      ratingValue:   '4.9',
-      bestRating:    '5',
-      worstRating:   '1',
-      ratingCount:   '87',
-      reviewCount:   '87',
-    },
-  }
-}
+// NOTE: aggregateRatingSchema was removed. Self-serving AggregateRating markup
+// without verifiable on-page reviews violates Google's review-snippet policy and
+// risks a manual action. Re-introduce only with genuine, displayed reviews.
 
 // ─── HELPER: combine multiple schemas into a @graph ──────────────────────────
 export function buildJsonLd(...schemas: object[]) {

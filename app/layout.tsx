@@ -8,7 +8,6 @@ import {
   organizationSchema,
   localBusinessSchema,
   websiteSchema,
-  manufacturerSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
 import Navbar    from '@/components/layout/Navbar'
@@ -43,7 +42,6 @@ const LAYOUT_JSONLD = JSON.stringify(
   buildJsonLd(
     organizationSchema(),
     localBusinessSchema(),
-    manufacturerSchema(),
     websiteSchema(),
   )
 )

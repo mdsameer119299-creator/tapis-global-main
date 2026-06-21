@@ -186,9 +186,15 @@ export default function Navbar() {
                         className="flex items-center justify-between px-7 py-4"
                         style={{ borderTop: '1px solid rgba(192,155,74,0.16)', background: 'rgba(192,155,74,0.04)' }}
                       >
-                        <span className="text-[14px] tracking-[0.16em] uppercase font-light" style={{ color: 'rgba(255,255,255,0.5)' }}>
-                          Carpet &amp; Rug Manufacturer · Bhadohi, India
-                        </span>
+                        <div className="flex items-center gap-5">
+                          <Link href="/industries" className="text-[14px] tracking-[0.16em] uppercase font-medium transition-colors duration-200 hover:text-[var(--gp)]" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                            By Industry
+                          </Link>
+                          <span className="w-px h-3" style={{ background: 'rgba(192,155,74,0.3)' }} aria-hidden />
+                          <Link href="/solutions" className="text-[14px] tracking-[0.16em] uppercase font-medium transition-colors duration-200 hover:text-[var(--gp)]" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                            By Solution
+                          </Link>
+                        </div>
                         <Link
                           href="/products"
                           className="text-[14px] tracking-[0.16em] uppercase font-medium transition-colors duration-200 hover:text-[var(--gp)] inline-flex items-center gap-2"

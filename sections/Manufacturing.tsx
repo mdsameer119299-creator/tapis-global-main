@@ -11,23 +11,23 @@ export default function Manufacturing() {
       <section
         id="manufacturing"
         className="py-24 px-0 relative overflow-hidden"
-        style={{ background: 'var(--ink)' }}
+        style={{ background: 'linear-gradient(180deg, #3A2A20 0%, #2C2018 100%)' }}
       >
         <span
           className="absolute -bottom-8 -left-2.5 pointer-events-none select-none leading-none whitespace-nowrap"
-          style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 220, fontWeight: 600, color: 'rgba(255,255,255,0.018)', letterSpacing: '-0.04em' }}
+          style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 220, fontWeight: 600, color: 'rgba(255,255,255,0.035)', letterSpacing: '-0.04em' }}
         >
           BHADOHI
         </span>
 
         <ManufacturingHeader />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px" style={{ background: 'rgba(255,255,255,0.05)' }}>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-px" style={{ background: 'rgba(192,155,74,0.14)' }}>
           {MFG_STEPS.map((step, i) => (
             <Reveal key={step.num} delay={i * 80}>
               <div
-                className="group px-[22px] py-8 cursor-default border-t-2 border-transparent transition-all duration-300 hover:border-[var(--g)]"
-                style={{ background: 'var(--ink)' }}
+                className="group px-[22px] py-8 cursor-default border-t-2 border-transparent transition-all duration-300 hover:border-[var(--g)] hover:bg-[rgba(255,255,255,0.03)]"
+                style={{ background: 'linear-gradient(180deg, #3A2A20 0%, #2C2018 100%)' }}
               >
                 <div className="relative w-full fill-frame aspect-[4/3] overflow-hidden mb-3.5">
                   <Image
@@ -41,17 +41,17 @@ export default function Manufacturing() {
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 20vw"
                     className="object-cover transition-all duration-500 group-hover:scale-[1.04]"
                     style={{
-                      filter:  'brightness(0.58) saturate(0.78) sepia(0.14)',
-                      opacity: 0.6,
+                      filter:  'brightness(0.92) saturate(0.96)',
+                      opacity: 0.96,
                     }}
                   />
                 </div>
 
-                <p className="leading-none mb-3.5" style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 46, fontWeight: 300, color: 'rgba(192,155,74,0.22)' }}>
+                <p className="leading-none mb-3.5" style={{ fontFamily: '"Cormorant Garamond",serif', fontSize: 46, fontWeight: 300, color: 'rgba(212,181,116,0.45)' }}>
                   {step.num}
                 </p>
-                <p className="text-[16px] font-medium mb-2" style={{ color: 'rgba(255,255,255,0.82)' }}>{step.title}</p>
-                <p className="text-[17px] font-light leading-[1.72]" style={{ color: 'rgba(255,255,255,0.37)' }}>{step.desc}</p>
+                <p className="text-[16px] font-medium mb-2" style={{ color: 'rgba(255,255,255,0.96)' }}>{step.title}</p>
+                <p className="text-[17px] font-light leading-[1.72]" style={{ color: 'rgba(255,255,255,0.62)' }}>{step.desc}</p>
               </div>
             </Reveal>
           ))}
