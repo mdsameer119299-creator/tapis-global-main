@@ -973,6 +973,70 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       ['Office carpet tile floor', 'Carpet tile texture detail', 'Modular tile layout', 'Directional carpet tile pattern', 'Commercial carpet tiles install', 'Carpet tile production Bhadohi', 'Retail carpet tile zoning', 'Neutral carpet tile', 'Custom colour tile run', 'Fire-rated carpet tiles', 'Recycled-fibre carpet tile', 'Carpet tile QC'],
     ),
   },
+
+  // ─────────────────────────────────────────────────────────────── TAT PATTI
+  {
+    slug:      'tat-patti',
+    name:      'Tat Patti',
+    cardImage: '/images/jute-rugs-manufacturing.webp',
+    heroImage: '/images/jute-rugs-manufacturing.webp',
+    tagline:   'Tat Patti floor matting — durable woven cotton and jute matting for schools, institutions and tender supply. Made in Bhadohi.',
+    seoTitle:  'Tat Patti Manufacturer in India | School & Institutional Floor Matting — Tapis Global',
+    seoDescription: 'Tat Patti manufacturer and supplier in India. Durable woven cotton and jute tat patti floor matting from Bhadohi for schools, hostels, NGOs and government tenders — bulk, economical, fast. Request a quote.',
+    seoKeywords: ['tat patti manufacturer India', 'tat patti supplier', 'school tat patti', 'floor matting manufacturer India', 'cotton tat patti', 'jute tat patti'],
+    h1:        'Tat Patti Manufacturer in India',
+    intro:     'Tat Patti is a flat, hard-wearing woven floor matting used for floor seating and floor covering across schools, anganwadis, hostels, halls, places of worship and relief programmes. Tapis Global International manufactures Tat Patti in cotton and jute from our Bhadohi facility, at the economical bulk scale institutional and government buyers require.',
+    body:      'Woven flat and tight for heavy floor-seating and foot traffic, Tat Patti is the practical, budget-friendly floor-covering choice for high-volume institutional use. We produce it in standard rolls and cut sizes, with custom widths and lengths to suit classroom, hall and tender specifications.',
+    overview:  'As a direct manufacturer we supply Tat Patti in the large, repeatable volumes government schools, tribal welfare departments, anganwadis and NGOs procure — at genuine factory pricing, with batch consistency, tender documentation and the capacity to meet supply deadlines. For detailed buyer-intent information see our dedicated Dhurrie & Tat Patti silo.',
+    bullets: [
+      { label: 'Craftsmanship', text: 'Flat, tightly woven cotton and jute matting built for heavy floor seating and foot traffic.' },
+      { label: 'Materials', text: 'Cotton, jute and cotton-jute blends with non-toxic, AZO-free dyes.' },
+      { label: 'Customization', text: 'Standard rolls and cut sizes, plus custom widths and lengths to tender specification.' },
+      { label: 'Ideal Usage', text: 'Government and public schools, anganwadis, hostels, NGOs, relief camps and halls.' },
+    ],
+    applications: [
+      { title: 'Government & Public Schools', desc: 'Bulk floor-seating matting for classrooms and assemblies.' },
+      { title: 'Anganwadis & Ashram Schools', desc: 'Economical matting for child and residential education.' },
+      { title: 'NGOs & Relief Programmes', desc: 'Bulk Tat Patti for community, relief and rural supply.' },
+      { title: 'Halls & Places of Worship', desc: 'Hard-wearing matting for congregational floor seating.' },
+    ],
+    process: [
+      { step: '01', title: 'Fibre & Yarn', desc: 'Cotton and jute yarns are selected and prepared for flat, tight weaving.' },
+      { step: '02', title: 'Flat Weaving', desc: 'The matting is woven flat and tight on looms for heavy floor-seating durability.' },
+      { step: '03', title: 'Cutting & Finishing', desc: 'Rolls are cut to standard or custom sizes and edges finished for institutional use.' },
+      { step: '04', title: 'QC & Bulk Dispatch', desc: 'Batch-consistent output is inspected and dispatched to tender programme dates.' },
+    ],
+    customization: [
+      'Cotton, jute and cotton-jute blend constructions',
+      'Standard rolls and cut sizes',
+      'Custom widths and lengths to tender spec',
+      'Specified or natural colourways (AZO-free)',
+      'Bulk institutional and government volumes',
+      'Tender documentation and samples',
+    ],
+    techSpecs: [
+      { label: 'Construction',   value: 'Flat tight-woven matting' },
+      { label: 'Primary Materials', value: 'Cotton, Jute, Cotton-Jute Blend' },
+      { label: 'Format',         value: 'Rolls & cut sizes (custom widths/lengths)' },
+      { label: 'Use',            value: 'Floor seating & floor covering' },
+      { label: 'Dyes',           value: 'AZO-free, non-toxic' },
+      { label: 'Certifications', value: 'ISO 9001:2015' },
+    ],
+    idealFor:  ['Government Schools', 'Anganwadis', 'Hostels & NGOs', 'Relief Programmes'],
+    materials: ['Cotton', 'Jute', 'Cotton-Jute Blend'],
+    moq:       'Bulk / Tender Volumes',
+    leadTime:  '2–4 Weeks',
+    related:   ['dhurrie-rugs', 'jute-sisal-rugs', 'flat-weaves'],
+    faqs: [
+      { q: 'What is Tat Patti and what is it used for?', a: 'Tat Patti is a flat woven floor matting used for floor seating and covering in schools, anganwadis, hostels, halls, places of worship and relief camps — economical, durable and ideal for high-volume institutional use.' },
+      { q: 'Do you supply Tat Patti for government tenders?', a: 'Yes. We manufacture Tat Patti to tender specification in bulk with competitive pricing, samples and documentation, and capacity to meet government and NGO deadlines. See our Government Tender Tat Patti Supplier page.' },
+    ],
+    gallery: gallery(
+      ['/images/jute-rugs-manufacturing.webp', '/images/wool-drying-pic.webp', '/images/manufacturing-rug-img.webp'],
+      'Tat Patti',
+      ['Tat patti floor matting school', 'Tat patti weave texture', 'Cotton tat patti roll', 'Jute tat patti matting', 'Classroom floor seating tat patti', 'Tat patti production Bhadohi', 'Bulk tat patti rolls', 'Anganwadi floor matting', 'Institutional tat patti', 'Tat patti cut sizes', 'Natural jute tat patti', 'Tat patti QC inspection'],
+    ),
+  },
 ]
 
 // Append shared base FAQs after the category-specific ones for richer FAQ sections.

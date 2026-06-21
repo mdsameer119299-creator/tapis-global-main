@@ -5,7 +5,7 @@
 import type { MetadataRoute } from 'next'
 import { SEO_BASE_URL } from '@/lib/seo'
 import { getAllProductSlugs } from '@/lib/products'
-import { getAllIndustrySlugs, getAllSolutionSlugs, getAllCountrySlugs } from '@/lib/seo-landing'
+import { getAllIndustrySlugs, getAllSolutionSlugs, getAllCountrySlugs, getAllDhurrieSlugs } from '@/lib/seo-landing'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date().toISOString()
@@ -41,6 +41,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified:     now,
       changeFrequency:  'weekly',
       priority:         0.85,
+    },
+    {
+      url:              `${SEO_BASE_URL}/dhurries`,
+      lastModified:     now,
+      changeFrequency:  'weekly',
+      priority:         0.9,
     },
     {
       url:              `${SEO_BASE_URL}/about`,
@@ -126,5 +132,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority:        0.75,
   }))
 
-  return [...staticPages, ...productPages, ...industryPages, ...solutionPages, ...countryPages]
+  const dhurriePages: MetadataRoute.Sitemap = getAllDhurrieSlugs().map(slug => ({
+    url:             `${SEO_BASE_URL}/dhurries/${slug}`,
+    lastModified:    now,
+    changeFrequency: 'monthly' as const,
+    priority:        0.8,
+  }))
+
+  return [...staticPages, ...productPages, ...industryPages, ...solutionPages, ...countryPages, ...dhurriePages]
 }

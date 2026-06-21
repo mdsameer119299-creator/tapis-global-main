@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { SeoLanding } from '@/lib/seo-landing'
-import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries } from '@/lib/seo-landing'
+import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries, getRelatedDhurries } from '@/lib/seo-landing'
 import { getProductCategory } from '@/lib/products'
 import { SITE } from '@/lib/data'
 import { Reveal, Eyebrow } from '@/components/ui'
@@ -13,12 +13,14 @@ const BASE_PATH: Record<SeoLanding['kind'], string> = {
   industry: '/industries',
   solution: '/solutions',
   country:  '/countries',
+  dhurrie:  '/dhurries',
 }
 
 const BASE_LABEL: Record<SeoLanding['kind'], string> = {
   industry: 'Industries',
   solution: 'Solutions',
   country:  'Export Markets',
+  dhurrie:  'Dhurries & Tat Patti',
 }
 
 export default function LandingPage({ page }: { page: SeoLanding }) {
@@ -31,11 +33,12 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
   // Cross-link across clusters (industry ⇄ solution ⇄ country) — guaranteeing
   // 3+ related landing links and a Product→Industry→Country→Contact chain, no orphans.
   const relatedLandings = [
+    ...getRelatedDhurries(page.relatedDhurries),
     ...getRelatedIndustries(page.relatedIndustries),
     ...getRelatedSolutions(page.relatedSolutions),
     ...getRelatedCountries(page.relatedCountries),
   ].filter((l) => !(l.kind === page.kind && l.slug === page.slug))
-  const relatedLandingsTop = relatedLandings.slice(0, 4)
+  const relatedLandingsTop = relatedLandings.slice(0, 5)
 
   const waHref = `${SITE.whatsapp}?text=${encodeURIComponent(
     `Hello Tapis Global, I'd like to enquire about ${page.label} (manufacturing / supply).`,

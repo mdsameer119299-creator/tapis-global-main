@@ -9,6 +9,7 @@ const FOOTER_EXPLORE = [
   { label: 'Products',        href: '/products' },
   { label: 'Industries',      href: '/industries' },
   { label: 'Solutions',       href: '/solutions' },
+  { label: 'Dhurries & Tat Patti', href: '/dhurries' },
   { label: 'Export Markets',  href: '/countries' },
   { label: 'Custom Solutions', href: '/custom' },
   { label: 'Gallery',         href: '/gallery' },

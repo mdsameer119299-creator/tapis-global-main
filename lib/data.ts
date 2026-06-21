@@ -118,6 +118,8 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
     heading: 'Natural Fibre Products',
     items: [
       { label: 'Coco Coir',     href: '/products/coco-coir',      image: '/images/wool-drying-pic.webp' },
+      { label: 'Tat Patti',     href: '/products/tat-patti',      image: '/images/jute-rugs-manufacturing.webp' },
+      { label: 'Dhurries & Tat Patti', href: '/dhurries',        image: '/images/manufacturing-rug-img.webp' },
     ],
   },
 ]
