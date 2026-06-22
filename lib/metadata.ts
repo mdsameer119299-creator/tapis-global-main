@@ -104,11 +104,13 @@ export function buildMetadata(input: PageMetaInput): Metadata {
       images: [ogImage],
     },
 
-    // ── Verification (add when you have these) ───────────────────────────
+    // ── Verification ─────────────────────────────────────────────────────
+    // Set env vars to verify ownership without code changes, e.g.
+    //   GOOGLE_SITE_VERIFICATION=xxxxx  (the token from GSC "HTML tag" method)
+    //   BING_SITE_VERIFICATION=xxxxx
     verification: {
-      // google:  'YOUR_GOOGLE_SEARCH_CONSOLE_TOKEN',
-      // yandex:  'YOUR_YANDEX_TOKEN',
-      // bing:    'YOUR_BING_WEBMASTER_TOKEN',
+      ...(process.env.GOOGLE_SITE_VERIFICATION && { google: process.env.GOOGLE_SITE_VERIFICATION }),
+      ...(process.env.BING_SITE_VERIFICATION && { other: { 'msvalidate.01': process.env.BING_SITE_VERIFICATION } }),
     },
 
     // ── App / PWA meta ────────────────────────────────────────────────────
