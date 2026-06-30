@@ -90,21 +90,21 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
   {
     heading: 'Carpets',
     items: [
-      { label: 'Hand Tufted',   href: '/products/hand-tufted-carpet',  image: '/images/handtufted-img-2.webp' },
+      { label: 'Hand Tufted',   href: '/products/hand-tufted-carpet',  image: '/images/handtufted/handtufted-floral-carved-room.webp' },
       { label: 'Hand Knotted',  href: '/products/hand-knotted-carpet', image: '/images/tgi-banner-2.webp' },
       { label: 'Wall-to-Wall',  href: '/products/wall-to-wall-carpets', image: '/images/tgi-banner-4.webp' },
       { label: 'Carpet Tiles',  href: '/products/carpet-tiles',        image: '/images/tufting-carpet.webp' },
-      { label: 'Leather',       href: '/products/leather-carpets',     image: '/images/rug3.webp' },
+      { label: 'Leather',       href: '/products/leather-carpets',     image: '/images/leather/leather-square-patchwork-loft.webp' },
     ],
   },
   {
     heading: 'Rugs',
     items: [
       { label: 'Area Rugs',     href: '/products/area-rugs',      image: '/images/rug1.webp' },
-      { label: 'Shaggy',        href: '/products/shaggy-rugs',    image: '/images/rug4.webp' },
-      { label: 'Jute & Sisal',  href: '/products/jute-sisal-rugs', image: '/images/jute-rugs-manufacturing.webp' },
+      { label: 'Shaggy',        href: '/products/shaggy-rugs',    image: '/images/shaggy/shaggy-ivory-flokati-room.webp' },
+      { label: 'Jute & Sisal',  href: '/products/jute-sisal-rugs', image: '/images/jute/jute-living-room-bordered.webp' },
       { label: 'Flat Weaves',   href: '/products/flat-weaves',    image: '/images/rug5.webp' },
-      { label: 'Kilim',         href: '/products/kilim-rugs',     image: '/images/rug5.webp' },
+      { label: 'Kilim',         href: '/products/kilim-rugs',     image: '/images/kilim/kilim-tribal-diamond-room.webp' },
       { label: 'Dhurrie',       href: '/products/dhurrie-rugs',   image: '/images/rug3.webp' },
     ],
   },
@@ -117,7 +117,7 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
   {
     heading: 'Natural Fibre Products',
     items: [
-      { label: 'Coco Coir',     href: '/products/coco-coir',      image: '/images/wool-drying-pic.webp' },
+      { label: 'Coco Coir',     href: '/products/coco-coir',      image: '/images/coir/coir-natural-coconut.webp' },
       { label: 'Tat Patti',     href: '/products/tat-patti',      image: '/images/jute-rugs-manufacturing.webp' },
       { label: 'Dhurries & Tat Patti', href: '/dhurries',        image: '/images/manufacturing-rug-img.webp' },
     ],
@@ -125,7 +125,18 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
 ]
 
 // ─── HERO SLIDES ─────────────────────────────────────────────
-export const HERO_SLIDES = [
+export type HeroSlide = {
+  id: number
+  label: string
+  /** Still image (also used as the <video> poster for video slides) */
+  poster: string
+  /** Slide kind — defaults to 'image' */
+  type?: 'image' | 'video'
+  /** MP4 (H.264/AAC) source — required when type === 'video' */
+  video?: string
+}
+
+export const HERO_SLIDES: HeroSlide[] = [
   {
     id: 0,
     label: 'Luxury Interiors',
@@ -142,8 +153,11 @@ export const HERO_SLIDES = [
     poster: '/images/tgi-banner-3.webp',
   },
   {
+    // 4th slide — cinematic brand video (plays after the three image slides)
     id: 3,
-    label: 'Hospitality Environments',
+    label: 'Craft in Motion',
+    type: 'video',
+    video: '/videos/hero-banner.mp4',
     poster: '/images/tgi-banner-4.webp',
   },
   {

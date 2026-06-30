@@ -62,6 +62,7 @@ export function organizationSchema() {
       BRAND.social.linkedin,
       BRAND.social.instagram,
       BRAND.social.facebook,
+      `https://twitter.com/${BRAND.social.twitter.replace('@', '')}`,
     ],
     numberOfEmployees: {
       '@type': 'QuantitativeValue',

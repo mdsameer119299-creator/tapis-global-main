@@ -33,6 +33,14 @@ export default function Solutions() {
               </span>
             ))}
           </div>
+          <div className="flex flex-wrap gap-x-7 gap-y-3 mt-8">
+            <Link href="/solutions" className="inline-flex items-center gap-3 text-[15px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--c)] group" style={{ color: 'var(--inks)' }}>
+              Explore All Solutions <span className="block h-px w-8 bg-current transition-all duration-300 group-hover:w-12" />
+            </Link>
+            <Link href="/countries" className="inline-flex items-center gap-3 text-[15px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--c)] group" style={{ color: 'var(--inks)' }}>
+              Export Markets <span className="block h-px w-8 bg-current transition-all duration-300 group-hover:w-12" />
+            </Link>
+          </div>
         </Reveal>
       </div>
 

@@ -22,6 +22,10 @@ export type CollectionItem = {
   leadTime:     string
   moq:          string
   ctaText:      string
+  /** Internal link to the matching product / cluster page (SEO internal linking) */
+  exploreHref:  string
+  /** Visible label for the explore link */
+  exploreLabel: string
   layout:       CollectionLayout
   variant:      CollectionVariant
   slideTag:     string
@@ -48,6 +52,8 @@ export function filterCollections(
 export const COLLECTIONS: CollectionItem[] = [
   {
     id:            'tufted',
+    exploreHref:   '/products/hand-tufted-carpet',
+    exploreLabel:  'View Hand Tufted Carpets',
     category:      'tufted',
     collectionNum: 1,
     title:         'Hand Tufted',
@@ -76,6 +82,8 @@ export const COLLECTIONS: CollectionItem[] = [
   },
   {
     id:            'knotted',
+    exploreHref:   '/products/hand-knotted-carpet',
+    exploreLabel:  'View Hand Knotted Carpets',
     category:      'knotted',
     collectionNum: 2,
     title:         'Hand Knotted',
@@ -103,6 +111,8 @@ export const COLLECTIONS: CollectionItem[] = [
   },
   {
     id:            'flatweave',
+    exploreHref:   '/products/jute-sisal-rugs',
+    exploreLabel:  'View Jute & Sisal Rugs',
     category:      'flatweave',
     collectionNum: 3,
     title:         'Jute & Sisal',
@@ -130,6 +140,8 @@ export const COLLECTIONS: CollectionItem[] = [
   },
   {
     id:            'hospitality',
+    exploreHref:   '/industries/hotel-carpets',
+    exploreLabel:  'Hospitality Carpet Solutions',
     category:      'contract',
     collectionNum: 4,
     title:         'Hospitality',
@@ -157,6 +169,8 @@ export const COLLECTIONS: CollectionItem[] = [
   },
   {
     id:            'w2w',
+    exploreHref:   '/products/wall-to-wall-carpets',
+    exploreLabel:  'View Wall-to-Wall Carpets',
     category:      'contract',
     collectionNum: 5,
     title:         'Wall-to-Wall',
@@ -184,6 +198,8 @@ export const COLLECTIONS: CollectionItem[] = [
   },
   {
     id:            'custom',
+    exploreHref:   '/custom',
+    exploreLabel:  'Explore Custom Design',
     category:      'custom',
     collectionNum: 6,
     title:         'Custom &',

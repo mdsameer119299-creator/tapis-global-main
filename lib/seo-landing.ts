@@ -133,4 +133,19 @@ export function getRelatedCompany(slugs: string[] = []): SeoLanding[] {
     .filter((x): x is SeoLanding => Boolean(x))
 }
 
+// ─── REVERSE LOOKUP: landing pages that reference a given product ─────────────
+// Powers product → industry/solution/dhurrie internal links (closing the
+// otherwise one-way landing→product cluster). Industries first (highest
+// commercial intent), then solutions, then dhurries.
+export function getLandingsForProduct(productSlug: string, limit = 6): SeoLanding[] {
+  const pools: SeoLanding[][] = [INDUSTRIES, SOLUTIONS, DHURRIES]
+  const out: SeoLanding[] = []
+  for (const pool of pools) {
+    for (const page of pool) {
+      if (page.relatedProducts?.includes(productSlug)) out.push(page)
+    }
+  }
+  return out.slice(0, limit)
+}
+
 export { INDUSTRIES, SOLUTIONS, COUNTRIES, DHURRIES, COMPANY_PAGES }

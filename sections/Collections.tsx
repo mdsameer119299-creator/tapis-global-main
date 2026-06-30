@@ -7,6 +7,7 @@ import {
   filterCollections,
   type CollectionFilterId,
 } from '@/lib/collections'
+import Link from 'next/link'
 import { Reveal, Eyebrow } from '@/components/ui'
 import CollectionStoryBlock from '@/components/collections/CollectionStoryBlock'
 
@@ -35,9 +36,20 @@ export default function Collections({ sectionId = 'collections' }: CollectionsPr
             <br />
             <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>One Design Studio.</em>
           </h2>
-          <p className="text-[20px] font-light leading-[1.85] max-w-[58ch]" style={{ color: 'var(--inkm)' }}>
+          <p className="text-[20px] font-light leading-[1.85] max-w-[58ch] mb-7" style={{ color: 'var(--inkm)' }}>
             Specification-led carpets and flooring for luxury residences, hospitality environments, corporate interiors and designer projects — developed in Bhadohi for pan India execution and global supply.
           </p>
+          <div className="flex flex-wrap gap-x-7 gap-y-3">
+            <Link href="/products" className="inline-flex items-center gap-3 text-[15px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--c)] group" style={{ color: 'var(--inks)' }}>
+              All Carpet &amp; Rug Products <span className="block h-px w-8 bg-current transition-all duration-300 group-hover:w-12" />
+            </Link>
+            <Link href="/industries" className="inline-flex items-center gap-3 text-[15px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--c)] group" style={{ color: 'var(--inks)' }}>
+              By Industry <span className="block h-px w-8 bg-current transition-all duration-300 group-hover:w-12" />
+            </Link>
+            <Link href="/guides" className="inline-flex items-center gap-3 text-[15px] tracking-[0.14em] uppercase transition-colors duration-200 hover:text-[var(--c)] group" style={{ color: 'var(--inks)' }}>
+              Buying Guides <span className="block h-px w-8 bg-current transition-all duration-300 group-hover:w-12" />
+            </Link>
+          </div>
         </Reveal>
 
         <Reveal delay={150}>

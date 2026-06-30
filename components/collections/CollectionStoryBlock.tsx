@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import type { CollectionItem } from '@/lib/collections'
 import { Reveal } from '@/components/ui'
 import CollectionCarousel from '@/components/collections/CollectionCarousel'
@@ -126,14 +127,24 @@ export default function CollectionStoryBlock({ col, index, isPriority = false }:
             <SpecIcon type="moq" />
             MOQ: {col.moq}
           </span>
-          <a
-            href="/contact"
+          <Link
+            href={col.exploreHref}
             className="text-[15px] tracking-[0.12em] uppercase inline-flex items-center gap-2 transition-all duration-200 hover:gap-3.5 ml-auto max-lg:ml-0"
             style={{ color: isDark ? 'var(--gl)' : 'var(--c)' }}
           >
+            {col.exploreLabel} <span aria-hidden>→</span>
+          </Link>
+        </div>
+
+        <Reveal>
+          <a
+            href="/contact"
+            className="inline-flex items-center gap-2 text-[14px] tracking-[0.14em] uppercase mt-5 transition-all duration-200 hover:gap-3.5"
+            style={{ color: isDark ? 'rgba(255,255,255,0.55)' : 'var(--inkm)' }}
+          >
             {col.ctaText}
           </a>
-        </div>
+        </Reveal>
       </Reveal>
     </div>
   )

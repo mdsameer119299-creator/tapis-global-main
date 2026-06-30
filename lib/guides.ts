@@ -237,7 +237,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: 'kilim-vs-dhurrie', category: 'comparison',
-    title: 'Kilim vs Dhurrie', heroImage: '/images/rug5.webp',
+    title: 'Kilim vs Dhurrie', heroImage: '/images/kilim/kilim-jute-wool-medallion-room.webp',
     seoTitle: 'Kilim vs Dhurrie | Differences Explained — Tapis Global International',
     seoDescription: 'Kilim vs dhurrie — both are flatweaves, but they differ in origin, material, weave and look. A clear comparison from a Bhadohi flatweave manufacturer to help you choose.',
     seoKeywords: ['kilim vs dhurrie', 'difference between kilim and dhurrie', 'dhurrie or kilim', 'flatweave comparison'],
@@ -265,7 +265,7 @@ export const GUIDES: Guide[] = [
   },
   {
     slug: 'jute-vs-sisal-rugs', category: 'comparison',
-    title: 'Jute vs Sisal Rugs', heroImage: '/images/jute-rugs-manufacturing.webp',
+    title: 'Jute vs Sisal Rugs', heroImage: '/images/jute/jute-navy-border-living-room.webp',
     seoTitle: 'Jute vs Sisal Rugs | Differences & Which to Choose — Tapis Global',
     seoDescription: 'Jute vs sisal rugs — differences in texture, durability, softness and best uses. A natural-fibre rug manufacturer explains which to choose for your space.',
     seoKeywords: ['jute vs sisal rugs', 'difference jute sisal', 'jute or sisal rug', 'natural fibre rug comparison'],
@@ -710,4 +710,15 @@ const GUIDE_SLUG_OVERRIDES: Record<string, string[]> = {
 export function guidesForLanding(kind: string, slug: string): Guide[] {
   const slugs = GUIDE_SLUG_OVERRIDES[slug] ?? GUIDE_DEFAULTS_BY_KIND[kind] ?? GUIDE_DEFAULTS_BY_KIND.industry
   return getRelatedGuides(slugs)
+}
+
+// Picks up to 3 guides for a product page. Uses the product's own relatedGuides
+// when provided, then tops up with any guide that lists this product — so every
+// product page links into the guides cluster (product → guide internal links).
+export function guidesForProduct(productSlug: string, preferred: string[] = []): Guide[] {
+  const chosen = getRelatedGuides(preferred)
+  if (chosen.length >= 3) return chosen.slice(0, 3)
+  const seen = new Set(chosen.map((g) => g.slug))
+  const extra = GUIDES.filter((g) => g.relatedProducts.includes(productSlug) && !seen.has(g.slug))
+  return [...chosen, ...extra].slice(0, 3)
 }

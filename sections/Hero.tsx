@@ -9,6 +9,9 @@ const DURATION = 7000
 export default function Hero() {
   const [current, setCurrent] = useState(0)
   const progressRef = useRef<HTMLDivElement>(null)
+  const videoRef = useRef<HTMLVideoElement>(null)
+
+  const isVideoSlide = HERO_SLIDES[current]?.type === 'video'
 
   const goTo = useCallback((n: number) => {
     setCurrent(((n % HERO_SLIDES.length) + HERO_SLIDES.length) % HERO_SLIDES.length)
@@ -17,6 +20,22 @@ export default function Hero() {
 
   // Auto-advance + progress bar (DOM updates — no per-frame React re-renders)
   useEffect(() => {
+    // ── Video slide: play from the start and advance when it ends ──
+    // (progress + advance are driven by the <video> via onTimeUpdate / onEnded)
+    if (isVideoSlide) {
+      const v = videoRef.current
+      if (v) {
+        v.muted = true            // required for autoplay on iOS / Android / Chrome
+        v.currentTime = 0
+        const p = v.play()
+        if (p && typeof p.catch === 'function') p.catch(() => { /* autoplay blocked — fallback timer advances */ })
+      }
+      // Safety net: if the video errors or never fires 'ended', advance anyway.
+      const fallback = setTimeout(() => goTo(current + 1), 30000)
+      return () => clearTimeout(fallback)
+    }
+
+    // ── Image slide: timed progress bar + auto-advance ──
     let start: number
     let raf: number
     let timeout: ReturnType<typeof setTimeout>
@@ -36,7 +55,7 @@ export default function Hero() {
       cancelAnimationFrame(raf)
       clearTimeout(timeout)
     }
-  }, [current, goTo])
+  }, [current, goTo, isVideoSlide])
 
   return (
     <section id="hero" className="relative h-[100svh] min-h-[560px] max-h-[900px] overflow-hidden" style={{ background: '#0d0a08' }}>
@@ -56,22 +75,48 @@ export default function Hero() {
           }}
         >
           <div className="relative w-full h-full fill-frame">
-            <Image
-              src={slide.poster}
-              alt={slide.label}
-              fill
-              priority={i === 0}
-              placeholder={i === 0 ? 'blur' : 'empty'}
-              blurDataURL={i === 0 ? BLUR_PLACEHOLDER : undefined}
-              quality={i === 0 ? 80 : 72}
-              sizes="100vw"
-              className="object-cover object-center"
-              style={{
-                filter: 'brightness(0.68) saturate(0.95) sepia(0.06)',
-                animation: i === current ? 'kbzoom 10s ease forwards' : 'none',
-                transition: 'opacity 0ms',
-              }}
-            />
+            {slide.type === 'video' && slide.video ? (
+              <video
+                ref={videoRef}
+                poster={slide.poster}
+                muted
+                autoPlay={i === current}
+                playsInline
+                preload="auto"
+                controls={false}
+                aria-label={slide.label}
+                {...{ 'webkit-playsinline': 'true' }}
+                onEnded={() => { if (i === current) goTo(current + 1) }}
+                onTimeUpdate={(e) => {
+                  if (i !== current) return
+                  const v = e.currentTarget
+                  if (progressRef.current && v.duration) {
+                    progressRef.current.style.width = `${(v.currentTime / v.duration) * 100}%`
+                  }
+                }}
+                className="absolute inset-0 w-full h-full object-cover object-center"
+                style={{ filter: 'brightness(0.68) saturate(0.95) sepia(0.06)' }}
+              >
+                <source src={slide.video} type="video/mp4" />
+              </video>
+            ) : (
+              <Image
+                src={slide.poster}
+                alt={slide.label}
+                fill
+                priority={i === 0}
+                placeholder={i === 0 ? 'blur' : 'empty'}
+                blurDataURL={i === 0 ? BLUR_PLACEHOLDER : undefined}
+                quality={i === 0 ? 80 : 72}
+                sizes="100vw"
+                className="object-cover object-center"
+                style={{
+                  filter: 'brightness(0.68) saturate(0.95) sepia(0.06)',
+                  animation: i === current ? 'kbzoom 10s ease forwards' : 'none',
+                  transition: 'opacity 0ms',
+                }}
+              />
+            )}
           </div>
         </div>
         )

@@ -24,6 +24,7 @@ import CategoryGallery from '@/components/products/CategoryGallery'
 import CategoryFAQ from '@/components/products/CategoryFAQ'
 import CategoryCTA from '@/components/products/CategoryCTA'
 import RelatedProducts from '@/components/products/RelatedProducts'
+import CategoryRelatedContent from '@/components/products/CategoryRelatedContent'
 import CategoryWhyUs from '@/components/products/CategoryWhyUs'
 
 type Props = {
@@ -91,6 +92,7 @@ export default function ProductCategoryPage({ params }: Props) {
           <CategoryGallery images={category.gallery} title={category.name} />
           <CategoryFAQ category={category} />
           <CategoryCTA category={category} />
+          <CategoryRelatedContent category={category} />
           <RelatedProducts slug={category.slug} />
           <CategoryWhyUs />
         </div>

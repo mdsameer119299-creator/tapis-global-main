@@ -41,6 +41,12 @@ const nextConfig = {
         ],
       },
       {
+        source: '/videos/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
+        ],
+      },
+      {
         source: '/:path*.webp',
         headers: [
           { key: 'Cache-Control', value: 'public, max-age=31536000, immutable' },
