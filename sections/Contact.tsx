@@ -119,7 +119,8 @@ export default function Contact() {
               ))}
             </ContactInfoRow>
             <ContactInfoRow label="Phone" icon={<PhoneIcon />}>
-              <a href={`tel:${SITE.phoneTel}`} className="hover:text-[var(--gp)] transition-colors">{SITE.phone}</a>
+              <a href={`tel:${SITE.phoneTel}`} className="block hover:text-[var(--gp)] transition-colors">{SITE.phone}</a>
+              <a href={`tel:${SITE.landlineTel}`} className="block hover:text-[var(--gp)] transition-colors">{SITE.landline}</a>
             </ContactInfoRow>
             <ContactInfoRow label="Email Us" icon={<MailIcon />}>
               {SITE.emails.map((item) => (

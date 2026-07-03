@@ -166,18 +166,26 @@ export default function Footer() {
                 ))}
               </FooterContactBlock>
 
-              <a
-                href={`tel:${SITE.phoneTel}`}
-                className="footer-contact-item group"
-              >
+              <div className="footer-contact-item">
                 <span className="footer-contact-icon"><PhoneIconSm /></span>
                 <span>
                   <span className="footer-contact-label">Phone</span>
-                  <span className="footer-contact-value group-hover:text-[var(--gl)] transition-colors duration-300">
-                    {SITE.phone}
+                  <span className="footer-contact-value">
+                    <a
+                      href={`tel:${SITE.phoneTel}`}
+                      className="block hover:text-[var(--gl)] transition-colors duration-300"
+                    >
+                      {SITE.phone}
+                    </a>
+                    <a
+                      href={`tel:${SITE.landlineTel}`}
+                      className="block hover:text-[var(--gl)] transition-colors duration-300"
+                    >
+                      {SITE.landline}
+                    </a>
                   </span>
                 </span>
-              </a>
+              </div>
 
               <FooterContactBlock icon={<MailIconSm />} label="Email Us">
                 {SITE.emails.map((item) => (

@@ -53,9 +53,10 @@ export function organizationSchema() {
       },
       {
         '@type':     'ContactPoint',
-        telephone:   BRAND.phone,
+        telephone:   BRAND.landline,
         contactType: 'customer service',
         areaServed:  'Worldwide',
+        availableLanguage: ['English', 'Hindi'],
       },
     ],
     sameAs: [
@@ -103,7 +104,7 @@ export function localBusinessSchema() {
     name: BRAND.legalName,
     image: [OG_IMAGE.url, `${SEO_BASE_URL}/images/manufacturing-rug-img.webp`],
     url:  SEO_BASE_URL,
-    telephone: BRAND.phone,
+    telephone: [BRAND.phone, BRAND.landline],
     email:     BRAND.email,
     parentOrganization: { '@id': `${SEO_BASE_URL}/#organization` },
     address: {

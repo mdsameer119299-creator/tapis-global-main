@@ -27,6 +27,7 @@ export const BRAND = {
 
   // Contact
   phone:    '+91-84482-91631',
+  landline: '+91-11-4558-7243',
   email:    'sales@tapisglobalinternational.com',
   emailEnquiry: 'enquiry@tapisglobalinternational.com',
   whatsapp: 'https://wa.me/918448291631',

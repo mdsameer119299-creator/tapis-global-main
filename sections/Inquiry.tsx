@@ -172,7 +172,8 @@ export default function Inquiry() {
 
             <div className="flex flex-col gap-5 mb-8">
               <InquiryContactBlock label="Phone / WhatsApp" icon="phone">
-                <a href={`tel:${SITE.phoneTel}`} className="hover:text-[var(--gp)] transition-colors">{SITE.phone}</a>
+                <a href={`tel:${SITE.phoneTel}`} className="block hover:text-[var(--gp)] transition-colors">{SITE.phone}</a>
+                <a href={`tel:${SITE.landlineTel}`} className="block hover:text-[var(--gp)] transition-colors">{SITE.landline} <span className="opacity-60">(Landline)</span></a>
               </InquiryContactBlock>
               <InquiryContactBlock label="Email" icon="mail">
                 <a href={`mailto:${SITE.emails[0]?.address}`} className="hover:text-[var(--gp)] transition-colors">

@@ -15,6 +15,8 @@ export const SITE = {
   description: 'Premium handmade carpet and flooring solutions from Bhadohi, India — serving architects, interior designers, hospitality projects, commercial interiors, tenders and international buyers across India and 45+ countries.',
   phone:       '+91 84482 91631',
   phoneTel:    '+918448291631',
+  landline:    '+91 11 4558 7243',
+  landlineTel: '+911145587243',
   email:       'sales@tapisglobalinternational.com',
   emails: [
     { label: 'Sales',   address: 'sales@tapisglobalinternational.com' },
@@ -153,22 +155,12 @@ export const HERO_SLIDES: HeroSlide[] = [
     poster: '/images/tgi-banner-3.webp',
   },
   {
-    // 4th slide — cinematic brand video (plays after the three image slides)
+    // 4th & final slide — cinematic brand video (plays after the three image slides)
     id: 3,
     label: 'Craft in Motion',
     type: 'video',
     video: '/videos/hero-banner.mp4',
     poster: '/images/tgi-banner-4.webp',
-  },
-  {
-    id: 4,
-    label: 'Bhadohi Craft Heritage',
-    poster: '/images/tgi-banner-5.webp',
-  },
-  {
-    id: 5,
-    label: 'Project Installations',
-    poster: '/images/tgi-banner-6.webp',
   },
 ]
 
