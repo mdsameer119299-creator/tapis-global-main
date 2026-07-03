@@ -58,9 +58,11 @@ export default function Hero() {
   }, [current, goTo, isVideoSlide])
 
   return (
-    <section id="hero" className="relative h-[100svh] min-h-[560px] max-h-[900px] overflow-hidden" style={{ background: '#0d0a08' }}>
+    <section id="hero" className="relative overflow-hidden md:h-[100svh] md:min-h-[560px] md:max-h-[900px]" style={{ background: '#0d0a08' }}>
 
       {/* ── Slides — load active + next only to cut initial image requests ── */}
+      {/* Mobile: carousel sits in a bounded 4:3 frame so the full scene/carpet is visible. Desktop: fills the section. */}
+      <div className="max-md:relative max-md:w-full max-md:aspect-[4/3] md:contents">
       {HERO_SLIDES.map((slide, i) => {
         const next = (current + 1) % HERO_SLIDES.length
         const shouldLoad = i === current || i === next
@@ -78,11 +80,15 @@ export default function Hero() {
             {slide.type === 'video' && slide.video ? (
               <video
                 ref={videoRef}
-                poster={slide.poster}
+                // Serve an optimized poster (the raw .webp is ~194 KB); the <video>
+                // poster attribute can't use next/image, so hit the optimizer endpoint.
+                poster={`/_next/image?url=${encodeURIComponent(slide.poster)}&w=1200&q=68`}
                 muted
                 autoPlay={i === current}
                 playsInline
-                preload="auto"
+                // Don't buffer the MP4 until this slide is actually played — avoids
+                // heavy network + decode work while it's only the pre-loaded "next" slide.
+                preload="none"
                 controls={false}
                 aria-label={slide.label}
                 {...{ 'webkit-playsinline': 'true' }}
@@ -121,10 +127,11 @@ export default function Hero() {
         </div>
         )
       })}
+      </div>
 
-      {/* ── Cinematic multi-layer overlay ── */}
+      {/* ── Cinematic multi-layer overlay (desktop full-bleed only) ── */}
       <div
-        className="absolute inset-0 z-[2] pointer-events-none"
+        className="absolute inset-0 z-[2] pointer-events-none max-md:hidden"
         style={{
           background: `
             radial-gradient(ellipse 120% 100% at 50% 50%, transparent 30%, rgba(4,2,1,0.55) 100%),
@@ -167,8 +174,8 @@ export default function Hero() {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><polyline points="9 18 15 12 9 6"/></svg>
       </button>
 
-      {/* ── Dots ── */}
-      <div className="absolute bottom-8 sm:bottom-11 right-5 sm:right-24 max-lg:right-5 z-[6] flex gap-2 items-center">
+      {/* ── Dots ── (mobile: pinned to the bottom of the image frame) */}
+      <div className="absolute z-[6] flex gap-2 items-center right-5 sm:right-24 max-lg:right-5 bottom-8 sm:bottom-11 max-md:bottom-auto max-md:top-[calc(75vw-1.9rem)]">
         {HERO_SLIDES.map((_, i) => (
           <button
             key={i}
@@ -213,9 +220,9 @@ export default function Hero() {
         Specification-Led · Pan India · Worldwide
       </div>
 
-      {/* ── Main hero content ── */}
+      {/* ── Main hero content ── (mobile: flows below the image frame; desktop: overlays full-bleed) */}
       <div
-        className="absolute inset-0 z-[5] flex flex-col justify-end pb-8 sm:pb-12 lg:pb-20 px-5 sm:px-6 lg:px-24 pointer-events-none"
+        className="z-[5] flex flex-col pointer-events-none max-md:relative max-md:px-5 max-md:pt-9 max-md:pb-10 md:absolute md:inset-0 md:justify-end md:pb-12 lg:pb-20 md:px-6 lg:px-24"
       >
         <div
           className="inline-flex items-center gap-2.5 px-3 sm:px-4 py-2 mb-5 sm:mb-7 w-fit max-w-full text-[13px] sm:text-[15px] tracking-[0.26em] sm:tracking-[0.3em] uppercase pointer-events-auto"

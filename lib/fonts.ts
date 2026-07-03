@@ -22,7 +22,9 @@ export const ebGaramond = EB_Garamond({
   weight:   ['400', '500'],
   style:    ['normal', 'italic'],
   display:  'swap',
-  preload:  true,
+  // Used only below the fold (footer / body copy) — don't eagerly preload it,
+  // so its font files don't compete with the LCP hero image on first paint.
+  preload:  false,
   variable: '--font-eb',
 })
 

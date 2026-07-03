@@ -106,6 +106,7 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
       { label: 'Area Rugs',     href: '/products/area-rugs',      image: '/images/rug1.webp' },
       { label: 'Shaggy',        href: '/products/shaggy-rugs',    image: '/images/shaggy/shaggy-ivory-flokati-room.webp' },
       { label: 'Flat Weaves',   href: '/products/flat-weaves',    image: '/images/rug5.webp' },
+      { label: 'Kilim',         href: '/products/kilim-rugs',     image: '/images/kilim/kilim-tribal-diamond-room.webp' },
     ],
   },
   {
