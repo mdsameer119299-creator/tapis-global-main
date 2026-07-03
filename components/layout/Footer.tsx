@@ -22,10 +22,11 @@ const FOOTER_EXPLORE = [
 const FOOTER_PRODUCTS = [
   { label: 'Hand Knotted Carpets', href: '/products/hand-knotted-carpet' },
   { label: 'Hand Tufted Carpets',  href: '/products/hand-tufted-carpet' },
-  { label: 'Custom Rugs',          href: '/custom' },
-  { label: 'Hospitality Flooring', href: '/products/wall-to-wall-carpets' },
   { label: 'Wall-to-Wall Carpets', href: '/products/wall-to-wall-carpets' },
   { label: 'Natural Fibre Rugs',   href: '/products/jute-sisal-rugs' },
+  { label: 'Kilim Rugs',           href: '/products/kilim-rugs' },
+  { label: 'Dhurrie Rugs',         href: '/products/dhurrie-rugs' },
+  { label: 'Tat Patti',            href: '/products/tat-patti' },
 ]
 
 const SOCIAL_LINKS = [

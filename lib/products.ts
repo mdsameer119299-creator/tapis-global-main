@@ -511,6 +511,72 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     ],
   },
 
+  // ─────────────────────────────────────────────────────────────── PEBBLE CARPET
+  {
+    slug:      'pebble-carpet',
+    name:      'Pebble Carpet',
+    cardImage: '/images/rug4.webp',
+    heroImage: '/images/rug4.webp',
+    tagline:   'Pebble carpets — hundreds of hand-felted wool pebbles stitched into a sculptural, stone-textured floor. Made in Bhadohi, India.',
+    seoTitle:  'Pebble Carpet Manufacturer in India | Felted Wool Pebble Rugs — Tapis Global',
+    seoDescription: 'Pebble carpet manufacturer and supplier in India. Hand-felted 100% wool pebble rugs from Bhadohi — sculptural, stone-textured floor coverings for spas, bedrooms, boutique hotels and organic interiors. Custom colours & sizes. Request a catalogue or quote.',
+    seoKeywords: ['pebble carpet manufacturer India', 'pebble carpet', 'felted wool pebble rug', 'pebble rug supplier India', 'stone rug manufacturer India', 'Bhadohi pebble carpet', 'felted stone rug', 'wool pebble mat'],
+    h1:        'Pebble Carpet Manufacturer in India',
+    intro:     'Tapis Global International is a pebble carpet manufacturer and supplier in India, hand-felting hundreds of individual wool "pebbles" and stitching them into a sculptural, three-dimensional floor covering that brings the calm texture of a riverbed indoors — crafted in 100% wool at our Bhadohi facility for spas, bedrooms, boutique hospitality and organic, biophilic interiors.',
+    body:      'Each pebble is hand-rolled and wet-felted from carded wool, graded for size and tone, then hand-stitched onto a strong cotton backing to form a dense, tactile "stone" surface. The result is a soft yet robust rug with genuine 3D relief — a natural, meditative texture underfoot that no printed or machine-made floor covering can replicate.',
+    overview:  'As a manufacturer-direct supplier we control every stage — wool sourcing, dyeing, felting, grading and stitching — giving designers, spa and wellness operators, hoteliers and conscious homeowners a single accountable partner for bespoke pebble carpets. Colourways range from natural undyed stone tones and soft greys to custom multi-colour blends, in any size or shape, with the consistency and documentation projects require.',
+    bullets: [
+      { label: 'Craftsmanship', text: 'Hundreds of individually hand-felted wool pebbles, graded and hand-stitched onto a reinforced cotton backing for a true 3D stone texture.' },
+      { label: 'Materials', text: '100% felted wool pile on a durable cotton backing — natural, renewable and finished with AZO-free dyes.' },
+      { label: 'Customization', text: 'Natural, tonal or custom multi-colour blends; any size, shape and pebble scale, with anti-slip backing on request.' },
+      { label: 'Ideal Usage', text: 'Spas and wellness suites, bedrooms, bathrooms, reading nooks, boutique hotels and organic, biophilic interiors.' },
+    ],
+    applications: [
+      { title: 'Spa & Wellness Interiors', desc: 'Soft, reflexology-like stone texture underfoot for spas, wellness suites and meditation rooms.' },
+      { title: 'Bedrooms & Reading Nooks', desc: 'Warm, tactile wool pebbles that invite bare feet in calm, restful residential spaces.' },
+      { title: 'Boutique Hospitality', desc: 'Signature sculptural floor pieces that give suites, lobbies and spas a distinctive, natural character.' },
+      { title: 'Organic & Biophilic Design', desc: 'A nature-inspired surface for design schemes built around natural materials, texture and calm.' },
+    ],
+    process: [
+      { step: '01', title: 'Wool Prep & Dyeing', desc: 'Carded wool is graded and dyed to natural stone tones or your custom palette with AZO-free dyes.' },
+      { step: '02', title: 'Hand-Felting Pebbles', desc: 'Each pebble is hand-rolled and wet-felted into a dense, durable ball, then sorted by size and shade.' },
+      { step: '03', title: 'Layout & Stitching', desc: 'Pebbles are arranged to the approved design and hand-stitched onto a reinforced cotton backing.' },
+      { step: '04', title: 'Finishing & QC', desc: 'The backing is trimmed and finished (anti-slip optional), then inspected for density, colour and dimensions.' },
+    ],
+    customization: [
+      'Natural undyed, tonal grey or custom multi-colour pebble blends',
+      'Any custom size and shape (runner, round, oversized)',
+      'Fine, medium or mixed pebble scale for subtler or bolder texture',
+      'Pantone-guided colour matching with AZO-free dyes',
+      'Anti-slip backing for bathrooms and high-use areas',
+      'Coordinated bath mats, runners and matching accessories',
+    ],
+    techSpecs: [
+      { label: 'Construction',   value: 'Hand-felted wool pebbles, hand-stitched' },
+      { label: 'Primary Materials', value: '100% Felted Wool on Cotton Backing' },
+      { label: 'Relief Height',  value: '15 mm – 30 mm (pebble dependent)' },
+      { label: 'Backing',        value: 'Reinforced cotton (anti-slip optional)' },
+      { label: 'Treatment',      value: 'Natural wool, AZO-free dyes' },
+      { label: 'Certifications', value: 'ISO 9001:2015, OEKO-TEX, AZO-free dyes' },
+    ],
+    idealFor:  ['Spas & Wellness', 'Bedrooms & Bathrooms', 'Boutique Hotels', 'Organic Interiors'],
+    materials: ['Felted New Zealand Wool', 'Felted Indian Wool', 'Cotton Backing', 'Wool Blends'],
+    moq:       '50 Pieces',
+    leadTime:  '45–70 Days',
+    related:   ['shaggy-rugs', 'jute-sisal-rugs', 'hand-tufted-carpet'],
+    faqs: [
+      { q: 'What is a pebble carpet?', a: 'A pebble carpet (also called a pebble rug or stone rug) is a handmade floor covering built from hundreds of individually hand-felted wool "pebbles" stitched onto a cotton backing, creating a soft, three-dimensional stone-like texture underfoot.' },
+      { q: 'What are pebble carpets made of?', a: 'Ours are made from 100% felted wool pebbles on a strong cotton backing, coloured with AZO-free dyes — a natural, renewable and biodegradable construction with no plastic pile.' },
+      { q: 'Are pebble carpets comfortable and safe to walk on?', a: 'Yes. The felted wool pebbles are soft yet supportive, giving a gentle reflexology-like feel underfoot. For bathrooms and wellness areas we add an anti-slip backing for safety.' },
+      { q: 'Can I order a pebble carpet in custom colours and sizes?', a: 'Yes. As a direct manufacturer we produce pebble carpets in any size or shape and in natural, tonal or custom multi-colour blends, with lab-matched colour approved before production.' },
+    ],
+    gallery: gallery(
+      ['/images/rug4.webp', '/images/wool-drying-pic.webp', '/images/vibrant-wool-dying.webp'],
+      'Pebble Carpet',
+      ['Hand-felted wool pebble carpet detail', 'Natural stone-tone pebble rug', 'Grey felted pebble carpet in a spa', 'Multi-colour pebble rug texture', 'Pebble carpet in a serene bedroom', 'Felted wool pebbles close-up', 'Wet-felting wool pebbles in production', 'Pebble bath mat detail', 'Organic biophilic pebble floor', 'Round pebble rug', 'Pebble carpet edge and cotton backing', 'Pebble carpet grading and QC'],
+    ),
+  },
+
   // ─────────────────────────────────────────────────────────────── WALL TO WALL
   {
     slug:      'wall-to-wall-carpets',
@@ -1129,6 +1195,37 @@ type ProductDepth = {
 }
 
 const PRODUCT_DEPTH: Record<string, ProductDepth> = {
+  'pebble-carpet': {
+    deepDive: [
+      'A pebble carpet is one of the few floor coverings people instinctively reach down to touch. Built from hundreds of individually hand-felted wool pebbles, it translates the calm of a riverbed or a raked stone garden into a soft, sculptural surface underfoot. The appeal is entirely tactile and visual at once — a genuine three-dimensional relief of rounded "stones" in graded tones that catches light and shadow the way flat, printed or machine-tufted floors never can. For designers working in organic, biophilic and wellness-led interiors, it is a signature piece rather than a background one.',
+      'The craft is deceptively simple and genuinely slow. Each pebble is hand-rolled from carded wool and wet-felted — agitated with warm water until the fibres lock into a dense, resilient ball — then dried, graded by size and sorted by shade. Only then are the pebbles laid out to the approved design and hand-stitched, one by one, onto a strong cotton backing. A single rug can hold many hundreds of pebbles, so the piece is effectively assembled by hand from its smallest component up; this is why an authentic pebble carpet feels substantial and why no two are ever identical.',
+      'Because it is pure wool on a natural cotton backing, a pebble carpet is as practical as it is beautiful when specified for the right room. Wool is naturally resilient, moisture-regulating, flame-resistant and dirt-shedding, and the felted pebbles spring back from compression rather than crushing flat like long pile. That makes it well suited to bedrooms, spas, bathrooms and low-to-moderate-traffic feature areas — spaces where people walk barefoot and value texture — while its handmade, all-natural construction answers the sustainability brief that increasingly drives premium specification.',
+    ],
+    materialDetails: [
+      { name: 'Felted New Zealand Wool', desc: 'Premium long-staple wool that felts into dense, resilient pebbles with excellent shape retention and a soft, clean handle.' },
+      { name: 'Felted Indian Wool', desc: 'Hard-wearing, cost-effective wool ideal for larger pieces and contract programmes where value and durability lead.' },
+      { name: 'Natural Cotton Backing', desc: 'Strong, breathable natural backing that anchors every stitched pebble and keeps the carpet dimensionally stable.' },
+      { name: 'Natural & AZO-Free Dyes', desc: 'Undyed stone tones or safe AZO-free colours enabling tonal greys and custom multi-colour pebble blends.' },
+    ],
+    useCases: [
+      { title: 'Spa relaxation floor', desc: 'A tonal grey pebble carpet for a wellness suite where guests walk barefoot between treatments.' },
+      { title: 'Serene bedroom', desc: 'A natural stone-tone pebble rug beside the bed for a tactile, grounding first step each morning.' },
+      { title: 'Boutique hotel bathroom', desc: 'A wool pebble bath mat with anti-slip backing as a memorable, natural-material detail.' },
+      { title: 'Biophilic living scheme', desc: 'A custom multi-colour pebble piece anchoring a nature-inspired, texture-rich interior.' },
+    ],
+    exportInfo: [
+      'We export pebble carpets to designers, wellness brands, hospitality groups and natural-interior retailers across Europe, the UK, North America and the GCC, where demand for tactile, sustainable, handmade floor coverings is strongest. Each piece is made in pure wool with AZO-free dyes and documented for material composition and origin.',
+      'Pebble carpets are rolled or flat-packed and protected for safe sea freight, with private-label and repeat programmes available. We work to your preferred Incoterms and accept TT, LC, DA and DP in USD, EUR, GBP and INR.',
+    ],
+    relatedGuides: ['how-rugs-are-manufactured', 'handmade-vs-machine-made-carpets', 'why-buy-carpets-from-india'],
+    extraFaqs: [
+      { q: 'How durable is a pebble carpet?', a: 'Very, for the right setting. Felted wool is naturally resilient and our pebbles are stitched to a reinforced cotton backing. With suction-only vacuuming and prompt spot-cleaning, a pebble carpet lasts for years in bedrooms, spas and feature areas — though it is not intended for heavy commercial circulation.' },
+      { q: 'Can pebble carpets be used in bathrooms or wet areas?', a: 'As bath mats and near-shower pieces, yes — with an anti-slip backing and good ventilation, since wool naturally regulates moisture. We do not recommend permanently wet, submerged or outdoor locations.' },
+      { q: 'How do I clean a felted wool pebble rug?', a: 'Vacuum on suction-only (no beater bar) around and between the pebbles, shake out smaller pieces, and blot spills promptly. For deep cleaning use a specialist wool-safe method rather than soaking.' },
+      { q: 'What pebble sizes and colours can you produce?', a: 'We produce fine, medium and mixed pebble scales in natural undyed tones, tonal greys or custom multi-colour blends, colour-matched to your reference before production begins.' },
+    ],
+  },
+
   'hand-tufted-carpet': {
     deepDive: [
       'Hand tufting occupies a sweet spot in carpet manufacturing: it delivers the warmth, density and design freedom of handmade production at a price point and lead time that suit large residential and hospitality programmes. Because the yarn is hand-guided rather than mechanically driven, our artisans can shift colour, change pile height and introduce carved relief within a single piece — something mass-produced broadloom cannot replicate. This flexibility is why interior designers reach for hand tufted carpets when a space needs a bespoke statement without a hand-knotted budget.',
@@ -1567,6 +1664,7 @@ const PRODUCT_DEPTH: Record<string, ProductDepth> = {
 // One additional unique "specifying / buying considerations" paragraph per product
 // — closes the 1800-word target on unique content alone. No paragraph is shared.
 const PRODUCT_DEPTH_EXTRA: Record<string, string> = {
+  'pebble-carpet': 'When specifying a pebble carpet, match the piece honestly to how the room is actually used. Its strength is texture and comfort in barefoot, low-to-moderate-traffic spaces — bedrooms, spas, bathrooms, reading nooks and feature zones — rather than busy corridors or under heavy furniture, where the sculptural relief is wasted and harder to clean. Decide the pebble scale deliberately: a finer, more uniform pebble reads as calm and refined, while a bolder, mixed-size layout feels more organic and rustic, and the two suit very different interiors. Agree the colour story up front — natural undyed stone tones, a tonal grey wash, or a custom multi-colour blend — and approve a physical sample, because the interplay of shade and shadow across a felted surface looks markedly different at full size than in a photograph. For bathrooms and wellness use, specify the anti-slip backing and confirm ventilation, since wool manages moisture well but should not sit permanently wet. Finally, because we felt, dye and stitch every pebble in-house, ask about coordinating a matching bath mat, runner or accessory in the same colourway — single-source production keeps the pebbles, tone and texture consistent across a scheme in a way that buying separately cannot.',
   'hand-tufted-carpet': 'When specifying hand tufted carpet, the most common mistake is treating GSM as the only quality marker. Yarn quality, latex integrity and finishing matter just as much: a high-GSM carpet built on thin latex will still shed and flatten, while a moderate-GSM carpet with a full latex lock and quality wool will outlast it. We encourage buyers to request a physical sample at the proposed specification, walk on it, and check the back for a clean, bonded secondary backing. For multi-room and multi-phase projects, agree the dye-lot strategy up front — confirm whether all phases will be produced from a single lot or matched across lots — because this single decision prevents the visible colour mismatch that undermines otherwise excellent installations. Budget realistically for sampling and approval time, typically two to three weeks, and build it into the project programme rather than the production window.',
   'hand-knotted-carpet': 'Buyers new to hand knotted carpet often anchor entirely on knot density, but the more useful question is fitness for purpose. A 300 KPSI silk rug is breathtaking and best suited to a low-traffic formal room or a wall; a family living room is better served by a robust 80–120 KPSI wool piece that hides everyday wear and cleans easily. Always verify authenticity by examining the reverse — the design should read clearly on the back with the natural slight irregularity of hand work, and there should be no secondary backing. Ask for the material composition in writing, since "silk" can mean pure mulberry silk, art silk (viscose) or a blend, and the difference is significant in both value and care. Finally, treat a fine knotted rug as an investment: keep documentation of its construction and origin, which supports both insurance and future resale value.',
   'shaggy-rugs': 'The decision that most affects satisfaction with a shaggy rug is honest assessment of the room. A long, luxurious pile is wonderful beside a bed but frustrating under a dining table or in a hallway, where it crushes and traps debris. Match the pile height to the traffic, and where the space sees real use, choose a wool-blend or high-twist heat-set construction with anti-shed treatment rather than the longest, softest option available. Consider cleaning access too: a shaggy rug needs suction-only vacuuming and occasional shake-out, so very large fitted shags in busy rooms can become a chore. For developers and hospitality buyers furnishing many rooms, we recommend a mid-length, durable specification that photographs as plush for marketing while standing up to guest use — the balance that keeps both the brand and the maintenance team happy.',

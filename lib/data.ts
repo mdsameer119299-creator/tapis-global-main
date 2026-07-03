@@ -97,6 +97,7 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
       { label: 'Wall-to-Wall',  href: '/products/wall-to-wall-carpets', image: '/images/tgi-banner-4.webp' },
       { label: 'Carpet Tiles',  href: '/products/carpet-tiles',        image: '/images/tufting-carpet.webp' },
       { label: 'Leather',       href: '/products/leather-carpets',     image: '/images/leather/leather-square-patchwork-loft.webp' },
+      { label: 'Pebble Carpet', href: '/products/pebble-carpet',       image: '/images/rug4.webp' },
     ],
   },
   {
@@ -104,10 +105,7 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
     items: [
       { label: 'Area Rugs',     href: '/products/area-rugs',      image: '/images/rug1.webp' },
       { label: 'Shaggy',        href: '/products/shaggy-rugs',    image: '/images/shaggy/shaggy-ivory-flokati-room.webp' },
-      { label: 'Jute & Sisal',  href: '/products/jute-sisal-rugs', image: '/images/jute/jute-living-room-bordered.webp' },
       { label: 'Flat Weaves',   href: '/products/flat-weaves',    image: '/images/rug5.webp' },
-      { label: 'Kilim',         href: '/products/kilim-rugs',     image: '/images/kilim/kilim-tribal-diamond-room.webp' },
-      { label: 'Dhurrie',       href: '/products/dhurrie-rugs',   image: '/images/rug3.webp' },
     ],
   },
   {
@@ -120,8 +118,7 @@ export const PRODUCT_MEGA_MENU: MegaMenuGroup[] = [
     heading: 'Natural Fibre Products',
     items: [
       { label: 'Coco Coir',     href: '/products/coco-coir',      image: '/images/coir/coir-natural-coconut.webp' },
-      { label: 'Tat Patti',     href: '/products/tat-patti',      image: '/images/jute-rugs-manufacturing.webp' },
-      { label: 'Dhurries & Tat Patti', href: '/dhurries',        image: '/images/manufacturing-rug-img.webp' },
+      { label: 'Jute & Sisal',  href: '/products/jute-sisal-rugs', image: '/images/jute/jute-living-room-bordered.webp' },
     ],
   },
 ]
