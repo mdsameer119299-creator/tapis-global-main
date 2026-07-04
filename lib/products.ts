@@ -120,6 +120,42 @@ function gallery(primary: string[], name: string, captions: string[]): ProductGa
   }))
 }
 
+// ─── REAL PRODUCT PHOTOGRAPHY (imported from source catalogue) ────
+// Optimised WebP files live in public/images/<folder>/. Alt text cycles
+// through a small descriptor pool per category for varied, SEO-friendly text.
+const CATEGORY_PHOTOS: Record<string, string[]> = {
+  handtufted: Array.from({ length: 22 }, (_, i) => `/images/handtufted/handtufted-photo-${String(i + 1).padStart(2, '0')}.webp`),
+  knotted:    Array.from({ length: 17 }, (_, i) => `/images/knotted/knotted-${String(i + 1).padStart(2, '0')}.webp`),
+  shaggy:     Array.from({ length: 18 }, (_, i) => `/images/shaggy/shaggy-photo-${String(i + 1).padStart(2, '0')}.webp`),
+  kilim:      Array.from({ length: 12 }, (_, i) => `/images/kilim/kilim-photo-${String(i + 1).padStart(2, '0')}.webp`),
+  jute:       Array.from({ length: 3 },  (_, i) => `/images/jute/jute-photo-${String(i + 1).padStart(2, '0')}.webp`),
+  leather:    Array.from({ length: 34 }, (_, i) => `/images/leather/leather-photo-${String(i + 1).padStart(2, '0')}.webp`),
+  w2w:        Array.from({ length: 16 }, (_, i) => `/images/wall-to-wall/w2w-${String(i + 1).padStart(2, '0')}.webp`),
+  pebble:     Array.from({ length: 16 }, (_, i) => `/images/pebble/pebble-${String(i + 1).padStart(2, '0')}.webp`),
+  flatweave:  Array.from({ length: 32 }, (_, i) => `/images/flatweave/flatweave-${String(i + 1).padStart(2, '0')}.webp`),
+  coir:       Array.from({ length: 46 }, (_, i) => `/images/coir/coir-photo-${String(i + 1).padStart(2, '0')}.webp`),
+}
+
+function extraPhotos(key: keyof typeof CATEGORY_PHOTOS, pool: readonly string[]): ProductGalleryImage[] {
+  return (CATEGORY_PHOTOS[key] ?? []).map((src, i) => ({
+    src,
+    alt: `${pool[i % pool.length]} — Tapis Global International`,
+  }))
+}
+
+const ALT_POOLS = {
+  handtufted: ['Hand tufted designer rug styled in a modern interior', 'Custom carved hand tufted wool rug', 'Contemporary hand tufted area rug', 'Hand tufted rug with bespoke pattern', 'Luxury hand tufted rug in a living room', 'Hand tufted cut-pile rug'],
+  knotted:    ['Hand knotted Persian-style rug in a luxury living room', 'Fine hand knotted wool rug', 'Classical hand knotted medallion carpet', 'Hand knotted oriental rug in an elegant interior', 'Premium hand knotted carpet', 'Traditional hand knotted rug'],
+  shaggy:     ['Plush shaggy rug in a contemporary room', 'High-pile shaggy area rug', 'Soft textured shaggy rug', 'Shaggy rug styled in a lounge', 'Cosy shaggy bedroom rug', 'Designer shaggy rug'],
+  kilim:      ['Handwoven kilim rug in a styled room', 'Flatwoven tribal kilim rug', 'Geometric kilim rug in a living room', 'Wool kilim rug with traditional motifs', 'Handmade kilim area rug', 'Classic kilim rug'],
+  jute:       ['Natural jute rug in a living room', 'Handwoven braided jute rug', 'Jute and sisal natural fibre rug'],
+  leather:    ['Leather patchwork carpet in a modern interior', 'Hair-on-hide leather rug', 'Geometric leather patchwork rug', 'Cowhide leather carpet styled in a lounge', 'Premium leather patchwork carpet', 'Designer leather rug'],
+  w2w:        ['Wall to wall carpet in a hospitality interior', 'Broadloom wall to wall carpet', 'Custom wall to wall carpet in a hotel corridor', 'Commercial wall to wall carpet installation', 'Patterned wall to wall carpet', 'Contract wall to wall carpet'],
+  pebble:     ['Felted pebble wool rug in a styled room', 'Handmade pebble felt rug', 'Textured pebble wool carpet', 'Round pebble felt-ball rug', 'Multicolour pebble rug', 'Natural pebble wool rug'],
+  flatweave:  ['Handwoven flatweave rug in a styled room', 'Flatweave dhurrie rug', 'Geometric flatweave rug', 'Wool flatweave rug with tribal motifs', 'Reversible flatweave area rug', 'Designer flatweave rug'],
+  coir:       ['Natural coir doormat', 'Coco coir entrance mat', 'Handmade coir mat', 'Coir matting and natural fibre product', 'Decorative bordered coir doormat', 'Premium coir mat'],
+} as const
+
 export const PRODUCT_WHY_US = [
   { icon: 'craft',    title: 'Handmade in Bhadohi',        desc: 'Every piece passes through skilled artisan hands — tufters, weavers and finishers trained in Bhadohi\'s finest carpet-making traditions.' },
   { icon: 'export',   title: 'Premium Quality Standards',  desc: 'ISO 9001:2015, OEKO-TEX and multi-stage inspection — meeting architect, hospitality and project specification requirements.' },
@@ -213,6 +249,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { src: '/images/handtufted-img-2.webp',                             alt: 'Hand tufted cut-pile rug detail — Tapis Global International' },
       { src: '/images/tufting-carpet.webp',                               alt: 'Hand tufting in production at our Bhadohi facility — Tapis Global International' },
       { src: '/images/manufacturing-rug-img.webp',                        alt: 'Hand tufted carpet finishing at our Bhadohi facility — Tapis Global International' },
+      ...extraPhotos('handtufted', ALT_POOLS.handtufted),
     ],
   },
 
@@ -220,8 +257,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
   {
     slug:      'hand-knotted-carpet',
     name:      'Hand Knotted Carpet',
-    cardImage: '/images/tgi-banner-2.webp',
-    heroImage: '/images/tgi-banner-2.webp',
+    cardImage: '/images/knotted/knotted-02.webp',
+    heroImage: '/images/knotted/knotted-08.webp',
     tagline:   'Hand knotted carpets where patience, knot density and heritage weave floors of enduring beauty — made in Bhadohi, India.',
     seoTitle:  'Hand Knotted Carpet Manufacturer in India | Bhadohi Rug Supplier & Exporter — Tapis Global',
     seoDescription: 'Premium hand knotted carpet and rug manufacturer in India. Wool & silk hand knotted rugs from Bhadohi for luxury residences, hotels and collectors. Custom designs. Request a catalogue or quote.',
@@ -275,11 +312,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { q: 'What knot density (KPSI) should I choose?', a: 'Knot density drives detail and value. 40–80 KPSI suits durable, larger-scale wool pieces; 100–150 KPSI gives refined detail in wool and wool-silk; 200–300+ KPSI is reserved for fine silk masterpieces. We help you balance design intricacy, budget and end use.' },
       { q: 'Can you reproduce a classical Persian or antique design?', a: 'Yes. Our master weavers in Bhadohi produce classical Persian, Tibetan and antique reproductions to a knot-by-knot graph, as well as bespoke contemporary commissions — matched to your colourway and size.' },
     ],
-    gallery: gallery(
-      ['/images/tgi-banner-2.webp', '/images/rug2.webp', '/images/tgi-banner-5.webp'],
-      'Hand Knotted Carpet',
-      ['Persian knotted rug detail', 'Silk knot density close-up', 'Master weaver at loom Bhadohi', 'Classical medallion knotted carpet', 'Contemporary knotted abstract', 'Hotel suite silk-wool rug', 'Tibetan construction knotted piece', 'Border pattern knot detail', 'Luxury living room knotted installation', 'Knotted runner corridor', 'Multi-colour knotted field', 'Finished knotted carpet QC inspection'],
-    ),
+    gallery: extraPhotos('knotted', ALT_POOLS.knotted),
   },
 
   // ─────────────────────────────────────────────────────────────── SHAGGY
@@ -354,6 +387,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { src: '/images/shaggy/shaggy-ivory-plush-coffee.webp',       alt: 'Ivory plush shaggy rug under a coffee table — Tapis Global International' },
       { src: '/images/shaggy/shaggy-terracotta-bedroom.webp',       alt: 'Terracotta high-pile shaggy rug in a bedroom — Tapis Global International' },
       { src: '/images/shaggy/shaggy-white-plush-lounge.webp',       alt: 'White plush shaggy rug in a contemporary lounge — Tapis Global International' },
+      ...extraPhotos('shaggy', ALT_POOLS.shaggy),
     ],
   },
 
@@ -433,6 +467,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { src: '/images/sisal/sisal-herringbone-detail.webp',       alt: 'Sisal herringbone weave, close-up detail — Tapis Global International' },
       { src: '/images/jute/jute-weave-macro.webp',                alt: 'Golden jute fibre weave, close-up texture — Tapis Global International' },
       { src: '/images/sisal/sisal-boucle-weave-macro.webp',       alt: 'Fine sisal bouclé weave, macro texture — Tapis Global International' },
+      ...extraPhotos('jute', ALT_POOLS.jute),
     ],
   },
 
@@ -508,6 +543,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { src: '/images/leather/leather-natural-brindle-cowhide.webp',  alt: 'Natural brindle cowhide leather rug — Tapis Global International' },
       { src: '/images/leather/leather-cowhide-ranch.webp',            alt: 'Black and white cowhide leather rug in a ranch interior — Tapis Global International' },
       { src: '/images/leather/leather-tan-cowhide.webp',              alt: 'Tan cowhide leather rug in a mid-century room — Tapis Global International' },
+      ...extraPhotos('leather', ALT_POOLS.leather),
     ],
   },
 
@@ -515,8 +551,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
   {
     slug:      'pebble-carpet',
     name:      'Pebble Carpet',
-    cardImage: '/images/rug4.webp',
-    heroImage: '/images/rug4.webp',
+    cardImage: '/images/pebble/pebble-03.webp',
+    heroImage: '/images/pebble/pebble-09.webp',
     tagline:   'Pebble carpets — hundreds of hand-felted wool pebbles stitched into a sculptural, stone-textured floor. Made in Bhadohi, India.',
     seoTitle:  'Pebble Carpet Manufacturer in India | Felted Wool Pebble Rugs — Tapis Global',
     seoDescription: 'Pebble carpet manufacturer and supplier in India. Hand-felted 100% wool pebble rugs from Bhadohi — sculptural, stone-textured floor coverings for spas, bedrooms, boutique hotels and organic interiors. Custom colours & sizes. Request a catalogue or quote.',
@@ -570,19 +606,15 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { q: 'Are pebble carpets comfortable and safe to walk on?', a: 'Yes. The felted wool pebbles are soft yet supportive, giving a gentle reflexology-like feel underfoot. For bathrooms and wellness areas we add an anti-slip backing for safety.' },
       { q: 'Can I order a pebble carpet in custom colours and sizes?', a: 'Yes. As a direct manufacturer we produce pebble carpets in any size or shape and in natural, tonal or custom multi-colour blends, with lab-matched colour approved before production.' },
     ],
-    gallery: gallery(
-      ['/images/rug4.webp', '/images/wool-drying-pic.webp', '/images/vibrant-wool-dying.webp'],
-      'Pebble Carpet',
-      ['Hand-felted wool pebble carpet detail', 'Natural stone-tone pebble rug', 'Grey felted pebble carpet in a spa', 'Multi-colour pebble rug texture', 'Pebble carpet in a serene bedroom', 'Felted wool pebbles close-up', 'Wet-felting wool pebbles in production', 'Pebble bath mat detail', 'Organic biophilic pebble floor', 'Round pebble rug', 'Pebble carpet edge and cotton backing', 'Pebble carpet grading and QC'],
-    ),
+    gallery: extraPhotos('pebble', ALT_POOLS.pebble),
   },
 
   // ─────────────────────────────────────────────────────────────── WALL TO WALL
   {
     slug:      'wall-to-wall-carpets',
     name:      'Wall to Wall Carpets',
-    cardImage: '/images/tgi-banner-4.webp',
-    heroImage: '/images/tgi-banner-4.webp',
+    cardImage: '/images/wall-to-wall/w2w-03.webp',
+    heroImage: '/images/wall-to-wall/w2w-09.webp',
     tagline:   'Wall to wall carpets — seamless broadloom elegance for hospitality, commercial and residential scale. Made in India.',
     seoTitle:  'Wall to Wall Carpet Manufacturer in India | Hotel & Broadloom Supplier — Tapis Global',
     seoDescription: 'Wall to wall carpet manufacturer and supplier in India. Broadloom & carpet tiles from Bhadohi for hotels, offices and commercial projects. Fire-rated, custom colours. Request a catalogue or quote.',
@@ -636,19 +668,15 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { q: 'Do you provide on-site measurement and installation support?', a: 'Yes. For wall-to-wall contract projects we offer measurement guidance, installation drawings and coordination with your fit-out team — so corridors, patterns and seams align correctly across the property.' },
       { q: 'What is the maximum order volume you can handle?', a: 'Our 80,000 sq ft Bhadohi campus handles large contract volumes with phased delivery for hotels, offices and developments. Share your total area and programme dates and we will confirm capacity and a delivery schedule.' },
     ],
-    gallery: gallery(
-      ['/images/tgi-banner-4.webp', '/images/tufting-carpet.webp', '/images/manufacturing-rug-img.webp'],
-      'Wall to Wall Carpet',
-      ['Hotel corridor broadloom installation', 'Lobby wall-to-wall carpet', 'Broadloom texture close-up', 'Corporate office carpet tile', 'Hospitality suite seamless flooring', 'Axminster pattern broadloom', 'Fire-rated contract carpet roll', 'Custom colour broadloom run', 'Resort hallway carpet programme', 'Carpet tile modular layout', 'Wide-width loom production', 'Broadloom roll finishing'],
-    ),
+    gallery: extraPhotos('w2w', ALT_POOLS.w2w),
   },
 
   // ─────────────────────────────────────────────────────────────── FLAT WEAVES
   {
     slug:      'flat-weaves',
     name:      'Flat Weaves',
-    cardImage: '/images/rug5.webp',
-    heroImage: '/images/rug5.webp',
+    cardImage: '/images/flatweave/flatweave-06.webp',
+    heroImage: '/images/flatweave/flatweave-11.webp',
     tagline:   'Flat weaves — kilims, dhurries and reversible elegance for contemporary global interiors. Woven in Bhadohi, India.',
     seoTitle:  'Flat Weave Rugs Manufacturer in India | Kilim & Dhurrie Supplier — Tapis Global',
     seoDescription: 'Flat weave rug manufacturer and supplier in India. Handwoven kilims and dhurries from Bhadohi for contemporary homes, retail and hospitality. Custom designs. Request a catalogue or quote.',
@@ -702,11 +730,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { q: 'Can you weave a custom geometric or tribal pattern?', a: 'Yes. As a flat weave manufacturer we translate custom geometric, tribal and contemporary artwork into woven designs, with bespoke colourways developed and sampled before production.' },
       { q: 'Are flat weaves durable enough for high-traffic areas?', a: 'Flat weaves are pile-free and hard-wearing, making them well-suited to hallways, dining areas and busy living spaces. Wool flatweaves in particular offer excellent durability and easy maintenance.' },
     ],
-    gallery: gallery(
-      ['/images/rug5.webp', '/images/rug3.webp', '/images/tgi-banner-3.webp'],
-      'Flat Weave',
-      ['Kilim flatweave living room', 'Geometric flatweave pattern detail', 'Reversible dhurrie close-up', 'Contemporary flatweave bedroom', 'Tribal motif kilim carpet', 'Flatweave loom weaving Bhadohi', 'Layered flatweave interior', 'Neutral tone flatweave runner', 'Colourful kilim collection', 'Hospitality flatweave suite', 'Cotton flatweave texture', 'Flatweave rug finishing'],
-    ),
+    gallery: extraPhotos('flatweave', ALT_POOLS.flatweave),
   },
 
   // ─────────────────────────────────────────────────────────────── POUFS
@@ -847,6 +871,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { src: '/images/coir/coir-wildflower-butterfly.webp',    alt: 'Wildflower and butterfly printed coir mat — Tapis Global International' },
       { src: '/images/coir/coir-owl-motif.webp',               alt: 'Decorative owl-motif printed coir mat — Tapis Global International' },
       { src: '/images/coir/coir-safari-welcome.webp',          alt: "Safari giraffe 'Welcome' coir mat — Tapis Global International" },
+      ...extraPhotos('coir', ALT_POOLS.coir),
     ],
   },
 
@@ -920,6 +945,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { src: '/images/kilim/kilim-wool-tribal-runner.webp',      alt: 'New Zealand wool tribal kilim runner — Tapis Global International' },
       { src: '/images/kilim/kilim-handweaving-loom.webp',        alt: 'Artisan hand-weaving a kilim on the loom in Bhadohi — Tapis Global International' },
       { src: '/images/kilim/kilim-stepped-geometric-flatlay.webp',alt: 'Earth-tone stepped-geometric wool kilim, full view — Tapis Global International' },
+      ...extraPhotos('kilim', ALT_POOLS.kilim),
     ],
   },
 
