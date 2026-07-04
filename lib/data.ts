@@ -134,6 +134,8 @@ export type HeroSlide = {
   type?: 'image' | 'video'
   /** MP4 (H.264/AAC) source — required when type === 'video' */
   video?: string
+  /** Compressed MP4 served on mobile (smaller file for cellular data) */
+  videoMobile?: string
 }
 
 export const HERO_SLIDES: HeroSlide[] = [
@@ -158,6 +160,7 @@ export const HERO_SLIDES: HeroSlide[] = [
     label: 'Craft in Motion',
     type: 'video',
     video: '/videos/hero-banner.mp4',
+    videoMobile: '/videos/hero-banner-mobile.mp4',
     poster: '/images/tgi-banner-4.webp',
   },
 ]

@@ -103,6 +103,10 @@ export default function Hero() {
                 className="absolute inset-0 w-full h-full object-cover object-center"
                 style={{ filter: 'brightness(0.68) saturate(0.95) sepia(0.06)' }}
               >
+                {/* Mobile gets a smaller, compressed encode; desktop the full-quality file. */}
+                {slide.videoMobile && (
+                  <source src={slide.videoMobile} media="(max-width: 767px)" type="video/mp4" />
+                )}
                 <source src={slide.video} type="video/mp4" />
               </video>
             ) : (
