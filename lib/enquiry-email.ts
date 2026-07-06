@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer'
 import type { EnquiryFormType } from '@/lib/submit-enquiry'
 import { SEO_BASE_URL, BRAND } from '@/lib/seo'
+import { selectBuyerEmailTemplate, absoluteResourceUrl } from '@/lib/email-sequences'
 
 const FORM_LABELS: Record<EnquiryFormType, string> = {
   contact:   'Website Contact Enquiry',
@@ -84,8 +85,15 @@ export function buildEnquiryEmailText(formType: EnquiryFormType, fields: Record<
   return `${FORM_LABELS[formType]}\n${'—'.repeat(40)}\n\n${lines.join('\n')}\n\n—\nTapis Global International Website`
 }
 
-export function buildAcknowledgementEmailHtml(contactName: string) {
+export function buildAcknowledgementEmailHtml(contactName: string, buyerType?: string) {
   const greeting = contactName.trim() || 'there'
+  const tpl = selectBuyerEmailTemplate(buyerType)
+  const resourceLinks = tpl.resources
+    .map(
+      (r) =>
+        `<li style="margin:0 0 8px;"><a href="${absoluteResourceUrl(r.path)}" style="color:#896828;text-decoration:none;">${escapeHtml(r.label)} →</a></li>`,
+    )
+    .join('')
 
   return `
 <!DOCTYPE html>
@@ -98,16 +106,14 @@ export function buildAcknowledgementEmailHtml(contactName: string) {
         <p style="margin:0;font-size: 13px;letter-spacing:0.22em;text-transform:uppercase;color:rgba(237,217,154,0.75);">Premium Carpets · Pan India · Worldwide</p>
       </div>
       <div style="padding:36px 32px 28px;">
-        <h1 style="margin:0 0 20px;font-size:26px;font-weight:normal;color:#4A1414;font-family:Georgia,serif;">Thank You for Contacting Us</h1>
+        <h1 style="margin:0 0 20px;font-size:26px;font-weight:normal;color:#4A1414;font-family:Georgia,serif;">${escapeHtml(tpl.headline)}</h1>
         <p style="margin:0 0 16px;font-size: 17px;line-height:1.75;color:#3A2A20;">Dear ${escapeHtml(greeting)},</p>
         <p style="margin:0 0 16px;font-size: 17px;line-height:1.75;color:#3A2A20;">
-          We have received your enquiry and appreciate your interest in Tapis Global International. Our project team is reviewing your requirements and will contact you within <strong style="color:#896828;">12 working hours</strong>.
+          ${escapeHtml(tpl.intro)} We will contact you within <strong style="color:#896828;">12 working hours</strong>.
         </p>
         <div style="margin:28px 0;padding:20px 22px;background:#faf6ef;border-left:3px solid #C09B4A;">
-          <p style="margin:0 0 10px;font-size: 15px;letter-spacing:0.12em;text-transform:uppercase;color:#896828;font-weight:600;">What happens next</p>
-          <p style="margin:0;font-size: 16px;line-height:1.7;color:#3A2A20;">
-            A dedicated project consultant will reach out to discuss your specifications, design preferences, timeline and the best flooring solution for your project.
-          </p>
+          <p style="margin:0 0 10px;font-size: 15px;letter-spacing:0.12em;text-transform:uppercase;color:#896828;font-weight:600;">Helpful for you</p>
+          <ul style="margin:0;padding-left:18px;font-size: 16px;line-height:1.7;color:#3A2A20;">${resourceLinks}</ul>
         </div>
         <p style="margin:0 0 8px;font-size: 16px;line-height:1.7;color:#6B5545;">
           For urgent enquiries, call us at <a href="tel:+918448291631" style="color:#896828;text-decoration:none;">+91 84482 91631</a> or reply to
@@ -124,14 +130,19 @@ export function buildAcknowledgementEmailHtml(contactName: string) {
 </html>`
 }
 
-export function buildAcknowledgementEmailText(contactName: string) {
+export function buildAcknowledgementEmailText(contactName: string, buyerType?: string) {
   const greeting = contactName.trim() || 'there'
+  const tpl = selectBuyerEmailTemplate(buyerType)
+  const links = tpl.resources.map((r) => `- ${r.label}: ${absoluteResourceUrl(r.path)}`).join('\n')
 
   return `Dear ${greeting},
 
-Thank you for contacting Tapis Global International.
+${tpl.intro}
 
-We have received your enquiry and our project team will contact you within 12 working hours.
+We will contact you within 12 working hours.
+
+Helpful for you:
+${links}
 
 For urgent enquiries:
 Phone: +91 84482 91631
@@ -178,14 +189,16 @@ function getCustomerEmail(fields: Record<string, string>): string | undefined {
 
 async function sendCustomerAcknowledgement(
   transporter: nodemailer.Transporter,
-  opts: { fromEmail: string; fromName: string; customerEmail: string; contactName: string },
+  opts: { fromEmail: string; fromName: string; customerEmail: string; contactName: string; buyerType?: string },
 ): Promise<EmailDeliveryResult> {
-  const subject = 'Thank You for Contacting Tapis Global International'
+  const tpl = selectBuyerEmailTemplate(opts.buyerType)
+  const subject = `${tpl.headline} — Tapis Global International`
 
   logEmail('ack_send_start', {
     to: opts.customerEmail,
     from: opts.fromEmail,
     contactName: opts.contactName,
+    template: tpl.key,
   })
 
   const info = await transporter.sendMail({
@@ -193,8 +206,8 @@ async function sendCustomerAcknowledgement(
     to: opts.customerEmail,
     replyTo: REPLY_TO,
     subject,
-    text: buildAcknowledgementEmailText(opts.contactName),
-    html: buildAcknowledgementEmailHtml(opts.contactName),
+    text: buildAcknowledgementEmailText(opts.contactName, opts.buyerType),
+    html: buildAcknowledgementEmailHtml(opts.contactName, opts.buyerType),
   })
 
   const result: EmailDeliveryResult = {
@@ -299,6 +312,7 @@ export async function sendEnquiryEmail(opts: {
         fromName,
         customerEmail,
         contactName: getLeadDisplayName(opts.fields),
+        buyerType: opts.fields.buyerType,
       })
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Unknown acknowledgement error'

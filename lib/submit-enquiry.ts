@@ -9,12 +9,14 @@ export type SubmitEnquiryResult =
 export async function submitEnquiry(
   formType: EnquiryFormType,
   fields: Record<string, string>,
+  /** Honeypot value from a hidden field — bots fill it, humans leave it empty. */
+  honeypot = '',
 ): Promise<SubmitEnquiryResult> {
   try {
     const res = await fetch('/api/enquiry', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ formType, fields, website: '' }),
+      body: JSON.stringify({ formType, fields, website: honeypot }),
     })
 
     const data = (await res.json()) as { ok?: boolean; error?: string }

@@ -16,6 +16,7 @@ import {
   validateMessage,
 } from '@/lib/enquiry-validation'
 import type { EnquiryFormType } from '@/lib/submit-enquiry'
+import { withLeadScore } from '@/lib/lead-scoring'
 
 export const runtime = 'nodejs'
 
@@ -191,6 +192,21 @@ export async function POST(req: Request) {
     if (!isEnquiryPayload(parsed)) {
       return NextResponse.json({ ok: false, error: 'Invalid request.' }, { status: 400 })
     }
+
+    // Server-side geo attribution from the edge/CDN headers (present on Vercel).
+    // Real signal only — omitted when the platform doesn't provide it.
+    const geo: Record<string, string> = {}
+    const country = req.headers.get('x-vercel-ip-country')
+    const cityRaw = req.headers.get('x-vercel-ip-city')
+    const region = req.headers.get('x-vercel-ip-country-region')
+    if (country) geo.visitorCountry = country
+    if (cityRaw) { try { geo.visitorCity = decodeURIComponent(cityRaw) } catch { geo.visitorCity = cityRaw } }
+    if (region) geo.visitorRegion = region
+    parsed.fields = { ...parsed.fields, ...geo }
+
+    // Classify the lead (Hot/Warm/Cold) from submitted data and attach the
+    // score to the payload so it appears in the lead email + CRM ingest.
+    parsed.fields = withLeadScore(parsed.fields)
 
     const delivery = await sendEnquiryEmail(parsed)
 
