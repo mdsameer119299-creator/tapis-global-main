@@ -274,10 +274,18 @@ export function itemListSchema(items: Array<{ name: string; url: string }>) {
 }
 
 // ─── BREADCRUMB ───────────────────────────────────────────────────────────────
+// The final crumb is always the current page, whose URL matches the WebPage
+// node's `url`. We stamp the BreadcrumbList with `${url}#breadcrumb` so it
+// satisfies the `breadcrumb: { '@id': `${url}#breadcrumb` }` reference emitted by
+// webPageSchema. Without this @id the reference is dangling: Google resolves it
+// to an implied BreadcrumbList with no itemListElement and reports
+// "Missing field 'itemListElement'" (GSC, /products & /products/[slug]).
 export function breadcrumbSchema(items: Array<{ name: string; url: string }>) {
+  const selfUrl = items.length ? items[items.length - 1].url : undefined
   return {
     '@context': 'https://schema.org',
     '@type':    'BreadcrumbList',
+    ...(selfUrl ? { '@id': `${selfUrl}#breadcrumb` } : {}),
     itemListElement: items.map((item, index) => ({
       '@type':   'ListItem',
       position:  index + 1,
