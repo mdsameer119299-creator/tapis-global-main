@@ -272,11 +272,30 @@ export function itemListSchema(items: Array<{ name: string; url: string }>) {
 }
 
 // ─── BREADCRUMB ───────────────────────────────────────────────────────────────
-export function breadcrumbSchema(items: Array<{ name: string; url: string }>) {
+// Returns null when there are not enough valid crumbs to form a meaningful trail
+// (Google requires a real hierarchy; a single-item list is invalid/pointless).
+// buildJsonLd() drops null nodes, and webPageSchema()'s breadcrumb reference is
+// gated on hasBreadcrumb — so callers with <2 crumbs should pass hasBreadcrumb:false
+// to avoid a dangling @id. All current pages pass Home + hub (+ page) = 2-3 crumbs.
+export function breadcrumbSchema(
+  items: Array<{ name: string; url: string }>,
+): Record<string, unknown> | null {
+  // Keep only crumbs that carry both a name and a url (defensive against bad data).
+  const valid = (items ?? []).filter(
+    (i) => i && typeof i.name === 'string' && i.name.trim() && typeof i.url === 'string' && i.url.trim(),
+  )
+  if (valid.length < 2) return null
+
+  // The last item's url is the current page url. Set a matching @id so the
+  // WebPage node's `breadcrumb: { '@id': `${url}#breadcrumb` }` reference
+  // resolves to THIS node (which carries itemListElement). Without the @id the
+  // reference dangles and Google reports "Missing field itemListElement".
+  const pageUrl = valid[valid.length - 1].url
   return {
     '@context': 'https://schema.org',
     '@type':    'BreadcrumbList',
-    itemListElement: items.map((item, index) => ({
+    '@id':      `${pageUrl}#breadcrumb`,
+    itemListElement: valid.map((item, index) => ({
       '@type':   'ListItem',
       position:  index + 1,
       name:      item.name,
@@ -330,11 +349,15 @@ const DEFAULT_FAQS: FaqItem[] = [
     },
   ]
 
-export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS) {
+export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS): Record<string, unknown> | null {
+  // Keep only complete Q&A pairs; a FAQPage with an empty mainEntity is invalid
+  // (Google requires ≥1 Question). Return null so buildJsonLd drops the node.
+  const valid = (faqs ?? []).filter((f) => f && f.q?.trim() && f.a?.trim())
+  if (valid.length === 0) return null
   return {
     '@context':  'https://schema.org',
     '@type':     'FAQPage',
-    mainEntity:  faqs.map(({ q, a }) => ({
+    mainEntity:  valid.map(({ q, a }) => ({
       '@type':          'Question',
       name:             q,
       acceptedAnswer: {
@@ -350,13 +373,17 @@ export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS) {
 // risks a manual action. Re-introduce only with genuine, displayed reviews.
 
 // ─── HELPER: combine multiple schemas into a @graph ──────────────────────────
-export function buildJsonLd(...schemas: object[]) {
+// Falsy nodes are dropped so generators can return null to opt out (e.g.
+// breadcrumbSchema() when there are too few crumbs) without crashing the graph.
+export function buildJsonLd(...schemas: Array<object | null | undefined>) {
   return {
     '@context': 'https://schema.org',
-    '@graph':   schemas.map(s => {
-      // Remove duplicate @context from individual schemas when combining
-      const { '@context': _ctx, ...rest } = s as Record<string, unknown>
-      return rest
-    }),
+    '@graph':   schemas
+      .filter((s): s is object => Boolean(s))
+      .map(s => {
+        // Remove duplicate @context from individual schemas when combining
+        const { '@context': _ctx, ...rest } = s as Record<string, unknown>
+        return rest
+      }),
   }
 }

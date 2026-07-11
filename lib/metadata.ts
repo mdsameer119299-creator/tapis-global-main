@@ -50,14 +50,14 @@ export function buildMetadata(input: PageMetaInput): Metadata {
     creator: BRAND.legalName,
     publisher: BRAND.legalName,
 
-    // ── Canonical & alternate ────────────────────────────────────────────
+    // ── Canonical ────────────────────────────────────────────────────────
+    // No `languages`/hreflang map: the site serves ONE non-localized English
+    // version globally. Emitting en-US / en-GB / x-default alternates that all
+    // point at the same URL is misleading (it implies localized variants that
+    // do not exist) and adds nothing over the canonical. hreflang should only
+    // return if genuinely localized (e.g. /en, /de) URLs are introduced.
     alternates: {
       canonical,
-      languages: {
-        'en-US': canonical,
-        'en-GB': canonical,
-        'x-default': canonical,
-      },
     },
 
     // ── Robots ───────────────────────────────────────────────────────────
