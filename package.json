@@ -11,6 +11,7 @@
     "preview": "npm run build && next start",
     "lint": "next lint",
     "favicon": "node scripts/generate-favicon.mjs",
+    "seo:audit": "node scripts/seo-audit.mjs",
     "optimize:images": "node scripts/optimize-images.mjs && node scripts/replace-image-paths.mjs",
     "analyze": "ANALYZE=true next build"
   },
