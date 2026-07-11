@@ -62,4 +62,20 @@
 ## 11. This branch's changes (P0/P1, non-duplicative)
 - Enhanced `scripts/seo-audit.mjs` with failing quality gates.
 - Added `scripts/seo-audit-production.mjs` + `npm run seo:audit:production` (safe live audit).
+- Added `scripts/seo-audit-production.test.mjs` + `npm run seo:audit:production:test` (behavior tests).
 - Added `docs/INDEXATION-AUDIT.md`, `docs/COMMERCIAL-CLAIMS-REGISTER.md`, this file.
+
+### Production audit semantics (strict by default — no false green)
+`npm run seo:audit:production` is **read-only** (GET only, `redirect:'manual'`, per-request timeout via `AUDIT_TIMEOUT`, default 15s) and **strict by default**. Three distinct outcomes:
+
+| Outcome | When | Exit |
+|---|---|---|
+| **PASS** | Production was reached, **every** sampled URL was inspected, and no critical error was found | `0` |
+| **FAIL** | Production unreachable (network/DNS/timeout) **in strict mode**, OR sitemap non-2xx / unparseable / empty, OR any sampled URL could not be inspected (incomplete), OR a critical SEO error (non-200/redirect/noindex/canonical/multiple-H1/invalid-breadcrumb) | `1` |
+| **SKIPPED** | **Only** with `--allow-offline` **and** production was truly unreachable. Prints `PRODUCTION AUDIT SKIPPED — OFFLINE MODE EXPLICITLY ENABLED`; never prints PASS | `0` |
+
+- `npm run seo:audit:production` → strict; infrastructure failure **cannot** silently pass.
+- `npm run seo:audit:production -- --allow-offline` → may SKIP (exit 0) **only** when unreachable; a reached-but-broken sitemap (non-2xx / unparseable / zero URLs) still **FAILS**.
+- Checks per sampled URL: HTTP 200 (redirect/non-200 in sitemap = error), single self-referential canonical to the expected origin, meta-robots **and** `X-Robots-Tag` noindex (distinct from robots.txt crawl rules), exactly one `<h1>`, and BreadcrumbList validity incl. WebPage `breadcrumb` `@id` resolution.
+- Sampling is deterministic: homepage first, then round-robin across every route cluster present in the sitemap (products, industries, solutions, countries, Phase-1 India, company, guides, dhurries, hubs). Bounded by `AUDIT_MAX` (default 60).
+- Behavior is regression-tested by `scripts/seo-audit-production.test.mjs` (scenarios A–G) via a local mock server — no network or heavy deps.
