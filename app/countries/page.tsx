@@ -12,7 +12,7 @@ import LandingHub from '@/components/landing/LandingHub'
 
 export const metadata: Metadata = buildMetadata({
   title:       'Carpet Export Markets | Indian Carpet & Rug Exporter — Tapis Global International',
-  description: 'Tapis Global International exports handmade carpets and rugs from Bhadohi, India to the USA, UK, Germany, France, Italy, Spain, Netherlands, Belgium, Australia, UAE, Saudi Arabia and Qatar — with full documentation and freight. Request a catalogue.',
+  description: 'Tapis Global International exports handmade carpets and rugs from Bhadohi, India to markets across North America, the UK and Europe, the Nordics, the Gulf and Asia-Pacific — including the USA, Canada, UK, Germany, France, the Nordics, UAE, Saudi Arabia, Singapore and Australia — with full export documentation and coordinated freight. Request a catalogue.',
   keywords:    ['carpet exporter India', 'rug exporter India', 'carpet export markets', 'Indian carpet exporter Bhadohi', 'international carpet supplier'],
   canonical:   `${SEO_BASE_URL}/countries`,
 })
