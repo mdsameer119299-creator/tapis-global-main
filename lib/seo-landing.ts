@@ -27,7 +27,7 @@ export type LandingFaq = {
 
 export type SeoLanding = {
   slug:        string
-  kind:        'industry' | 'solution' | 'country' | 'dhurrie' | 'company'
+  kind:        'industry' | 'solution' | 'country' | 'dhurrie' | 'company' | 'india'
   /** Short label used in nav, breadcrumbs and related-link cards */
   label:       string
   heroImage:   string
@@ -52,6 +52,7 @@ export type SeoLanding = {
   relatedCountries?: string[]
   relatedDhurries?:  string[]
   relatedCompany?:   string[]
+  relatedIndia?:     string[]
 }
 
 // ─── REGISTRY ────────────────────────────────────────────────────────────────
@@ -62,6 +63,7 @@ import { SOLUTIONS } from './solutions-seo'
 import { COUNTRIES } from './countries'
 import { DHURRIES } from './dhurries'
 import { COMPANY_PAGES } from './company'
+import { INDIA_LOCATIONS } from './india'
 
 export function getIndustry(slug: string): SeoLanding | undefined {
   return INDUSTRIES.find((i) => i.slug === slug)
@@ -83,6 +85,10 @@ export function getCompanyPage(slug: string): SeoLanding | undefined {
   return COMPANY_PAGES.find((c) => c.slug === slug)
 }
 
+export function getIndiaLocation(slug: string): SeoLanding | undefined {
+  return INDIA_LOCATIONS.find((c) => c.slug === slug)
+}
+
 export function getAllIndustrySlugs(): string[] {
   return INDUSTRIES.map((i) => i.slug)
 }
@@ -101,6 +107,10 @@ export function getAllDhurrieSlugs(): string[] {
 
 export function getAllCompanySlugs(): string[] {
   return COMPANY_PAGES.map((c) => c.slug)
+}
+
+export function getAllIndiaSlugs(): string[] {
+  return INDIA_LOCATIONS.map((c) => c.slug)
 }
 
 export function getRelatedIndustries(slugs: string[] = []): SeoLanding[] {
@@ -133,6 +143,12 @@ export function getRelatedCompany(slugs: string[] = []): SeoLanding[] {
     .filter((x): x is SeoLanding => Boolean(x))
 }
 
+export function getRelatedIndia(slugs: string[] = []): SeoLanding[] {
+  return slugs
+    .map((s) => INDIA_LOCATIONS.find((i) => i.slug === s))
+    .filter((x): x is SeoLanding => Boolean(x))
+}
+
 // ─── REVERSE LOOKUP: landing pages that reference a given product ─────────────
 // Powers product → industry/solution/dhurrie internal links (closing the
 // otherwise one-way landing→product cluster). Industries first (highest
@@ -148,4 +164,4 @@ export function getLandingsForProduct(productSlug: string, limit = 6): SeoLandin
   return out.slice(0, limit)
 }
 
-export { INDUSTRIES, SOLUTIONS, COUNTRIES, DHURRIES, COMPANY_PAGES }
+export { INDUSTRIES, SOLUTIONS, COUNTRIES, DHURRIES, COMPANY_PAGES, INDIA_LOCATIONS }

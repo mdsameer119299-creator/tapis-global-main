@@ -194,6 +194,14 @@ export default function Navbar() {
                           <Link href="/solutions" className="text-[14px] tracking-[0.16em] uppercase font-medium transition-colors duration-200 hover:text-[var(--gp)]" style={{ color: 'rgba(255,255,255,0.7)' }}>
                             By Solution
                           </Link>
+                          <span className="w-px h-3" style={{ background: 'rgba(192,155,74,0.3)' }} aria-hidden />
+                          <Link href="/india" className="text-[14px] tracking-[0.16em] uppercase font-medium transition-colors duration-200 hover:text-[var(--gp)]" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                            India
+                          </Link>
+                          <span className="w-px h-3" style={{ background: 'rgba(192,155,74,0.3)' }} aria-hidden />
+                          <Link href="/countries" className="text-[14px] tracking-[0.16em] uppercase font-medium transition-colors duration-200 hover:text-[var(--gp)]" style={{ color: 'rgba(255,255,255,0.7)' }}>
+                            Export Markets
+                          </Link>
                         </div>
                         <Link
                           href="/products"
