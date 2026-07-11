@@ -2,10 +2,23 @@
   "version": "0.0.1",
   "configurations": [
     {
+      "name": "tgi-dev",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
       "name": "tgi-prod",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["start"],
       "port": 3000
+    },
+    {
+      "name": "fei-urban-export",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "5500", "--directory", "/Users/mohammadsameer/fei-urban-export"],
+      "port": 5500
     }
   ]
 }
