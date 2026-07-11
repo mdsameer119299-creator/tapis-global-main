@@ -9,12 +9,20 @@
 //     - invalid internal related-page references (related* -> unknown slug)
 //     - non-URL-safe slugs (canonical/route mismatch risk)
 //     - sitemap URLs that do not resolve to a known route/slug
+//     - a next.config redirect SOURCE listed in the sitemap (redirect URL in sitemap)
+//     - lastModified present on a sitemap entry (no fake freshness policy)
+//     - near-duplicate landing pages within a cluster (content similarity gate)
+//     - a priority commercial page missing (or lacking a conversion path)
+//     - a noindex page listed in the sitemap
 //   WARNINGS (reported, non-fatal):
 //     - duplicate SEO titles / H1s / meta descriptions across pages
 //     - over-length titles / descriptions
+//     - moderate content similarity between sibling pages
+//   NOTES:
 //     - dynamic pages intentionally excluded from the sitemap (phased rollout)
 //
-// Intentionally small: no framework, no network, no crawler.
+// Intentionally small: no framework, no network, no crawler. See
+// scripts/seo-audit-production.mjs for the live HTTP audit.
 
 import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
@@ -31,6 +39,37 @@ const products = jiti('../lib/products.ts')
 const guides   = jiti('../lib/guides.ts')
 const seoConst = jiti('../lib/seo.ts')
 const sitemapMod = jiti('../app/sitemap.ts')
+
+// next.config redirects (CJS). Failure to load is non-fatal (skips that gate).
+let REDIRECT_SOURCES = new Set()
+try {
+  const nextConfig = require(resolve(ROOT, 'next.config.js'))
+  const cfg = typeof nextConfig === 'function' ? nextConfig({}, {}) : nextConfig
+  const redirects = cfg && typeof cfg.redirects === 'function' ? await cfg.redirects() : []
+  REDIRECT_SOURCES = new Set((redirects || []).map((r) => r.source))
+} catch { /* redirects gate skipped */ }
+
+// Priority commercial pages that MUST exist and expose a conversion path.
+// (Conversion CTAs are rendered by the shared LandingPage template; here we
+// verify the page exists and carries related products + FAQs — the data-level
+// signals of a real conversion path.)
+const PRIORITY_PAGES = [
+  ['solutions', 'custom-carpets'],
+  ['solutions', 'commercial-carpet-manufacturer'],
+  ['solutions', 'carpet-exporter-india'],
+  ['solutions', 'wholesale-carpet-supplier'],
+  ['products', 'hand-knotted-carpet'],
+  ['products', 'hand-tufted-carpet'],
+  ['products', 'wall-to-wall-carpets'],
+  ['industries', 'hotel-carpets'],
+  ['india', 'delhi-ncr'],
+  ['india', 'mumbai'],
+  ['india', 'bhadohi'],
+]
+
+// Content-similarity thresholds (Jaccard over content word-sets within a cluster).
+const SIM_ERROR = 0.90 // near-duplicate -> fail
+const SIM_WARN  = 0.74 // high overlap -> warn
 
 const { INDUSTRIES, SOLUTIONS, COUNTRIES, DHURRIES, COMPANY_PAGES, INDIA_LOCATIONS } = seo
 const { PRODUCT_CATEGORIES } = products
@@ -144,7 +183,49 @@ for (const entry of sitemapEntries) {
   if (m && BASE_TO_SLUGS[m[1]]) {
     if (!BASE_TO_SLUGS[m[1]].has(m[2])) err(`sitemap lists ${path} but "${m[2]}" is not a valid ${m[1]} slug (404/redirect risk)`)
   }
-  if (entry && entry.lastModified) warn(`sitemap entry ${path} has lastModified (should be omitted unless backed by a real content date)`)
+  // No fake freshness: lastModified must never be hardcoded in the sitemap.
+  if (entry && entry.lastModified) err(`sitemap entry ${path} has a hardcoded lastModified (no-fake-freshness policy)`)
+  // A configured redirect source must never be listed in the sitemap.
+  if (REDIRECT_SOURCES.has(path)) err(`sitemap lists ${path} which is a configured redirect source (redirect URL in sitemap)`)
+}
+
+// ── 5b. noindex pages must not be in the sitemap ─────────────────────────────
+for (const [name, { base, items }] of Object.entries(LANDING_CLUSTERS)) {
+  for (const it of items) {
+    if (it && it.noIndex === true && sitemapPaths.has(`${base}/${it.slug}`)) {
+      err(`noindex page ${base}/${it.slug} is listed in the sitemap`)
+    }
+  }
+}
+
+// ── 6. Priority commercial pages: must exist and expose a conversion path ─────
+for (const [cluster, slug] of PRIORITY_PAGES) {
+  const item = LANDING_CLUSTERS[cluster]?.items.find((i) => i.slug === slug)
+  const where = `/${cluster === 'products' ? 'products' : cluster}/${slug}`
+  if (!item) { err(`priority page ${where} is missing from the registry`); continue }
+  const hasProducts = Array.isArray(item.relatedProducts) && item.relatedProducts.length > 0
+  const hasFaqs = Array.isArray(item.faqs) && item.faqs.length > 0
+  if (!hasProducts && !hasFaqs) err(`priority page ${where} has no conversion-path signals (no related products or FAQs)`)
+}
+
+// ── 7. Near-duplicate detection within country / india / solution clusters ───
+const STOP = new Set('a an the and or of to for in on with we our you your is are be as at by from that this it made rug rugs carpet carpets order india bhadohi buyers projects manufacturer supply custom'.split(' '))
+const wordSet = (it) => {
+  const text = [it.intro, it.overview, ...(it.sections || []).map((s) => s.body), ...(it.whyPoints || []).map((w) => w.desc), ...(it.applications || []).map((a) => a.desc)].join(' ').toLowerCase()
+  return new Set(text.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter((w) => w.length > 3 && !STOP.has(w)))
+}
+const jaccard = (a, b) => { let inter = 0; for (const x of a) if (b.has(x)) inter++; const uni = a.size + b.size - inter; return uni ? inter / uni : 0 }
+for (const name of ['countries', 'india', 'solutions']) {
+  const items = LANDING_CLUSTERS[name].items
+  const sets = items.map((it) => ({ slug: it.slug, ws: wordSet(it) }))
+  let worst = { sim: 0, a: '', b: '' }
+  for (let i = 0; i < sets.length; i++) for (let j = i + 1; j < sets.length; j++) {
+    const sim = jaccard(sets[i].ws, sets[j].ws)
+    if (sim > worst.sim) worst = { sim, a: sets[i].slug, b: sets[j].slug }
+    if (sim >= SIM_ERROR) err(`[${name}] near-duplicate content: ${sets[i].slug} vs ${sets[j].slug} (Jaccard ${sim.toFixed(2)} >= ${SIM_ERROR})`)
+    else if (sim >= SIM_WARN) warn(`[${name}] high content similarity: ${sets[i].slug} vs ${sets[j].slug} (Jaccard ${sim.toFixed(2)})`)
+  }
+  note(`${name}: worst-case content similarity ${worst.sim.toFixed(2)} (${worst.a} vs ${worst.b})`)
 }
 
 // Dynamic pages intentionally excluded from sitemap (phased rollout) -> note.
