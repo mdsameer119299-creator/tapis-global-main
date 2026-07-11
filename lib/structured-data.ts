@@ -195,7 +195,12 @@ export function webPageSchema({
   imageUrl?:   string
   datePublished?: string
   dateModified?:  string
-  /** Set false on pages with no BreadcrumbList (e.g. homepage) to avoid a dangling @id reference */
+  /**
+   * Optional. May be set false to omit the breadcrumb reference outright.
+   * Not required for safety: buildJsonLd() intrinsically strips this reference
+   * when the graph contains no matching valid BreadcrumbList node, so the @id
+   * can never dangle even if this stays true.
+   */
   hasBreadcrumb?: boolean
 }) {
   return {
@@ -280,13 +285,24 @@ export function itemListSchema(items: Array<{ name: string; url: string }>) {
 // webPageSchema. Without this @id the reference is dangling: Google resolves it
 // to an implied BreadcrumbList with no itemListElement and reports
 // "Missing field 'itemListElement'" (GSC, /products & /products/[slug]).
-export function breadcrumbSchema(items: Array<{ name: string; url: string }>) {
-  const selfUrl = items.length ? items[items.length - 1].url : undefined
+export function breadcrumbSchema(
+  items: Array<{ name: string; url: string }>,
+): Record<string, unknown> | null {
+  // Keep only crumbs that carry both a name and a url.
+  const valid = (items ?? []).filter(
+    (i) => i && typeof i.name === 'string' && i.name.trim() && typeof i.url === 'string' && i.url.trim(),
+  )
+  // A single-item breadcrumb is meaningless; Google needs a real hierarchy.
+  // Returning null (dropped by buildJsonLd) means no empty/invalid node is emitted.
+  if (valid.length < 2) return null
+  // @id matches webPageSchema()'s `${url}#breadcrumb` reference; buildJsonLd also
+  // strips that reference when this node is absent, so the ref can never dangle.
+  const selfUrl = valid[valid.length - 1].url
   return {
     '@context': 'https://schema.org',
     '@type':    'BreadcrumbList',
-    ...(selfUrl ? { '@id': `${selfUrl}#breadcrumb` } : {}),
-    itemListElement: items.map((item, index) => ({
+    '@id':      `${selfUrl}#breadcrumb`,
+    itemListElement: valid.map((item, index) => ({
       '@type':   'ListItem',
       position:  index + 1,
       name:      item.name,
@@ -340,11 +356,15 @@ const DEFAULT_FAQS: FaqItem[] = [
     },
   ]
 
-export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS) {
+export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS): Record<string, unknown> | null {
+  // A FAQPage with an empty mainEntity is invalid; return null so buildJsonLd
+  // drops the node rather than emitting an empty one.
+  const valid = (faqs ?? []).filter((f) => f && f.q?.trim() && f.a?.trim())
+  if (valid.length === 0) return null
   return {
     '@context':  'https://schema.org',
     '@type':     'FAQPage',
-    mainEntity:  faqs.map(({ q, a }) => ({
+    mainEntity:  valid.map(({ q, a }) => ({
       '@type':          'Question',
       name:             q,
       acceptedAnswer: {
@@ -360,13 +380,38 @@ export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS) {
 // risks a manual action. Re-introduce only with genuine, displayed reviews.
 
 // ─── HELPER: combine multiple schemas into a @graph ──────────────────────────
-export function buildJsonLd(...schemas: object[]) {
-  return {
-    '@context': 'https://schema.org',
-    '@graph':   schemas.map(s => {
+export function buildJsonLd(...schemas: Array<object | null | undefined>) {
+  // 1. Drop falsy nodes so generators can opt out by returning null
+  //    (e.g. breadcrumbSchema/faqSchema when there is nothing valid to emit).
+  const nodes = schemas
+    .filter((s): s is object => Boolean(s))
+    .map((s) => {
       // Remove duplicate @context from individual schemas when combining
       const { '@context': _ctx, ...rest } = s as Record<string, unknown>
-      return rest
-    }),
+      return rest as Record<string, unknown>
+    })
+
+  // 2. Intrinsic breadcrumb safety: a WebPage may only reference
+  //    `${url}#breadcrumb` if a BreadcrumbList node with that @id and a
+  //    non-empty itemListElement is actually present in this graph. If it is
+  //    not (breadcrumb dropped / empty), strip the dangling reference so Google
+  //    never sees a WebPage pointing at a missing BreadcrumbList. This does not
+  //    rely on callers remembering to pass hasBreadcrumb:false.
+  const breadcrumbIds = new Set(
+    nodes
+      .filter((n) => n['@type'] === 'BreadcrumbList' && Array.isArray(n.itemListElement) && n.itemListElement.length > 0)
+      .map((n) => n['@id'])
+      .filter((id): id is string => typeof id === 'string'),
+  )
+  for (const n of nodes) {
+    const ref = n.breadcrumb as { '@id'?: string } | undefined
+    if (ref && ref['@id'] && !breadcrumbIds.has(ref['@id'])) {
+      delete n.breadcrumb
+    }
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@graph':   nodes,
   }
 }
