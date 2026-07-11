@@ -6,7 +6,7 @@
 **Production:** https://www.tapisglobalinternational.com — ⚠️ NOT deployed, NOT merged.
 
 ## 1. Problem with PR #6
-PR #6 was based on `tapis-seo-ui-improvements`, so its diff against `main` carried **14 inherited commits** unrelated to global/India SEO (1800-word product long-form expansion, `CategoryDeepDive` changes, large `lib/dhurries.ts` expansion, guide changes, `.claude/launch.json` incl. a local `/Users/mohammadsameer/fei-urban-export` path). It also used export-history and hard payment-term wording on the new pages. It should not be merged as-is.
+PR #6 was based on `tapis-seo-ui-improvements`, so its diff against `main` carried **14 inherited commits** unrelated to global/India SEO (1800-word product long-form expansion, `CategoryDeepDive` changes, large `lib/dhurries.ts` expansion, guide changes, and a `.claude/launch.json` that referenced a local machine path pointing at a different, unrelated local project). It also used export-history and hard payment-term wording on the new pages. It should not be merged as-is.
 
 ## 2. Clean branch strategy
 Branched directly from the **latest `origin/main`** (base `0fba0f0`) and **re-implemented** only the intended SEO changes. No cherry-picking of contaminated commits. Result: a minimal diff that touches only SEO files.
@@ -22,7 +22,7 @@ Branched directly from the **latest `origin/main`** (base `0fba0f0`) and **re-im
 - **Docs**: this report + claims audit + sitemap rollout.
 
 ## 4. Inherited / unrelated changes EXCLUDED
-Not present in this branch's diff vs `main`: product long-form expansion, `CategoryDeepDive` changes, `lib/dhurries.ts` expansion, guide changes, `.claude/launch.json` (unmodified), and the `/Users/mohammadsameer/fei-urban-export` path (grep-verified absent from all tracked files). `.DS_Store` added to `.gitignore`.
+Not present in this branch's diff vs `main`: product long-form expansion, `CategoryDeepDive` changes, `lib/dhurries.ts` expansion, guide changes, `.claude/launch.json` (unmodified), and the unrelated local-project machine path that PR #6 carried (grep-verified absent from all tracked files). `.DS_Store` added to `.gitignore`.
 
 ## 5. Commercial claims corrected
 New pages are **capability-based** and free of payment-term/currency, certification, capacity, export-history and per-city presence claims (see `docs/SEO-CLAIMS-AUDIT.md` §B). Pre-existing production claims are reported (§A) but not modified.
