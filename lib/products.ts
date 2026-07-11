@@ -1005,7 +1005,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     seoTitle:  'Tat Patti Manufacturer in India | School & Institutional Floor Matting — Tapis Global',
     seoDescription: 'Tat Patti manufacturer and supplier in India. Durable woven cotton and jute tat patti floor matting from Bhadohi for schools, hostels, NGOs and government tenders — bulk, economical, fast. Request a quote.',
     seoKeywords: ['tat patti manufacturer India', 'tat patti supplier', 'school tat patti', 'floor matting manufacturer India', 'cotton tat patti', 'jute tat patti'],
-    h1:        'Tat Patti Manufacturer in India',
+    h1:        'Tat Patti — Woven Cotton Floor Matting',
     intro:     'Tat Patti is a flat, hard-wearing woven floor matting used for floor seating and floor covering across schools, anganwadis, hostels, halls, places of worship and relief programmes. Tapis Global International manufactures Tat Patti in cotton and jute from our Bhadohi facility, at the economical bulk scale institutional and government buyers require.',
     body:      'Woven flat and tight for heavy floor-seating and foot traffic, Tat Patti is the practical, budget-friendly floor-covering choice for high-volume institutional use. We produce it in standard rolls and cut sizes, with custom widths and lengths to suit classroom, hall and tender specifications.',
     overview:  'As a direct manufacturer we supply Tat Patti in the large, repeatable volumes government schools, tribal welfare departments, anganwadis and NGOs procure — at genuine factory pricing, with batch consistency, tender documentation and the capacity to meet supply deadlines. For detailed buyer-intent information see our dedicated Dhurrie & Tat Patti silo.',
