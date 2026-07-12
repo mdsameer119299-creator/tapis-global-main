@@ -19,7 +19,7 @@ import type { EnquiryFormType } from '@/lib/submit-enquiry'
 
 export const runtime = 'nodejs'
 
-const VALID_TYPES: EnquiryFormType[] = ['contact', 'inquiry', 'custom', 'catalogue']
+const VALID_TYPES: EnquiryFormType[] = ['contact', 'inquiry', 'custom', 'catalogue', 'tara']
 
 function isValidType(value: string): value is EnquiryFormType {
   return (VALID_TYPES as string[]).includes(value)
