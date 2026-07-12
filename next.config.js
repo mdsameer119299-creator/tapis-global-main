@@ -2,6 +2,16 @@
 const isDev = process.env.NODE_ENV === 'development'
 
 const nextConfig = {
+  // Ensure the external Knowledge Centre content files (read via fs) are traced
+  // into the serverless bundle for the routes that load them at runtime.
+  experimental: {
+    outputFileTracingIncludes: {
+      '/api/tara': ['./content/knowledge/**/*'],
+      '/knowledge': ['./content/knowledge/**/*'],
+      '/knowledge/[slug]': ['./content/knowledge/**/*'],
+    },
+  },
+
   images: {
     // All imagery is now self-hosted under /public — no remote patterns required.
 
