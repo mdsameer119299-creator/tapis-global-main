@@ -69,3 +69,31 @@ export function scoreLead(input: LeadScoreInput): LeadScore {
   const temperature: LeadTemperature = score >= 55 ? 'hot' : score >= 30 ? 'warm' : 'nurture'
   return { score, temperature, reasons }
 }
+
+/**
+ * Server-side scoring from a raw enquiry `fields` map. The client's leadScore /
+ * leadTemperature are NEVER trusted — the server recomputes authoritatively from
+ * validated fields (email, company, buyerType, request flags, and any TARA
+ * summary of categories/materials). Used by the enquiry API.
+ */
+export function scoreLeadFromFields(formType: string, fields: Record<string, string>): LeadScore {
+  const summary = fields.taraSummary || ''
+  const lower = summary.toLowerCase()
+  const listFrom = (label: string): string[] => {
+    const m = new RegExp(`${label}:\\s*([^|]+)`, 'i').exec(summary)
+    return m ? m[1].split(',').map((s) => s.trim()).filter(Boolean) : []
+  }
+  return scoreLead({
+    businessEmail: fields.email,
+    company: fields.company,
+    buyerType: fields.buyerType,
+    productInterests: listFrom('Categories'),
+    materialInterests: listFrom('Materials'),
+    constructionInterests: listFrom('Constructions'),
+    catalogueRequested: fields.catalogueRequested === 'yes' || formType === 'catalogue',
+    sampleRequested: /sample/.test(lower),
+    quotationRequested: /quotation|quote/.test(lower),
+    handoffRequested: formType === 'tara',
+    sourcePath: fields.landing_page,
+  })
+}
