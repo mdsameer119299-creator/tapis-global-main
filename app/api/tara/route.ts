@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { taraProviderAvailable, taraComplete } from '@/lib/tara/provider'
 import { TARA_SYSTEM_PROMPT, retrieveContext, needsHandoff } from '@/lib/tara/knowledge'
-import { searchKnowledgeArticles } from '@/lib/knowledge/content'
+import { retrieveArticleContext } from '@/lib/knowledge/content'
 import { getClientIp } from '@/lib/enquiry-rate-limit'
 import {
   TARA_LIMITS, sanitizeTurns, decide, burst, parseCookies,
@@ -78,7 +78,9 @@ export async function POST(req: Request) {
   // Retrieve from BOTH the in-code knowledge modules and the external Knowledge
   // Centre content files (server-side). TARA answers only from verified content.
   const moduleContext = retrieveContext(lastUser)
-  const articleContext = searchKnowledgeArticles(lastUser, 2).map((a) => `${a.title}: ${a.summary}`).join('\n')
+  // Bounded body-chunk retrieval: TARA receives the most relevant ARTICLE
+  // SECTIONS (not just title+summary), strictly capped in size.
+  const articleContext = retrieveArticleContext(lastUser, { maxChars: 1200, maxChunks: 4 })
   const context = [moduleContext, articleContext].filter(Boolean).join('\n')
   const system = context ? `${TARA_SYSTEM_PROMPT}\n\nRELEVANT VERIFIED CONTEXT:\n${context}` : TARA_SYSTEM_PROMPT
   try {

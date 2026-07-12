@@ -48,5 +48,29 @@ Minimal article:
 - **Sitemap:** knowledge URLs are intentionally NOT auto-added to the sitemap yet (phased rollout, consistent with the project's indexation strategy). `getPublishedArticleSlugs()` is ready to wire into `app/sitemap.ts` when a batch is approved.
 - Guardrails: keep content capability-safe (no invented prices/MOQ/certifications/delivery/claims) — the same rules TARA enforces.
 
+## Strict build/CI validation
+`scripts/validate-knowledge.mjs` (`npm run knowledge:validate`, and wired as
+**`prebuild`** so `next build` fails on bad content) validates every file and
+exits non-zero on: malformed JSON, missing/invalid required fields, invalid
+`category`, invalid `body`/`faq`/`images`/`related*` structures, or **duplicate
+slugs**. The same validator (`validateArticle` / `readAndValidateArticles` in
+`lib/knowledge/content.ts`) backs both the gate and the runtime loader; at
+runtime invalid files are skipped defensively, but the build gate guarantees bad
+content never ships. Point `KNOWLEDGE_DIR` at another folder to validate it.
+
+## Draft vs published
+`status:"draft"` articles are excluded from the public routes, sitemap helpers and
+TARA. Public code uses `getPublishedArticle(slug)` (returns `undefined` for drafts);
+`getKnowledgeArticle(slug)` (any status) is for internal/admin use only.
+
+## TARA retrieval (bounded body chunks)
+`retrieveArticleContext(query, { maxChars, maxChunks })` ranks individual article
+**body sections** — not just title+summary — and returns the most relevant chunks
+joined, strictly capped by `maxChars` (default 1200) and `maxChunks` (default 4),
+so TARA gets real article knowledge without the AI context ever ballooning.
+
 ## Tests
-`npm run test:content` (20 assertions): file loading + validation, TARA retrieval from content, automatic internal-link resolution (incl. dropping bogus refs), and auto structured-data generation.
+`npm run test:content` (35 assertions): file loading + validation, TARA retrieval
+from content (incl. bounded body chunks), automatic internal-link resolution
+(incl. dropping bogus refs), auto structured-data generation, strict validation of
+malformed/duplicate/invalid content, and draft exclusion / published-only lookup.

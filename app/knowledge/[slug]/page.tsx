@@ -9,7 +9,7 @@ import {
   faqSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
-import { getKnowledgeArticle, getPublishedArticleSlugs } from '@/lib/knowledge/content'
+import { getPublishedArticle, getPublishedArticleSlugs } from '@/lib/knowledge/content'
 import { getKnowledgeCategory } from '@/lib/knowledge/registry'
 import { resolveArticleLinks } from '@/lib/knowledge/links'
 import KnowledgeArticleView from '@/components/knowledge/KnowledgeArticleView'
@@ -21,8 +21,8 @@ export function generateStaticParams() {
 }
 
 export function generateMetadata({ params }: Props): Metadata {
-  const a = getKnowledgeArticle(params.slug)
-  if (!a || a.status === 'draft') return {}
+  const a = getPublishedArticle(params.slug)
+  if (!a) return {}
   return buildMetadata({
     title: a.seo.title,
     description: a.seo.description,
@@ -32,8 +32,8 @@ export function generateMetadata({ params }: Props): Metadata {
 }
 
 export default function KnowledgeArticlePage({ params }: Props) {
-  const a = getKnowledgeArticle(params.slug)
-  if (!a || a.status === 'draft') notFound()
+  const a = getPublishedArticle(params.slug)
+  if (!a) notFound()
 
   const url = `${SEO_BASE_URL}/knowledge/${a.slug}`
   const category = getKnowledgeCategory(a.category)

@@ -5,7 +5,9 @@
 
 import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
-import { dirname, resolve } from 'path'
+import { dirname, resolve, join } from 'path'
+import { mkdtempSync, writeFileSync, rmSync } from 'fs'
+import { tmpdir } from 'os'
 
 const require = createRequire(import.meta.url)
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -69,6 +71,55 @@ const content = jiti('../lib/knowledge/content.ts')
   const wp = graph.find((n) => n['@type'] === 'WebPage')
   ok('auto breadcrumb has 3 valid items', bc && bc.itemListElement.length === 3)
   ok('WebPage breadcrumb @id resolves (intrinsic safety preserved)', wp && wp.breadcrumb && bc && wp.breadcrumb['@id'] === bc['@id'])
+}
+
+// ── Bounded section/chunk retrieval (TARA gets BODY, capped in size) ─────────
+{
+  const full = content.retrieveArticleContext('new zealand wool for a hotel project')
+  ok('retrieval returns article BODY content (not just title+summary)', /natural protein fibre|colour take-up|manufactured to order/i.test(full))
+  const capped = content.retrieveArticleContext('new zealand wool custom rug sampling production', { maxChars: 300 })
+  ok('retrieval respects maxChars bound', capped.length <= 300, `(len ${capped.length})`)
+  const chunked = content.retrieveArticleContext('wool viscose sampling production timeline dispatch', { maxChars: 4000, maxChunks: 2 })
+  ok('retrieval respects maxChunks bound', chunked.split('\n').filter(Boolean).length <= 2)
+  ok('empty query returns empty context', content.retrieveArticleContext('') === '')
+  ok('irrelevant query returns empty context', content.retrieveArticleContext('quantum astrophysics xyz') === '')
+}
+
+// ── Strict validation of malformed / duplicate / invalid content ─────────────
+{
+  const dir = mkdtempSync(join(tmpdir(), 'kb-'))
+  const write = (name, obj) => writeFileSync(join(dir, name), typeof obj === 'string' ? obj : JSON.stringify(obj))
+  const good = { slug: 'good-one', category: 'materials', status: 'published', title: 'Good', summary: 'A valid article.', seo: { title: 't', description: 'd' }, body: [{ h2: 'H', body: 'B' }] }
+  write('good.json', good)
+  write('draft.json', { ...good, slug: 'draft-one', status: 'draft' })
+  write('malformed.json', '{ not valid json ,,,')
+  write('dup-a.json', { ...good, slug: 'dup-slug' })
+  write('dup-b.json', { ...good, slug: 'dup-slug', title: 'Dup B' })
+  write('bad-category.json', { ...good, slug: 'bad-cat', category: 'not-a-real-category' })
+  write('bad-structure.json', { ...good, slug: 'bad-struct', body: 'should-be-array', faq: [{ q: 'q' }] })
+  write('missing-fields.json', { slug: 'missing', category: 'materials' })
+
+  process.env.KNOWLEDGE_DIR = dir
+  content._resetKnowledgeCache()
+  const { articles, errors } = content.readAndValidateArticles()
+  const joined = errors.join(' | ')
+  ok('reports malformed JSON', /malformed JSON/i.test(joined))
+  ok('reports duplicate slug', /duplicate slug "dup-slug"/i.test(joined))
+  ok('reports invalid category', /invalid "category"/i.test(joined))
+  ok('reports invalid body/faq structure', /invalid "body"/i.test(joined) && /invalid "faq"/i.test(joined))
+  ok('reports missing required fields', /missing "summary"|missing "seo/i.test(joined))
+  ok('strict validation collects >=5 errors', errors.length >= 5, `(got ${errors.length})`)
+
+  // Loader is lenient (skips invalid) but honours drafts.
+  content._resetKnowledgeCache()
+  ok('draft excluded from published list', !content.getPublishedArticleSlugs().includes('draft-one'))
+  ok('published-only lookup returns undefined for draft', content.getPublishedArticle('draft-one') === undefined)
+  ok('internal lookup can still see draft', Boolean(content.getKnowledgeArticle('draft-one')))
+  ok('invalid-shape files are skipped at runtime', content.getKnowledgeArticle('bad-struct') === undefined && content.getKnowledgeArticle('bad-cat') === undefined)
+
+  delete process.env.KNOWLEDGE_DIR
+  content._resetKnowledgeCache()
+  rmSync(dir, { recursive: true, force: true })
 }
 
 // ── Registry categories (scalable) ───────────────────────────────────────────
