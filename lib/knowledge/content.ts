@@ -67,7 +67,13 @@ export interface KnowledgeValidationResult {
 export function readAndValidateArticles(): KnowledgeValidationResult {
   const dir = contentDir()
   let files: string[] = []
-  try { files = fs.readdirSync(dir).filter((f) => f.endsWith('.json')) } catch { return { articles: [], errors: [] } }
+  try {
+    files = fs.readdirSync(dir).filter((f) => f.endsWith('.json'))
+  } catch (e) {
+    // A missing/unreadable content directory is a hard error (never silent),
+    // so the build gate fails instead of shipping an empty Knowledge Centre.
+    return { articles: [], errors: [`content directory not found or unreadable: ${dir} (${(e as NodeJS.ErrnoException).code ?? (e as Error).message})`] }
+  }
 
   const articles: KnowledgeArticle[] = []
   const errors: string[] = []

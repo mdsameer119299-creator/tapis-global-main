@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url'
 import { dirname, resolve, join } from 'path'
 import { mkdtempSync, writeFileSync, rmSync } from 'fs'
 import { tmpdir } from 'os'
+import { spawnSync } from 'child_process'
 
 const require = createRequire(import.meta.url)
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
@@ -120,6 +121,48 @@ const content = jiti('../lib/knowledge/content.ts')
   delete process.env.KNOWLEDGE_DIR
   content._resetKnowledgeCache()
   rmSync(dir, { recursive: true, force: true })
+}
+
+// ── Missing / unreadable content directory is a hard validation error ────────
+{
+  const missing = join(tmpdir(), `kb-missing-${Date.now()}`)
+  process.env.KNOWLEDGE_DIR = missing
+  content._resetKnowledgeCache()
+  const res = content.readAndValidateArticles()
+  ok('missing content dir -> validation error (not silent empty)', res.errors.some((e) => /directory not found or unreadable/i.test(e)))
+  ok('missing content dir -> no articles', res.articles.length === 0)
+  delete process.env.KNOWLEDGE_DIR
+  content._resetKnowledgeCache()
+}
+
+// ── Build gate (validate-knowledge.mjs) exit codes via KNOWLEDGE_DIR ──────────
+{
+  const VALIDATOR = resolve(ROOT, 'scripts/validate-knowledge.mjs')
+  const run = (dir) => spawnSync(process.execPath, [VALIDATOR], { env: { ...process.env, KNOWLEDGE_DIR: dir }, encoding: 'utf8' })
+
+  // Missing directory -> non-zero.
+  const r1 = run(join(tmpdir(), `kb-none-${Date.now()}`))
+  ok('gate FAILS on missing directory', r1.status !== 0)
+  ok('gate reports directory error', /directory not found or unreadable/i.test(`${r1.stdout}${r1.stderr}`))
+
+  // Drafts-only (zero published) -> non-zero.
+  const draftsDir = mkdtempSync(join(tmpdir(), 'kb-drafts-'))
+  writeFileSync(join(draftsDir, 'd.json'), JSON.stringify({ slug: 'd1', category: 'materials', status: 'draft', title: 'D', summary: 'S', seo: { title: 'a', description: 'b' } }))
+  const r2 = run(draftsDir)
+  ok('gate FAILS when zero published articles', r2.status !== 0)
+  ok('gate reports zero-published message', /no published knowledge articles/i.test(`${r2.stdout}${r2.stderr}`))
+  rmSync(draftsDir, { recursive: true, force: true })
+
+  // A valid published article -> passes.
+  const okDir = mkdtempSync(join(tmpdir(), 'kb-ok-'))
+  writeFileSync(join(okDir, 'a.json'), JSON.stringify({ slug: 'a1', category: 'materials', status: 'published', title: 'A', summary: 'S', seo: { title: 'a', description: 'b' }, body: [{ h2: 'H', body: 'B' }] }))
+  const r3 = run(okDir)
+  ok('gate PASSES with a published article', r3.status === 0, `(status ${r3.status})`)
+  rmSync(okDir, { recursive: true, force: true })
+
+  // Default content dir (real content) -> passes.
+  const r4 = spawnSync(process.execPath, [VALIDATOR], { cwd: ROOT, env: { ...process.env, KNOWLEDGE_DIR: '' }, encoding: 'utf8' })
+  ok('gate PASSES on the real content directory', r4.status === 0, `(status ${r4.status})`)
 }
 
 // ── Registry categories (scalable) ───────────────────────────────────────────
