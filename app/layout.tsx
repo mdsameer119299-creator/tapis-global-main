@@ -18,6 +18,9 @@ import { fontVariables, outfit } from '@/lib/fonts'
 const Loader = dynamic(() => import('@/components/layout/Loader'), { ssr: false })
 const StickyBar = dynamic(() => import('@/components/layout/StickyBar'), { ssr: false })
 const FloatingWhatsApp = dynamic(() => import('@/components/layout/FloatingWhatsApp'), { ssr: false })
+const Analytics = dynamic(() => import('@/components/analytics/Analytics'), { ssr: false })
+const AttributionInit = dynamic(() => import('@/components/analytics/AttributionInit'), { ssr: false })
+const Tara = dynamic(() => import('@/components/tara/Tara'), { ssr: false })
 
 export const viewport: Viewport = {
   width:        'device-width',
@@ -71,6 +74,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Footer />
         <StickyBar />
         <FloatingWhatsApp />
+        <Tara />
+
+        {/* Privacy-safe analytics — no-ops without NEXT_PUBLIC_* IDs */}
+        <Analytics />
+        <AttributionInit />
 
         {/* Custom cursor — desktop pointer devices only */}
         <Script id="cursor-init" strategy="lazyOnload">{`
