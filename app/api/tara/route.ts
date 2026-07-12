@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { taraProviderAvailable, taraComplete } from '@/lib/tara/provider'
 import { TARA_SYSTEM_PROMPT, retrieveContext, needsHandoff } from '@/lib/tara/knowledge'
+import { searchKnowledgeArticles } from '@/lib/knowledge/content'
 import { getClientIp } from '@/lib/enquiry-rate-limit'
 import {
   TARA_LIMITS, sanitizeTurns, decide, burst, parseCookies,
@@ -74,7 +75,11 @@ export async function POST(req: Request) {
 
   // 6. Proceed to the provider (bounded timeout; system assembled server-side
   //    only so user content can never become the system prompt).
-  const context = retrieveContext(lastUser)
+  // Retrieve from BOTH the in-code knowledge modules and the external Knowledge
+  // Centre content files (server-side). TARA answers only from verified content.
+  const moduleContext = retrieveContext(lastUser)
+  const articleContext = searchKnowledgeArticles(lastUser, 2).map((a) => `${a.title}: ${a.summary}`).join('\n')
+  const context = [moduleContext, articleContext].filter(Boolean).join('\n')
   const system = context ? `${TARA_SYSTEM_PROMPT}\n\nRELEVANT VERIFIED CONTEXT:\n${context}` : TARA_SYSTEM_PROMPT
   try {
     const reply = await taraComplete(system, turns, TARA_LIMITS.timeoutMs())
