@@ -15,7 +15,8 @@
     "seo:audit:production": "node scripts/seo-audit-production.mjs",
     "seo:audit:production:test": "node scripts/seo-audit-production.test.mjs",
     "optimize:images": "node scripts/optimize-images.mjs && node scripts/replace-image-paths.mjs",
-    "analyze": "ANALYZE=true next build"
+    "analyze": "ANALYZE=true next build",
+    "test:leads": "node scripts/lead-intelligence.test.mjs"
   },
   "dependencies": {
     "eslint-config-next": "^14.2.35",
