@@ -35,7 +35,21 @@ Real repository product photography only (`/images/...` from `PRODUCT_CATEGORIES
 - Submits to the existing `/api/enquiry` (`formType:'tara'`) with a concise summary, PII-free attribution snapshot, and an explainable lead score. Truthful confirmation ("received & shared with the team").
 
 ## Security & privacy
-- API key server-only; never in client JS. Rate limiting (20/min/IP) + turn cap (12) + per-message size cap (2000 chars) + request timeout. Prompt-injection resistance: user text can never become the system prompt; the prompt/config is never revealed. No raw AI errors surfaced. Chat text is **never** sent to GA4/Clarity; the chat + lead form are `data-clarity-mask="true"`.
+- **API key is server-only**; never in client JS (verified by `npm run test:tara`).
+- Prompt-injection resistance: user text can never become the system prompt; the prompt/config is never revealed. No raw AI/transport errors are surfaced to the client.
+- Chat text is **never** sent to GA4/Clarity; the chat + lead form carry `data-clarity-mask="true"`.
+
+### Layered abuse / cost protection (`lib/tara/guard.ts`) — honest limits
+The paid provider is protected by defense-in-depth, chosen to fit **serverless** without adding Redis/DB:
+1. **Oversized-request rejection** — Content-Length pre-check + actual byte-size check (16 KB) + `MAX_TURNS` (12) + `MAX_CHARS` (2000) before any provider call.
+2. **Instance-local burst limiter** (per IP **and** per session). ⚠️ **Honest limitation:** on Vercel/serverless this in-memory Map is **per-instance and resets on cold start**, so it is **not** a reliable *global* limit — it only blunts rapid bursts on a single warm instance.
+3. **Cross-instance per-session AI-turn cap** via an **HMAC-signed httpOnly cookie** (`tara_ai`). The counter lives in the client cookie but is signed with a server secret, so a client **cannot forge or raise it**; deleting it only yields a fresh (still-bounded) session while the burst limiter + provider caps still apply. This is the pragmatic cross-instance bound without external infrastructure.
+4. **Handoff & quota never call the provider** — deterministic intents (price/MOQ/quotation/sample/catalogue/certification/payment/tender/OEM/"talk to team") and sessions at the AI-turn cap are answered locally, saving paid calls.
+5. **Bounded provider call** — strict timeout (`TARA_TIMEOUT_MS`) + `max_tokens` 400; on error/timeout → safe fallback, **no AI turn consumed**.
+
+**Config env (all optional, safe defaults):** `TARA_MAX_AI_TURNS_PER_SESSION` (15), `TARA_MAX_REQUESTS_PER_MINUTE` (20), `TARA_TIMEOUT_MS` (15000), `TARA_SESSION_SECRET` (optional — falls back to a stable hash of `ANTHROPIC_API_KEY`, server-only).
+
+**Remaining limitation:** a determined attacker rotating IPs and clearing cookies can still open many fresh sessions; each is individually bounded, but a truly global hard cap would need shared state (Redis/Upstash/DB), intentionally **not** added here. For higher-risk exposure, add a shared limiter or a WAF/edge rate limit.
 
 ## Analytics events
 `tara_open/close`, `tara_message_sent` (no content), `tara_category_selected`, `tara_material_selected`, `tara_lead_capture_start/submit`, `tara_project_qualified`, `tara_handoff_requested/completed`.

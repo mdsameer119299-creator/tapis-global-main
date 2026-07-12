@@ -12,8 +12,13 @@ Set in Vercel project env (Production/Preview) or `.env.local`. These are public
 
 ## How it works (`components/analytics/Analytics.tsx`)
 - Loads GA4 + Clarity via `next/script strategy="afterInteractive"` only when the IDs exist (no duplicate injection across renders).
-- GA4 `config` sends the initial page_view; App-Router client navigation fires a **manual** `page_view` via `usePathname` (skipping the first effect) — **no duplicate page views**.
+- GA4 `config` sends the initial page_view; App-Router client navigation fires a **manual** `page_view` via `usePathname` (skipping the first effect) — **exactly one initial page_view and exactly one per client navigation; no duplicates**.
 - `anonymize_ip: true` on GA4.
+
+## Canonical single dispatch (no double-counting)
+`lib/analytics.ts` sends each event through **one** sink, never both:
+- **Default (`gtag` mode):** events go through `gtag('event', …)` only. gtag manages `dataLayer` internally, so we **must not** also `dataLayer.push()` the same event — that fixed a double-processing bug.
+- **`NEXT_PUBLIC_ANALYTICS_MODE=gtm`:** set **only** if a Google Tag Manager container is installed; then events are pushed to `dataLayer` as GTM custom events and `gtag` is not called directly. The two modes are never mixed. Verified by `npm run test:tara` (one `trackEvent` → one gtag call, zero dataLayer pushes).
 
 ## Event taxonomy (`lib/analytics.ts`)
 Fire with `trackEvent(EVENTS.x, params)`. Canonical names:
@@ -24,8 +29,8 @@ Fire with `trackEvent(EVENTS.x, params)`. Canonical names:
 - `sanitizeParams()` is a defensive backstop: it drops any value matching an email or phone pattern before sending. Verified by `npm run test:leads`.
 
 ## Clarity masking (PII in recordings)
-- Clarity attribute masking is applied: the **TARA chat panel** and **its lead form** carry `data-clarity-mask="true"`, so chat text and lead fields are masked in session recordings.
-- Additionally set Clarity dashboard masking to **Balanced/Strict** for defence in depth. Verify in the Clarity dashboard that form inputs and chat text show as masked.
+- Clarity attribute masking is applied in code: the **TARA chat panel** and **its lead form** carry `data-clarity-mask="true"`, so chat text and lead fields are masked in session recordings. The **catalogue form** inputs are standard text/email/tel fields; Clarity masks input values by default in Balanced/Strict.
+- **Defense-in-depth (manual, required):** in the Clarity dashboard, set masking to **Balanced or Strict** and confirm form inputs + chat text render as masked. Attribute masking in code should not be the only layer — dashboard-level masking must also be enabled manually. Neither GA4 nor Clarity receives name/email/phone/WhatsApp/chat text or PII-bearing attribution (categorical params only; email/phone backstop in `sanitizeParams`).
 
 ## Verification
 1. **GA4 DebugView**: set the ID, open the site with the GA Debug extension (or `?debug_mode=1`), confirm `page_view` on navigation and lead events fire with **no PII** in parameters.
