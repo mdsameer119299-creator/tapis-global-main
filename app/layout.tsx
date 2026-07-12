@@ -13,6 +13,8 @@ import {
 import Navbar    from '@/components/layout/Navbar'
 import Footer    from '@/components/layout/Footer'
 import HashScroll from '@/components/layout/HashScroll'
+import GoogleAnalytics from '@/components/analytics/GoogleAnalytics'
+import AttributionTracker from '@/components/analytics/AttributionTracker'
 import { fontVariables, outfit } from '@/lib/fonts'
 
 const Loader = dynamic(() => import('@/components/layout/Loader'), { ssr: false })
@@ -58,6 +60,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className={outfit.className}>
+        {/* GA4 — loads only when NEXT_PUBLIC_GA_ID is set */}
+        <GoogleAnalytics />
+        {/* Persist first-touch attribution for the session */}
+        <AttributionTracker />
+
         {/* Custom cursor dots (desktop only — hidden via CSS on touch devices) */}
         <div id="cd" />
         <div id="cr" />

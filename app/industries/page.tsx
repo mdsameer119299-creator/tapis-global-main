@@ -9,6 +9,43 @@ import {
 } from '@/lib/structured-data'
 import { INDUSTRIES } from '@/lib/seo-landing'
 import LandingHub from '@/components/landing/LandingHub'
+import HubGuidance from '@/components/leads/HubGuidance'
+import LeadSection from '@/components/leads/LeadSection'
+
+const INDUSTRIES_GUIDANCE = {
+  eyebrow: 'Specifying by environment',
+  heading: 'Specify carpet to how each space performs',
+  intro:
+    'Every environment places different demands on a floor — footfall, cleaning, acoustics, fire behaviour and design continuity. Use these considerations to brief us accurately, and we will recommend the construction and specification that fits your project and jurisdiction.',
+  points: [
+    {
+      title: 'Traffic and durability',
+      body: 'High-traffic public areas — lobbies, corridors, banquet and F&B — need denser, more resilient constructions than guestrooms or private offices. Tell us the space type and expected footfall so durability is matched, not over- or under-specified.',
+    },
+    {
+      title: 'Compliance and acoustics',
+      body: 'Institutional and hospitality projects often carry fire-behaviour and acoustic requirements set by the venue, client or local code. Share the standards your project must meet and we will specify and document to those requirements.',
+    },
+    {
+      title: 'Design continuity across areas',
+      body: 'Multi-zone projects benefit from a coordinated palette and pattern language across guestrooms, corridors and public spaces. Custom colour and pattern let a single scheme carry through an entire property.',
+    },
+    {
+      title: 'What to prepare for a project quote',
+      body: 'Space types and areas (sqm), any compliance standards, target look/palette, destination and timeline. With these we can move quickly to a specification-ready quote or sample plan.',
+    },
+  ],
+  links: [
+    { href: '/guides/hotel-carpet-buying-guide', label: 'Hotel carpet buying guide' },
+    { href: '/guides/office-carpet-buying-guide', label: 'Office carpet buying guide' },
+    { href: '/guides/auditorium-carpet-buying-guide', label: 'Auditorium carpet buying guide' },
+    { href: '/guides/mosque-carpet-buying-guide', label: 'Mosque carpet buying guide' },
+    { href: '/industries/hotel-carpets', label: 'Hotel Carpets' },
+    { href: '/industries/office-carpets', label: 'Office Carpets' },
+    { href: '/industries/hospital-carpets', label: 'Hospital Carpets' },
+    { href: '/industries/restaurant-carpets', label: 'Restaurant Carpets' },
+  ],
+}
 
 export const metadata: Metadata = buildMetadata({
   title:       'Carpets by Industry | Hospitality, Commercial & Institutional — Tapis Global',
@@ -45,6 +82,8 @@ export default function IndustriesHub() {
         basePath="/industries"
         pages={INDUSTRIES}
       />
+      <HubGuidance {...INDUSTRIES_GUIDANCE} />
+      <LeadSection source="/industries" heading="Request a project quote" />
     </>
   )
 }
