@@ -164,13 +164,14 @@ export default function CatalogueForm() {
     })
     setSubmitting(false)
     if (!result.ok) {
-      trackEvent(EVENTS.catalogueDeliveryFailure)
+      trackEvent(EVENTS.catalogueRequestFailure)
       setSubmitError(result.error)
       return
     }
-    // 'success' = the request was accepted/queued server-side; the server owns
-    // whether an email actually went out and returns the truthful copy.
-    trackEvent(EVENTS.catalogueDeliverySuccess, { buyer_type: form.buyerType, lead_temperature: score.temperature })
+    // 'request_success' = the request was accepted server-side (lead recorded /
+    // team notified). It does NOT assert catalogue email delivery. lead_temperature
+    // here is only a hint; the server recomputes the authoritative score.
+    trackEvent(EVENTS.catalogueRequestSuccess, { buyer_type: form.buyerType })
     setSubmitted(true)
   }
 

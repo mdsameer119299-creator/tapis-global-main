@@ -18,8 +18,9 @@
 
 import Script from 'next/script'
 import { usePathname } from 'next/navigation'
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { trackPageView } from '@/lib/analytics'
+import { readConsent, CONSENT_EVENT, type Consent } from '@/lib/consent'
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID
@@ -27,14 +28,25 @@ const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID
 export default function Analytics() {
   const pathname = usePathname()
   const firstLoad = useRef(true)
+  // GA4/Clarity load ONLY after explicit consent.
+  const [consent, setConsent] = useState<Consent | null>(null)
+  useEffect(() => {
+    setConsent(readConsent())
+    const h = (e: Event) => setConsent(((e as CustomEvent).detail as Consent) ?? readConsent())
+    window.addEventListener(CONSENT_EVENT, h)
+    return () => window.removeEventListener(CONSENT_EVENT, h)
+  }, [])
+  const enabled = consent === 'granted'
 
   useEffect(() => {
-    if (!GA_ID) return
+    if (!GA_ID || !enabled) return
     // Skip the very first pathname effect: GA4 'config' already sends the
     // initial view. Fire manual page_view only on subsequent client navigation.
     if (firstLoad.current) { firstLoad.current = false; return }
     trackPageView(pathname)
-  }, [pathname])
+  }, [pathname, enabled])
+
+  if (!enabled) return null
 
   return (
     <>

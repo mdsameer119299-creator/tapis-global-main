@@ -20,6 +20,7 @@ const StickyBar = dynamic(() => import('@/components/layout/StickyBar'), { ssr: 
 const FloatingWhatsApp = dynamic(() => import('@/components/layout/FloatingWhatsApp'), { ssr: false })
 const Analytics = dynamic(() => import('@/components/analytics/Analytics'), { ssr: false })
 const AttributionInit = dynamic(() => import('@/components/analytics/AttributionInit'), { ssr: false })
+const Consent = dynamic(() => import('@/components/analytics/Consent'), { ssr: false })
 const Tara = dynamic(() => import('@/components/tara/Tara'), { ssr: false })
 
 export const viewport: Viewport = {
@@ -76,7 +77,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <FloatingWhatsApp />
         <Tara />
 
-        {/* Privacy-safe analytics — no-ops without NEXT_PUBLIC_* IDs */}
+        {/* Privacy-safe analytics — no-ops without NEXT_PUBLIC_* IDs, and GA4/
+            Clarity load only after explicit consent. */}
+        <Consent />
         <Analytics />
         <AttributionInit />
 

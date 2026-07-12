@@ -18,11 +18,13 @@
 
 /** Canonical B2B event names. Keep in sync with docs/ANALYTICS-SETUP.md. */
 export const EVENTS = {
-  // Catalogue funnel
+  // Catalogue funnel. NOTE: these track the REQUEST lifecycle (submission
+  // accepted/failed server-side), NOT confirmed email delivery — the site does
+  // not auto-deliver a catalogue file, so we must not imply delivery.
   catalogueRequestOpen:    'catalogue_request_open',
   catalogueRequestSubmit:  'catalogue_request_submit',
-  catalogueDeliverySuccess:'catalogue_delivery_success',
-  catalogueDeliveryFailure:'catalogue_delivery_failure',
+  catalogueRequestSuccess: 'catalogue_request_success',
+  catalogueRequestFailure: 'catalogue_request_failure',
   // Quotation / sample / contact
   quotationStart:   'quotation_start',
   quotationSubmit:  'quotation_submit',
