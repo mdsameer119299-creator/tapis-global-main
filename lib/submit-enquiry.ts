@@ -1,6 +1,6 @@
 import { ENQUIRY_SUBMIT_ERROR } from '@/lib/enquiry-form'
 
-export type EnquiryFormType = 'contact' | 'inquiry' | 'custom' | 'catalogue'
+export type EnquiryFormType = 'contact' | 'inquiry' | 'custom' | 'catalogue' | 'tara'
 
 export type SubmitEnquiryResult =
   | { ok: true }

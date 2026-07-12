@@ -7,6 +7,7 @@ const FORM_LABELS: Record<EnquiryFormType, string> = {
   inquiry:   'Homepage Project Enquiry',
   custom:    'Custom Carpet Enquiry',
   catalogue: 'Catalogue Request',
+  tara:      'TARA Advisor Lead',
 }
 
 const LOGO_URL = `${SEO_BASE_URL}/logos/tgi-header-logo1.png`

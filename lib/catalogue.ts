@@ -62,9 +62,12 @@ export const CATALOGUE_TRUST = [
 ]
 
 export const CATALOGUE_SUCCESS = {
+  // Truthful copy: the system records the request and notifies the team, which
+  // then sends the relevant catalogue. We do NOT auto-attach/auto-email a
+  // catalogue file, so we must not claim it has already been sent.
   title:   'Thank You for Your Interest',
-  message: 'Our catalogue will be sent to your email shortly.',
-  subline: 'You will receive the catalogue in your email inbox.',
+  message: 'Your catalogue request has been received.',
+  subline: 'Our team will send you the relevant catalogue at the email address you provided.',
 }
 
 export const CATALOGUE_TRUST_CARDS = [

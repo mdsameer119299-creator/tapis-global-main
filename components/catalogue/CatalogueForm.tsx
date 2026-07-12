@@ -1,20 +1,24 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BUYER_TYPES, CATALOGUE_SUCCESS } from '@/lib/catalogue'
 import { submitEnquiry } from '@/lib/submit-enquiry'
 import { Reveal } from '@/components/ui'
+import { EVENTS, trackEvent } from '@/lib/analytics'
+import { captureAttribution } from '@/lib/attribution'
+import { scoreLead } from '@/lib/lead-scoring'
 
 type FormState = {
   name:      string
   mobile:    string
   email:     string
   company:   string
+  country:   string
   buyerType: string
 }
 
 const INITIAL: FormState = {
-  name: '', mobile: '', email: '', company: '', buyerType: '',
+  name: '', mobile: '', email: '', company: '', country: '', buyerType: '',
 }
 
 const FIELD_ICONS: Record<string, React.ReactNode> = {
@@ -41,6 +45,11 @@ const FIELD_ICONS: Record<string, React.ReactNode> = {
   buyerType: (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
       <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" strokeLinecap="round" /><circle cx="9" cy="7" r="4" strokeLinecap="round" /><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" strokeLinecap="round" />
+    </svg>
+  ),
+  country: (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.4">
+      <circle cx="12" cy="12" r="10" /><path d="M2 12h20M12 2a15 15 0 010 20 15 15 0 010-20" strokeLinecap="round" />
     </svg>
   ),
 }
@@ -105,6 +114,7 @@ function validate(form: FormState): Partial<Record<keyof FormState, string>> {
   else if (!/^[\d\s+\-()]{7,18}$/.test(form.mobile.trim())) errors.mobile = 'Enter a valid mobile number'
   if (!form.email.trim()) errors.email = 'Email is required'
   else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email.trim())) errors.email = 'Enter a valid email address'
+  if (!form.country.trim()) errors.country = 'Country / location is required'
   if (!form.buyerType) errors.buyerType = 'Please select your profile'
   return errors
 }
@@ -115,6 +125,8 @@ export default function CatalogueForm() {
   const [submitting, setSubmitting] = useState(false)
   const [submitted, setSubmitted]   = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+
+  useEffect(() => { trackEvent(EVENTS.catalogueRequestOpen, { source: '/catalogue' }) }, [])
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target
@@ -131,18 +143,35 @@ export default function CatalogueForm() {
     }
     setSubmitError(null)
     setSubmitting(true)
+    trackEvent(EVENTS.catalogueRequestSubmit, { buyer_type: form.buyerType })
+
+    const attribution = captureAttribution()
+    const score = scoreLead({
+      businessEmail: form.email, company: form.company, buyerType: form.buyerType,
+      catalogueRequested: true, sourcePath: attribution.landing_page,
+    })
     const result = await submitEnquiry('catalogue', {
       name: form.name,
       mobile: form.mobile,
       email: form.email,
       company: form.company,
+      country: form.country,
       buyerType: form.buyerType,
+      catalogueRequested: 'yes',
+      leadScore: String(score.score),
+      leadTemperature: score.temperature,
+      ...Object.fromEntries(Object.entries(attribution).map(([k, v]) => [k, String(v)])),
     })
     setSubmitting(false)
     if (!result.ok) {
+      trackEvent(EVENTS.catalogueRequestFailure)
       setSubmitError(result.error)
       return
     }
+    // 'request_success' = the request was accepted server-side (lead recorded /
+    // team notified). It does NOT assert catalogue email delivery. lead_temperature
+    // here is only a hint; the server recomputes the authoritative score.
+    trackEvent(EVENTS.catalogueRequestSuccess, { buyer_type: form.buyerType })
     setSubmitted(true)
   }
 
@@ -215,6 +244,7 @@ export default function CatalogueForm() {
               <FloatField id="cat-name" label="Full Name" name="name" iconKey="name" value={form.name} onChange={handleChange} error={errors.name} />
               <FloatField id="cat-mobile" label="Mobile Number" name="mobile" iconKey="mobile" type="tel" value={form.mobile} onChange={handleChange} error={errors.mobile} />
               <FloatField id="cat-email" label="Email Address" name="email" iconKey="email" type="email" value={form.email} onChange={handleChange} error={errors.email} />
+              <FloatField id="cat-country" label="Country / Location" name="country" iconKey="country" value={form.country} onChange={handleChange} error={errors.country} />
               <FloatField id="cat-company" label="Company Name" name="company" iconKey="company" value={form.company} onChange={handleChange} optional />
 
               <div>

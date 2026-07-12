@@ -16,10 +16,12 @@ import {
   validateMessage,
 } from '@/lib/enquiry-validation'
 import type { EnquiryFormType } from '@/lib/submit-enquiry'
+import { normalizeAttribution } from '@/lib/attribution-server'
+import { scoreLeadFromFields } from '@/lib/lead-scoring'
 
 export const runtime = 'nodejs'
 
-const VALID_TYPES: EnquiryFormType[] = ['contact', 'inquiry', 'custom', 'catalogue']
+const VALID_TYPES: EnquiryFormType[] = ['contact', 'inquiry', 'custom', 'catalogue', 'tara']
 
 function isValidType(value: string): value is EnquiryFormType {
   return (VALID_TYPES as string[]).includes(value)
@@ -190,6 +192,17 @@ export async function POST(req: Request) {
 
     if (!isEnquiryPayload(parsed)) {
       return NextResponse.json({ ok: false, error: 'Invalid request.' }, { status: 400 })
+    }
+
+    // Never trust client-supplied lead intelligence. Normalize attribution and
+    // recompute the lead score/temperature server-side for lead-bearing forms.
+    if (parsed.formType === 'catalogue' || parsed.formType === 'tara') {
+      parsed.fields = normalizeAttribution(parsed.fields)
+      const server = scoreLeadFromFields(parsed.formType, parsed.fields)
+      parsed.fields.leadScore = String(server.score)
+      parsed.fields.leadTemperature = server.temperature
+      parsed.fields.scoreReasons = server.reasons.join('; ')
+      parsed.fields.scoredBy = 'server'
     }
 
     const delivery = await sendEnquiryEmail(parsed)
