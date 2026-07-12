@@ -91,26 +91,36 @@ export function sanitizeParams(params: EventParams): Record<string, string | num
   return out
 }
 
-/** Fire an analytics event. Safe on the server and when no tag is installed. */
-export function trackEvent(name: EventName | string, params: EventParams = {}): void {
+// Dispatch mode. DEFAULT 'gtag' = direct GA4 via gtag.js — the ONLY canonical
+// path, so an event is sent exactly once (gtag manages dataLayer internally; we
+// must NOT also push the same event to dataLayer, which would double-process).
+// Set NEXT_PUBLIC_ANALYTICS_MODE=gtm ONLY if a GTM container is installed; then
+// events go to dataLayer as GTM custom events instead. The two modes are never
+// mixed.
+const GTM_MODE = process.env.NEXT_PUBLIC_ANALYTICS_MODE === 'gtm'
+
+/** Single canonical dispatch. Exactly one sink per call; no double delivery. */
+function dispatch(name: string, payload: Record<string, string | number | boolean>): void {
   if (typeof window === 'undefined') return
   const w = window as AnalyticsWindow
-  const payload = { event_category: 'engagement', ...sanitizeParams(params) }
   try {
-    if (typeof w.gtag === 'function') w.gtag('event', name, payload)
-    if (Array.isArray(w.dataLayer)) w.dataLayer.push({ event: name, ...payload })
+    if (GTM_MODE) {
+      if (Array.isArray(w.dataLayer)) w.dataLayer.push({ event: name, ...payload })
+    } else if (typeof w.gtag === 'function') {
+      w.gtag('event', name, payload)
+    }
   } catch {
     /* analytics must never break UX */
   }
 }
 
+/** Fire an analytics event. Safe on the server and when no tag is installed. */
+export function trackEvent(name: EventName | string, params: EventParams = {}): void {
+  dispatch(name, { event_category: 'engagement', ...sanitizeParams(params) })
+}
+
 /** Manual GA4 page_view for App Router client navigation (no PII). */
 export function trackPageView(path: string): void {
-  if (typeof window === 'undefined') return
-  const w = window as AnalyticsWindow
-  try {
-    if (typeof w.gtag === 'function') w.gtag('event', 'page_view', { page_path: path, page_location: window.location.origin + path })
-  } catch {
-    /* no-op */
-  }
+  const origin = typeof window !== 'undefined' ? window.location.origin : ''
+  dispatch('page_view', { page_path: path, page_location: origin + path })
 }
