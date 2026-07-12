@@ -20,6 +20,9 @@ ok('send is locked while busy', client.includes('if (!q || busy) return'))
 ok('stale async replies are ignored', client.includes('currentRequest !== requestId.current'))
 ok('API handoff message explicitly allows continued chat', HANDOFF_OK(route))
 ok('API fallback does not force lead capture', /SAFE_FALLBACK = '[^']*continue/.test(route))
+ok('initial experience is chat-first', client.includes("const initialMessages = () => [mk('tara', GREETING)]"))
+ok('suggested questions are present', client.includes('tara-suggestions') && client.includes('Help me choose a rug'))
+ok('composer is sticky and prominent', client.includes('tara-sticky-composer') && client.includes('Chat with TARA…'))
 
 function HANDOFF_OK(source) {
   const match = source.match(/const HANDOFF_MSG = '([^']+)'/)
