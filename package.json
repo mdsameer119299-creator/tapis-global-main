@@ -18,7 +18,8 @@
     "analyze": "ANALYZE=true next build",
     "test:leads": "node scripts/lead-intelligence.test.mjs",
     "test:tara": "node scripts/tara-guard.test.mjs",
-    "test:phase": "node scripts/phase-fixes.test.mjs"
+    "test:phase": "node scripts/phase-fixes.test.mjs",
+    "test:content": "node scripts/content-engine.test.mjs"
   },
   "dependencies": {
     "eslint-config-next": "^14.2.35",
