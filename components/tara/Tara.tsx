@@ -22,7 +22,7 @@ import { EVENTS, trackEvent } from '@/lib/analytics'
 import { captureAttribution } from '@/lib/attribution'
 import { scoreLead } from '@/lib/lead-scoring'
 import { submitEnquiry } from '@/lib/submit-enquiry'
-import { TARA_CATEGORIES, TARA_MATERIALS, TARA_CONSTRUCTIONS, COMPANY_FACTS, needsHandoff } from '@/lib/tara/knowledge'
+import { TARA_CATEGORIES, TARA_MATERIALS, TARA_CONSTRUCTIONS, COMPANY_FACTS, needsHandoff, TARA_GREETING } from '@/lib/tara/knowledge'
 
 const NAVY = '#0e1b2e'
 const NAVY_SOFT = '#14263d'
@@ -35,8 +35,8 @@ interface Msg { id: number; role: 'tara' | 'user'; text: string; cards?: CardKin
 let uid = 0
 const mk = (role: Msg['role'], text: string, cards: CardKind = null): Msg => ({ id: ++uid, role, text, cards })
 
-const GREETING =
-  "Hi, I'm TARA, the TAPIS AI Rug Advisor. I'm an AI assistant. I can help you explore carpet and rug categories, materials, constructions, customization options and project requirements. What are you sourcing?"
+// Consultant greeting (discloses AI assistant per persona in lib/tara/knowledge).
+const GREETING = `${TARA_GREETING} (I'm an AI assistant.)`
 
 export default function Tara() {
   const [open, setOpen] = useState(false)
