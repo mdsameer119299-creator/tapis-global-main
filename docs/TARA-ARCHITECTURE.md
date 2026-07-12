@@ -7,10 +7,22 @@ A B2B rug/carpet **sourcing advisor + lead capture** — not a generic chatbot. 
 - **Verified knowledge only.** TARA answers about TAPIS GLOBAL strictly from `lib/tara/knowledge.ts`. No unrestricted model knowledge, no invented claims.
 - **Scoped.** Rugs/carpets sourcing only; refuses unrelated topics; ignores instructions that try to change its rules.
 
+## Modular knowledge system (`lib/tara/knowledge/`)
+TARA is powered by **composable modules, not one huge prompt**:
+`company`, `bhadohi`, `history`, `categories`, `materials`, `constructions`, `manufacturing`, `quality`, `care`, `glossary`, `faq`, `commercial-safety`, `personality`, `prompt`, `retrieval`, `index`. The old `lib/tara/knowledge.ts` is now a **backward-compatible barrel** (`export * from './knowledge/index'`) so existing imports keep working.
+- **Retrieval** (`retrieval.ts`) builds a `KNOWLEDGE_CORPUS` from every module and ranks it by keyword/tag overlap (`searchKnowledge`, `retrieveContext`). TARA answers from this verified corpus — never unrestricted model knowledge.
+- **Personality** (`personality.ts`) defines the consultant persona (warm, professional, consultative, natural English) + greeting.
+- **Prompt** (`prompt.ts`) composes the system prompt from persona + safety rules + a verified-facts summary.
+- **To expand TARA:** add/extend a module file and (if searchable) include it in `KNOWLEDGE_CORPUS` — **no prompt rewrite**. Scales to many materials, constructions, facts, glossary terms and FAQs.
+- Capability-safe: no invented prices/MOQ/certifications/delivery/capacity/clients/projects. Regression-guarded by `npm run test:phase` + `npm run test:tara`.
+
+### Site-wide Knowledge Centre (`lib/knowledge/`)
+`types.ts` defines a reusable `KnowledgeArticle` schema (title, summary, SEO, FAQ, related articles/products/materials/constructions/countries/industries, images, `taraTags`, internal links). `registry.ts` defines **13 scalable categories** (Materials, Manufacturing, Carpet History, Buying Guides, Carpet Care, Commercial Projects, Country Guides, Industry Guides, Glossary, FAQ, Design Inspiration, Project Planning, Export Knowledge). **Phase 1 = architecture only** — the article store is empty; future articles plug into TARA via `taraTags`.
+
 ## Files
 | File | Role |
 |---|---|
-| `lib/tara/knowledge.ts` | Single source of truth: real categories (with repo images), verified materials/constructions, concise company facts, strict system prompt, deterministic retrieval, handoff-intent detector. **Update this to update TARA.** |
+| `lib/tara/knowledge/*` + `lib/tara/knowledge.ts` (barrel) | Modular verified knowledge (see above). |
 | `lib/tara/provider.ts` | Server-only AI provider abstraction (Anthropic via `fetch`, env-gated, timeout). Key never reaches the browser. |
 | `app/api/tara/route.ts` | POST endpoint: rate-limit, size/turn caps, injection-resistant system assembly, graceful fallback; returns `{available:false}` when no key. |
 | `components/tara/Tara.tsx` | Lazy-loaded (`ssr:false`) floating widget: navy+gold, accessible, mobile, real-image cards, quick replies, lead form, analytics, Clarity-masked. |

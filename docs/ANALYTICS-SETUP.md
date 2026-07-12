@@ -10,6 +10,15 @@ Both are **optional and env-driven**. With no IDs set, nothing loads and no data
 
 Set in Vercel project env (Production/Preview) or `.env.local`. These are public IDs by design — **no secrets here**.
 
+## Consent gating (required)
+GA4 and Clarity load **only after explicit visitor consent**. A minimal banner
+(`components/analytics/Consent.tsx`) offers Accept/Decline and stores the choice
+first-party (`lib/consent.ts`, key `tgi_analytics_consent`). Until "Accept",
+**no** GA4/Clarity script is injected; on "Decline" nothing loads. Changing the
+choice broadcasts a `tgi-consent` event so `Analytics` reacts without a reload.
+First-party attribution (no third-party calls) still runs so leads remain
+attributable; only the third-party analytics tags are consent-gated.
+
 ## How it works (`components/analytics/Analytics.tsx`)
 - Loads GA4 + Clarity via `next/script strategy="afterInteractive"` only when the IDs exist (no duplicate injection across renders).
 - GA4 `config` sends the initial page_view; App-Router client navigation fires a **manual** `page_view` via `usePathname` (skipping the first effect) — **exactly one initial page_view and exactly one per client navigation; no duplicates**.

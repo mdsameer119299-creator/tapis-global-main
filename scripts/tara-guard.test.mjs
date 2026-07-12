@@ -64,8 +64,8 @@ const ok = (n, c, d = '') => { if (c) { pass++; console.log(`  ok  ${n}`) } else
   const kb = jiti('../lib/tara/knowledge.ts')
   const blob = [
     ...kb.TARA_CATEGORIES.map((c) => c.blurb),
-    ...kb.TARA_MATERIALS.map((m) => `${m.notes} ${m.applications}`),
-    ...kb.TARA_CONSTRUCTIONS.map((c) => c.notes),
+    ...kb.TARA_MATERIALS.map((m) => `${m.notes} ${m.applications} ${(m.properties || []).join(' ')} ${(m.advantages || []).join(' ')} ${(m.limitations || []).join(' ')} ${m.maintenance || ''}`),
+    ...kb.TARA_CONSTRUCTIONS.map((c) => `${c.notes} ${c.detail || ''}`),
   ].join(' ').toLowerCase()
   const banned = ['washable', 'hard-wearing', 'high-traffic', 'fast design turnaround', 'long-lasting', 'sustainable', 'durable', 'durability']
   for (const w of banned) ok(`knowledge avoids unsupported claim: "${w}"`, !blob.includes(w), `found "${w}"`)
