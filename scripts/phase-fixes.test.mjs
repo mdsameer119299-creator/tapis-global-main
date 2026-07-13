@@ -63,6 +63,26 @@ const ok = (n, c, d = '') => { if (c) { pass++; console.log(`  ok  ${n}`) } else
   ok('consent change broadcast', dispatched && dispatched.type === c.CONSENT_EVENT && dispatched.detail === 'granted')
   c.setConsent('denied')
   ok('consent can be revoked', c.readConsent() === 'denied')
+
+  // Persisted with a timestamp so the 12-month expiry can be enforced.
+  const stored = JSON.parse(store.get(c.CONSENT_KEY))
+  ok('consent persisted with timestamp', stored && stored.v === 'denied' && typeof stored.t === 'number')
+  ok('consent max age is 12 months', c.CONSENT_MAX_AGE_DAYS === 365)
+
+  const DAY = 24 * 60 * 60 * 1000
+  // Returning visitor within 12 months — read automatically, not re-asked.
+  store.set(c.CONSENT_KEY, JSON.stringify({ v: 'granted', t: Date.now() - 300 * DAY }))
+  ok('recent decision honoured on load (no re-ask)', c.readConsent() === 'granted')
+
+  // Older than 12 months — record lapses and is cleared, so we ask again.
+  store.set(c.CONSENT_KEY, JSON.stringify({ v: 'granted', t: Date.now() - 366 * DAY }))
+  ok('expired decision returns null', c.readConsent() === null)
+  ok('expired decision cleared from storage', !store.has(c.CONSENT_KEY))
+
+  // Legacy plain-string records (pre-expiry format) remain valid.
+  store.set(c.CONSENT_KEY, 'granted')
+  ok('legacy plain-string consent still honoured', c.readConsent() === 'granted')
+
   delete globalThis.window; delete globalThis.localStorage; delete globalThis.CustomEvent
 }
 
