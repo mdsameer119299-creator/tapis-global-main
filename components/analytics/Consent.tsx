@@ -1,8 +1,11 @@
 'use client'
 
 /**
- * A minimal, accessible analytics consent banner. Fixed-position (no CLS),
- * shown only until the visitor chooses. GA4/Clarity load only after "Accept".
+ * A compact, accessible analytics consent bar. Fixed-position (no CLS) and, on
+ * mobile, sized/placed to avoid overlapping the TARA launcher, WhatsApp button,
+ * sticky CTA bar or page content. Shown only until the visitor chooses; the
+ * decision persists for 12 months (see lib/consent.ts) and is read on load.
+ * GA4/Clarity load only after "Accept".
  */
 import { useEffect, useState } from 'react'
 import { readConsent, setConsent } from '@/lib/consent'
@@ -16,18 +19,14 @@ export default function Consent() {
 
   const decide = (v: 'granted' | 'denied') => { setConsent(v); setChoice(v) }
 
+  // Compact bar. Positioning (globals.css .consent-card) keeps it clear of the
+  // TARA launcher, WhatsApp button and sticky CTA bar on mobile.
   return (
-    <div role="dialog" aria-label="Analytics consent"
-      style={{ position: 'fixed', left: 12, right: 12, bottom: 12, zIndex: 900, maxWidth: 720, margin: '0 auto',
-        background: '#0e1b2e', color: '#e9eef5', border: '1px solid #2a3d57', borderRadius: 12,
-        boxShadow: '0 12px 40px rgba(0,0,0,0.4)', padding: '14px 16px', display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
-      <p style={{ flex: 1, minWidth: 220, fontSize: 13.5, lineHeight: 1.5, margin: 0 }}>
-        We use privacy-friendly analytics (Google Analytics 4 and Microsoft Clarity) to understand site usage.
-        No personal data or chat content is sent to them. Do you allow analytics?
-      </p>
-      <div style={{ display: 'flex', gap: 8 }}>
-        <button onClick={() => decide('denied')} style={{ background: 'transparent', color: '#e9eef5', border: '1px solid #2a3d57', borderRadius: 8, padding: '8px 14px', fontSize: 13.5, cursor: 'pointer' }}>Decline</button>
-        <button onClick={() => decide('granted')} style={{ background: '#c9a24b', color: '#0e1b2e', border: 'none', borderRadius: 8, padding: '8px 16px', fontSize: 13.5, fontWeight: 700, cursor: 'pointer' }}>Accept</button>
+    <div className="consent-card" role="dialog" aria-label="Analytics consent">
+      <p className="consent-text">We use analytics cookies to improve our website.</p>
+      <div className="consent-actions">
+        <button type="button" className="consent-btn consent-decline" onClick={() => decide('denied')}>Decline</button>
+        <button type="button" className="consent-btn consent-accept" onClick={() => decide('granted')}>Accept</button>
       </div>
     </div>
   )

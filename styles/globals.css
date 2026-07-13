@@ -208,6 +208,48 @@ body[data-sticky-bar='open'] .wa-float-btn {
   body[data-menu-open='true'] .wa-float-btn { opacity: 0; pointer-events: none; }
 }
 
+/* Analytics consent — compact, non-obstructive bar.
+   Sits above the floating action row (TARA launcher + WhatsApp, ~4.5rem tall)
+   and lifts further when the sticky CTA bar is open, so it never overlaps them
+   or important content. z-index stays below those controls as a fallback. */
+.consent-card {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: calc(5.5rem + env(safe-area-inset-bottom, 0px));
+  z-index: 780;
+  width: min(560px, calc(100vw - 2rem));
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  background: #0e1b2e;
+  color: #e9eef5;
+  border: 1px solid #2a3d57;
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+  padding: 12px 14px;
+}
+.consent-text { flex: 1; min-width: 160px; margin: 0; font-size: 13.5px; line-height: 1.5; }
+.consent-actions { display: flex; gap: 8px; flex-shrink: 0; }
+.consent-btn { border-radius: 8px; padding: 8px 14px; font-size: 13.5px; cursor: pointer; }
+.consent-decline { background: transparent; color: #e9eef5; border: 1px solid #2a3d57; }
+.consent-accept { background: #c9a24b; color: #0e1b2e; border: none; font-weight: 700; padding: 8px 16px; }
+body[data-sticky-bar='open'] .consent-card { bottom: calc(9rem + env(safe-area-inset-bottom, 0px)); }
+
+@media (max-width: 640px) {
+  .consent-card {
+    left: 12px;
+    right: 12px;
+    transform: none;
+    width: auto;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+  .consent-text { min-width: 0; font-size: 13px; }
+  body[data-menu-open='true'] .consent-card { opacity: 0; pointer-events: none; }
+}
+
 /* Catalogue success animation */
 @keyframes catalogue-fade-up {
   from { opacity: 0; transform: translateY(20px); }
