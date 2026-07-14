@@ -43,7 +43,8 @@ export interface ConversationSignals {
 
 export function buildConversationSignals(turns: TaraTurn[]): ConversationSignals {
   const userTurns = turns.filter((turn) => turn.role === 'user').slice(-4)
-  const latestNormalized = normalizeText(userTurns.at(-1)?.content || '')
+  const latestTurn = userTurns[userTurns.length - 1]
+  const latestNormalized = normalizeText(latestTurn?.content || '')
   const recentUserContext = userTurns.map((turn) => normalizeText(turn.content)).filter(Boolean).join(' | ')
   const concepts = expandConcepts(recentUserContext)
   const isShortFollowUp = latestNormalized.split(/\s+/).filter(Boolean).length <= 5 && userTurns.length > 1
