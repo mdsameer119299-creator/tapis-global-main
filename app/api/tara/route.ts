@@ -12,7 +12,13 @@ export const runtime = 'nodejs'
 
 const HANDOFF_MSG = 'I can keep helping you here. For project-specific prices, MOQ, payment terms, samples, quotations or confirmed capabilities, the TAPIS GLOBAL team must confirm the details. If you want, use Talk to the team to share your requirement; otherwise, continue chatting with me.'
 const QUOTA_MSG = 'We have covered a lot here. You can continue browsing categories and materials, or use Talk to the team if you want the TAPIS GLOBAL team to review your project details.'
-const SAFE_FALLBACK = 'I could not reach the advisor just now. You can continue browsing categories and materials, or use Talk to the team if you want direct assistance.'
+const SAFE_FALLBACK = 'I could not reach the advisor just now. Please try again in a moment. You can also ask me about carpets, rugs, materials, constructions, care or custom manufacturing.'
+const GREETING_REPLY = 'Hello! 👋 I’m TARA, the AI Rug & Carpet Advisor for TAPIS GLOBAL INTERNATIONAL PVT LTD. How can I help you today? You can ask me about carpets, rugs, materials, constructions, care, custom manufacturing, or your project requirements.'
+
+function isGreeting(message: string): boolean {
+  const normalized = message.trim().toLowerCase().replace(/[.!?]+$/g, '').trim()
+  return /^(hi|hii+|hey|hello|hello there|good morning|good afternoon|good evening|namaste|salaam|salam|assalamu alaikum|howdy)$/.test(normalized)
+}
 
 function withSession(res: NextResponse, sid: string, aiTurns: number): NextResponse {
   const common = { httpOnly: true, sameSite: 'lax' as const, secure: true, path: '/api/tara', maxAge: 60 * 60 * 6 }
@@ -22,8 +28,6 @@ function withSession(res: NextResponse, sid: string, aiTurns: number): NextRespo
 }
 
 export async function POST(req: Request) {
-  if (!taraProviderAvailable()) return NextResponse.json({ available: false, reply: null })
-
   const declared = Number(req.headers.get('content-length') || 0)
   if (declared && declared > TARA_LIMITS.maxBodyBytes) {
     return NextResponse.json({ available: true, reply: 'Your message is too large. Please shorten it.' }, { status: 413 })
@@ -55,6 +59,13 @@ export async function POST(req: Request) {
   }
 
   const lastUser = [...turns].reverse().find((t) => t.role === 'user')?.content ?? ''
+  if (isGreeting(lastUser)) {
+    return withSession(NextResponse.json({ available: true, reply: GREETING_REPLY, handoffSuggested: false }), sid, aiTurns)
+  }
+  if (!taraProviderAvailable()) {
+    return withSession(NextResponse.json({ available: true, reply: SAFE_FALLBACK, handoffSuggested: false }), sid, aiTurns)
+  }
+
   const decision = decide(needsHandoff(lastUser), aiTurns)
   if (decision === 'handoff') {
     return withSession(NextResponse.json({ available: true, reply: HANDOFF_MSG, handoffSuggested: true }), sid, aiTurns)
@@ -72,6 +83,6 @@ export async function POST(req: Request) {
     aiTurns += 1
     return withSession(NextResponse.json({ available: true, reply, handoffSuggested: false }), sid, aiTurns)
   } catch {
-    return withSession(NextResponse.json({ available: true, reply: SAFE_FALLBACK, handoffSuggested: true }), sid, aiTurns)
+    return withSession(NextResponse.json({ available: true, reply: SAFE_FALLBACK, handoffSuggested: false }), sid, aiTurns)
   }
 }
