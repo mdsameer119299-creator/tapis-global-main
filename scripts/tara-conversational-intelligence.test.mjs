@@ -9,6 +9,7 @@ const ok = (name, condition) => { if (condition) { pass++; console.log(`  ok  ${
 
 ok('conversation intelligence module exists', /export function buildConversationSignals/.test(intelligence))
 ok('recent user turns are used for context', /filter\(\(turn\) => turn\.role === 'user'\)\.slice\(-4\)/.test(intelligence))
+ok('latest user turn uses compatible index access', /userTurns\[userTurns\.length - 1\]/.test(intelligence))
 ok('common carpet typos are normalized', /capet: 'carpet'/.test(intelligence) && /quantiy: 'quantity'/.test(intelligence) && /tendor: 'tender'/.test(intelligence))
 ok('tender intent expands to procurement concepts', /tender\|bid\|procurement/.test(intelligence) && /government.*procurement.*dhurrie.*carpet/s.test(intelligence))
 ok('ready-stock intent expands to made-to-order context', /ready stock\|in stock/.test(intelligence) && /made to order.*custom manufacturing.*production/s.test(intelligence))
