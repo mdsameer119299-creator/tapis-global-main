@@ -12,12 +12,38 @@ export const runtime = 'nodejs'
 
 const HANDOFF_MSG = 'I can keep helping you here. For project-specific prices, MOQ, payment terms, samples, quotations or confirmed capabilities, the TAPIS GLOBAL team must confirm the details. If you want, use Talk to the team to share your requirement; otherwise, continue chatting with me.'
 const QUOTA_MSG = 'We have covered a lot here. You can continue browsing categories and materials, or use Talk to the team if you want the TAPIS GLOBAL team to review your project details.'
-const SAFE_FALLBACK = 'I could not reach the advisor just now. Please try again in a moment. You can also ask me about carpets, rugs, materials, constructions, care or custom manufacturing.'
+const SAFE_FALLBACK = 'I could not reach the AI advisor just now, but I can still help with verified information about TAPIS GLOBAL, carpets, rugs, materials, constructions, custom manufacturing and project requirements. Please ask your question again or use Talk to the team for project-specific confirmation.'
 const GREETING_REPLY = 'Hello! 👋 I’m TARA, the AI Rug & Carpet Advisor for TAPIS GLOBAL INTERNATIONAL PVT LTD. How can I help you today? You can ask me about carpets, rugs, materials, constructions, care, custom manufacturing, or your project requirements.'
 
 function isGreeting(message: string): boolean {
   const normalized = message.trim().toLowerCase().replace(/[.!?]+$/g, '').trim()
   return /^(hi|hii+|hey|hello|hello there|good morning|good afternoon|good evening|namaste|salaam|salam|assalamu alaikum|howdy)$/.test(normalized)
+}
+
+function verifiedFallback(message: string): string | null {
+  const text = message.trim().toLowerCase()
+
+  if (/\b(ready\s*stock|in stock|available stock|stock available|ready-made|readymade)\b/.test(text)) {
+    return 'TAPIS GLOBAL INTERNATIONAL PVT LTD primarily manufactures carpets and rugs to order and does not operate as a retail or ready-stock store. We can manufacture according to your required design, size, colours, material, construction and quantity. What type of carpet or rug, approximate size and quantity do you need?'
+  }
+
+  if (/\b(how (?:many|much) (?:days|weeks)|how long|lead time|production time|dispatch time|delivery time|when (?:will|can).*(?:ready|dispatch))\b/.test(text)) {
+    return 'Typical production and dispatch is approximately 3–4 weeks, subject to the design, construction, material, sizes, quantity and other order specifications. If you share the product type, approximate sizes and quantity, I can help you clarify the requirement before the TAPIS GLOBAL team confirms the project-specific timeline.'
+  }
+
+  if (/\b(kilim|kilims|dhurrie|dhurries|durry|durries)\b/.test(text)) {
+    return 'Yes, TAPIS GLOBAL INTERNATIONAL PVT LTD supports made-to-order carpet and rug categories including flatwoven products such as kilims and dhurries, subject to the required design, size, colours, material and quantity. Are you sourcing them for a home, retail/wholesale business, hospitality project or another application?'
+  }
+
+  if (/\b(difference|different|vs\.?|versus)\b/.test(text) && /\bcarpet(s)?\b/.test(text) && /\brug(s)?\b/.test(text)) {
+    return 'The terms carpet and rug are sometimes used interchangeably, but generally a rug is a movable floor covering that covers part of a room, while carpet can also refer to larger floor coverings or wall-to-wall installations. Terminology varies by market and buyer. Are you choosing a floor covering for a particular room or project?'
+  }
+
+  if (/\b(custom|customise|customize|made to order|manufacture|manufacturer)\b/.test(text)) {
+    return 'Yes. TAPIS GLOBAL INTERNATIONAL PVT LTD is a B2B made-to-order carpet and rug manufacturer. Products can be developed to buyer specifications including design, size, colours, material, fibre quality, construction and quantity. What type of carpet or rug are you looking to manufacture?'
+  }
+
+  return null
 }
 
 function withSession(res: NextResponse, sid: string, aiTurns: number): NextResponse {
@@ -62,9 +88,6 @@ export async function POST(req: Request) {
   if (isGreeting(lastUser)) {
     return withSession(NextResponse.json({ available: true, reply: GREETING_REPLY, handoffSuggested: false }), sid, aiTurns)
   }
-  if (!taraProviderAvailable()) {
-    return withSession(NextResponse.json({ available: true, reply: SAFE_FALLBACK, handoffSuggested: false }), sid, aiTurns)
-  }
 
   const decision = decide(needsHandoff(lastUser), aiTurns)
   if (decision === 'handoff') {
@@ -72,6 +95,11 @@ export async function POST(req: Request) {
   }
   if (decision === 'quota') {
     return withSession(NextResponse.json({ available: true, reply: QUOTA_MSG, handoffSuggested: true }), sid, aiTurns)
+  }
+
+  const fallbackReply = verifiedFallback(lastUser)
+  if (!taraProviderAvailable()) {
+    return withSession(NextResponse.json({ available: true, reply: fallbackReply || SAFE_FALLBACK, handoffSuggested: false, degraded: true }), sid, aiTurns)
   }
 
   const moduleContext = retrieveContext(lastUser)
@@ -82,7 +110,8 @@ export async function POST(req: Request) {
     const reply = await taraComplete(system, turns, TARA_LIMITS.timeoutMs())
     aiTurns += 1
     return withSession(NextResponse.json({ available: true, reply, handoffSuggested: false }), sid, aiTurns)
-  } catch {
-    return withSession(NextResponse.json({ available: true, reply: SAFE_FALLBACK, handoffSuggested: false }), sid, aiTurns)
+  } catch (error) {
+    console.error('[tara] provider completion failed', error instanceof Error ? error.message : 'unknown provider error')
+    return withSession(NextResponse.json({ available: true, reply: fallbackReply || SAFE_FALLBACK, handoffSuggested: false, degraded: true }), sid, aiTurns)
   }
 }
