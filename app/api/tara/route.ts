@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { taraProviderAvailable, taraComplete } from '@/lib/tara/provider'
 import { TARA_SYSTEM_PROMPT, retrieveContext, needsHandoff } from '@/lib/tara/knowledge'
+import { buildConversationSignals, buildConversationGuidance } from '@/lib/tara/conversation-intelligence'
 import { retrieveArticleContext } from '@/lib/knowledge/content'
 import { getClientIp } from '@/lib/enquiry-rate-limit'
 import {
@@ -44,6 +45,13 @@ function verifiedFallback(message: string): string | null {
   }
 
   return null
+}
+
+function verifiedRetrievalFallback(query: string): string | null {
+  const context = retrieveContext(query).split('\n').map((line) => line.trim()).filter(Boolean)
+  if (context.length === 0) return null
+  const concise = context.slice(0, 2).join(' ')
+  return `${concise.slice(0, 700)}${concise.length > 700 ? '…' : ''} If you tell me a little more about what you are looking for, I can narrow this down further.`
 }
 
 function withSession(res: NextResponse, sid: string, aiTurns: number): NextResponse {
@@ -97,15 +105,17 @@ export async function POST(req: Request) {
     return withSession(NextResponse.json({ available: true, reply: QUOTA_MSG, handoffSuggested: true }), sid, aiTurns)
   }
 
-  const fallbackReply = verifiedFallback(lastUser)
+  const signals = buildConversationSignals(turns)
+  const fallbackReply = verifiedFallback(signals.latestNormalized) || verifiedRetrievalFallback(signals.retrievalQuery)
   if (!taraProviderAvailable()) {
     return withSession(NextResponse.json({ available: true, reply: fallbackReply || SAFE_FALLBACK, handoffSuggested: false, degraded: true }), sid, aiTurns)
   }
 
-  const moduleContext = retrieveContext(lastUser)
-  const articleContext = retrieveArticleContext(lastUser, { maxChars: 1200, maxChunks: 4 })
+  const moduleContext = retrieveContext(signals.retrievalQuery)
+  const articleContext = retrieveArticleContext(signals.retrievalQuery, { maxChars: 1200, maxChunks: 4 })
   const context = [moduleContext, articleContext].filter(Boolean).join('\n')
-  const system = context ? `${TARA_SYSTEM_PROMPT}\n\nRELEVANT VERIFIED CONTEXT:\n${context}` : TARA_SYSTEM_PROMPT
+  const guidance = buildConversationGuidance(signals)
+  const system = `${TARA_SYSTEM_PROMPT}\n\n${guidance}${context ? `\n\nRELEVANT VERIFIED CONTEXT:\n${context}` : ''}`
   try {
     const reply = await taraComplete(system, turns, TARA_LIMITS.timeoutMs())
     aiTurns += 1
