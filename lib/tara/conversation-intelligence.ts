@@ -30,7 +30,7 @@ function normalizeText(input: string): string {
 function expandConcepts(text: string): string[] {
   const additions = new Set<string>()
   for (const [pattern, terms] of CONCEPTS) if (pattern.test(text)) terms.forEach((term) => additions.add(term))
-  return [...additions]
+  return Array.from(additions)
 }
 
 export interface ConversationSignals {
