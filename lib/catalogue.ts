@@ -57,7 +57,7 @@ export const CATALOGUE_PREVIEW = [
 export const CATALOGUE_TRUST = [
   { value: 'Pan', suffix: '',  label: 'India Projects' },
   { value: '9',   suffix: '',  label: 'Product Categories' },
-  { value: '500', suffix: '+', label: 'Master Artisans' },
+  { value: 'Skilled', suffix: '', label: 'Artisan Workforce' },
   { value: '100', suffix: '%', label: 'Pre-Dispatch QC' },
 ]
 
@@ -74,17 +74,17 @@ export const CATALOGUE_TRUST_CARDS = [
   {
     icon:  'globe',
     title: 'Pan India & Global Reach',
-    desc:  'Trusted by architects, hospitality groups and buyers across India — with export programmes in 45+ countries.',
+    desc:  'Trusted by architects, hospitality groups and buyers across India — with export programmes across international markets.',
   },
   {
     icon:  'quality',
     title: 'Premium Quality',
-    desc:  'ISO 9001:2015 and OEKO-TEX certified — rigorous QC on every production batch.',
+    desc:  'ISO 9001:2015-aligned and OEKO-TEX-aligned processes — rigorous QC on every production batch.',
   },
   {
     icon:  'craft',
     title: 'Handcrafted Excellence',
-    desc:  '500+ master artisans in Bhadohi — generations of weaving and tufting mastery.',
+    desc:  'Hundreds of master artisans in Bhadohi — generations of weaving and tufting mastery.',
   },
   {
     icon:  'custom',

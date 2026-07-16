@@ -13,7 +13,7 @@ export const TRUST_RIBBON_ITEMS: Omit<TrustItem, 'icon'>[] = [
   { text: 'Custom Manufacturing'          },
   { text: 'Hospitality Projects'           },
   { text: 'Luxury Residential Projects'   },
-  { text: 'ISO 9001:2015 Certified'       },
+  { text: 'ISO 9001:2015-Aligned Processes' },
 ]
 
 // ─── WHO WE ARE ───────────────────────────────────────────────
@@ -35,7 +35,7 @@ export const WHO_WE_ARE = {
     {
       icon: 'factory' as const,
       title: 'Integrated Manufacturing Facility',
-      body:  'An 80,000 sq ft Bhadohi campus manufacturing hand tufted carpets, hand knotted rugs, jute rugs, wall-to-wall carpets and custom flooring — with documented quality control and full traceability from development to dispatch.',
+      body:  'A large in-house Bhadohi campus manufacturing hand tufted carpets, hand knotted rugs, jute rugs, wall-to-wall carpets and custom flooring — with documented quality control and full traceability from development to dispatch.',
     },
     {
       icon: 'globe' as const,
@@ -101,7 +101,7 @@ export const EXPORT_DESTINATION_TAGS = [
 
 export const MFG_HEADER = {
   image: '/images/manufacturing-rug-img.webp',
-  lead:  'An 80,000 sq ft integrated campus where specification-led production, quality control and batch consistency are managed end-to-end — giving architects, developers and project teams traceability, reliability and confidence at every milestone.',
+  lead:  'A large in-house integrated campus where specification-led production, quality control and batch consistency are managed end-to-end — giving architects, developers and project teams traceability, reliability and confidence at every milestone.',
 }
 
 export const EXPORT_INLINE_STATS = [

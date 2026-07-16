@@ -187,7 +187,7 @@ export const SOLUTIONS: SeoLanding[] = [
     overview: 'Commercial flooring is judged on durability, compliance, supply reliability and total cost over its life — not just appearance. As a direct manufacturer we deliver contract-grade constructions, fire-rating, dye-lot consistency across large runs and phased delivery aligned to fit-out programmes, making us a dependable single-source partner for project teams and procurement.',
     sections: [
       { h2: 'Contract-Grade Durability', body: 'We build constructions rated for the heavy, sustained traffic of commercial environments, with fibre and backing systems chosen for service life and value — not just first cost.' },
-      { h2: 'Supply Reliability at Scale', body: 'Commercial projects fail on supply gaps. Our 80,000 sq ft campus and in-house production let us hold dye-lots, manufacture in bulk and deliver in phases that match the construction programme.' },
+      { h2: 'Supply Reliability at Scale', body: 'Commercial projects fail on supply gaps. Our large in-house campus and in-house production let us hold dye-lots, manufacture in bulk and deliver in phases that match the construction programme.' },
       { h2: 'Compliance & Documentation', body: 'We provide fire-rating and the documentation commercial and institutional buyers require, and advise on the correct traffic classification for each space.' },
     ],
     applications: [
@@ -204,7 +204,7 @@ export const SOLUTIONS: SeoLanding[] = [
     faqs: [
       { q: 'Are you a direct commercial carpet manufacturer?', a: 'Yes. We manufacture contract-grade commercial carpets in our own Bhadohi facility — buying direct means better pricing, QC and supply control with no trading middlemen.' },
       { q: 'Can you supply fire-rated commercial carpets?', a: 'Yes. We manufacture fire-rated constructions and provide the documentation commercial and institutional buyers require.' },
-      { q: 'Can you handle large project volumes and phased delivery?', a: 'Yes. Our 80,000 sq ft campus manufactures bulk volumes, holds dye-lots and delivers in phases aligned to your fit-out programme.' },
+      { q: 'Can you handle large project volumes and phased delivery?', a: 'Yes. Our large in-house campus manufactures bulk volumes, holds dye-lots and delivers in phases aligned to your fit-out programme.' },
       { q: 'Do you supply both broadloom and carpet tiles?', a: 'Yes — and we hold dye-lots across both so multi-area projects stay colour-consistent.' },
       { q: 'Do you supply commercial projects internationally?', a: 'Yes. We supply contract carpets across India and export internationally with compliance documentation and coordinated freight.' },
     ],

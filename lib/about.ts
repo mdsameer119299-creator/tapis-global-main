@@ -40,8 +40,8 @@ export const ABOUT_HERO = {
   stats: [
     { value: '1965', suffix: '',  label: 'Family Heritage'       },
     { value: 'Pan',  suffix: '',  label: 'India Operations'      },
-    { value: '500',  suffix: '+', label: 'Master Artisans'       },
-    { value: '45',   suffix: '+', label: 'Global Markets Served' },
+    { value: 'Skilled', suffix: '', label: 'Artisan Workforce'   },
+    { value: 'Global',  suffix: '', label: 'Export Markets'      },
   ],
 }
 
@@ -116,7 +116,7 @@ export const ABOUT_SECTIONS: AboutSplitBlock[] = [
     body:       'From batch-tested raw materials to finishing inspection and documented pre-dispatch review, our quality systems support architect submissions, hotel brand standards, tender compliance and export import requirements alike.',
     bullets: [
       { label: 'Premium Raw Materials', text: 'New Zealand wool, pure silk, viscose, cotton and jute — tested before production entry.' },
-      { label: 'OEKO-TEX Standard 100', text: 'Certified safe textiles tested for harmful substances at every stage.' },
+      { label: 'OEKO-TEX-Aligned Dyeing', text: 'AZO-free dyes and textile-safety practices aligned with OEKO-TEX Standard 100 at every stage.' },
       { label: 'Multi-Stage QC', text: 'In-process checks, finishing inspection and 100% pre-dispatch review on every order.' },
       { label: 'Project & Export Standards', text: 'Fire ratings, REACH, hospitality compliance and international import documentation.' },
     ],
@@ -135,7 +135,7 @@ export const ABOUT_SECTIONS: AboutSplitBlock[] = [
     body:       'Rooted in Bhadohi\'s textile heritage, Tapis Global is a family business evolved into a modern flooring solutions brand. Generations of weaving knowledge inform every collection — whether destined for a Mumbai hotel lobby or a designer showroom in London.',
     bullets: [
       { label: 'Design Studio', text: 'Translating architect and designer briefs into production-ready artwork and sample programmes.' },
-      { label: 'Master Artisans', text: '500+ skilled craftspeople across tufting, knotting, flatweave and finishing.' },
+      { label: 'Master Artisans', text: 'Hundreds of skilled craftspeople across tufting, knotting, flatweave and finishing.' },
       { label: 'Quality Controllers', text: 'Dedicated QC at every production stage — from fibre to final packing.' },
       { label: 'Project & Logistics', text: 'Coordination for pan India dispatch, phased hospitality roll-outs and international shipments.' },
     ],
@@ -150,7 +150,7 @@ export const ABOUT_SECTIONS: AboutSplitBlock[] = [
     eyebrow:    'Infrastructure',
     title:      'World-Class',
     titleEm:    'Production Under One Roof.',
-    lead:       'ISO 9001:2015, OEKO-TEX and GoodWeave certified — our 80,000 sq ft campus integrates every division required for defect-free manufacturing at project scale.',
+    lead:       'ISO 9001:2015-aligned, OEKO-TEX-aligned and fair-labour practices — our large in-house campus integrates every division required for defect-free manufacturing at project scale.',
     body:       'Technically upgraded machinery and specialist teams execute orders on time — from a single bespoke rug to bulk tender supply. Each division operates with the tools, climate control and workflow needed for seamless production.',
     bullets: [
       { label: 'Tufting Division', text: 'Cut pile, loop pile and cut-and-loop lines for hospitality and residential programmes.' },

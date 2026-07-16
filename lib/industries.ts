@@ -74,7 +74,7 @@ export const INDUSTRIES: SeoLanding[] = [
     whyPoints: [
       { title: 'Large-Repeat Capability', desc: 'Bespoke patterns reproduced accurately across very large areas.' },
       { title: 'Fire-Rated & Documented', desc: 'Public-building compliance with supporting test documentation.' },
-      { title: 'Bulk Manufacturing', desc: '80,000 sq ft campus geared for high-volume contract orders.' },
+      { title: 'Bulk Manufacturing', desc: 'A large in-house campus geared for high-volume contract orders.' },
     ],
     faqs: [
       { q: 'Are your auditorium carpets acoustic?', a: 'Yes. We specify pile weight and backing to contribute to sound absorption, supporting the acoustic performance theatres, cinemas and concert halls require.' },

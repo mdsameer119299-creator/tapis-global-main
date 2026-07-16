@@ -71,11 +71,11 @@ export async function GET(req: NextRequest) {
             </span>
             <span style={{ width: 1, height: 20, background: 'rgba(192,155,74,0.4)' }} />
             <span style={{ fontSize: 13, color: '#EDD99A', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-              45+ Export Countries
+              Global Export Markets
             </span>
             <span style={{ width: 1, height: 20, background: 'rgba(192,155,74,0.4)' }} />
             <span style={{ fontSize: 13, color: '#EDD99A', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-              ISO 9001:2015 Certified
+              ISO 9001:2015-Aligned
             </span>
           </div>
         </div>

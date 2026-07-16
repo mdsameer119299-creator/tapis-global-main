@@ -12,7 +12,7 @@ export type ContactEmail = {
 export const SITE = {
   name:        'Tapis Global International Pvt Ltd',
   tagline:     'Premium Carpets. Pan India. Worldwide.',
-  description: 'Premium handmade carpet and flooring solutions from Bhadohi, India — serving architects, interior designers, hospitality projects, commercial interiors, tenders and international buyers across India and 45+ countries.',
+  description: 'Premium handmade carpet and flooring solutions from Bhadohi, India — serving architects, interior designers, hospitality projects, commercial interiors, tenders and international buyers across India and international markets.',
   phone:       '+91 84482 91631',
   phoneTel:    '+918448291631',
   landline:    '+91 11 4558 7243',
@@ -315,7 +315,7 @@ export const WHY_ITEMS: { title: string; desc: string; icon: WhyIcon }[] = [
   {
     icon:  'globe',
     title: 'Pan India & Global Reach',
-    desc:  'Project execution across India alongside global supply partnerships in 45+ markets — with compliance documentation tailored to each destination.',
+    desc:  'Project execution across India alongside global supply partnerships across international markets — with compliance documentation tailored to each destination.',
   },
   {
     icon:  'flag',
@@ -330,6 +330,6 @@ export const WHY_ITEMS: { title: string; desc: string; icon: WhyIcon }[] = [
   {
     icon:  'users',
     title: 'Dedicated Specialist Teams',
-    desc:  'GoodWeave-certified fair labour and skilled production teams — with ethical sourcing documentation for CSR, hospitality and institutional compliance requirements.',
+    desc:  'Fair-labour practices and skilled production teams — with ethical sourcing documentation for CSR, hospitality and institutional compliance requirements.',
   },
 ]

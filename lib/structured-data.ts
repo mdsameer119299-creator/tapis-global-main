@@ -23,7 +23,7 @@ export function organizationSchema() {
     },
     image: OG_IMAGE.url,
     description:
-      'Tapis Global International Pvt Ltd is a third-generation, family-owned handmade carpet and rug manufacturer based in Bhadohi, Uttar Pradesh, India — continuing a family carpet-making legacy since 1965. Serving architects, hospitality projects, commercial interiors and pan India supply, with export programmes to 45+ countries.',
+      'Tapis Global International Pvt Ltd is a third-generation, family-owned handmade carpet and rug manufacturer based in Bhadohi, Uttar Pradesh, India — continuing a family carpet-making legacy since 1965. Serving architects, hospitality projects, commercial interiors and pan India supply, with export programmes across international markets.',
     slogan: 'Third Generation Carpet & Rug Manufacturer — Family Heritage Since 1965',
     foundingLocation: {
       '@type': 'Place',
@@ -65,11 +65,8 @@ export function organizationSchema() {
       BRAND.social.facebook,
       `https://twitter.com/${BRAND.social.twitter.replace('@', '')}`,
     ],
-    numberOfEmployees: {
-      '@type': 'QuantitativeValue',
-      minValue: 200,
-      maxValue: 500,
-    },
+    // numberOfEmployees intentionally omitted — no verified headcount figure
+    // to assert in machine-readable schema (see docs/COMMERCIAL-CLAIMS-REGISTER.md #6).
     areaServed: {
       '@type': 'AdministrativeArea',
       name: 'Worldwide',
@@ -332,7 +329,7 @@ const DEFAULT_FAQS: FaqItem[] = [
     },
     {
       q: 'What certifications do your carpets carry?',
-      a: 'Our carpets and manufacturing processes are ISO 9001:2015 certified. We comply with OEKO-TEX Standard 100 for textile safety and use AZO-free dyes throughout our production. Fire-rated and GOTS-eligible certifications are available for specific product ranges.',
+      a: 'Our manufacturing processes are ISO 9001:2015-aligned, and we manufacture with OEKO-TEX Standard 100-aligned practices and AZO-free dyes for textile safety. Fire-rating and other certifications are confirmed per requirement for specific product ranges — our team can share the latest documentation for your project.',
     },
     {
       q: 'What are your typical lead times for bulk carpet orders?',
@@ -340,7 +337,7 @@ const DEFAULT_FAQS: FaqItem[] = [
     },
     {
       q: 'Which countries does Tapis Global International export to?',
-      a: 'We export handmade carpets to 45+ countries including the United States, United Kingdom, Germany, France, Australia, UAE, Saudi Arabia, Canada, Italy, Netherlands, Sweden, Belgium, Japan, South Korea and South Africa among others.',
+      a: 'We export handmade carpets to international markets including the United States, United Kingdom, Germany, France, Australia, UAE, Saudi Arabia, Canada, Italy, Netherlands, Sweden, Belgium, Japan, South Korea and South Africa among others.',
     },
     {
       q: 'What payment terms are accepted?',

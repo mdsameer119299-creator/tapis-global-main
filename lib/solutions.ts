@@ -94,7 +94,7 @@ export const SOLUTION_PILLARS: SolutionPillar[] = [
       'Curated collections for importers and distributors',
       'FCL, LCL and air freight with export-grade packing',
       'REACH, fire-rating and market-specific compliance',
-      'Long-term supply partnerships across 45+ markets',
+      'Long-term supply partnerships across international markets',
     ],
     image:    '/images/jute-rugs-manufacturing.webp',
     imageAlt: 'Global carpet supply programme — Tapis Global',
