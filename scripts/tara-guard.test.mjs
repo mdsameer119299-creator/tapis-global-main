@@ -86,12 +86,13 @@ async function routeTests() {
   }
   const load = () => jiti.import ? jiti('../app/api/tara/route.ts') : jiti('../app/api/tara/route.ts')
 
-  // A. AI unavailable -> guided fallback, no provider call
+  // A. AI unavailable -> guided verified fallback, no provider call. Use a real
+  // product question (not a greeting, which has its own dedicated reply path).
   delete process.env.ANTHROPIC_API_KEY
   let { POST } = load()
-  let res = await POST(reqOf({ messages: [{ role: 'user', content: 'hi' }] }))
+  let res = await POST(reqOf({ messages: [{ role: 'user', content: 'tell me about wool rugs' }] }))
   let data = await res.json()
-  ok('A. no key -> available:false (no provider call)', data.available === false)
+  ok('A. no key -> degraded verified fallback (no provider call)', data.available === true && data.degraded === true && typeof data.reply === 'string' && data.reply.length > 0)
 
   // Enable AI for the rest.
   process.env.ANTHROPIC_API_KEY = 'sk-test-dummy-not-real'
@@ -128,9 +129,10 @@ async function routeTests() {
   data = await res.json()
   ok('F. AI-turn cap -> guided quota reply, no provider call', /team can help|team will assist|browsing categories/i.test(data.reply))
 
-  // G. handoff intent -> no provider call
+  // G. handoff intent -> no provider call. needsHandoff is contact-only now
+  // (commercial questions stay conversational), so use an explicit contact request.
   g._resetBurst()
-  res = await POST(reqOf({ messages: [{ role: 'user', content: 'what is your MOQ and payment terms?' }] }, { ip: '10.2.2.2' }))
+  res = await POST(reqOf({ messages: [{ role: 'user', content: 'can I talk to the team?' }] }, { ip: '10.2.2.2' }))
   data = await res.json()
   ok('G. handoff intent -> handoff reply (no provider call)', data.handoffSuggested === true && /TAPIS GLOBAL team/i.test(data.reply))
 
@@ -140,7 +142,7 @@ async function routeTests() {
   ;({ POST } = load())
   res = await POST(reqOf({ messages: [{ role: 'user', content: 'compare wool and viscose' }] }, { ip: '10.3.3.3' }))
   data = await res.json()
-  ok('H/I. provider failure/timeout -> safe fallback', data.available === true && /could not reach the advisor/i.test(data.reply))
+  ok('H/I. provider failure/timeout -> safe fallback', data.available === true && data.degraded === true && typeof data.reply === 'string' && data.reply.length > 0)
   ok('H. no raw provider error / key leaked', !/sk-test|x-api-key|anthropic|stack|TypeError/i.test(JSON.stringify(data)))
   delete process.env.TARA_TIMEOUT_MS
   delete process.env.ANTHROPIC_API_KEY

@@ -3,6 +3,7 @@ import { taraProviderAvailable, taraComplete } from '@/lib/tara/provider'
 import { TARA_SYSTEM_PROMPT, retrieveContext, needsHandoff } from '@/lib/tara/knowledge'
 import { buildConversationSignals, buildConversationGuidance } from '@/lib/tara/conversation-intelligence'
 import { buildRecommendation } from '@/lib/tara/recommend'
+import { buildComparison } from '@/lib/tara/compare'
 import { retrieveArticleContext } from '@/lib/knowledge/content'
 import { getClientIp } from '@/lib/enquiry-rate-limit'
 import {
@@ -107,17 +108,25 @@ export async function POST(req: Request) {
   }
 
   const signals = buildConversationSignals(turns)
-  const fallbackReply = verifiedFallback(signals.latestNormalized) || verifiedRetrievalFallback(signals.retrievalQuery)
+  // A product comparison, when detected, is answered directly (works even with
+  // no AI key). Otherwise fall back to verified answers / retrieval.
+  const comparison = buildComparison(signals)
+  const fallbackReply = comparison || verifiedFallback(signals.latestNormalized) || verifiedRetrievalFallback(signals.retrievalQuery)
   if (!taraProviderAvailable()) {
     return withSession(NextResponse.json({ available: true, reply: fallbackReply || SAFE_FALLBACK, handoffSuggested: false, degraded: true }), sid, aiTurns)
   }
 
+  // Retrieval prioritizes verified product knowledge (module corpus) BEFORE
+  // generic website content — product knowledge is always placed first.
   const moduleContext = retrieveContext(signals.retrievalQuery)
   const articleContext = retrieveArticleContext(signals.retrievalQuery, { maxChars: 1200, maxChunks: 4 })
   const context = [moduleContext, articleContext].filter(Boolean).join('\n')
   const guidance = buildConversationGuidance(signals)
+  // Comparison intent takes priority; otherwise offer a recommendation when there's enough signal.
   const recommendation = buildRecommendation(signals)
-  const guidanceBlock = recommendation ? `${guidance}\n${recommendation}` : guidance
+  const guidanceBlock = comparison
+    ? `${guidance}\nCOMPARISON (explain this naturally, in your own words, using these verified points): ${comparison}`
+    : recommendation ? `${guidance}\n${recommendation}` : guidance
   const system = `${TARA_SYSTEM_PROMPT}\n\n${guidanceBlock}${context ? `\n\nRELEVANT VERIFIED CONTEXT:\n${context}` : ''}`
   try {
     const reply = await taraComplete(system, turns, TARA_LIMITS.timeoutMs())
