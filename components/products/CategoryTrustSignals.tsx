@@ -25,7 +25,7 @@ const SIGNALS: { title: string; desc: string; icon: React.ReactNode }[] = [
   },
   {
     title: 'Bulk & Contract Order Capacity',
-    desc: '80,000 sq ft campus with 500+ artisans for large volumes and phased delivery.',
+    desc: 'A large in-house campus with hundreds of artisans for large volumes and phased delivery.',
     icon: (
       <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
     ),

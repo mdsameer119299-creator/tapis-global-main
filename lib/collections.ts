@@ -74,7 +74,7 @@ export const COLLECTIONS: CollectionItem[] = [
       { label: 'Material Range', text: 'New Zealand wool, viscose, cotton and blended constructions — curated for hand-feel, durability and design flexibility across project scales.' },
       { label: 'Hospitality Ready', text: 'Fire-rated options, high-traffic performance and custom colour development aligned to FF&E schedules and brand palettes.' },
       { label: 'Custom Development', text: 'Any dimension, shape or colour reference with lab-dip approval — ideal for architect-led programmes and private residential commissions.' },
-      { label: 'Quality Positioning', text: 'ISO 9001:2015 and OEKO-TEX certified with full compliance documentation for India and international project supply.' },
+      { label: 'Quality Positioning', text: 'ISO 9001:2015-aligned and OEKO-TEX-aligned processes with full compliance documentation for India and international project supply.' },
     ],
     leadTime: '45–60 Days',
     moq:      '100 Pcs',

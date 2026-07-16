@@ -154,7 +154,7 @@ export const PAGE_META = {
 
   about: {
     title:       `About Tapis Global International | Premium Carpet & Flooring Solutions`,
-    description: `A third-generation, family-owned carpet manufacturer continuing a legacy since 1965, Tapis Global crafts premium handmade carpets in Bhadohi — serving architects, hospitality projects, commercial interiors, pan India supply and international markets with ISO-certified quality.`,
+    description: `A third-generation, family-owned carpet manufacturer continuing a legacy since 1965, Tapis Global crafts premium handmade carpets in Bhadohi — serving architects, hospitality projects, commercial interiors, pan India supply and international markets with quality-managed manufacturing.`,
     keywords:    KEYWORDS_BRAND,
     canonical:   `${SEO_BASE_URL}/about`,
   },

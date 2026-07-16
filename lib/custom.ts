@@ -60,17 +60,17 @@ export const CUSTOM_TRUST = [
   {
     icon:  'material',
     title: 'Premium Quality Materials',
-    desc:  'New Zealand wool, pure silk, viscose and GOTS cotton — ethically sourced and batch-tested before weaving.',
+    desc:  'New Zealand wool, pure silk, viscose and ethically sourced organic cotton — batch-tested before weaving.',
   },
   {
     icon:  'globe',
     title: 'Pan India & Global Delivery',
-    desc:  'Project dispatch across India and international freight to 45+ countries — with full documentation and coordinated logistics.',
+    desc:  'Project dispatch across India and international freight to global markets — with full documentation and coordinated logistics.',
   },
   {
     icon:  'craft',
     title: 'Skilled Craftsmanship',
-    desc:  '500+ master weavers and tufters in Bhadohi — generational skills applied to every custom order.',
+    desc:  'Hundreds of master weavers and tufters in Bhadohi — generational skills applied to every custom order.',
   },
   {
     icon:  'sample',
@@ -80,7 +80,7 @@ export const CUSTOM_TRUST = [
   {
     icon:  'scale',
     title: 'Bulk Production Capacity',
-    desc:  '80,000 sq ft vertically integrated campus — from single bespoke pieces to multi-container programmes.',
+    desc:  'Large, vertically integrated campus — from single bespoke pieces to multi-container programmes.',
   },
 ]
 
@@ -128,7 +128,7 @@ export const CUSTOM_FAQ = [
   },
   {
     q: 'Do you export internationally?',
-    a: 'We export to 45+ countries across Europe, the Americas, Middle East, Asia-Pacific and Africa. Full export documentation, FCL/LCL shipping and DDP options are available.',
+    a: 'We export to international markets across Europe, the Americas, Middle East, Asia-Pacific and Africa. Full export documentation, FCL/LCL shipping and DDP options are available.',
   },
   {
     q: 'Can you customize size and colours?',
