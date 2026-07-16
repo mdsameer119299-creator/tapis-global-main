@@ -4,6 +4,7 @@ import type { SeoLanding } from '@/lib/seo-landing'
 import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries, getRelatedDhurries, getRelatedCompany, getRelatedIndia } from '@/lib/seo-landing'
 import { getProductCategory, PRODUCT_CATEGORIES } from '@/lib/products'
 import { guidesForLanding } from '@/lib/guides'
+import { getKnowledgeArticlesFor } from '@/lib/knowledge/links'
 import { SITE } from '@/lib/data'
 import { Reveal, Eyebrow } from '@/components/ui'
 import { BLUR_PLACEHOLDER } from '@/components/ui/OptimizedImage'
@@ -53,6 +54,11 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
     ...getRelatedCountries(page.relatedCountries),
   ].filter((l) => !(l.kind === page.kind && l.slug === page.slug))
   const relatedLandingsTop = relatedLandings.slice(0, 5)
+  // Reverse-linked Knowledge Centre articles (industry/country pages only —
+  // the only two SeoLanding kinds the article content model tags today).
+  const knowledgeArticles = getKnowledgeArticlesFor(
+    page.kind === 'industry' ? { industry: page.slug } : page.kind === 'country' ? { country: page.slug } : {},
+  )
 
   const waHref = `${SITE.whatsapp}?text=${encodeURIComponent(
     `Hello Tapis Global, I'd like to enquire about ${page.label} (manufacturing / supply).`,
@@ -302,6 +308,29 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
                 <Link
                   key={`${l.kind}-${l.slug}`}
                   href={`${BASE_PATH[l.kind]}/${l.slug}`}
+                  className="px-5 py-2.5 text-[15px] tracking-[0.06em] border rounded-sm transition-colors duration-200 hover:border-[var(--c)] hover:text-[var(--c)]"
+                  style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
+                >
+                  {l.label}
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Related Knowledge Centre articles — internal linking */}
+        {knowledgeArticles.length > 0 && (
+          <div className="mt-12">
+            <Reveal>
+              <p className="text-[14px] tracking-[0.28em] uppercase font-medium mb-5" style={{ color: 'var(--gd)' }}>
+                Related Reading
+              </p>
+            </Reveal>
+            <div className="flex flex-wrap gap-3">
+              {knowledgeArticles.map((l) => (
+                <Link
+                  key={l.href}
+                  href={l.href}
                   className="px-5 py-2.5 text-[15px] tracking-[0.06em] border rounded-sm transition-colors duration-200 hover:border-[var(--c)] hover:text-[var(--c)]"
                   style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
                 >

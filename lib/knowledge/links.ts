@@ -9,7 +9,7 @@
 import { getProductCategory } from '@/lib/products'
 import { getCountry, getIndustry } from '@/lib/seo-landing'
 import { TARA_MATERIALS, TARA_CONSTRUCTIONS } from '@/lib/tara/knowledge'
-import { getKnowledgeArticle } from './content'
+import { getKnowledgeArticle, getPublishedArticles } from './content'
 import type { KnowledgeArticle, KnowledgeLink } from './types'
 
 export interface ResolvedLinks {
@@ -65,4 +65,21 @@ export function resolveArticleLinks(a: KnowledgeArticle): ResolvedLinks {
     constructions: Array.from(new Set(constructions)),
     extra: uniq(a.internalLinks ?? []),
   }
+}
+
+/**
+ * Reverse lookup: which published Knowledge Centre articles reference a given
+ * product / industry / country. Closes the loop the other way — knowledge
+ * articles link OUT to products/industries/countries (above), but nothing
+ * linked back IN, leaving articles reachable only from the /knowledge hub.
+ * Used by product and landing pages to surface a small "Related Reading"
+ * block, scaling automatically as the Knowledge Centre grows.
+ */
+export function getKnowledgeArticlesFor(target: { product?: string; industry?: string; country?: string }): KnowledgeLink[] {
+  const matches = getPublishedArticles().filter((a) =>
+    (target.product && (a.relatedProducts ?? []).includes(target.product)) ||
+    (target.industry && (a.relatedIndustries ?? []).includes(target.industry)) ||
+    (target.country && (a.relatedCountries ?? []).includes(target.country)),
+  )
+  return uniq(matches.map((a) => ({ label: a.title, href: `/knowledge/${a.slug}` })))
 }

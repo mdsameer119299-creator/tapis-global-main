@@ -1,19 +1,35 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { buildMetadata } from '@/lib/metadata'
-import { SEO_BASE_URL } from '@/lib/seo'
+import { SEO_BASE_URL, OG_IMAGE } from '@/lib/seo'
+import { webPageSchema, breadcrumbSchema, buildJsonLd } from '@/lib/structured-data'
 import PageHero from '@/components/layout/PageHero'
 
+const TITLE = 'Terms & Conditions | Tapis Global International'
+const DESCRIPTION =
+  'Terms and conditions for enquiries, quotations and supply from Tapis Global International Pvt Ltd, carpet manufacturer Bhadohi, India.'
+const CANONICAL = `${SEO_BASE_URL}/terms-and-conditions`
+
 export const metadata: Metadata = buildMetadata({
-  title: 'Terms & Conditions | Tapis Global International',
-  description:
-    'Terms and conditions for enquiries, quotations and supply from Tapis Global International Pvt Ltd, carpet manufacturer Bhadohi, India.',
-  canonical: `${SEO_BASE_URL}/terms-and-conditions`,
+  title: TITLE,
+  description: DESCRIPTION,
+  canonical: CANONICAL,
 })
+
+const PAGE_JSONLD = JSON.stringify(
+  buildJsonLd(
+    webPageSchema({ title: TITLE, description: DESCRIPTION, url: CANONICAL, imageUrl: OG_IMAGE.url }),
+    breadcrumbSchema([
+      { name: 'Home',               url: SEO_BASE_URL },
+      { name: 'Terms & Conditions', url: CANONICAL },
+    ]),
+  ),
+)
 
 export default function TermsPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: PAGE_JSONLD }} />
       <PageHero
         eyebrow="Legal"
         title="Terms & Conditions"

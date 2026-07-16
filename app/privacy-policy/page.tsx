@@ -1,20 +1,36 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { buildMetadata } from '@/lib/metadata'
-import { SEO_BASE_URL } from '@/lib/seo'
+import { SEO_BASE_URL, OG_IMAGE } from '@/lib/seo'
+import { webPageSchema, breadcrumbSchema, buildJsonLd } from '@/lib/structured-data'
 import PageHero from '@/components/layout/PageHero'
 
+const TITLE = 'Privacy Policy | Tapis Global International'
+const DESCRIPTION =
+  'Privacy policy for Tapis Global International Pvt Ltd — how we collect, use and protect enquiry and project information.'
+const CANONICAL = `${SEO_BASE_URL}/privacy-policy`
+
 export const metadata: Metadata = buildMetadata({
-  title: 'Privacy Policy | Tapis Global International',
-  description:
-    'Privacy policy for Tapis Global International Pvt Ltd — how we collect, use and protect enquiry and project information.',
-  canonical: `${SEO_BASE_URL}/privacy-policy`,
+  title: TITLE,
+  description: DESCRIPTION,
+  canonical: CANONICAL,
   noIndex: false,
 })
+
+const PAGE_JSONLD = JSON.stringify(
+  buildJsonLd(
+    webPageSchema({ title: TITLE, description: DESCRIPTION, url: CANONICAL, imageUrl: OG_IMAGE.url }),
+    breadcrumbSchema([
+      { name: 'Home',           url: SEO_BASE_URL },
+      { name: 'Privacy Policy', url: CANONICAL },
+    ]),
+  ),
+)
 
 export default function PrivacyPolicyPage() {
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: PAGE_JSONLD }} />
       <PageHero
         eyebrow="Legal"
         title="Privacy Policy"

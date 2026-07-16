@@ -332,12 +332,12 @@ export const COMPANY_PAGES: SeoLanding[] = [
   },
   {
     slug: 'why-bhadohi', kind: 'company', label: 'Why Bhadohi', heroImage: '/images/tgi-banner-5.webp',
-    eyebrow: 'The Carpet Capital of India',
-    tagline: 'Why Bhadohi is the carpet capital of India — and why buying at source matters.',
-    seoTitle: 'Why Bhadohi Is the Carpet Capital of India | Tapis Global International',
-    seoDescription: 'Why Bhadohi is the carpet capital of India — the GI-recognised heart of handwoven carpet-making, with deep heritage, skilled artisans and source-direct quality. Tapis Global manufactures here. Learn more.',
-    seoKeywords: ['why Bhadohi carpet capital', 'Bhadohi carpet city', 'Bhadohi carpet industry', 'carpet capital of India', 'Bhadohi handwoven carpets'],
-    h1: 'Why Bhadohi Is the Carpet Capital of India',
+    eyebrow: 'Our Home — The Carpet Capital of India',
+    tagline: 'Why Tapis Global manufactures in Bhadohi — and why buying at source matters.',
+    seoTitle: 'Why We Manufacture in Bhadohi, India | Tapis Global International',
+    seoDescription: 'Why Tapis Global manufactures in Bhadohi, the GI-recognised heart of handwoven carpet-making — deep heritage, skilled artisans and source-direct quality behind every carpet we make. Learn more.',
+    seoKeywords: ['Tapis Global Bhadohi', 'Bhadohi carpet manufacturer', 'Bhadohi carpet industry', 'carpet capital of India', 'Bhadohi handwoven carpets'],
+    h1: 'Why We Manufacture in Bhadohi, India',
     intro: 'Bhadohi, in Uttar Pradesh, is the carpet capital of India — the largest handwoven carpet-manufacturing cluster in South Asia and a GI-recognised centre of weaving heritage. Tapis Global manufactures here, at source, continuing a three-generation family legacy.',
     overview: 'Buying carpets from Bhadohi means buying from the source — generations of concentrated skill, authentic construction and source-direct pricing. Understanding Bhadohi is understanding why our carpets carry the craft and value they do.',
     sections: [
