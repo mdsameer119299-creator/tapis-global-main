@@ -22,6 +22,15 @@ On top of the conversation-intelligence layer (`conversation-intelligence.ts`: t
 - **`knowledge/segments.ts`** — verified **segment advisors** (tender, hotel/hospitality, interior designer/architect, export/wholesale, homeowner) added to `KNOWLEDGE_CORPUS`, so segment questions retrieve the right consultative guidance.
 - Regression-guarded by `npm run test:tara:intel` (also part of the `test:tara` chain).
 
+## Product Knowledge Engine
+Structured product expertise held **in data + retrieval, never in the prompt** (base prompt size unchanged). Makes TARA reason like an experienced carpet expert.
+- **Structured profiles** — every material (`knowledge/materials.ts`) carries a `profile`: description, advantages, disadvantages, typical applications, relative durability/softness/luxury ratings, maintenance, recommended projects and alternative materials. Every construction (`knowledge/constructions.ts`) carries a `profile`: description, manufacturing method, suitable materials, best applications, traffic suitability, typical pile height and maintenance. Ratings are relative (not tested guarantees) and are translated to words — never surfaced as numbers.
+- **New knowledge modules** — `knowledge/installation.ts` and `knowledge/applications.ts` (room/use-case → suitable products), added to `KNOWLEDGE_CORPUS`. Enriched profile text is folded into the corpus so retrieval surfaces it, and the route places this **verified product knowledge ahead of generic website content**.
+- **`knowledge/detect.ts`** — single-source, span-masked detection of material/construction ids from (typo-normalized) text; shared by the recommendation and comparison engines so they never drift.
+- **`recommend.ts`** — now weighs project type, budget, **room, foot traffic**, material preference and priorities using the structured profiles, and surfaces an alternative from the chosen material's profile. Deterministic (same input → same recommendation).
+- **`compare.ts`** — a **comparison engine** that detects a two-way material/construction comparison (wool vs viscose, bamboo silk vs viscose, hand-tufted vs hand-knotted, kilim vs dhurrie) and builds a natural, capability-safe explanation **entirely from profile data**; injected as guidance (AI rewords it) and usable as a deterministic reply with no AI key.
+- Regression-guarded by `npm run test:tara:knowledge` (material/construction recommendation, comparison, wrong spellings, follow-ups, consistency) — also part of the `test:tara` chain.
+
 ### Site-wide Knowledge Centre (`lib/knowledge/`)
 `types.ts` defines a reusable `KnowledgeArticle` schema (title, summary, SEO, FAQ, related articles/products/materials/constructions/countries/industries, images, `taraTags`, internal links). `registry.ts` defines **13 scalable categories** (Materials, Manufacturing, Carpet History, Buying Guides, Carpet Care, Commercial Projects, Country Guides, Industry Guides, Glossary, FAQ, Design Inspiration, Project Planning, Export Knowledge). **Phase 1 = architecture only** — the article store is empty; future articles plug into TARA via `taraTags`.
 

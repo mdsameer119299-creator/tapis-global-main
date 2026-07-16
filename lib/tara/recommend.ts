@@ -1,18 +1,20 @@
 /**
  * lib/tara/recommend.ts — capability-safe product recommendation engine.
  *
- * Main's PR #20 gave TARA understanding (typo/synonym normalization, concept
- * expansion) + conversation guidance. This adds the missing "give a confident
- * recommendation" capability on top of it: it consumes the ConversationSignals
- * that conversation-intelligence.ts already computes (so it reuses that NLP
- * rather than duplicating it) and suggests a verified material + construction +
- * product category drawn ONLY from the knowledge data. It positions
- * ("a strong starting point") and never guarantees performance, price, MOQ or
- * delivery — the team confirms specifics.
+ * Consumes the ConversationSignals that conversation-intelligence.ts already
+ * computes (reusing that NLP rather than duplicating it) and recommends a
+ * verified material + construction + product category drawn ONLY from the
+ * knowledge data. It weighs project type, budget, room, foot traffic, material
+ * preference and customer priorities. It positions ("a strong starting point")
+ * and never guarantees performance, price, MOQ or delivery — the team confirms.
+ *
+ * Material/construction detection is shared with the comparison engine via
+ * knowledge/detect.ts; the ranking here reads the structured `profile` fields.
  */
 import { TARA_MATERIALS } from './knowledge/materials'
 import { TARA_CONSTRUCTIONS } from './knowledge/constructions'
 import { TARA_CATEGORIES } from './knowledge/categories'
+import { firstMaterialId, firstConstructionId } from './knowledge/detect'
 import type { ConversationSignals } from './conversation-intelligence'
 
 type Tier = 'Economy' | 'Premium' | 'Luxury'
@@ -23,6 +25,8 @@ interface Detected {
   materialId?: string
   constructionId?: string
   tier?: Tier
+  room?: string
+  traffic?: 'low' | 'high'
   priorities: string[] // 'durable' | 'soft' | 'natural'
 }
 
@@ -31,32 +35,10 @@ export interface Recommendation {
   construction?: { id: string; name: string }
   category?: { name: string; slug: string }
   segment?: SegmentKey
+  /** Alternative material ids worth considering (from the chosen material's profile). */
+  alternatives?: string[]
 }
 
-// Matched against the already-normalised (typo-corrected) buyer text.
-const MATERIAL_MATCH: Array<[RegExp, string]> = [
-  [/\b(new zealand wool|nz wool)\b/, 'nz-wool'],
-  [/\bwool\b/, 'indian-wool'],
-  [/\b(viscose|rayon|art silk|artificial silk)\b/, 'viscose'],
-  [/\b(bamboo silk|banana silk|sari silk|silk)\b/, 'bamboo-silk'],
-  [/\bjute\b/, 'jute'],
-  [/\bsisal\b/, 'sisal'],
-  [/\bcotton\b/, 'cotton'],
-  [/\bleather\b/, 'leather'],
-  [/\b(pet|polyester|polypropylene|nylon|synthetic)\b/, 'pet'],
-]
-const CONSTRUCTION_MATCH: Array<[RegExp, string]> = [
-  [/\b(hand[ -]?knotted|knotted|kpsi)\b/, 'hand-knotted'],
-  [/\b(hand[ -]?tufted|tufted|carved|carving)\b/, 'hand-tufted'],
-  [/\b(flat[ -]?weave|flatwoven|reversible)\b/, 'flatweave'],
-  [/\bkilim\b/, 'kilim'],
-  [/\b(dhurrie|durry|durrie)\b/, 'dhurrie'],
-  [/\bhandloom\b/, 'handloom'],
-  [/\b(shaggy|shag|high pile|plush)\b/, 'shaggy'],
-  [/\b(broadloom|wall[ -]?to[ -]?wall|w2w|fitted carpet)\b/, 'machine-made'],
-  [/\b(machine[ -]?made|power ?loom)\b/, 'machine-made'],
-  [/\boutdoor\b/, 'outdoor'],
-]
 const CATEGORY_BY_CONSTRUCTION: Record<string, string> = {
   'hand-knotted': 'hand-knotted-carpet', 'hand-tufted': 'hand-tufted-carpet', flatweave: 'flat-weaves',
   kilim: 'kilim-rugs', dhurrie: 'dhurrie-rugs', shaggy: 'shaggy-rugs',
@@ -69,7 +51,6 @@ const mat = (id: string) => TARA_MATERIALS.find((m) => m.id === id)
 const con = (id: string) => TARA_CONSTRUCTIONS.find((c) => c.id === id)
 const cat = (slug: string) => TARA_CATEGORIES.find((c) => c.slug === slug)
 const isContract = (s?: SegmentKey) => s === 'hotel' || s === 'office' || s === 'tender' || s === 'export'
-const firstMatch = (pairs: Array<[RegExp, string]>, text: string) => pairs.find(([re]) => re.test(text))?.[1]
 
 function detect(signals: ConversationSignals): Detected {
   const text = signals.recentUserContext
@@ -86,27 +67,43 @@ function detect(signals: ConversationSignals): Detected {
   else if (/\b(office|commercial|corporate|retail|showroom|workspace)\b/.test(text)) segment = 'office'
   else if (concepts.has('residential') || /\b(home|house|apartment|villa|residence|bedroom|living room|drawing room)\b/.test(text)) segment = 'home'
 
+  let room: string | undefined
+  if (/\b(stair|staircase|hallway|corridor|landing|entrance|foyer)\b/.test(text)) room = 'stairs'
+  else if (/\b(bedroom|master bedroom)\b/.test(text)) room = 'bedroom'
+  else if (/\b(living room|lounge|drawing room|sitting room|family room)\b/.test(text)) room = 'living'
+  else if (/\bdining\b/.test(text)) room = 'dining'
+  else if (/\b(bathroom|washroom)\b/.test(text)) room = 'bathroom'
+  else if (/\b(outdoor|patio|terrace|balcony|garden)\b/.test(text)) room = 'outdoor'
+  else if (/\b(kids|children|nursery|playroom)\b/.test(text)) room = 'kids'
+
   let tier: Tier | undefined
   if (/\b(budget|cheap|cheapest|economical|affordable|low[ -]?cost|inexpensive)\b/.test(text)) tier = 'Economy'
   else if (/\b(luxury|luxurious|premium|high[ -]?end|exclusive|finest|top quality)\b/.test(text)) tier = 'Luxury'
 
-  return { segment, materialId: firstMatch(MATERIAL_MATCH, text), constructionId: firstMatch(CONSTRUCTION_MATCH, text), tier, priorities }
+  let traffic: 'low' | 'high' | undefined
+  if (priorities.includes('durable') || room === 'stairs' || isContract(segment)) traffic = 'high'
+  else if (room === 'bedroom') traffic = 'low'
+
+  return { segment, materialId: firstMaterialId(text), constructionId: firstConstructionId(text), tier, room, traffic, priorities }
 }
 
 function pickMaterialId(d: Detected): string {
+  if (d.room === 'outdoor') return 'pet'
   if (d.materialId) {
     if (d.materialId === 'indian-wool' && d.tier === 'Luxury') return 'nz-wool'
     return d.materialId
   }
   if (d.tier === 'Luxury') return 'nz-wool'
-  if (d.priorities.includes('natural')) return 'jute'
+  if (d.priorities.includes('natural')) return d.traffic === 'high' ? 'sisal' : 'jute'
   if (d.tier === 'Economy') return 'cotton'
   return 'indian-wool' // wool: the versatile, contract-capable all-round default
 }
 
 function pickConstructionId(d: Detected): string {
   if (d.constructionId) return d.constructionId
+  if (d.room === 'outdoor') return 'outdoor'
   if (d.segment === 'hotel' || d.segment === 'office') return 'machine-made' // broadloom / wall-to-wall territory
+  if (d.room === 'bedroom' && d.priorities.includes('soft')) return 'shaggy'
   if (d.priorities.includes('natural')) return 'flatweave'
   if (d.tier === 'Economy') return 'dhurrie'
   if (d.tier === 'Luxury') return 'hand-knotted'
@@ -123,13 +120,13 @@ function pickCategorySlug(materialId: string, constructionId: string, segment?: 
 /** True when there is enough signal to offer a confident suggestion. */
 export function hasRecommendation(signals: ConversationSignals): boolean {
   const d = detect(signals)
-  return Boolean(d.segment || d.materialId || d.constructionId || d.tier || d.priorities.length)
+  return Boolean(d.segment || d.materialId || d.constructionId || d.tier || d.room || d.priorities.length)
 }
 
 /** Structured recommendation from verified data (used by tests + the route). */
 export function recommend(signals: ConversationSignals): Recommendation | null {
   const d = detect(signals)
-  if (!(d.segment || d.materialId || d.constructionId || d.tier || d.priorities.length)) return null
+  if (!(d.segment || d.materialId || d.constructionId || d.tier || d.room || d.priorities.length)) return null
   const materialId = pickMaterialId(d)
   const constructionId = pickConstructionId(d)
   const category = cat(pickCategorySlug(materialId, constructionId, d.segment))
@@ -140,6 +137,7 @@ export function recommend(signals: ConversationSignals): Recommendation | null {
     construction: c && { id: c.id, name: c.name },
     category: category && { name: category.name, slug: category.slug },
     segment: d.segment,
+    alternatives: m?.profile?.alternatives,
   }
 }
 
@@ -152,9 +150,11 @@ export function buildRecommendation(signals: ConversationSignals): string | null
   if (!r || !r.material || !r.construction) return null
   const seg = r.segment ? ` for a ${SEGMENT_LABEL[r.segment]} project` : ''
   const category = r.category ? `, from our ${r.category.name} range` : ''
+  const altId = r.alternatives?.find((id) => id !== r.material?.id)
+  const alt = altId && mat(altId) ? ` If they prefer an alternative, ${mat(altId)!.name} is also worth considering.` : ''
   return [
     'SUGGESTED RECOMMENDATION (offer warmly as a suggestion, not a hard sell):',
-    `${r.material.name} (${r.material.positioning}) in a ${r.construction.name} construction is a strong starting point${seg}${category}.`,
+    `${r.material.name} (${r.material.positioning}) in a ${r.construction.name} construction is a strong starting point${seg}${category}.${alt}`,
     'Present it in your own words, explain briefly why it suits their need, and invite them to refine colour, size and design.',
   ].join(' ')
 }

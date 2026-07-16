@@ -6,6 +6,29 @@
 
 export interface TaraCategory { slug: string; name: string; image: string; blurb: string; tags?: string[] }
 
+/**
+ * Relative, capability-safe rating (NOT a tested/guaranteed metric). Used only
+ * by the recommendation + comparison engines to rank options; it is translated
+ * into words before it ever reaches the buyer, never surfaced as a number.
+ */
+export type Rating = 1 | 2 | 3 | 4 | 5
+
+/** Structured product profile — the core of the Product Knowledge Engine. */
+export interface MaterialProfile {
+  description: string
+  advantages: string[]
+  disadvantages: string[]
+  typicalApplications: string[]
+  durability: Rating
+  softness: Rating
+  luxuryLevel: Rating
+  maintenance: string
+  /** Project types this fibre is commonly considered for. */
+  recommendedProjects: string[]
+  /** Material ids commonly considered as alternatives. */
+  alternatives: string[]
+}
+
 export interface TaraMaterial {
   id: string
   name: string
@@ -21,6 +44,21 @@ export interface TaraMaterial {
   maintenance?: string
   priceFactors?: string
   tags?: string[]
+  /** Structured, capability-safe product knowledge (Product Knowledge Engine). */
+  profile?: MaterialProfile
+}
+
+export interface ConstructionProfile {
+  description: string
+  /** How it is made. */
+  method: string
+  /** Material ids commonly used for this construction. */
+  suitableMaterials: string[]
+  bestApplications: string[]
+  trafficSuitability: 'low' | 'moderate' | 'high' | 'very-high'
+  /** Typical pile-height descriptor (capability-safe, not an exact spec). */
+  pileHeight: string
+  maintenance: string
 }
 
 export interface TaraConstruction {
@@ -30,6 +68,8 @@ export interface TaraConstruction {
   pile?: 'cut' | 'loop' | 'flat' | 'high' | 'mixed'
   detail?: string
   tags?: string[]
+  /** Structured, capability-safe product knowledge (Product Knowledge Engine). */
+  profile?: ConstructionProfile
 }
 
 export interface TaraManufacturingStep { step: number; name: string; detail: string }

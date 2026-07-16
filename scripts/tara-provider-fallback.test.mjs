@@ -16,7 +16,7 @@ ok('provider-unavailable path uses verified fallback before generic fallback', /
 ok('provider exception path uses verified fallback before generic fallback', /catch \(error\)[\s\S]*fallbackReply \|\| SAFE_FALLBACK/.test(route))
 ok('provider failures are logged server-side', /console\.error\('\[tara\] provider completion failed'/.test(route))
 ok('degraded responses do not increment AI turn quota', /catch \(error\)[\s\S]*degraded: true/.test(route) && !/catch \(error\)[\s\S]*aiTurns \+= 1[\s\S]*degraded: true/.test(route))
-ok('healthy provider path still retrieves verified context', /retrieveContext\(lastUser\)/.test(route) && /retrieveArticleContext\(lastUser/.test(route))
+ok('healthy provider path still retrieves verified context', /retrieveContext\(signals\.retrievalQuery\)/.test(route) && /retrieveArticleContext\(signals\.retrievalQuery/.test(route))
 ok('healthy provider path still calls AI completion', /await taraComplete\(system, turns/.test(route))
 ok('explicit handoff decision occurs before provider availability check', route.indexOf("decision === 'handoff'") < route.indexOf('!taraProviderAvailable()'))
 
