@@ -19,6 +19,7 @@ export * from './quality'
 export * from './care'
 export * from './glossary'
 export * from './faq'
+export * from './segments'
 export * from './commercial-safety'
 export * from './personality'
 export * from './prompt'
@@ -27,5 +28,5 @@ export * from './retrieval'
 /** Registry of knowledge modules (for docs/introspection & future UI). */
 export const TARA_KNOWLEDGE_MODULES = [
   'company', 'bhadohi', 'history', 'categories', 'materials', 'constructions',
-  'manufacturing', 'quality', 'care', 'glossary', 'faq', 'commercial-safety', 'personality',
+  'manufacturing', 'quality', 'care', 'glossary', 'faq', 'segments', 'commercial-safety', 'personality',
 ] as const

@@ -16,6 +16,7 @@ import { TARA_MANUFACTURING_STEPS } from './manufacturing'
 import { TARA_GLOSSARY } from './glossary'
 import { TARA_FAQS } from './faq'
 import { TARA_CARE } from './care'
+import { SEGMENT_MODULE } from './segments'
 
 export interface KnowledgeDoc { id: string; title: string; text: string; tags: string[] }
 
@@ -32,6 +33,7 @@ export const KNOWLEDGE_CORPUS: KnowledgeDoc[] = [
   ...TARA_GLOSSARY.map((g) => ({ id: `gloss:${g.term}`, title: g.term, text: `${g.term}: ${g.definition}`, tags: ['glossary', g.term.toLowerCase()] })),
   ...TARA_FAQS.map((f, i) => ({ id: `faq:${i}`, title: f.q, text: `${f.q} ${f.a}`, tags: ['faq'] })),
   ...TARA_CARE.map((c) => ({ id: `care:${c.subject}`, title: `Care — ${c.subject}`, text: `${c.subject} care: ${c.tip}`, tags: ['care', 'maintenance', c.subject.toLowerCase()] })),
+  ...SEGMENT_MODULE.map((f) => ({ id: f.id, title: f.title, text: f.body, tags: f.tags ?? [] })),
 ]
 
 const STOP = new Set('a an the and or of to for in on with we our you your is are be as at by from that this it can do does what how which where when about me my i'.split(' '))

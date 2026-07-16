@@ -16,6 +16,12 @@ TARA is powered by **composable modules, not one huge prompt**:
 - **To expand TARA:** add/extend a module file and (if searchable) include it in `KNOWLEDGE_CORPUS` — **no prompt rewrite**. Scales to many materials, constructions, facts, glossary terms and FAQs.
 - Capability-safe: no invented prices/MOQ/certifications/delivery/capacity/clients/projects. Regression-guarded by `npm run test:phase` + `npm run test:tara`.
 
+## Recommendation engine & segment advisors
+On top of the conversation-intelligence layer (`conversation-intelligence.ts`: typo/synonym normalization, concept expansion, one-question-at-a-time guidance), two capability-safe additions turn TARA from a describer into an adviser — **all in code + retrieval, base prompt unchanged**:
+- **`recommend.ts`** — a **product recommendation engine**. It reuses the `ConversationSignals` the route already computes (no duplicate NLP) and maps the buyer's segment, material/construction cues, budget tier and priorities to a suggested **material + construction + product category**, drawn only from verified data. `buildRecommendation()` appends one capability-safe suggestion line to the guidance **only when there is enough signal** (greetings/vague messages get nothing) — no prices, MOQ, certifications or delivery guarantees.
+- **`knowledge/segments.ts`** — verified **segment advisors** (tender, hotel/hospitality, interior designer/architect, export/wholesale, homeowner) added to `KNOWLEDGE_CORPUS`, so segment questions retrieve the right consultative guidance.
+- Regression-guarded by `npm run test:tara:intel` (also part of the `test:tara` chain).
+
 ### Site-wide Knowledge Centre (`lib/knowledge/`)
 `types.ts` defines a reusable `KnowledgeArticle` schema (title, summary, SEO, FAQ, related articles/products/materials/constructions/countries/industries, images, `taraTags`, internal links). `registry.ts` defines **13 scalable categories** (Materials, Manufacturing, Carpet History, Buying Guides, Carpet Care, Commercial Projects, Country Guides, Industry Guides, Glossary, FAQ, Design Inspiration, Project Planning, Export Knowledge). **Phase 1 = architecture only** — the article store is empty; future articles plug into TARA via `taraTags`.
 
