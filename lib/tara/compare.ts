@@ -11,14 +11,10 @@
 import { TARA_MATERIALS } from './knowledge/materials'
 import { TARA_CONSTRUCTIONS } from './knowledge/constructions'
 import { detectMaterialIds, detectConstructionIds } from './knowledge/detect'
+import { DURABILITY_WORDS as DUR, SOFTNESS_WORDS as SOFT, LUXURY_WORDS as LUX } from './knowledge/types'
 import type { ConversationSignals } from './conversation-intelligence'
 
 const COMPARE_CUE = /\b(vs|versus|compare|comparison|difference|differ|different|better|or)\b/
-
-// Relative ratings → words (never surface the raw number to the buyer).
-const DUR = ['', 'low', 'limited', 'moderate', 'strong', 'excellent']
-const SOFT = ['', 'coarse', 'firm', 'moderately soft', 'soft', 'very soft']
-const LUX = ['', 'value', 'entry', 'mid', 'high', 'top-tier']
 const TRAFFIC_RANK: Record<string, number> = { low: 1, moderate: 2, high: 3, 'very-high': 4 }
 
 const mat = (id: string) => TARA_MATERIALS.find((m) => m.id === id)

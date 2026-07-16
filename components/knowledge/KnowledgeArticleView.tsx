@@ -67,16 +67,7 @@ export default function KnowledgeArticleView({ article, links, categoryTitle }: 
         <RelatedBlock title="Related Products" links={links.products} />
         <RelatedBlock title="Related Industries" links={links.industries} />
         <RelatedBlock title="Related Export Markets" links={links.countries} />
-        {(links.materials.length > 0 || links.constructions.length > 0) && (
-          <div className="mt-10">
-            <p className="text-[13px] tracking-[0.24em] uppercase font-medium mb-3" style={{ color: 'var(--gd)' }}>Materials &amp; Constructions</p>
-            <div className="flex flex-wrap gap-2">
-              {[...links.materials, ...links.constructions].map((m) => (
-                <span key={m} className="px-3.5 py-1.5 text-[13.5px] rounded-full" style={{ background: '#fff', border: '1px solid var(--bd)', color: 'var(--inks)' }}>{m}</span>
-              ))}
-            </div>
-          </div>
-        )}
+        <RelatedBlock title="Materials & Constructions" links={[...links.materials, ...links.constructions]} />
       </div>
     </article>
   )
