@@ -16,11 +16,11 @@ export const DHURRIES: SeoLanding[] = [
   {
     slug: 'tat-patti-manufacturer', kind: 'dhurrie', label: 'Tat Patti Manufacturer', heroImage: '/images/jute-rugs-manufacturing.webp',
     eyebrow: 'Tat Patti — Floor Matting',
-    tagline: 'Tat Patti manufacturer in India — durable woven floor matting for schools, institutions and tender supply.',
-    seoTitle: 'Tat Patti Manufacturer India | School & Institutional Floor Matting — Tapis Global',
-    seoDescription: 'Tat Patti manufacturer and supplier in India. Durable woven cotton and jute tat patti floor matting from Bhadohi for schools, hostels, NGOs and government tenders — bulk, low-cost, fast supply. Request a quote.',
-    seoKeywords: ['tat patti manufacturer India', 'tat patti supplier', 'school tat patti manufacturer', 'tat patti exporter', 'floor matting manufacturer India', 'cotton tat patti'],
-    h1: 'Tat Patti Manufacturer in India',
+    tagline: 'Bulk Tat Patti supply in India — durable woven floor matting for schools, institutions, NGOs and tender buyers.',
+    seoTitle: 'Tat Patti Manufacturer & Bulk Supplier India | Institutional Floor Matting — Tapis Global',
+    seoDescription: 'Bulk Tat Patti manufacturer and supplier in India for schools, hostels, NGOs and government tenders. Durable woven cotton and jute floor matting from Bhadohi — competitive institutional pricing, fast supply. Request a quote.',
+    seoKeywords: ['tat patti bulk supplier India', 'tat patti supplier', 'school tat patti manufacturer', 'tat patti exporter', 'floor matting manufacturer India', 'cotton tat patti'],
+    h1: 'Tat Patti Manufacturer & Bulk Supplier in India',
     intro: 'Tapis Global International is a Tat Patti manufacturer and supplier based in Bhadohi, India, producing durable woven floor matting for schools, hostels, NGOs, institutions and government-tender supply. Tat Patti is the practical, economical floor-seating and floor-covering solution for high-volume institutional use, and we manufacture it at scale with consistent quality.',
     overview: 'Tat Patti (also spelt tatpatti or durry matting) is a flat, hard-wearing woven floor covering traditionally used for floor seating in schools, anganwadis, assembly halls, places of worship and relief programmes. As a direct manufacturer we weave Tat Patti in cotton and jute to institutional specifications, supplying the large, repeatable volumes that government and NGO buyers require — at genuine factory pricing with no trading middlemen.',
     sections: [

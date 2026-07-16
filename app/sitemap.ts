@@ -28,6 +28,7 @@ import {
   getAllCompanySlugs,
 } from '@/lib/seo-landing'
 import { getAllGuideSlugs } from '@/lib/guides'
+import { getPublishedArticleSlugs } from '@/lib/knowledge/content'
 
 type Entry = MetadataRoute.Sitemap[number]
 type Freq = NonNullable<Entry['changeFrequency']>
@@ -54,6 +55,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SEO_BASE_URL}/dhurries`,              changeFrequency: 'weekly',  priority: 0.9  },
     { url: `${SEO_BASE_URL}/company`,               changeFrequency: 'monthly', priority: 0.8  },
     { url: `${SEO_BASE_URL}/guides`,                changeFrequency: 'weekly',  priority: 0.85 },
+    { url: `${SEO_BASE_URL}/knowledge`,             changeFrequency: 'weekly',  priority: 0.8  },
     { url: `${SEO_BASE_URL}/about`,                 changeFrequency: 'monthly', priority: 0.8  },
     { url: `${SEO_BASE_URL}/gallery`,               changeFrequency: 'weekly',  priority: 0.8  },
     { url: `${SEO_BASE_URL}/custom`,                changeFrequency: 'monthly', priority: 0.9  },
@@ -76,5 +78,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...cluster('/dhurries',   getAllDhurrieSlugs(),   0.8),
     ...cluster('/company',    getAllCompanySlugs(),   0.7),
     ...cluster('/guides',     getAllGuideSlugs(),     0.7),
+    ...cluster('/knowledge',  getPublishedArticleSlugs(), 0.7),
   ]
 }

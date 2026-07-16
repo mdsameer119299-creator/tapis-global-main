@@ -52,6 +52,11 @@ export default function Analytics() {
     <>
       {GA_ID && (
         <>
+          {/* Preconnect right before the script loads (post-consent) so the
+              handshake isn't paid for on every visit — see privacy-first
+              gating above. A static preconnect in <head> would sit unused for
+              visitors who never consent. */}
+          <link rel="preconnect" href="https://www.googletagmanager.com" />
           <Script id="ga4-src" src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="afterInteractive" />
           <Script id="ga4-init" strategy="afterInteractive">{`
             window.dataLayer = window.dataLayer || [];
@@ -64,13 +69,16 @@ export default function Analytics() {
       )}
 
       {CLARITY_ID && (
-        <Script id="ms-clarity" strategy="afterInteractive">{`
+        <>
+          <link rel="preconnect" href="https://www.clarity.ms" />
+          <Script id="ms-clarity" strategy="afterInteractive">{`
           (function(c,l,a,r,i,t,y){
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
           })(window, document, "clarity", "script", "${CLARITY_ID}");
         `}</Script>
+        </>
       )}
     </>
   )

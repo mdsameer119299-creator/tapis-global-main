@@ -187,13 +187,6 @@ export const PAGE_META = {
     canonical:   `${SEO_BASE_URL}/design-studio`,
   },
 
-  blogs: {
-    title:       `Carpet & Design Insights | Luxury Flooring Blog — Tapis Global`,
-    description: `Expert articles on luxury carpets, hospitality flooring, architect specifications, Bhadohi craftsmanship, custom rug design and project sourcing from Tapis Global International.`,
-    keywords:    [...KEYWORDS_BRAND, 'carpet design blog', 'hospitality flooring insights', 'luxury carpet guides'],
-    canonical:   `${SEO_BASE_URL}/blogs`,
-  },
-
   custom: {
     title:       `Custom Carpet Design | Bespoke Rugs for Architects & Luxury Projects — Tapis Global`,
     description: `Design custom carpets with Tapis Global. Bespoke size, colour, texture and material for hotels, offices, villas and designer interiors. Pan India execution and export quality from Bhadohi.`,
