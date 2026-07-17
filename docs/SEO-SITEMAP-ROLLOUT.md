@@ -6,10 +6,19 @@ Controlled in `app/sitemap.ts`:
 - `INDIA_SITEMAP_SLUGS` — India city pages listed now.
 - `COUNTRY_SITEMAP_EXCLUDE` — new country pages held back for Phase 2.
 
-## Phase 1 (this PR) — in the sitemap now
+## India — fully promoted
 
-**India (hub + 7 cities):**
-`/india`, `/india/delhi-ncr`, `/india/mumbai`, `/india/bengaluru`, `/india/hyderabad`, `/india/chennai`, `/india/pune`, `/india/bhadohi`
+**India (hub + 30 commercial cities + bhadohi):** all `/india/[location]` routes are
+now listed in the sitemap. The Commercial SEO Domination project (see
+`.claude/plans/adaptive-sauteeing-bird.md`) brought all 30 commercial city
+pages to full depth (buyer segments, materials/constructions, EEAT links,
+market-similarity internal linking) across four content batches — the
+original Phase-1/Phase-2 split that gated on content depth no longer
+applies, since every commercial page now meets the same bar. `bhadohi`
+(our manufacturing-origin page, not a commercial-market page) stays listed
+as it always was.
+
+## Phase 1 (this PR) — in the sitemap now
 
 **International — existing markets (unchanged):**
 `/countries/{usa, uk, germany, france, italy, spain, netherlands, belgium, australia, uae, saudi-arabia, qatar}`
@@ -19,7 +28,6 @@ Controlled in `app/sitemap.ts`:
 
 ## Phase 2 (later, after Phase-1 pages index) — routes live, not yet in sitemap
 
-**India (10):** kolkata, ahmedabad, jaipur, surat, goa, lucknow, kochi, chandigarh, gurugram, noida
 **International (6):** austria, ireland, new-zealand, japan, south-korea, south-africa
 
 ## How to promote a page to the sitemap
