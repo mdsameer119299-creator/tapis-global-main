@@ -52,6 +52,8 @@ export const COUNTRIES: SeoLanding[] = [
     relatedIndustries: ['hotel-carpets', 'villa-carpets', 'retail-carpets'],
     relatedSolutions: ['carpet-exporter-india', 'wholesale-carpet-supplier'],
     relatedCountries: ['uk', 'germany', 'australia'],
+    relatedUsaStates: ['new-york', 'california', 'texas', 'illinois'],
+    relatedUsaCities: ['new-york-city', 'los-angeles'],
     importProcess: 'Buyers begin with a specification enquiry — construction, size, colourway and quantity — followed by lab-dip and sample approval before production starts. Once samples are signed off, we manufacture, run in-process and pre-dispatch quality checks, and prepare the commercial invoice, packing list and certificates of origin US customs brokers typically request.',
     shipping: 'Container-load and part-container shipments are coordinated to major US ports on both coasts, with phased dispatch for importers and retailers running repeat or multi-lot programmes. Air freight is available for sample runs and urgent hospitality orders.',
     popularStyles: ['Transitional wool rugs', 'Hand-tufted contemporary designs', 'Bold maximalist pattern rugs', 'Flat-weave jute & sisal', 'Custom hospitality carpet'],

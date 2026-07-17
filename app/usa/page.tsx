@@ -29,6 +29,9 @@ const PAGE_JSONLD = JSON.stringify(
       description: 'Made-to-order carpet and rug manufacturer in Bhadohi producing for commercial buyers and projects across the United States.',
       url:         `${SEO_BASE_URL}/usa`,
       imageUrl:    OG_IMAGE.url,
+      // Genuine hub listing 51 state-equivalent pages — CollectionPage layered
+      // onto WebPage is valid multi-type schema.org practice for this shape.
+      additionalType: 'CollectionPage',
     }),
     breadcrumbSchema([
       { name: 'Home', url: SEO_BASE_URL },
