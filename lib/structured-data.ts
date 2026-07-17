@@ -372,6 +372,29 @@ export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS): Record<string, unknow
   }
 }
 
+// ─── SERVICE (country export pages) ───────────────────────────────────────────
+// A genuine, non-misleading way to signal country targeting in schema without
+// hreflang (which would misrepresent these as localized-language alternates —
+// see lib/metadata.ts). areaServed is a real Country entity, not a language.
+export function serviceSchema({
+  countryName,
+  url,
+}: {
+  countryName: string
+  url:         string
+}) {
+  return {
+    '@context':    'https://schema.org',
+    '@type':       'Service',
+    '@id':         `${url}#service`,
+    name:          `Carpet & Rug Export to ${countryName}`,
+    serviceType:   'Custom carpet and rug manufacturing and export',
+    provider:      { '@id': `${SEO_BASE_URL}/#organization` },
+    areaServed:    { '@type': 'Country', name: countryName },
+    url,
+  }
+}
+
 // NOTE: aggregateRatingSchema was removed. Self-serving AggregateRating markup
 // without verifiable on-page reviews violates Google's review-snippet policy and
 // risks a manual action. Re-introduce only with genuine, displayed reviews.

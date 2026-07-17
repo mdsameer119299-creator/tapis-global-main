@@ -27,6 +27,13 @@ type PageMetaInput = {
   canonical?:  string
   ogImage?:    string
   noIndex?:    boolean
+  /**
+   * Optional og:locale override. Use ONLY for markets where English genuinely
+   * is the audience's primary language (e.g. en_US, en_GB, en_AU) — never as a
+   * per-country default, or this repeats the exact misrepresentation hreflang
+   * was removed for (see the "Canonical" comment below).
+   */
+  ogLocale?:   string
 }
 
 export function buildMetadata(input: PageMetaInput): Metadata {
@@ -37,6 +44,7 @@ export function buildMetadata(input: PageMetaInput): Metadata {
     canonical   = SEO_BASE_URL,
     ogImage     = OG_IMAGE.url,
     noIndex     = false,
+    ogLocale    = BRAND.locale,
   } = input
 
   return {
@@ -82,7 +90,7 @@ export function buildMetadata(input: PageMetaInput): Metadata {
       title,
       description,
       url:         canonical,
-      locale:      BRAND.locale,
+      locale:      ogLocale,
       images: [
         {
           url:    ogImage,
