@@ -65,12 +65,20 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
     ...getRelatedUsaCities(page.relatedUsaCities),
     ...getRelatedUsaStates(page.relatedUsaStates),
     ...getRelatedCountries(page.relatedCountries),
-    ...getRelatedCompany(page.relatedCompany),
     ...getRelatedDhurries(page.relatedDhurries),
     ...getRelatedIndustries(page.relatedIndustries),
     ...getRelatedSolutions(page.relatedSolutions),
   ].filter((l) => !(l.kind === page.kind && l.slug === page.slug))
-  const relatedLandingsTop = relatedLandings.slice(0, 5)
+  // Company (EEAT) links get a reserved slot instead of sharing the general
+  // pool's slice(0, 5) — otherwise pages with 4+ regional/country links
+  // (e.g. most USA states) silently starve out the quality/OEM/export-process
+  // links this block exists to surface, even though getRelatedCompany found a match.
+  const companyLinks = getRelatedCompany(page.relatedCompany)
+    .filter((l) => !(l.kind === page.kind && l.slug === page.slug))
+    .slice(0, 2)
+  const relatedLandingsTop = companyLinks.length > 0
+    ? [...relatedLandings.slice(0, 5 - companyLinks.length), ...companyLinks]
+    : relatedLandings.slice(0, 5)
   // Reverse-linked Knowledge Centre articles (industry/country pages only —
   // the only two SeoLanding kinds the article content model tags today).
   const knowledgeArticles = getKnowledgeArticlesFor(
