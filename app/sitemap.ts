@@ -38,8 +38,18 @@ type Entry = MetadataRoute.Sitemap[number]
 type Freq = NonNullable<Entry['changeFrequency']>
 
 // ── Phased-rollout allow/deny lists ──────────────────────────────────────────
-// India: only Phase-1 city pages are listed (all India routes still build).
-const INDIA_SITEMAP_SLUGS = ['delhi-ncr', 'mumbai', 'bengaluru', 'hyderabad', 'chennai', 'pune', 'bhadohi']
+// India: full commercial cluster promoted — all 30 city pages now carry the
+// same depth (buyer segments, materials/constructions, EEAT links, market-
+// similarity internal linking) as the Phase-1 set, plus bhadohi (our
+// manufacturing-origin page, not part of the commercial-market cluster).
+const INDIA_SITEMAP_SLUGS = [
+  'delhi-ncr', 'mumbai', 'bengaluru', 'hyderabad', 'chennai', 'pune',
+  'ahmedabad', 'surat', 'jaipur', 'lucknow', 'noida', 'gurugram', 'faridabad',
+  'kolkata', 'patna', 'indore', 'nagpur', 'coimbatore', 'kochi',
+  'visakhapatnam', 'bhubaneswar', 'raipur', 'chandigarh', 'ludhiana',
+  'amritsar', 'vadodara', 'nashik', 'kanpur', 'bhopal', 'goa',
+  'bhadohi',
+]
 // International: existing markets stay; among the newly added markets only the
 // Phase-1 set is listed. new-zealand/japan/south-korea were promoted out of
 // this exclude list once they received the full country deep-dive treatment
