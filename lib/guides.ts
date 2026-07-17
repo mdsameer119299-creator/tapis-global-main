@@ -691,6 +691,9 @@ const GUIDE_DEFAULTS_BY_KIND: Record<string, string[]> = {
   company:  ['how-carpets-are-manufactured', 'why-bhadohi-carpet-capital', 'handmade-vs-machine-made-carpets'],
   'usa-state': ['how-to-import-carpets-from-india', 'why-buy-carpets-from-india', 'why-bhadohi-carpet-capital'],
   'usa-city':  ['how-to-import-carpets-from-india', 'why-buy-carpets-from-india', 'why-bhadohi-carpet-capital'],
+  // India location pages are domestic B2B buyers, not importers — skip the
+  // import/customs framing usa-state/usa-city and country use.
+  india: ['why-buy-carpets-from-india', 'how-carpets-are-manufactured', 'why-bhadohi-carpet-capital'],
 }
 const GUIDE_SLUG_OVERRIDES: Record<string, string[]> = {
   'hotel-carpets': ['hotel-carpet-buying-guide', 'wool-vs-viscose-carpets', 'area-rugs-vs-wall-to-wall-carpets'],
@@ -773,6 +776,23 @@ const GUIDE_SLUG_OVERRIDES: Record<string, string[]> = {
   'san-francisco': ['office-carpet-buying-guide', 'hand-tufted-vs-hand-knotted-carpet', 'why-buy-carpets-from-india'],
   'san-diego': ['office-carpet-buying-guide', 'government-tender-dhurrie-buying-guide', 'why-bhadohi-carpet-capital'],
   'seattle': ['office-carpet-buying-guide', 'why-buy-carpets-from-india', 'why-bhadohi-carpet-capital'],
+  // India location overrides — swapped in only where a specific guide is a
+  // genuinely better fit than the generic 3-guide 'india' default, based on
+  // each city's established dominant buyer profile (corporate/office,
+  // government/institutional, hospitality/heritage, or trade/manufacturing).
+  'delhi-ncr':  ['government-tender-dhurrie-buying-guide', 'office-carpet-buying-guide', 'why-buy-carpets-from-india'],
+  'gurugram':   ['office-carpet-buying-guide', 'hand-tufted-vs-hand-knotted-carpet', 'why-buy-carpets-from-india'],
+  'noida':      ['office-carpet-buying-guide', 'auditorium-carpet-buying-guide', 'school-carpet-buying-guide'],
+  'mumbai':     ['wool-vs-viscose-carpets', 'hotel-carpet-buying-guide', 'area-rugs-vs-wall-to-wall-carpets'],
+  'bengaluru':  ['office-carpet-buying-guide', 'carpet-manufacturing-process-explained', 'why-buy-carpets-from-india'],
+  'hyderabad':  ['hand-tufted-vs-hand-knotted-carpet', 'office-carpet-buying-guide', 'why-bhadohi-carpet-capital'],
+  'chennai':    ['carpet-manufacturing-process-explained', 'handmade-vs-machine-made-carpets', 'why-buy-carpets-from-india'],
+  'jaipur':     ['hand-tufted-vs-hand-knotted-carpet', 'kilim-vs-dhurrie', 'why-bhadohi-carpet-capital'],
+  'lucknow':    ['government-tender-dhurrie-buying-guide', 'why-bhadohi-carpet-capital', 'hand-tufted-vs-hand-knotted-carpet'],
+  'chandigarh': ['government-tender-dhurrie-buying-guide', 'office-carpet-buying-guide', 'why-buy-carpets-from-india'],
+  'goa':        ['jute-vs-sisal-rugs', 'area-rugs-vs-wall-to-wall-carpets', 'why-buy-carpets-from-india'],
+  'kochi':      ['jute-vs-sisal-rugs', 'hotel-carpet-buying-guide', 'why-buy-carpets-from-india'],
+  'ahmedabad':  ['kilim-vs-dhurrie', 'handmade-vs-machine-made-carpets', 'why-buy-carpets-from-india'],
 }
 export function guidesForLanding(kind: string, slug: string): Guide[] {
   const slugs = GUIDE_SLUG_OVERRIDES[slug] ?? GUIDE_DEFAULTS_BY_KIND[kind] ?? GUIDE_DEFAULTS_BY_KIND.industry
