@@ -372,25 +372,28 @@ export function faqSchema(faqs: FaqItem[] = DEFAULT_FAQS): Record<string, unknow
   }
 }
 
-// ─── SERVICE (country export pages) ───────────────────────────────────────────
-// A genuine, non-misleading way to signal country targeting in schema without
-// hreflang (which would misrepresent these as localized-language alternates —
-// see lib/metadata.ts). areaServed is a real Country entity, not a language.
+// ─── SERVICE (country / USA state / USA city market pages) ───────────────────
+// A genuine, non-misleading way to signal geographic targeting in schema
+// without hreflang (which would misrepresent these as localized-language
+// alternates — see lib/metadata.ts). areaServed is a real geographic entity,
+// not a language.
 export function serviceSchema({
-  countryName,
+  areaName,
+  areaType = 'Country',
   url,
 }: {
-  countryName: string
-  url:         string
+  areaName: string
+  areaType?: 'Country' | 'State' | 'City'
+  url:       string
 }) {
   return {
     '@context':    'https://schema.org',
     '@type':       'Service',
     '@id':         `${url}#service`,
-    name:          `Carpet & Rug Export to ${countryName}`,
+    name:          `Carpet & Rug Manufacturing for ${areaName}`,
     serviceType:   'Custom carpet and rug manufacturing and export',
     provider:      { '@id': `${SEO_BASE_URL}/#organization` },
-    areaServed:    { '@type': 'Country', name: countryName },
+    areaServed:    { '@type': areaType, name: areaName },
     url,
   }
 }

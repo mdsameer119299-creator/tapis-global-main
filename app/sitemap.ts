@@ -26,6 +26,8 @@ import {
   getAllCountrySlugs,
   getAllDhurrieSlugs,
   getAllCompanySlugs,
+  getAllUsaStateSlugs,
+  USA_CITIES,
 } from '@/lib/seo-landing'
 import { getAllGuideSlugs } from '@/lib/guides'
 import { getPublishedArticleSlugs } from '@/lib/knowledge/content'
@@ -49,6 +51,18 @@ function cluster(base: string, slugs: string[], priority: number, changeFrequenc
   return slugs.map((slug) => ({ url: `${SEO_BASE_URL}${base}/${slug}`, changeFrequency, priority }))
 }
 
+// USA cities live at a nested /usa/{state}/{city} URL — cluster() only builds
+// flat {base}/{slug} URLs, so cities get their own two-segment mapper. Ships
+// immediately alongside states (no phased hold-back — USA is the
+// highest-priority market; see the mission context in lib/usa-states.ts).
+function usaCitySitemap(priority: number): MetadataRoute.Sitemap {
+  return USA_CITIES.map((c) => ({
+    url: `${SEO_BASE_URL}/usa/${c.parentUsaState}/${c.slug}`,
+    changeFrequency: 'monthly' as Freq,
+    priority,
+  }))
+}
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticPages: MetadataRoute.Sitemap = [
     { url: SEO_BASE_URL,                            changeFrequency: 'weekly',  priority: 1.0  },
@@ -57,6 +71,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${SEO_BASE_URL}/solutions`,             changeFrequency: 'weekly',  priority: 0.9  },
     { url: `${SEO_BASE_URL}/countries`,             changeFrequency: 'weekly',  priority: 0.85 },
     { url: `${SEO_BASE_URL}/india`,                 changeFrequency: 'weekly',  priority: 0.9  },
+    { url: `${SEO_BASE_URL}/usa`,                   changeFrequency: 'weekly',  priority: 0.9  },
     { url: `${SEO_BASE_URL}/dhurries`,              changeFrequency: 'weekly',  priority: 0.9  },
     { url: `${SEO_BASE_URL}/company`,               changeFrequency: 'monthly', priority: 0.8  },
     { url: `${SEO_BASE_URL}/guides`,                changeFrequency: 'weekly',  priority: 0.85 },
@@ -83,6 +98,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...cluster('/solutions',  getAllSolutionSlugs(),  0.8),
     ...cluster('/countries',  countrySlugs,           0.75),
     ...cluster('/india',      INDIA_SITEMAP_SLUGS,    0.8),
+    ...cluster('/usa',        getAllUsaStateSlugs(),  0.85),
+    ...usaCitySitemap(0.8),
     ...cluster('/dhurries',   getAllDhurrieSlugs(),   0.8),
     ...cluster('/company',    getAllCompanySlugs(),   0.7),
     ...cluster('/guides',     getAllGuideSlugs(),     0.7),

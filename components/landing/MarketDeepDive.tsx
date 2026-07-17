@@ -5,25 +5,28 @@ import { EXPORT_CAPABILITY } from '@/lib/export-capability'
 import { Reveal, Eyebrow } from '@/components/ui'
 
 /**
- * Country-page deep-dive: import process, shipping, popular styles, buyer
- * segments, custom sizes and material recommendations for a single export
- * market. Purely additive — rendered alongside <LandingPage>, which keeps its
- * own hero/overview/applications/FAQ sections untouched. Renders nothing for
- * SeoLanding entries that don't carry this optional content (industries,
- * solutions, dhurries, company, india, and any country not yet deep-dived).
+ * Market-page deep-dive: import process, shipping, lead time, popular styles,
+ * buyer segments, custom sizes and material recommendations for a single
+ * country, USA state or USA city page. Purely additive — rendered alongside
+ * <LandingPage>, which keeps its own hero/overview/applications/FAQ sections
+ * untouched. Renders nothing for SeoLanding entries that don't carry this
+ * optional content (industries, solutions, dhurries, company, india, and any
+ * country/state/city not yet deep-dived).
  */
-export default function CountryDeepDive({ page }: { page: SeoLanding }) {
-  const hasContent = page.importProcess || page.shipping || (page.popularStyles?.length ?? 0) > 0 || (page.buyerSegments?.length ?? 0) > 0
+export default function MarketDeepDive({ page }: { page: SeoLanding }) {
+  const hasContent = page.importProcess || page.shipping || page.leadTime || (page.popularStyles?.length ?? 0) > 0 || (page.buyerSegments?.length ?? 0) > 0
   if (!hasContent) return null
 
   const materials = (page.materialRecommendations ?? [])
     .map((id) => TARA_MATERIALS.find((m) => m.id === id))
     .filter((m): m is NonNullable<typeof m> => Boolean(m))
 
+  const importCols = [page.importProcess, page.shipping, page.leadTime].filter(Boolean).length
+
   return (
     <>
-      {/* ── Import process & shipping ── */}
-      {(page.importProcess || page.shipping) && (
+      {/* ── Import process, shipping & lead time ── */}
+      {(page.importProcess || page.shipping || page.leadTime) && (
         <section className="py-14 lg:py-20 footer-container" style={{ background: 'var(--iv)' }}>
           <Reveal>
             <Eyebrow>Sourcing from India</Eyebrow>
@@ -31,7 +34,7 @@ export default function CountryDeepDive({ page }: { page: SeoLanding }) {
               Import Process &amp; <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>Shipping to {page.label}</em>
             </h2>
           </Reveal>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 max-w-4xl">
+          <div className={`grid grid-cols-1 ${importCols >= 3 ? 'sm:grid-cols-3' : 'sm:grid-cols-2'} gap-8 max-w-5xl`}>
             {page.importProcess && (
               <Reveal>
                 <h3 className="text-[18px] font-medium mb-2" style={{ color: 'var(--inks)' }}>Import Process</h3>
@@ -42,6 +45,12 @@ export default function CountryDeepDive({ page }: { page: SeoLanding }) {
               <Reveal delay={40}>
                 <h3 className="text-[18px] font-medium mb-2" style={{ color: 'var(--inks)' }}>Shipping &amp; Logistics</h3>
                 <p className="text-[16px] font-light leading-[1.85]" style={{ color: 'var(--inkm)' }}>{page.shipping}</p>
+              </Reveal>
+            )}
+            {page.leadTime && (
+              <Reveal delay={80}>
+                <h3 className="text-[18px] font-medium mb-2" style={{ color: 'var(--inks)' }}>Lead Time</h3>
+                <p className="text-[16px] font-light leading-[1.85]" style={{ color: 'var(--inkm)' }}>{page.leadTime}</p>
               </Reveal>
             )}
           </div>
@@ -71,7 +80,7 @@ export default function CountryDeepDive({ page }: { page: SeoLanding }) {
         </section>
       )}
 
-      {/* ── Buyer segments ── */}
+      {/* ── Buyer segments (6 for countries; up to 10 for USA state/city pages) ── */}
       {page.buyerSegments && page.buyerSegments.length > 0 && (
         <section className="py-14 lg:py-20 footer-container" style={{ background: 'var(--iv)' }}>
           <Reveal>
@@ -130,13 +139,13 @@ export default function CountryDeepDive({ page }: { page: SeoLanding }) {
         </section>
       )}
 
-      {/* ── Shared export capability band (MOQ / production / delivery) ── */}
+      {/* ── Shared capability band (MOQ / production / delivery) ── */}
       <section className="py-14 lg:py-16 footer-container" style={{ background: 'var(--ink)' }}>
         <Reveal>
           <div className="flex items-center gap-3 mb-8">
             <span className="block h-px w-8" style={{ background: 'rgba(192,155,74,0.5)' }} />
             <span className="text-[14px] tracking-[0.32em] uppercase font-medium" style={{ color: 'var(--gl)' }}>
-              Export Capability
+              Manufacturing Capability
             </span>
           </div>
         </Reveal>

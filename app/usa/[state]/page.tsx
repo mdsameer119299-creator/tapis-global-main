@@ -9,46 +9,36 @@ import {
   serviceSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
-import { getCountry, getAllCountrySlugs } from '@/lib/seo-landing'
+import { getUsaState, getAllUsaStateSlugs } from '@/lib/seo-landing'
 import LandingPage from '@/components/landing/LandingPage'
 import MarketDeepDive from '@/components/landing/MarketDeepDive'
 
-type Props = { params: { country: string } }
-
-// og:locale override — ONLY for markets where English genuinely is the
-// audience's primary language. All other target markets keep the site
-// default (their content is English; their audience's home language isn't),
-// which is the same honesty constraint that keeps hreflang out of this site.
-const OG_LOCALE_BY_COUNTRY: Record<string, string> = {
-  usa:           'en_US',
-  canada:        'en_CA',
-  uk:            'en_GB',
-  australia:     'en_AU',
-  'new-zealand': 'en_NZ',
-  singapore:     'en_SG',
-}
+type Props = { params: { state: string } }
 
 export function generateStaticParams() {
-  return getAllCountrySlugs().map((country) => ({ country }))
+  return getAllUsaStateSlugs().map((state) => ({ state }))
 }
 
 export function generateMetadata({ params }: Props): Metadata {
-  const page = getCountry(params.country)
+  const page = getUsaState(params.state)
   if (!page) return {}
   return buildMetadata({
     title:       page.seoTitle,
     description: page.seoDescription,
     keywords:    page.seoKeywords,
-    canonical:   `${SEO_BASE_URL}/countries/${page.slug}`,
-    ogLocale:    OG_LOCALE_BY_COUNTRY[page.slug],
+    canonical:   `${SEO_BASE_URL}/usa/${page.slug}`,
+    ogLocale:    'en_US',
   })
 }
 
-export default function CountryPage({ params }: Props) {
-  const page = getCountry(params.country)
+export default function UsaStatePage({ params }: Props) {
+  const page = getUsaState(params.state)
   if (!page) notFound()
 
-  const url = `${SEO_BASE_URL}/countries/${page.slug}`
+  const url = `${SEO_BASE_URL}/usa/${page.slug}`
+  // WebPage + BreadcrumbList + FAQPage + Service only. No LocalBusiness schema
+  // is emitted — Tapis Global has no physical presence in any US state (it
+  // manufactures in Bhadohi and produces for buyers in each state).
   const PAGE_JSONLD = JSON.stringify(
     buildJsonLd(
       webPageSchema({
@@ -58,12 +48,12 @@ export default function CountryPage({ params }: Props) {
         imageUrl:    `${SEO_BASE_URL}${page.heroImage}`,
       }),
       breadcrumbSchema([
-        { name: 'Home',           url: SEO_BASE_URL },
-        { name: 'Export Markets', url: `${SEO_BASE_URL}/countries` },
-        { name: page.label,       url },
+        { name: 'Home', url: SEO_BASE_URL },
+        { name: 'USA',  url: `${SEO_BASE_URL}/usa` },
+        { name: page.label, url },
       ]),
       faqSchema(page.faqs.map((f) => ({ q: f.q, a: f.a }))),
-      serviceSchema({ areaName: page.label, areaType: 'Country', url }),
+      serviceSchema({ areaName: page.label, areaType: 'State', url }),
     ),
   )
 

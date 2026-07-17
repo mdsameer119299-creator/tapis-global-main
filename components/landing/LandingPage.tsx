@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import type { SeoLanding } from '@/lib/seo-landing'
-import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries, getRelatedDhurries, getRelatedCompany, getRelatedIndia } from '@/lib/seo-landing'
+import { getRelatedIndustries, getRelatedSolutions, getRelatedCountries, getRelatedDhurries, getRelatedCompany, getRelatedIndia, getRelatedUsaStates, getRelatedUsaCities, getUsaState } from '@/lib/seo-landing'
 import { getProductCategory, PRODUCT_CATEGORIES } from '@/lib/products'
 import { guidesForLanding } from '@/lib/guides'
 import { getKnowledgeArticlesFor } from '@/lib/knowledge/links'
@@ -12,21 +12,36 @@ import OptimizedImage from '@/components/ui/OptimizedImage'
 import CategoryTrustSignals from '@/components/products/CategoryTrustSignals'
 
 const BASE_PATH: Record<SeoLanding['kind'], string> = {
-  industry: '/industries',
-  solution: '/solutions',
-  country:  '/countries',
-  dhurrie:  '/dhurries',
-  company:  '/company',
-  india:    '/india',
+  industry:  '/industries',
+  solution:  '/solutions',
+  country:   '/countries',
+  dhurrie:   '/dhurries',
+  company:   '/company',
+  india:     '/india',
+  'usa-state': '/usa',
+  'usa-city':  '/usa',
 }
 
 const BASE_LABEL: Record<SeoLanding['kind'], string> = {
-  industry: 'Industries',
-  solution: 'Solutions',
-  country:  'Export Markets',
-  dhurrie:  'Dhurries & Tat Patti',
-  company:  'Company',
-  india:    'India',
+  industry:  'Industries',
+  solution:  'Solutions',
+  country:   'Export Markets',
+  dhurrie:   'Dhurries & Tat Patti',
+  company:   'Company',
+  india:     'India',
+  'usa-state': 'USA',
+  'usa-city':  'USA',
+}
+
+// usa-city pages live at a nested 3-segment URL (/usa/{state}/{city}), unlike
+// every other kind's flat {basePath}/{slug} — this resolves the correct href
+// for any related-landing card regardless of kind.
+function hrefFor(l: SeoLanding): string {
+  if (l.kind === 'usa-city') {
+    const state = l.parentUsaState ? getUsaState(l.parentUsaState) : undefined
+    return state ? `/usa/${state.slug}/${l.slug}` : `/usa/${l.slug}`
+  }
+  return `${BASE_PATH[l.kind]}/${l.slug}`
 }
 
 export default function LandingPage({ page }: { page: SeoLanding }) {
@@ -47,11 +62,13 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
   // 3+ related landing links and a Product→Industry→Country→Contact chain, no orphans.
   const relatedLandings = [
     ...getRelatedIndia(page.relatedIndia),
+    ...getRelatedUsaCities(page.relatedUsaCities),
+    ...getRelatedUsaStates(page.relatedUsaStates),
+    ...getRelatedCountries(page.relatedCountries),
     ...getRelatedCompany(page.relatedCompany),
     ...getRelatedDhurries(page.relatedDhurries),
     ...getRelatedIndustries(page.relatedIndustries),
     ...getRelatedSolutions(page.relatedSolutions),
-    ...getRelatedCountries(page.relatedCountries),
   ].filter((l) => !(l.kind === page.kind && l.slug === page.slug))
   const relatedLandingsTop = relatedLandings.slice(0, 5)
   // Reverse-linked Knowledge Centre articles (industry/country pages only —
@@ -63,6 +80,12 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
   const waHref = `${SITE.whatsapp}?text=${encodeURIComponent(
     `Hello Tapis Global, I'd like to enquire about ${page.label} (manufacturing / supply).`,
   )}`
+
+  // usa-city pages get a resolved parent-state breadcrumb crumb (Home > USA >
+  // State > City) — the only kind needing 4 levels; every other kind stays 3.
+  const parentState = page.kind === 'usa-city' && page.parentUsaState ? getUsaState(page.parentUsaState) : undefined
+  // State pages with named child cities get an inline "cities in this state" block.
+  const childCities = page.kind === 'usa-state' ? getRelatedUsaCities(page.childUsaCities) : []
 
   return (
     <article>
@@ -91,6 +114,12 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
               <li><Link href="/" className="hover:text-[var(--gl)] transition-colors">Home</Link></li>
               <li aria-hidden>›</li>
               <li><Link href={basePath} className="hover:text-[var(--gl)] transition-colors">{baseLabel}</Link></li>
+              {parentState && (
+                <>
+                  <li aria-hidden>›</li>
+                  <li><Link href={`/usa/${parentState.slug}`} className="hover:text-[var(--gl)] transition-colors">{parentState.label}</Link></li>
+                </>
+              )}
               <li aria-hidden>›</li>
               <li aria-current="page" style={{ color: 'var(--gl)' }}>{page.label}</li>
             </ol>
@@ -141,6 +170,29 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
           ))}
         </div>
       </section>
+
+      {/* ── Cities in this state (usa-state pages only) ── */}
+      {childCities.length > 0 && (
+        <section className="py-10 footer-container" style={{ background: 'var(--iv)' }}>
+          <Reveal>
+            <p className="text-[14px] tracking-[0.28em] uppercase font-medium mb-5" style={{ color: 'var(--gd)' }}>
+              Cities We Cover in {page.label}
+            </p>
+          </Reveal>
+          <div className="flex flex-wrap gap-3">
+            {childCities.map((c) => (
+              <Link
+                key={c.slug}
+                href={`/usa/${page.slug}/${c.slug}`}
+                className="px-5 py-2.5 text-[15px] tracking-[0.06em] border rounded-sm transition-colors duration-200 hover:border-[var(--c)] hover:text-[var(--c)]"
+                style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
+              >
+                {c.label}
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* ── Trust signals ── */}
       <CategoryTrustSignals />
@@ -307,7 +359,7 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
               {relatedLandingsTop.map((l) => (
                 <Link
                   key={`${l.kind}-${l.slug}`}
-                  href={`${BASE_PATH[l.kind]}/${l.slug}`}
+                  href={hrefFor(l)}
                   className="px-5 py-2.5 text-[15px] tracking-[0.06em] border rounded-sm transition-colors duration-200 hover:border-[var(--c)] hover:text-[var(--c)]"
                   style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
                 >
