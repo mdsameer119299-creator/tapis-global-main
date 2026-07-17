@@ -39,8 +39,11 @@ type Freq = NonNullable<Entry['changeFrequency']>
 // India: only Phase-1 city pages are listed (all India routes still build).
 const INDIA_SITEMAP_SLUGS = ['delhi-ncr', 'mumbai', 'bengaluru', 'hyderabad', 'chennai', 'pune', 'bhadohi']
 // International: existing markets stay; among the newly added markets only the
-// Phase-1 set is listed. The Phase-2 new markets below are excluded for now.
-const COUNTRY_SITEMAP_EXCLUDE = new Set(['austria', 'ireland', 'new-zealand', 'japan', 'south-korea', 'south-africa'])
+// Phase-1 set is listed. new-zealand/japan/south-korea were promoted out of
+// this exclude list once they received the full country deep-dive treatment
+// (import process, shipping, buyer segments, materials, expanded FAQ) — the
+// remaining Phase-2 markets stay held back until they get the same depth.
+const COUNTRY_SITEMAP_EXCLUDE = new Set(['austria', 'ireland', 'south-africa'])
 
 function cluster(base: string, slugs: string[], priority: number, changeFrequency: Freq = 'monthly'): MetadataRoute.Sitemap {
   return slugs.map((slug) => ({ url: `${SEO_BASE_URL}${base}/${slug}`, changeFrequency, priority }))

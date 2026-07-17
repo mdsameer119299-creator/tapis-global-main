@@ -53,6 +53,19 @@ export type SeoLanding = {
   relatedDhurries?:  string[]
   relatedCompany?:   string[]
   relatedIndia?:     string[]
+  // ── Country deep-dive (country pages only) ──────────────────────────────
+  /** How an order moves from enquiry to delivery for this market, in this market's own terms. */
+  importProcess?: string
+  /** Freight/logistics routing and lead-time framing specific to this market. */
+  shipping?: string
+  /** Carpet styles/constructions this market's buyers most often specify. */
+  popularStyles?: string[]
+  /** Exactly 6: Commercial Buyers, Interior Designers, Hotels, Builders, Architects, Government Buyers. */
+  buyerSegments?: { label: string; body: string }[]
+  /** Custom-size capability framed for this market's standard dimensions/units. */
+  customSizesNote?: string
+  /** TARA_MATERIALS ids most relevant to this market's design preferences. */
+  materialRecommendations?: string[]
 }
 
 // ─── REGISTRY ────────────────────────────────────────────────────────────────
