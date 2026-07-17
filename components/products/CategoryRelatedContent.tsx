@@ -4,6 +4,7 @@ import type { ProductCategory } from '@/lib/products'
 import { guidesForProduct } from '@/lib/guides'
 import { getLandingsForProduct } from '@/lib/seo-landing'
 import { getKnowledgeArticlesFor } from '@/lib/knowledge/links'
+import { getReferenceLinksForProduct } from '@/lib/reference-links'
 import { Reveal, Eyebrow } from '@/components/ui'
 import { BLUR_PLACEHOLDER } from '@/components/ui/OptimizedImage'
 
@@ -25,8 +26,10 @@ export default function CategoryRelatedContent({ category }: { category: Product
   const guides   = guidesForProduct(category.slug, category.relatedGuides ?? [])
   const landings = getLandingsForProduct(category.slug, 6)
   const knowledgeArticles = getKnowledgeArticlesFor({ product: category.slug })
+  const { construction, materials: materialLinks } = getReferenceLinksForProduct(category.slug)
+  const referenceLinks = [construction, ...materialLinks].filter((l): l is NonNullable<typeof l> => Boolean(l))
 
-  if (guides.length === 0 && landings.length === 0 && knowledgeArticles.length === 0) return null
+  if (guides.length === 0 && landings.length === 0 && knowledgeArticles.length === 0 && referenceLinks.length === 0) return null
 
   return (
     <section className="py-14 lg:py-16 px-8 max-lg:px-5" style={{ background: 'var(--iv)' }}>
@@ -93,6 +96,29 @@ export default function CategoryRelatedContent({ category }: { category: Product
               <Link
                 key={`${l.kind}-${l.slug}`}
                 href={`${BASE_PATH[l.kind]}/${l.slug}`}
+                className="px-5 py-2.5 text-[15px] tracking-[0.04em] border rounded-sm transition-colors duration-200 hover:border-[var(--c)] hover:text-[var(--c)]"
+                style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* ── Material & construction guides for this product ── */}
+      {referenceLinks.length > 0 && (
+        <>
+          <Reveal>
+            <p className="text-[14px] tracking-[0.28em] uppercase font-medium mb-5 mt-12" style={{ color: 'var(--gd)' }}>
+              Material &amp; Construction Guides
+            </p>
+          </Reveal>
+          <div className="flex flex-wrap gap-3">
+            {referenceLinks.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
                 className="px-5 py-2.5 text-[15px] tracking-[0.04em] border rounded-sm transition-colors duration-200 hover:border-[var(--c)] hover:text-[var(--c)]"
                 style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
               >

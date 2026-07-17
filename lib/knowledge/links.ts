@@ -17,8 +17,8 @@ export interface ResolvedLinks {
   products: KnowledgeLink[]
   countries: KnowledgeLink[]
   industries: KnowledgeLink[]
-  materials: string[]
-  constructions: string[]
+  materials: KnowledgeLink[]
+  constructions: KnowledgeLink[]
   extra: KnowledgeLink[]
 }
 
@@ -49,20 +49,22 @@ export function resolveArticleLinks(a: KnowledgeArticle): ResolvedLinks {
     .map((x) => ({ label: x.label, href: `/industries/${x.slug}` }))
 
   const materials = (a.relatedMaterials ?? [])
-    .map((id) => TARA_MATERIALS.find((m) => m.id === id)?.name)
-    .filter((x): x is string => Boolean(x))
+    .map((id) => TARA_MATERIALS.find((m) => m.id === id))
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
+    .map((m) => ({ label: m.name, href: `/materials/${m.id}` }))
 
   const constructions = (a.relatedConstructions ?? [])
-    .map((id) => TARA_CONSTRUCTIONS.find((c) => c.id === id)?.name)
-    .filter((x): x is string => Boolean(x))
+    .map((id) => TARA_CONSTRUCTIONS.find((c) => c.id === id))
+    .filter((x): x is NonNullable<typeof x> => Boolean(x))
+    .map((c) => ({ label: c.name, href: `/constructions/${c.id}` }))
 
   return {
     articles: uniq(articles),
     products: uniq(products),
     countries: uniq(countries),
     industries: uniq(industries),
-    materials: Array.from(new Set(materials)),
-    constructions: Array.from(new Set(constructions)),
+    materials: uniq(materials),
+    constructions: uniq(constructions),
     extra: uniq(a.internalLinks ?? []),
   }
 }
@@ -75,11 +77,13 @@ export function resolveArticleLinks(a: KnowledgeArticle): ResolvedLinks {
  * Used by product and landing pages to surface a small "Related Reading"
  * block, scaling automatically as the Knowledge Centre grows.
  */
-export function getKnowledgeArticlesFor(target: { product?: string; industry?: string; country?: string }): KnowledgeLink[] {
+export function getKnowledgeArticlesFor(target: { product?: string; industry?: string; country?: string; material?: string; construction?: string }): KnowledgeLink[] {
   const matches = getPublishedArticles().filter((a) =>
     (target.product && (a.relatedProducts ?? []).includes(target.product)) ||
     (target.industry && (a.relatedIndustries ?? []).includes(target.industry)) ||
-    (target.country && (a.relatedCountries ?? []).includes(target.country)),
+    (target.country && (a.relatedCountries ?? []).includes(target.country)) ||
+    (target.material && (a.relatedMaterials ?? []).includes(target.material)) ||
+    (target.construction && (a.relatedConstructions ?? []).includes(target.construction)),
   )
   return uniq(matches.map((a) => ({ label: a.title, href: `/knowledge/${a.slug}` })))
 }

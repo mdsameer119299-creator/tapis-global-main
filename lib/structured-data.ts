@@ -399,6 +399,39 @@ export function serviceSchema({
 // without verifiable on-page reviews violates Google's review-snippet policy and
 // risks a manual action. Re-introduce only with genuine, displayed reviews.
 
+// ─── DEFINED TERM SET (glossary) ──────────────────────────────────────────────
+// A DefinedTermSet of DefinedTerms is the correct schema.org fit for a
+// definitional glossary — distinct from FAQPage (question/answer) or Article
+// (long-form). Each term links back to its glossary anchor.
+export function definedTermSetSchema({
+  name,
+  description,
+  url,
+  terms,
+}: {
+  name: string
+  description: string
+  url: string
+  terms: Array<{ term: string; definition: string; anchor: string }>
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'DefinedTermSet',
+    '@id': `${url}#glossary`,
+    name,
+    description,
+    url,
+    hasDefinedTerm: terms.map((t) => ({
+      '@type': 'DefinedTerm',
+      '@id': `${url}#${t.anchor}`,
+      name: t.term,
+      description: t.definition,
+      url: `${url}#${t.anchor}`,
+      inDefinedTermSet: { '@id': `${url}#glossary` },
+    })),
+  }
+}
+
 // ─── HELPER: combine multiple schemas into a @graph ──────────────────────────
 export function buildJsonLd(...schemas: Array<object | null | undefined>) {
   // 1. Drop falsy nodes so generators can opt out by returning null

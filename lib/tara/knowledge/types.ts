@@ -13,6 +13,18 @@ export interface TaraCategory { slug: string; name: string; image: string; blurb
  */
 export type Rating = 1 | 2 | 3 | 4 | 5
 
+/**
+ * Shared rating -> word vocabulary. Single source of truth so TARA chat
+ * (lib/tara/compare.ts, recommend.ts) and the public materials/constructions
+ * pages (lib/materials-content.ts) always describe a fibre identically —
+ * never surfaced as a raw number in either surface.
+ */
+export const DURABILITY_WORDS = ['', 'low', 'limited', 'moderate', 'strong', 'excellent'] as const
+export const SOFTNESS_WORDS = ['', 'coarse', 'firm', 'moderately soft', 'soft', 'very soft'] as const
+export const LUXURY_WORDS = ['', 'value', 'entry', 'mid', 'high', 'top-tier'] as const
+
+export const ratingWord = (words: readonly string[], r: Rating): string => words[r]
+
 /** Structured product profile — the core of the Product Knowledge Engine. */
 export interface MaterialProfile {
   description: string
