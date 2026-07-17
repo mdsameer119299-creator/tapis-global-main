@@ -70,6 +70,8 @@ export type SeoLanding = {
   customSizesNote?: string
   /** TARA_MATERIALS ids most relevant to this market's design preferences. */
   materialRecommendations?: string[]
+  /** TARA_CONSTRUCTIONS ids most relevant to this market's dominant buyer profile (e.g. hand-knotted for heritage/luxury markets, machine-made for institutional). */
+  constructionRecommendations?: string[]
   // ── USA state/city hierarchy ─────────────────────────────────────────────
   /** State pages only: city slugs (usa-city) located in this state. */
   childUsaCities?: string[]

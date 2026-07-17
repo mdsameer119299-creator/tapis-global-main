@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { SeoLanding } from '@/lib/seo-landing'
-import { TARA_MATERIALS } from '@/lib/tara/knowledge'
+import { TARA_MATERIALS, TARA_CONSTRUCTIONS } from '@/lib/tara/knowledge'
 import { EXPORT_CAPABILITY } from '@/lib/export-capability'
 import { Reveal, Eyebrow } from '@/components/ui'
 
@@ -20,6 +20,10 @@ export default function MarketDeepDive({ page }: { page: SeoLanding }) {
   const materials = (page.materialRecommendations ?? [])
     .map((id) => TARA_MATERIALS.find((m) => m.id === id))
     .filter((m): m is NonNullable<typeof m> => Boolean(m))
+
+  const constructions = (page.constructionRecommendations ?? [])
+    .map((id) => TARA_CONSTRUCTIONS.find((c) => c.id === id))
+    .filter((c): c is NonNullable<typeof c> => Boolean(c))
 
   const importCols = [page.importProcess, page.shipping, page.leadTime].filter(Boolean).length
 
@@ -138,6 +142,40 @@ export default function MarketDeepDive({ page }: { page: SeoLanding }) {
           </div>
         </section>
       )}
+
+      {/* ── Constructions & reference ── */}
+      {/* Glossary link is intentionally independent of `constructions` data —
+          it's a generic, always-relevant reference for any page this
+          component renders on (hasContent is already guaranteed true here). */}
+      <section className="py-14 lg:py-16 footer-container" style={{ background: 'var(--iv)' }}>
+        <Reveal>
+          <Eyebrow>Construction Guidance</Eyebrow>
+          {constructions.length > 0 && (
+            <h2 className="font-medium leading-[1.1] mb-5" style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(24px, 2.6vw, 32px)', color: 'var(--ink)' }}>
+              Constructions Suited to <em style={{ fontStyle: 'italic', color: 'var(--c)' }}>{page.label}</em>
+            </h2>
+          )}
+          <div className="flex flex-wrap gap-3">
+            {constructions.map((c) => (
+              <Link
+                key={c.id}
+                href={`/constructions/${c.id}`}
+                className="px-5 py-2.5 text-[15px] tracking-[0.04em] border rounded-sm transition-colors duration-200 hover:border-[var(--c)] hover:text-[var(--c)]"
+                style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
+              >
+                {c.name}
+              </Link>
+            ))}
+            <Link
+              href="/glossary"
+              className="px-5 py-2.5 text-[15px] tracking-[0.04em] border rounded-sm transition-colors duration-200 hover:border-[var(--c)] hover:text-[var(--c)]"
+              style={{ borderColor: 'var(--bd)', color: 'var(--inks)' }}
+            >
+              Carpet &amp; Rug Glossary
+            </Link>
+            </div>
+          </Reveal>
+        </section>
 
       {/* ── Shared capability band (MOQ / production / delivery) ── */}
       <section className="py-14 lg:py-16 footer-container" style={{ background: 'var(--ink)' }}>

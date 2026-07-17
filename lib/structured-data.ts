@@ -185,6 +185,7 @@ export function webPageSchema({
   datePublished = '2024-01-01',
   dateModified,
   hasBreadcrumb = true,
+  additionalType,
 }: {
   title:       string
   description: string
@@ -199,10 +200,17 @@ export function webPageSchema({
    * can never dangle even if this stays true.
    */
   hasBreadcrumb?: boolean
+  /**
+   * Optional secondary schema.org type layered onto WebPage (e.g. 'CollectionPage'
+   * for a hub page listing many child items — schema.org supports multi-type
+   * nodes via an array). Omitted by default so every existing call site is
+   * unaffected.
+   */
+  additionalType?: string
 }) {
   return {
     '@context':     'https://schema.org',
-    '@type':        'WebPage',
+    '@type':        additionalType ? ['WebPage', additionalType] : 'WebPage',
     '@id':          `${url}#webpage`,
     url,
     name:           title,
