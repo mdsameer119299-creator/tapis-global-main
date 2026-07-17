@@ -6,10 +6,12 @@ import {
   webPageSchema,
   breadcrumbSchema,
   faqSchema,
+  serviceSchema,
   buildJsonLd,
 } from '@/lib/structured-data'
 import { getIndiaLocation, getAllIndiaSlugs } from '@/lib/seo-landing'
 import LandingPage from '@/components/landing/LandingPage'
+import MarketDeepDive from '@/components/landing/MarketDeepDive'
 
 type Props = { params: { location: string } }
 
@@ -50,6 +52,7 @@ export default function IndiaLocationPage({ params }: Props) {
         { name: page.label, url },
       ]),
       faqSchema(page.faqs.map((f) => ({ q: f.q, a: f.a }))),
+      serviceSchema({ areaName: page.label, areaType: 'City', url }),
     ),
   )
 
@@ -57,6 +60,7 @@ export default function IndiaLocationPage({ params }: Props) {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: PAGE_JSONLD }} />
       <LandingPage page={page} />
+      <MarketDeepDive page={page} />
     </>
   )
 }
