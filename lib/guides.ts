@@ -689,6 +689,8 @@ const GUIDE_DEFAULTS_BY_KIND: Record<string, string[]> = {
   country:  ['how-to-import-carpets-from-india', 'why-buy-carpets-from-india', 'why-bhadohi-carpet-capital'],
   dhurrie:  ['government-tender-dhurrie-buying-guide', 'kilim-vs-dhurrie', 'school-carpet-buying-guide'],
   company:  ['how-carpets-are-manufactured', 'why-bhadohi-carpet-capital', 'handmade-vs-machine-made-carpets'],
+  'usa-state': ['how-to-import-carpets-from-india', 'why-buy-carpets-from-india', 'why-bhadohi-carpet-capital'],
+  'usa-city':  ['how-to-import-carpets-from-india', 'why-buy-carpets-from-india', 'why-bhadohi-carpet-capital'],
 }
 const GUIDE_SLUG_OVERRIDES: Record<string, string[]> = {
   'hotel-carpets': ['hotel-carpet-buying-guide', 'wool-vs-viscose-carpets', 'area-rugs-vs-wall-to-wall-carpets'],

@@ -71,7 +71,7 @@ const PRIORITY_PAGES = [
 const SIM_ERROR = 0.90 // near-duplicate -> fail
 const SIM_WARN  = 0.74 // high overlap -> warn
 
-const { INDUSTRIES, SOLUTIONS, COUNTRIES, DHURRIES, COMPANY_PAGES, INDIA_LOCATIONS } = seo
+const { INDUSTRIES, SOLUTIONS, COUNTRIES, DHURRIES, COMPANY_PAGES, INDIA_LOCATIONS, USA_STATES, USA_CITIES } = seo
 const { PRODUCT_CATEGORIES } = products
 const { GUIDES } = guides
 const { SEO_BASE_URL } = seoConst
@@ -85,14 +85,16 @@ const note = (m) => notes.push(m)
 
 // ── Clusters under audit ─────────────────────────────────────────────────────
 const LANDING_CLUSTERS = {
-  products:   { base: '/products',   items: PRODUCT_CATEGORIES },
-  industries: { base: '/industries', items: INDUSTRIES },
-  solutions:  { base: '/solutions',  items: SOLUTIONS },
-  countries:  { base: '/countries',  items: COUNTRIES },
-  india:      { base: '/india',      items: INDIA_LOCATIONS },
-  dhurries:   { base: '/dhurries',   items: DHURRIES },
-  company:    { base: '/company',    items: COMPANY_PAGES },
-  guides:     { base: '/guides',     items: GUIDES },
+  products:    { base: '/products',   items: PRODUCT_CATEGORIES },
+  industries:  { base: '/industries', items: INDUSTRIES },
+  solutions:   { base: '/solutions',  items: SOLUTIONS },
+  countries:   { base: '/countries',  items: COUNTRIES },
+  india:       { base: '/india',      items: INDIA_LOCATIONS },
+  dhurries:    { base: '/dhurries',   items: DHURRIES },
+  company:     { base: '/company',    items: COMPANY_PAGES },
+  guides:      { base: '/guides',     items: GUIDES },
+  'usa-states': { base: '/usa',       items: USA_STATES },
+  'usa-cities': { base: '/usa',       items: USA_CITIES },
 }
 
 const slugSet = (arr) => new Set(arr.map((x) => x.slug))
@@ -105,11 +107,25 @@ const SLUGS = {
   relatedDhurries:   slugSet(DHURRIES),
   relatedCompany:    slugSet(COMPANY_PAGES),
   relatedGuides:     slugSet(GUIDES),
+  relatedUsaStates:  slugSet(USA_STATES),
+  relatedUsaCities:  slugSet(USA_CITIES),
+  childUsaCities:    slugSet(USA_CITIES),
 }
-// cluster base path -> valid slug set, for sitemap route resolution
-const BASE_TO_SLUGS = Object.fromEntries(
-  Object.values(LANDING_CLUSTERS).map(({ base, items }) => [base, slugSet(items)]),
-)
+// cluster base path -> valid slug set, for sitemap route resolution. Multiple
+// clusters can share a base (usa-states/usa-cities both live under /usa), so
+// union rather than overwrite.
+const BASE_TO_SLUGS = {}
+for (const { base, items } of Object.values(LANDING_CLUSTERS)) {
+  const set = BASE_TO_SLUGS[base] || (BASE_TO_SLUGS[base] = new Set())
+  for (const s of slugSet(items)) set.add(s)
+}
+
+// usa-city parentUsaState must resolve to a real usa-state slug (not an
+// array field, so the generic related-refs loop below doesn't cover it).
+for (const c of USA_CITIES) {
+  if (!c.parentUsaState) err(`[usa-cities] ${c.slug} missing parentUsaState`)
+  else if (!SLUGS.relatedUsaStates.has(c.parentUsaState)) err(`[usa-cities] ${c.slug} parentUsaState "${c.parentUsaState}" does not resolve to a known usa-state slug`)
+}
 
 const SLUG_RE = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
@@ -183,6 +199,15 @@ for (const entry of sitemapEntries) {
   if (m && BASE_TO_SLUGS[m[1]]) {
     if (!BASE_TO_SLUGS[m[1]].has(m[2])) err(`sitemap lists ${path} but "${m[2]}" is not a valid ${m[1]} slug (404/redirect risk)`)
   }
+  // USA city URLs are nested (/usa/{state}/{city}) — validate both segments
+  // and that the city genuinely belongs to that state.
+  const m3 = path.match(/^\/usa\/([a-z0-9-]+)\/([a-z0-9-]+)$/)
+  if (m3) {
+    const [, stateSlug, citySlug] = m3
+    const cityItem = USA_CITIES.find((c) => c.slug === citySlug)
+    if (!cityItem) err(`sitemap lists ${path} but "${citySlug}" is not a valid usa-city slug`)
+    else if (cityItem.parentUsaState !== stateSlug) err(`sitemap lists ${path} but city "${citySlug}"'s parent state is "${cityItem.parentUsaState}", not "${stateSlug}"`)
+  }
   // No fake freshness: lastModified must never be hardcoded in the sitemap.
   if (entry && entry.lastModified) err(`sitemap entry ${path} has a hardcoded lastModified (no-fake-freshness policy)`)
   // A configured redirect source must never be listed in the sitemap.
@@ -215,7 +240,7 @@ const wordSet = (it) => {
   return new Set(text.replace(/[^a-z0-9\s]/g, ' ').split(/\s+/).filter((w) => w.length > 3 && !STOP.has(w)))
 }
 const jaccard = (a, b) => { let inter = 0; for (const x of a) if (b.has(x)) inter++; const uni = a.size + b.size - inter; return uni ? inter / uni : 0 }
-for (const name of ['countries', 'india', 'solutions']) {
+for (const name of ['countries', 'india', 'solutions', 'usa-states', 'usa-cities']) {
   const items = LANDING_CLUSTERS[name].items
   const sets = items.map((it) => ({ slug: it.slug, ws: wordSet(it) }))
   let worst = { sim: 0, a: '', b: '' }
@@ -229,8 +254,12 @@ for (const name of ['countries', 'india', 'solutions']) {
 }
 
 // Dynamic pages intentionally excluded from sitemap (phased rollout) -> note.
+// usa-cities live at a nested path the flat `${base}/${slug}` shape can't
+// express, so they're checked against their real 3-segment URL instead.
 for (const [name, { base, items }] of Object.entries(LANDING_CLUSTERS)) {
-  const excluded = items.map((i) => `${base}/${i.slug}`).filter((p) => !sitemapPaths.has(p))
+  const excluded = name === 'usa-cities'
+    ? items.map((i) => `/usa/${i.parentUsaState}/${i.slug}`).filter((p) => !sitemapPaths.has(p))
+    : items.map((i) => `${base}/${i.slug}`).filter((p) => !sitemapPaths.has(p))
   if (excluded.length) note(`${name}: ${excluded.length} page(s) not in sitemap (phased rollout): ${excluded.map((p) => p.split('/').pop()).join(', ')}`)
 }
 
