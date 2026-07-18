@@ -13,6 +13,7 @@ import {
 import Navbar    from '@/components/layout/Navbar'
 import Footer    from '@/components/layout/Footer'
 import HashScroll from '@/components/layout/HashScroll'
+import ConditionalChrome from '@/components/layout/ConditionalChrome'
 import { fontVariables, outfit } from '@/lib/fonts'
 
 const Loader = dynamic(() => import('@/components/layout/Loader'), { ssr: false })
@@ -62,20 +63,23 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
 
       <body className={outfit.className}>
-        {/* Custom cursor dots (desktop only — hidden via CSS on touch devices) */}
-        <div id="cd" />
-        <div id="cr" />
-
-        <Loader />
-        <Navbar />
+        <ConditionalChrome>
+          {/* Custom cursor dots (desktop only — hidden via CSS on touch devices) */}
+          <div id="cd" />
+          <div id="cr" />
+          <Loader />
+          <Navbar />
+        </ConditionalChrome>
         <main id="main-content" role="main">
           <HashScroll />
           {children}
         </main>
-        <Footer />
-        <StickyBar />
-        <FloatingWhatsApp />
-        <Tara />
+        <ConditionalChrome>
+          <Footer />
+          <StickyBar />
+          <FloatingWhatsApp />
+          <Tara />
+        </ConditionalChrome>
 
         {/* Privacy-safe analytics — no-ops without NEXT_PUBLIC_* IDs, and GA4/
             Clarity load only after explicit consent. */}
