@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma'
 import AdminDataTable from '@/components/crafttrack/admin/AdminDataTable'
+import SendLoginLinkButton from '@/components/crafttrack/admin/SendLoginLinkButton'
 import NewCustomerForm from './NewCustomerForm'
 
 export const dynamic = 'force-dynamic'
@@ -30,6 +31,11 @@ export default async function CustomersPage() {
           { key: 'name', header: 'Name', render: (c) => c.name },
           { key: 'email', header: 'Email', render: (c) => c.email },
           { key: 'orders', header: 'Orders', render: (c) => c._count.orders },
+          {
+            key: 'login',
+            header: 'Login',
+            render: (c) => <SendLoginLinkButton customerId={c.id} hasPassword={!!c.passwordHash} />,
+          },
         ]}
       />
     </div>

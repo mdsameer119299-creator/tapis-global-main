@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma'
 import { PRODUCT_CATEGORIES } from '@/lib/products'
 import FocusHeading from '@/components/crafttrack/admin/FocusHeading'
 import StatusBadge from '@/components/crafttrack/admin/StatusBadge'
+import SendLoginLinkButton from '@/components/crafttrack/admin/SendLoginLinkButton'
 import AddJourneyForm from './AddJourneyForm'
 
 export const dynamic = 'force-dynamic'
@@ -36,9 +37,12 @@ export default async function OrderDetailPage({ params }: { params: { orderId: s
   return (
     <div>
       <FocusHeading className="font-display text-2xl text-ink mb-1 outline-none">{order.orderNumber}</FocusHeading>
-      <p className="text-sm text-ink-m mb-8">
-        {order.customer.name} · {order.customer.email}
-      </p>
+      <div className="flex items-center gap-4 mb-8">
+        <p className="text-sm text-ink-m">
+          {order.customer.name} · {order.customer.email}
+        </p>
+        <SendLoginLinkButton customerId={order.customer.id} hasPassword={!!order.customer.passwordHash} />
+      </div>
 
       <div className="flex flex-col gap-4 mb-10">
         {order.journeys.map((journey) => {

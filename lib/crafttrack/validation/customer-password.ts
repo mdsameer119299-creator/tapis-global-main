@@ -16,3 +16,17 @@ export const setPasswordSchema = z
     message: 'Passwords do not match',
     path: ['confirmPassword'],
   })
+
+// Used by the token-authenticated set-password route (the link an admin
+// emails a customer) — the token itself is the authorization, so there's
+// never a currentPassword to check, unlike setPasswordSchema above.
+export const setPasswordByTokenSchema = z
+  .object({
+    token: z.string().min(1, 'Missing or invalid link.'),
+    password: z.string().min(8, 'Password must be at least 8 characters').max(PASSWORD_MAX),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+  })
