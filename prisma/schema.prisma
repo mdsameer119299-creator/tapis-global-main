@@ -3,6 +3,12 @@
 // Tables are namespaced with a `crafttrack_` @@map prefix so this feature's
 // schema never collides with anything added to the database later. Postgres
 // via DATABASE_URL — see docs/CRAFTTRACK-SETUP.md for provisioning.
+//
+// Shape and naming decisions here follow docs/CRAFTTRACK-PRODUCT-DESIGN.md
+// §13/§14 — read those before changing a model or relation, most choices
+// (Order/Journey split, JourneyMedia's journeyId/stageId duality, the
+// "reserved, unused in v1" enum values) exist to avoid a future migration,
+// not for their own sake.
 
 generator client {
   provider = "prisma-client-js"
@@ -26,23 +32,18 @@ model Customer {
   @@map("crafttrack_customers")
 }
 
+/// Purely commercial — who bought, and under what order number. Owns no
+/// production data itself; that's Journey's job, so one Order can cover
+/// several handcrafted pieces (a villa or hotel project), each with its
+/// own independent timeline.
 model Order {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   /// Human-facing tracking number, e.g. TGI-2026-0158. Generated at
   /// creation time (see lib/crafttrack/order-number.ts) — never user-supplied.
-  orderNumber String   @unique
+  orderNumber String    @unique
   customerId  String
-  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
-  productName String
-  /// Optional link into the existing static product catalogue
-  /// (lib/products.ts) — no separate Product table; the catalogue already
-  /// exists and doesn't need duplicating into the database.
-  productSlug String?
-
-  currentStageId String?        @unique
-  currentStage   JourneyStage?  @relation("CurrentStage", fields: [currentStageId], references: [id])
-  stages         JourneyStage[] @relation("OrderStages")
-  messages       OrderMessage[]
+  customer    Customer  @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  journeys    Journey[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -51,73 +52,274 @@ model Order {
   @@map("crafttrack_orders")
 }
 
+model JourneyTemplate {
+  id          String          @id @default(cuid())
+  /// e.g. "Standard Luxury Manufacturing Journey" — v1 ships exactly one,
+  /// but admins can duplicate/rename/edit to create more with no code change.
+  name        String          @unique
+  description String?
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+  stages      TemplateStage[]
+  journeys    Journey[]
+
+  @@map("crafttrack_journey_templates")
+}
+
+model TemplateStage {
+  id          String          @id @default(cuid())
+  templateId  String
+  template    JourneyTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  /// "Order Confirmed", "Preparation Underway", ...
+  name        String
+  sequence    Int
+  /// Seeds a new JourneyStage's draftMessage — a starting point, not a lock.
+  description String?
+
+  @@index([templateId])
+  @@map("crafttrack_template_stages")
+}
+
+/// The production run itself — one per handcrafted piece. v1's admin flow
+/// only ever creates exactly one Journey per Order (invisible to any UI),
+/// but the relation is many so a multi-piece order needs no schema change
+/// later, just a second "create journey" action in the admin.
+model Journey {
+  id                String          @id @default(cuid())
+  orderId           String
+  order             Order           @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  journeyTemplateId String
+  journeyTemplate   JourneyTemplate @relation(fields: [journeyTemplateId], references: [id])
+
+  /// Snapshot of the product at order time, not a live catalogue join —
+  /// so a journey never silently reflects a later edit to lib/products.ts.
+  productName String
+  /// Optional deep-link into the existing static catalogue (lib/products.ts).
+  /// Never the source of truth for productName.
+  productSlug String?
+
+  currentStageId String?          @unique
+  currentStage   JourneyStage?    @relation("CurrentStage", fields: [currentStageId], references: [id])
+  stages         JourneyStage[]   @relation("JourneyStages")
+  media          JourneyMedia[]
+  messages       JourneyMessage[]
+  notifications  Notification[]
+
+  /// Set once the final stage publishes COMPLETE — the signal the
+  /// completed-order screen uses to render the celebration ending
+  /// instead of the normal timeline view.
+  completedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([orderId])
+  @@index([journeyTemplateId])
+  @@map("crafttrack_journeys")
+}
+
 enum StageStatus {
   PENDING
   IN_PROGRESS
   COMPLETE
 }
 
+/// One per Journey per template stage, copied from the template's
+/// blueprints at Journey-creation time — independent afterward, so editing
+/// a template never reshapes a journey already in progress.
 model JourneyStage {
-  id      String @id @default(cuid())
-  orderId String
-  order   Order  @relation("OrderStages", fields: [orderId], references: [id], onDelete: Cascade)
-  /// The reverse side of Order.currentStage — at most one Order points to
-  /// this stage as its "current" milestone.
-  currentForOrder Order? @relation("CurrentStage")
+  id                String   @id @default(cuid())
+  journeyId         String
+  journey           Journey  @relation("JourneyStages", fields: [journeyId], references: [id], onDelete: Cascade)
+  /// The reverse side of Journey.currentStage — at most one Journey points
+  /// to this stage as its "current" milestone.
+  currentForJourney Journey? @relation("CurrentStage")
+  /// Which TemplateStage this was instantiated from. No FK — the template
+  /// stage can be edited/deleted later without breaking a live journey.
+  templateStageId   String?
+  sequence          Int
 
-  name             String
-  sequence         Int
-  status           StageStatus @default(PENDING)
-  heroImageUrl     String?
-  galleryImageUrls String[]
-  message          String?
+  // Draft — admin's working copy. Customer dashboard never reads this.
+  draftName    String
+  draftMessage String?
+  draftStatus  StageStatus @default(PENDING)
+
+  // Published — exactly what the customer sees. Null until first publish.
+  publishedName    String?
+  publishedMessage String?
+  publishedStatus  StageStatus?
   publishedAt      DateTime?
   /// Admin email of whoever published this stage. No separate admin FK —
-  /// deliberately a plain string so history survives an admin account being
-  /// removed later.
-  publishedBy String?
+  /// deliberately a plain string so history survives an admin account
+  /// being removed later.
+  publishedBy      String?
 
-  history StageHistory[]
+  media  JourneyMedia[]
+  events StageEvent[]
 
-  @@index([orderId])
+  @@index([journeyId])
   @@map("crafttrack_journey_stages")
 }
 
-/// Append-only audit trail of every status transition — the real
-/// "Progress History" concept, not just an inferred timestamp.
-model StageHistory {
-  id         String       @id @default(cuid())
-  stageId    String
-  stage      JourneyStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
-  fromStatus StageStatus?
-  toStatus   StageStatus
-  changedAt  DateTime     @default(now())
-  changedBy  String
-
-  @@index([stageId])
-  @@map("crafttrack_stage_history")
+enum JourneyMediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
 }
 
-/// Admin-authored running commentary on an order, independent of any single
-/// stage (e.g. "Your loom slot has been confirmed for next week").
-model OrderMessage {
-  id         String   @id @default(cuid())
-  orderId    String
-  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  body       String
-  authorType String // 'admin' | 'system'
-  createdAt  DateTime @default(now())
+enum JourneyMediaRole {
+  COVER
+  HERO
+  GALLERY
+  INSPECTION
+  DETAIL
+  PACKAGING
+  DISPATCH
+  CERTIFICATE
+  CARE_GUIDE
+  INVOICE
+}
 
-  @@index([orderId])
-  @@map("crafttrack_order_messages")
+/// One model for every asset a journey or a stage can carry — image today,
+/// video/certificate/document as soon as they're needed, no schema change.
+/// Exactly one of journeyId/stageId is set: journeyId for the order-cover
+/// photo and journey-level documents (care guide, invoice), stageId for
+/// everything shown inside a single stage. Enforced at the application
+/// layer, not the database — Prisma has no native XOR constraint.
+model JourneyMedia {
+  id        String        @id @default(cuid())
+  journeyId String?
+  journey   Journey?      @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  stageId   String?
+  stage     JourneyStage? @relation(fields: [stageId], references: [id], onDelete: Cascade)
+
+  mediaType    JourneyMediaType @default(IMAGE)
+  url          String
+  thumbnailUrl String?
+  /// Not exposed in the v1 admin UI — exists so a future upload flow can
+  /// light it up without a migration.
+  title        String?
+  /// v1 admin UI: yes, this one is editable.
+  caption      String?
+  sortOrder    Int              @default(0)
+  uploadedBy   String?
+  uploadedAt   DateTime         @default(now())
+  isHero       Boolean          @default(false)
+  /// Draft/Published, same split as the stage/journey it belongs to.
+  isPublished  Boolean          @default(false)
+  /// Not exposed in the v1 admin UI — defaults to the stage/journey name.
+  altText      String?
+  role         JourneyMediaRole @default(GALLERY)
+  tags         String[]         @default([])
+
+  @@index([journeyId])
+  @@index([stageId])
+  @@map("crafttrack_journey_media")
+}
+
+enum AuthorType {
+  ADMIN
+  SYSTEM
+  /// Reserved, unused in v1 — the two-way messaging listed as future scope
+  /// in docs/CRAFTTRACK-PRODUCT-DESIGN.md §12.
+  CUSTOMER
+}
+
+/// Admin-authored commentary shown in the customer-facing timeline,
+/// independent of any single stage (e.g. "Your loom slot has been
+/// confirmed for next week").
+model JourneyMessage {
+  id         String     @id @default(cuid())
+  journeyId  String
+  journey    Journey    @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  body       String
+  authorType AuthorType
+  createdAt  DateTime   @default(now())
+
+  @@index([journeyId])
+  @@map("crafttrack_journey_messages")
+}
+
+enum StageEventType {
+  STAGE_STARTED
+  STATUS_CHANGED
+  MEDIA_ADDED
+  MESSAGE_POSTED
+  STAGE_PUBLISHED
+  STAGE_COMPLETED
+}
+
+/// The real "Progress History" entity — a narrative-ready activity log,
+/// not a raw technical audit trail. type/summary are written in
+/// customer-legible language and visibleToCustomer already exists as a
+/// field (always false in v1, since no customer-facing activity feed
+/// ships yet) so surfacing a real activity feed later is a UI change, not
+/// a schema change. snapshot is unused in v1, reserved for full version
+/// history (see docs/CRAFTTRACK-PRODUCT-DESIGN.md §12).
+model StageEvent {
+  id                String         @id @default(cuid())
+  stageId           String
+  stage             JourneyStage   @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  type              StageEventType
+  summary           String?
+  fromStatus        StageStatus?
+  toStatus          StageStatus?
+  snapshot          Json?
+  visibleToCustomer Boolean        @default(false)
+  /// Admin email, or "system".
+  actor             String
+  occurredAt        DateTime       @default(now())
+
+  @@index([stageId])
+  @@map("crafttrack_stage_events")
+}
+
+enum NotificationType {
+  STAGE_PUBLISHED
+}
+
+enum NotificationChannel {
+  EMAIL
+  /// Reserved, unused in v1.
+  WHATSAPP
+  /// Reserved, unused in v1.
+  PUSH
+}
+
+/// Delivery log for every customer-facing notification — not customer-
+/// visible content itself (that's JourneyMessage), just proof something
+/// fired, when, and how. channel already reserves WhatsApp/push so future
+/// channels are a new enum value, not a redesign.
+model Notification {
+  id             String              @id @default(cuid())
+  journeyId      String
+  journey        Journey             @relation(fields: [journeyId], references: [id], onDelete: Cascade)
+  type           NotificationType    @default(STAGE_PUBLISHED)
+  channel        NotificationChannel @default(EMAIL)
+  recipientEmail String
+  sentAt         DateTime            @default(now())
+
+  @@index([journeyId])
+  @@map("crafttrack_notifications")
+}
+
+enum AdminRole {
+  OWNER
+  /// Reserved, unused in v1 — docs/CRAFTTRACK-PRODUCT-DESIGN.md §12's
+  /// multi-admin roles.
+  PUBLISHER
+  /// Reserved, unused in v1.
+  VIEWER
 }
 
 model AdminUser {
-  id           String   @id @default(cuid())
-  email        String   @unique
+  id           String    @id @default(cuid())
+  email        String    @unique
   passwordHash String
   name         String
-  createdAt    DateTime @default(now())
+  role         AdminRole @default(OWNER)
+  createdAt    DateTime  @default(now())
 
   @@map("crafttrack_admin_users")
 }
