@@ -13,7 +13,17 @@ const nextConfig = {
   },
 
   images: {
-    // All imagery is now self-hosted under /public — no remote patterns required.
+    // All site imagery is self-hosted under /public — the one exception is
+    // CraftTrack's customer-facing media (cover photos, stage galleries),
+    // uploaded to Vercel Blob at upload time and referenced by full URL.
+    // Scoped to just that hostname — doesn't affect the admin panel's
+    // existing plain <img> usage for the same URLs (deliberately left
+    // unchanged, an internal tool used at a desk has a different
+    // optimization/priority profile than this public, LCP-sensitive,
+    // mobile-first customer experience).
+    remotePatterns: [
+      { protocol: 'https', hostname: '*.public.blob.vercel-storage.com' },
+    ],
 
     // Skip on-the-fly optimization in dev — major speedup for local `npm run dev`
     unoptimized: isDev,
