@@ -22,6 +22,7 @@
     "test:tara:knowledge": "node scripts/tara-product-knowledge.test.mjs",
     "test:phase": "node scripts/phase-fixes.test.mjs",
     "test:content": "node scripts/content-engine.test.mjs",
+    "test:crafttrack": "node scripts/crafttrack-journey-creation.test.mjs && node scripts/crafttrack-publish-stage.test.mjs && node scripts/crafttrack-notification.test.mjs && node scripts/crafttrack-published-journey-view.test.mjs && node scripts/crafttrack-login-rate-limit.test.mjs",
     "knowledge:validate": "node scripts/validate-knowledge.mjs",
     "prebuild": "node scripts/validate-knowledge.mjs",
     "postinstall": "prisma generate",

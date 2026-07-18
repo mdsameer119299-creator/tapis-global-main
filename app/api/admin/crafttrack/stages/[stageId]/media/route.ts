@@ -7,6 +7,17 @@ export const runtime = 'nodejs'
 
 const MAX_FILE_BYTES = 8 * 1024 * 1024
 
+// KNOWN LIMITATION (reviewed in PR2.1, tracked as a follow-up rather than
+// fixed here): put() below uses access:'public'. isPublished correctly
+// gates what the database returns to a customer-facing query, but the
+// underlying Blob URL is fetchable by anyone who has it the instant it's
+// uploaded — a draft (unpublished) image is not actually access-controlled,
+// only hidden from the UI. @vercel/blob does support access:'private', but
+// switching requires a new authenticated streaming-proxy route and rewiring
+// every <img> that reads a Blob URL, including PublishedJourneyView (shared
+// with PR3's future customer portal) — a real feature addition, not a
+// hardening change, so it's scoped as its own follow-up alongside PR3.
+
 export async function GET(_request: Request, { params }: { params: { stageId: string } }) {
   const auth = await requireAdminSession()
   if (!auth.ok) return auth.response

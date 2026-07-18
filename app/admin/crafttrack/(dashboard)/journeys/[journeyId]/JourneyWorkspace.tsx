@@ -22,7 +22,16 @@ type StageItem = {
   media: MediaItem[]
 }
 type MessageItem = { id: string; body: string; authorType: string; createdAt: string }
-type NotificationItem = { id: string; type: string; channel: string; recipientEmail: string; sentAt: string }
+type NotificationItem = {
+  id: string
+  type: string
+  channel: string
+  recipientEmail: string
+  stageName: string | null
+  status: 'SENT' | 'FAILED'
+  errorMessage: string | null
+  sentAt: string
+}
 type JourneyData = {
   id: string
   productName: string
@@ -92,9 +101,26 @@ export default function JourneyWorkspace({ journeyId }: { journeyId: string }) {
   const cover = journey.media.find((m) => m.role === 'COVER') ?? null
   const selectedStage = journey.stages.find((s) => s.id === selectedStageId) ?? journey.stages[0] ?? null
 
+  const latestNotification = journey.notifications[0] ?? null
+
   return (
     <div>
       <JourneyHeader journey={journey} cover={cover} onCoverChange={refresh} />
+
+      {latestNotification?.status === 'FAILED' && (
+        <div role="alert" className="mt-6 border border-red-200 bg-red-50 rounded-sm px-4 py-3 flex items-center justify-between gap-4">
+          <p className="text-sm text-red-700">
+            The last customer notification{latestNotification.stageName ? ` for "${latestNotification.stageName}"` : ''} failed to send.
+          </p>
+          <button
+            type="button"
+            onClick={() => setTab('notifications')}
+            className="text-sm text-red-700 underline underline-offset-4 whitespace-nowrap focus-visible:ring-2 focus-visible:ring-red-400 rounded-sm"
+          >
+            View details
+          </button>
+        </div>
+      )}
 
       <div role="tablist" aria-label="Journey sections" className="flex gap-1 border-b border-ivory-k mt-8 mb-6">
         {TABS.map((t) => (
@@ -134,7 +160,7 @@ export default function JourneyWorkspace({ journeyId }: { journeyId: string }) {
       </div>
 
       <div role="tabpanel" id="panel-notifications" aria-labelledby="tab-notifications" hidden={tab !== 'notifications'}>
-        <NotificationsPanel notifications={journey.notifications} />
+        <NotificationsPanel notifications={journey.notifications} onChange={refresh} />
       </div>
     </div>
   )
@@ -514,32 +540,86 @@ function MessagesPanel({
 
 // ─── Notifications panel ─────────────────────────────────────────────────
 
-function NotificationsPanel({ notifications }: { notifications: NotificationItem[] }) {
+function NotificationsPanel({ notifications, onChange }: { notifications: NotificationItem[]; onChange: () => void }) {
+  const [retryingId, setRetryingId] = useState<string | null>(null)
+  const [retryError, setRetryError] = useState<string | null>(null)
+
+  async function retry(notificationId: string) {
+    setRetryingId(notificationId)
+    setRetryError(null)
+    try {
+      const res = await fetch(`/api/admin/crafttrack/notifications/${notificationId}/retry`, { method: 'POST' })
+      const data = (await res.json()) as { ok: boolean; error?: string }
+      if (!res.ok || !data.ok) {
+        setRetryError(data.error ?? 'The retry failed. Please try again.')
+      }
+      onChange()
+    } catch {
+      setRetryError('The retry failed. Please try again.')
+    } finally {
+      setRetryingId(null)
+    }
+  }
+
   if (notifications.length === 0) {
     return <p className="text-sm text-ink-m">No notifications sent yet.</p>
   }
 
   return (
-    <table className="w-full max-w-lg text-sm">
-      <caption className="sr-only">Notification history</caption>
-      <thead>
-        <tr className="border-b border-ivory-k text-left text-2xs uppercase tracking-wide text-ink-m">
-          <th scope="col" className="py-2 font-normal">Type</th>
-          <th scope="col" className="py-2 font-normal">Channel</th>
-          <th scope="col" className="py-2 font-normal">Recipient</th>
-          <th scope="col" className="py-2 font-normal">Sent</th>
-        </tr>
-      </thead>
-      <tbody>
-        {notifications.map((n) => (
-          <tr key={n.id} className="border-b border-ivory-d">
-            <td className="py-2.5 text-ink">{n.type.replace(/_/g, ' ').toLowerCase()}</td>
-            <td className="py-2.5 text-ink-s">{n.channel}</td>
-            <td className="py-2.5 text-ink-s">{n.recipientEmail}</td>
-            <td className="py-2.5 text-ink-m text-2xs">{new Date(n.sentAt).toLocaleString('en-IN')}</td>
+    <div className="max-w-2xl">
+      {retryError && (
+        <p role="alert" className="text-sm text-red-600 mb-3">
+          {retryError}
+        </p>
+      )}
+      <table className="w-full text-sm">
+        <caption className="sr-only">Notification history</caption>
+        <thead>
+          <tr className="border-b border-ivory-k text-left text-2xs uppercase tracking-wide text-ink-m">
+            <th scope="col" className="py-2 font-normal">Status</th>
+            <th scope="col" className="py-2 font-normal">Stage</th>
+            <th scope="col" className="py-2 font-normal">Recipient</th>
+            <th scope="col" className="py-2 font-normal">Sent</th>
+            <th scope="col" className="py-2 font-normal">
+              <span className="sr-only">Actions</span>
+            </th>
           </tr>
-        ))}
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          {notifications.map((n) => (
+            <tr key={n.id} className="border-b border-ivory-d align-top">
+              <td className="py-2.5">
+                <span
+                  className={`inline-block rounded-full px-2.5 py-0.5 text-2xs ${
+                    n.status === 'SENT' ? 'bg-ivory-d text-ink-s' : 'bg-red-50 text-red-700'
+                  }`}
+                >
+                  {n.status === 'SENT' ? 'Sent' : 'Failed'}
+                </span>
+                {n.status === 'FAILED' && n.errorMessage && (
+                  <p className="text-2xs text-red-600 mt-1 max-w-[16rem]">{n.errorMessage}</p>
+                )}
+              </td>
+              <td className="py-2.5 text-ink-s">{n.stageName ?? '—'}</td>
+              <td className="py-2.5 text-ink-s">{n.recipientEmail}</td>
+              <td className="py-2.5 text-ink-m text-2xs">{new Date(n.sentAt).toLocaleString('en-IN')}</td>
+              <td className="py-2.5">
+                {n.status === 'FAILED' && (
+                  <button
+                    type="button"
+                    onClick={() => retry(n.id)}
+                    disabled={retryingId === n.id}
+                    aria-busy={retryingId === n.id}
+                    className="text-2xs text-ink underline underline-offset-4 disabled:opacity-50 focus-visible:ring-2 focus-visible:ring-gold/50 rounded-sm"
+                  >
+                    {retryingId === n.id ? 'Retrying…' : 'Retry'}
+                  </button>
+                )}
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   )
 }
