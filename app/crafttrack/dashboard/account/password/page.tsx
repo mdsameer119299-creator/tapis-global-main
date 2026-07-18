@@ -16,7 +16,7 @@ export default async function AccountPasswordPage() {
   const hasPassword = Boolean(customer.passwordHash)
 
   return (
-    <div className="min-h-screen bg-ivory font-body px-6 py-16">
+    <div className="px-6 py-14">
       <div className="max-w-sm mx-auto">
         <h1 className="font-display text-2xl text-ink mb-2">
           {hasPassword ? 'Change your password' : 'Set up a password'}

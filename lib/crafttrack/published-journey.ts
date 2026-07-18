@@ -9,6 +9,7 @@ type PublishedJourneyRow = {
   stages: Array<{
     id: string
     sequence: number
+    draftName: string
     publishedName: string | null
     publishedMessage: string | null
     publishedStatus: StageStatus | null
@@ -24,12 +25,23 @@ type JourneyReader = {
   }
 }
 
-/** Loads a Journey's customer-visible state — Published stage/media content
- * only, never Draft — for both PR2's admin preview route and PR3's real
- * customer portal. Callers pass the result straight into
- * components/crafttrack/PublishedJourneyView.tsx, which assumes its input
- * is already filtered to "what a customer is allowed to see" and does not
- * re-implement that filter itself.
+/** Loads a Journey's customer-visible state for both PR2's admin preview
+ * route and PR3's real customer portal. Callers pass the result straight
+ * into components/crafttrack/PublishedJourneyView.tsx, which assumes its
+ * input is already filtered to "what a customer is allowed to see" and
+ * does not re-implement that filter itself.
+ *
+ * PR3 contract change: stages are no longer filtered to publishedAt-not-null
+ * — every stage is returned, in sequence order, so a customer can see the
+ * full journey shape (what's next) rather than the list silently ending at
+ * whatever's published so far. A stage that hasn't been published yet
+ * returns publishedAt: null, publishedMessage: null, media: [] (never its
+ * Draft message/images — those stay exactly as invisible as before), and
+ * publishedName falls back to draftName. That one field is a deliberate,
+ * narrow exception: a stage's name is structural/navigational (it's what
+ * lets a customer see "step 4 of 6" at all), not the kind of admin-authored
+ * customer-facing copy the Draft/Published split exists to gate — message
+ * text and imagery remain strictly Published-only with no fallback.
  *
  * db is injectable (see scripts/crafttrack-published-journey-view.test.mjs)
  * so the Draft-vs-Published filtering can be unit-tested without a real
@@ -48,7 +60,6 @@ export async function getPublishedJourneyView(journeyId: string, injectedDb?: Jo
         orderBy: { sortOrder: 'asc' },
       },
       stages: {
-        where: { publishedAt: { not: null } },
         orderBy: { sequence: 'asc' },
         include: {
           media: {
@@ -65,7 +76,11 @@ export async function getPublishedJourneyView(journeyId: string, injectedDb?: Jo
 
   if (!journey) return null
 
-  const coverMedia = journey.media.find((m) => m.role === 'COVER') ?? null
+  const findRole = (role: string) => journey.media.find((m) => m.role === role) ?? null
+
+  const coverMedia = findRole('COVER')
+  const careGuideMedia = findRole('CARE_GUIDE')
+  const invoiceMedia = findRole('INVOICE')
 
   return {
     journey: {
@@ -74,15 +89,17 @@ export async function getPublishedJourneyView(journeyId: string, injectedDb?: Jo
       productSlug: journey.productSlug,
       completedAt: journey.completedAt,
       coverMedia: coverMedia ? { url: coverMedia.url, altText: coverMedia.altText } : null,
+      careGuideMedia: careGuideMedia ? { url: careGuideMedia.url } : null,
+      invoiceMedia: invoiceMedia ? { url: invoiceMedia.url } : null,
     },
     stages: journey.stages.map((stage) => ({
       id: stage.id,
       sequence: stage.sequence,
-      publishedName: stage.publishedName!,
-      publishedMessage: stage.publishedMessage,
-      publishedStatus: stage.publishedStatus!,
-      publishedAt: stage.publishedAt!,
-      media: stage.media.map((m) => ({ id: m.id, url: m.url, caption: m.caption, isHero: m.isHero })),
+      publishedName: stage.publishedName ?? stage.draftName,
+      publishedMessage: stage.publishedAt ? stage.publishedMessage : null,
+      publishedStatus: stage.publishedAt ? stage.publishedStatus : null,
+      publishedAt: stage.publishedAt,
+      media: stage.publishedAt ? stage.media.map((m) => ({ id: m.id, url: m.url, caption: m.caption, isHero: m.isHero })) : [],
     })),
     messages: journey.messages.map((m) => ({ id: m.id, body: m.body, createdAt: m.createdAt })),
   }
