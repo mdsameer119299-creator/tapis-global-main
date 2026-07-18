@@ -43,6 +43,18 @@ export default function CraftTrackModal({ open, onClose }: Props) {
     return () => window.clearTimeout(timer)
   }, [open])
 
+  // Defensive unmount guard: a CTA both closes the modal AND navigates
+  // (see `go()` below) to a route ConditionalChrome hides this launcher on
+  // (/crafttrack/*), which unmounts this component immediately — before
+  // the 350ms close timer above ever fires. That would leave body scroll
+  // locked forever on every subsequent page. Runs once on unmount,
+  // independent of the close-animation timing.
+  useEffect(() => {
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [])
+
   useEffect(() => {
     if (visible) closeButtonRef.current?.focus()
   }, [visible])
