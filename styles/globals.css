@@ -208,6 +208,56 @@ body[data-sticky-bar='open'] .wa-float-btn {
   body[data-menu-open='true'] .wa-float-btn { opacity: 0; pointer-events: none; }
 }
 
+/* Floating CraftTrack button — every value here is .wa-float-btn's own
+   value plus its height plus a fixed gap, at the same breakpoints/states,
+   so the two stay stacked with a consistent gap instead of two
+   independently-tuned offsets that could drift apart. */
+.ct-float-btn {
+  position: fixed;
+  right: 1.5rem;
+  bottom: 5.75rem; /* wa-float-btn's 1.5rem + its 3.5rem height + 0.75rem gap */
+  z-index: 851;
+  display: flex;
+  align-items: center;
+  height: 2.75rem;
+  padding: 0 1.25rem;
+  border-radius: 9999px;
+  background: var(--ink);
+  border: 1px solid var(--g);
+  color: var(--g);
+  font-size: 13px;
+  letter-spacing: 0.02em;
+  box-shadow: 0 6px 24px rgba(26, 19, 16, 0.28);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, bottom 0.3s ease;
+  animation: ct-pulse-rare 25s ease-in-out infinite;
+}
+.ct-float-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(26, 19, 16, 0.36);
+  animation: none;
+}
+body[data-sticky-bar='open'] .ct-float-btn {
+  bottom: 9rem; /* wa-float-btn's own 5.25rem sticky-open bottom + same 3.75rem stack offset */
+}
+@keyframes ct-pulse-rare {
+  0%, 92%, 100% { box-shadow: 0 6px 24px rgba(26, 19, 16, 0.28); }
+  95% { box-shadow: 0 6px 24px rgba(26, 19, 16, 0.28), 0 0 0 8px rgba(192, 155, 74, 0.16); }
+}
+@media (max-width: 640px) {
+  .ct-float-btn {
+    right: 1rem;
+    bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); /* wa-float-btn's mobile 1.25rem + its 3.25rem height + 0.5rem gap */
+    height: 2.5rem;
+    padding: 0 1rem;
+    font-size: 12px;
+  }
+  body[data-sticky-bar='open'] .ct-float-btn { bottom: calc(8.75rem + env(safe-area-inset-bottom, 0px)); }
+  body[data-menu-open='true'] .ct-float-btn { opacity: 0; pointer-events: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-float-btn { animation: none; }
+}
+
 /* Analytics consent — compact, non-obstructive bar.
    Sits above the floating action row (TARA launcher + WhatsApp, ~4.5rem tall)
    and lifts further when the sticky CTA bar is open, so it never overlaps them
