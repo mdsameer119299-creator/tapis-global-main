@@ -23,6 +23,7 @@ const Analytics = dynamic(() => import('@/components/analytics/Analytics'), { ss
 const AttributionInit = dynamic(() => import('@/components/analytics/AttributionInit'), { ssr: false })
 const Consent = dynamic(() => import('@/components/analytics/Consent'), { ssr: false })
 const Tara = dynamic(() => import('@/components/tara/Tara'), { ssr: false })
+const CraftTrackLauncher = dynamic(() => import('@/components/crafttrack/CraftTrackLauncher'), { ssr: false })
 
 export const viewport: Viewport = {
   width:        'device-width',
@@ -78,6 +79,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <Footer />
           <StickyBar />
           <FloatingWhatsApp />
+          <CraftTrackLauncher />
           <Tara />
         </ConditionalChrome>
 
