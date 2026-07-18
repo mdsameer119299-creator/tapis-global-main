@@ -137,11 +137,15 @@
   color: var(--gp) !important;
 }
 
-/* Floating WhatsApp button */
+/* Floating WhatsApp button — stacked ABOVE .ct-float-btn (see that rule's
+   comment): its own bottom is always ct-float-btn's bottom + ct-float-btn's
+   height + a fixed gap, at every breakpoint/state, so the two stay stacked
+   with a consistent gap instead of two independently-tuned offsets that
+   could drift apart. */
 .wa-float-btn {
   position: fixed;
   right: 1.5rem;
-  bottom: 1.5rem;
+  bottom: 5rem; /* ct-float-btn's 1.5rem + its 2.75rem height + 0.75rem gap */
   z-index: 850;
   display: flex;
   align-items: center;
@@ -163,7 +167,7 @@
   transform: translateY(-2px);
 }
 body[data-sticky-bar='open'] .wa-float-btn {
-  bottom: 5.25rem;
+  bottom: 8.75rem;
 }
 .wa-float-pulse {
   position: absolute;
@@ -202,20 +206,22 @@ body[data-sticky-bar='open'] .wa-float-btn {
   padding-right: 1rem;
 }
 @media (max-width: 640px) {
-  .wa-float-btn { right: 1rem; bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px)); width: 3.25rem; height: 3.25rem; }
+  .wa-float-btn { right: 1rem; bottom: calc(4.25rem + env(safe-area-inset-bottom, 0px)); width: 3.25rem; height: 3.25rem; }
   .wa-float-icon { width: 3.25rem; height: 3.25rem; }
-  body[data-sticky-bar='open'] .wa-float-btn { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
+  body[data-sticky-bar='open'] .wa-float-btn { bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)); }
   body[data-menu-open='true'] .wa-float-btn { opacity: 0; pointer-events: none; }
 }
 
-/* Floating CraftTrack button — every value here is .wa-float-btn's own
-   value plus its height plus a fixed gap, at the same breakpoints/states,
-   so the two stay stacked with a consistent gap instead of two
-   independently-tuned offsets that could drift apart. */
+/* Floating CraftTrack button — the base of the pair (bottom-most), at the
+   same height off the page as the TARA launcher on the opposite corner so
+   the two read as one row. .wa-float-btn sits stacked directly above this
+   one (see that rule's comment) rather than the other way around, so
+   CraftTrack — the newer, less-frequently-used entry point — doesn't sit
+   above the more established WhatsApp contact button. */
 .ct-float-btn {
   position: fixed;
   right: 1.5rem;
-  bottom: 5.75rem; /* wa-float-btn's 1.5rem + its 3.5rem height + 0.75rem gap */
+  bottom: 1.5rem;
   z-index: 851;
   display: flex;
   align-items: center;
@@ -225,7 +231,8 @@ body[data-sticky-bar='open'] .wa-float-btn {
   background: var(--ink);
   border: 1px solid var(--g);
   color: var(--g);
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: 0.02em;
   box-shadow: 0 6px 24px rgba(26, 19, 16, 0.28);
   transition: transform 0.3s ease, box-shadow 0.3s ease, bottom 0.3s ease;
@@ -237,7 +244,7 @@ body[data-sticky-bar='open'] .wa-float-btn {
   animation: none;
 }
 body[data-sticky-bar='open'] .ct-float-btn {
-  bottom: 9rem; /* wa-float-btn's own 5.25rem sticky-open bottom + same 3.75rem stack offset */
+  bottom: 5.25rem;
 }
 @keyframes ct-pulse-rare {
   0%, 92%, 100% { box-shadow: 0 6px 24px rgba(26, 19, 16, 0.28); }
@@ -246,12 +253,12 @@ body[data-sticky-bar='open'] .ct-float-btn {
 @media (max-width: 640px) {
   .ct-float-btn {
     right: 1rem;
-    bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); /* wa-float-btn's mobile 1.25rem + its 3.25rem height + 0.5rem gap */
+    bottom: calc(1.25rem + env(safe-area-inset-bottom, 0px));
     height: 2.5rem;
     padding: 0 1rem;
-    font-size: 12px;
+    font-size: 14px;
   }
-  body[data-sticky-bar='open'] .ct-float-btn { bottom: calc(8.75rem + env(safe-area-inset-bottom, 0px)); }
+  body[data-sticky-bar='open'] .ct-float-btn { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
   body[data-menu-open='true'] .ct-float-btn { opacity: 0; pointer-events: none; }
 }
 @media (prefers-reduced-motion: reduce) {
