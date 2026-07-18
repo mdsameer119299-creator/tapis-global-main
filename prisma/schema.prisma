@@ -1,0 +1,123 @@
+// CraftTrack™ data model.
+//
+// Tables are namespaced with a `crafttrack_` @@map prefix so this feature's
+// schema never collides with anything added to the database later. Postgres
+// via DATABASE_URL — see docs/CRAFTTRACK-SETUP.md for provisioning.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Customer {
+  id           String   @id @default(cuid())
+  name         String
+  email        String   @unique
+  /// Null until the customer sets up email+password login. Order-lookup
+  /// mode (order number + email) never requires this to be set.
+  passwordHash String?
+  createdAt    DateTime @default(now())
+  orders       Order[]
+
+  @@map("crafttrack_customers")
+}
+
+model Order {
+  id          String   @id @default(cuid())
+  /// Human-facing tracking number, e.g. TGI-2026-0158. Generated at
+  /// creation time (see lib/crafttrack/order-number.ts) — never user-supplied.
+  orderNumber String   @unique
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  productName String
+  /// Optional link into the existing static product catalogue
+  /// (lib/products.ts) — no separate Product table; the catalogue already
+  /// exists and doesn't need duplicating into the database.
+  productSlug String?
+
+  currentStageId String?        @unique
+  currentStage   JourneyStage?  @relation("CurrentStage", fields: [currentStageId], references: [id])
+  stages         JourneyStage[] @relation("OrderStages")
+  messages       OrderMessage[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@map("crafttrack_orders")
+}
+
+enum StageStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETE
+}
+
+model JourneyStage {
+  id      String @id @default(cuid())
+  orderId String
+  order   Order  @relation("OrderStages", fields: [orderId], references: [id], onDelete: Cascade)
+  /// The reverse side of Order.currentStage — at most one Order points to
+  /// this stage as its "current" milestone.
+  currentForOrder Order? @relation("CurrentStage")
+
+  name             String
+  sequence         Int
+  status           StageStatus @default(PENDING)
+  heroImageUrl     String?
+  galleryImageUrls String[]
+  message          String?
+  publishedAt      DateTime?
+  /// Admin email of whoever published this stage. No separate admin FK —
+  /// deliberately a plain string so history survives an admin account being
+  /// removed later.
+  publishedBy String?
+
+  history StageHistory[]
+
+  @@index([orderId])
+  @@map("crafttrack_journey_stages")
+}
+
+/// Append-only audit trail of every status transition — the real
+/// "Progress History" concept, not just an inferred timestamp.
+model StageHistory {
+  id         String       @id @default(cuid())
+  stageId    String
+  stage      JourneyStage @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  fromStatus StageStatus?
+  toStatus   StageStatus
+  changedAt  DateTime     @default(now())
+  changedBy  String
+
+  @@index([stageId])
+  @@map("crafttrack_stage_history")
+}
+
+/// Admin-authored running commentary on an order, independent of any single
+/// stage (e.g. "Your loom slot has been confirmed for next week").
+model OrderMessage {
+  id         String   @id @default(cuid())
+  orderId    String
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  body       String
+  authorType String // 'admin' | 'system'
+  createdAt  DateTime @default(now())
+
+  @@index([orderId])
+  @@map("crafttrack_order_messages")
+}
+
+model AdminUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+
+  @@map("crafttrack_admin_users")
+}
