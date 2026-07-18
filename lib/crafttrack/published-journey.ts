@@ -1,13 +1,45 @@
-import { prisma } from '@/lib/prisma'
+import type { StageStatus } from '@prisma/client'
+
+type PublishedJourneyRow = {
+  productName: string
+  productSlug: string | null
+  completedAt: Date | null
+  order: { orderNumber: string }
+  media: Array<{ role: string; url: string; altText: string | null }>
+  stages: Array<{
+    id: string
+    sequence: number
+    publishedName: string | null
+    publishedMessage: string | null
+    publishedStatus: StageStatus | null
+    publishedAt: Date | null
+    media: Array<{ id: string; url: string; caption: string | null; isHero: boolean }>
+  }>
+  messages: Array<{ id: string; body: string; createdAt: Date }>
+}
+
+type JourneyReader = {
+  journey: {
+    findUnique: (args: unknown) => Promise<PublishedJourneyRow | null>
+  }
+}
 
 /** Loads a Journey's customer-visible state — Published stage/media content
  * only, never Draft — for both PR2's admin preview route and PR3's real
  * customer portal. Callers pass the result straight into
  * components/crafttrack/PublishedJourneyView.tsx, which assumes its input
  * is already filtered to "what a customer is allowed to see" and does not
- * re-implement that filter itself. */
-export async function getPublishedJourneyView(journeyId: string) {
-  const journey = await prisma.journey.findUnique({
+ * re-implement that filter itself.
+ *
+ * db is injectable (see scripts/crafttrack-published-journey-view.test.mjs)
+ * so the Draft-vs-Published filtering can be unit-tested without a real
+ * database. lib/prisma.ts is only imported lazily, inside the function
+ * body, when no db is supplied — a test that always injects a fake db
+ * never constructs the real PrismaClient singleton at all. */
+export async function getPublishedJourneyView(journeyId: string, injectedDb?: JourneyReader) {
+  const db = injectedDb ?? (await import('@/lib/prisma')).prisma
+
+  const journey = await db.journey.findUnique({
     where: { id: journeyId },
     include: {
       order: { select: { orderNumber: true } },

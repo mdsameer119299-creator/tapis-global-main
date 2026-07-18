@@ -287,10 +287,23 @@ enum NotificationChannel {
   PUSH
 }
 
+enum NotificationStatus {
+  SENT
+  FAILED
+}
+
 /// Delivery log for every customer-facing notification — not customer-
 /// visible content itself (that's JourneyMessage), just proof something
 /// fired, when, and how. channel already reserves WhatsApp/push so future
 /// channels are a new enum value, not a redesign.
+///
+/// Added in PR2.1 (production-hardening pass): every send attempt — first
+/// try or retry — creates its own row, so the row list itself is the
+/// status history. status/errorMessage record the outcome so a failed
+/// send is visible to an admin instead of only living in server logs.
+/// stageId/stageName are a snapshot, not a relation (same pattern as
+/// JourneyStage.templateStageId) — a retry needs to know which stage's
+/// email to resend even if the stage is later renamed or removed.
 model Notification {
   id             String              @id @default(cuid())
   journeyId      String
@@ -298,6 +311,10 @@ model Notification {
   type           NotificationType    @default(STAGE_PUBLISHED)
   channel        NotificationChannel @default(EMAIL)
   recipientEmail String
+  stageId        String?
+  stageName      String?
+  status         NotificationStatus  @default(SENT)
+  errorMessage   String?
   sentAt         DateTime            @default(now())
 
   @@index([journeyId])
