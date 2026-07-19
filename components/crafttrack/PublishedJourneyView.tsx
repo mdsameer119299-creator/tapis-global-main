@@ -35,6 +35,35 @@ const STATUS_LABEL: Record<StageStatus, string> = {
   COMPLETE: 'Complete',
 }
 
+type DotState = 'complete' | 'current' | 'upcoming'
+
+/** The stepper dot for one stage: a checked dark circle once complete, a
+ * pulsing green "live" dot for whichever stage is actually happening right
+ * now, and a small hollow outline for anything not started yet — so the
+ * customer can tell the journey's current position at a glance, not just
+ * by reading each stage's text status. */
+function StageDot({ state }: { state: DotState }) {
+  if (state === 'current') {
+    return (
+      <span className="relative flex items-center justify-center w-5 h-5 flex-shrink-0" aria-hidden="true">
+        <span className="absolute inset-0 rounded-full bg-emerald-500/60 stage-dot-live-ring" />
+        <span className="relative w-3 h-3 rounded-full bg-emerald-500 ring-2 ring-ivory" />
+      </span>
+    )
+  }
+  if (state === 'complete') {
+    return (
+      <span
+        className="flex items-center justify-center w-5 h-5 rounded-full bg-ink text-gold-p text-[10px] leading-none flex-shrink-0"
+        aria-hidden="true"
+      >
+        ✓
+      </span>
+    )
+  }
+  return <span className="w-4 h-4 rounded-full border-2 border-ivory-k bg-ivory flex-shrink-0" aria-hidden="true" />
+}
+
 /** Renders exactly what a customer is allowed to see for a Journey —
  * Published content only, plus the structural stage-name exception
  * documented in lib/crafttrack/published-journey.ts. Shared between PR2's
@@ -46,7 +75,9 @@ const STATUS_LABEL: Record<StageStatus, string> = {
  * (wired to onOpenGallery, for the fullscreen lightbox) instead of bare
  * images, and a completed journey renders the celebration ending instead
  * of a plain banner line. Everything else — heading hierarchy, the <ol>
- * timeline, alt-text fallbacks — is identical in both modes. */
+ * timeline (including its stepper dots — completed/current/upcoming are
+ * a presentation detail, not a Draft/Published exposure decision), alt-
+ * text fallbacks — is identical in both modes. */
 export default function PublishedJourneyView({
   journey,
   stages,
@@ -80,12 +111,26 @@ export default function PublishedJourneyView({
           Your CraftTrack™ journey will appear here once your order enters production.
         </p>
       ) : (
-        <ol className="flex flex-col gap-10 mt-6">
-          {stages.map((stage) => {
+        <ol className="flex flex-col mt-6">
+          {stages.map((stage, index) => {
+            const isLast = index === stages.length - 1
+            const dotState: DotState = !stage.publishedAt
+              ? 'upcoming'
+              : stage.publishedStatus === 'COMPLETE'
+                ? 'complete'
+                : 'current'
+            const lineReached = stage.publishedStatus === 'COMPLETE'
+
             if (!stage.publishedAt) {
               return (
-                <li key={stage.id} className="opacity-40">
-                  <h2 className="font-display text-lg text-ink-m">{stage.publishedName}</h2>
+                <li key={stage.id} className={`flex gap-4 ${isLast ? '' : 'pb-10'}`}>
+                  <div className="flex flex-col items-center flex-shrink-0 pt-0.5">
+                    <StageDot state={dotState} />
+                    {!isLast && <span className="w-px flex-1 mt-1.5 bg-ivory-k" aria-hidden="true" />}
+                  </div>
+                  <div className="flex-1 min-w-0 opacity-40">
+                    <h2 className="font-display text-lg text-ink-m">{stage.publishedName}</h2>
+                  </div>
                 </li>
               )
             }
@@ -95,7 +140,14 @@ export default function PublishedJourneyView({
             const allMedia = hero ? [hero, ...gallery] : gallery
 
             return (
-              <li key={stage.id}>
+              <li key={stage.id} className={`flex gap-4 ${isLast ? '' : 'pb-10'}`}>
+                <div className="flex flex-col items-center flex-shrink-0 pt-0.5">
+                  <StageDot state={dotState} />
+                  {!isLast && (
+                    <span className={`w-px flex-1 mt-1.5 ${lineReached ? 'bg-ink/25' : 'bg-ivory-k'}`} aria-hidden="true" />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
                 <div className="flex items-baseline justify-between mb-1">
                   <h2 className="font-display text-xl text-ink">{stage.publishedName}</h2>
                   <span className="text-2xs text-ink-m">
@@ -103,7 +155,13 @@ export default function PublishedJourneyView({
                   </span>
                 </div>
                 {stage.publishedStatus && (
-                  <p className="text-2xs uppercase tracking-wide text-gold-d mb-3">{STATUS_LABEL[stage.publishedStatus]}</p>
+                  <p
+                    className={`text-2xs uppercase tracking-wide mb-3 ${
+                      dotState === 'current' ? 'text-emerald-600' : 'text-gold-d'
+                    }`}
+                  >
+                    {STATUS_LABEL[stage.publishedStatus]}
+                  </p>
                 )}
 
                 {hero &&
@@ -154,6 +212,7 @@ export default function PublishedJourneyView({
                     )}
                   </div>
                 )}
+                </div>
               </li>
             )
           })}

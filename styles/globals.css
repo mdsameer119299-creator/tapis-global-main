@@ -265,6 +265,21 @@ body[data-sticky-bar='open'] .ct-float-btn {
   .ct-float-btn { animation: none; }
 }
 
+/* CraftTrack customer timeline — stage stepper dots. The "currently in
+   progress" stage gets a real live-indicator pulse (a growing, fading
+   ring outside a solid core) so it reads as active at a glance, not just
+   a different color from the completed/upcoming dots. */
+@keyframes stage-dot-live-ping {
+  0%   { transform: scale(1);   opacity: 0.55; }
+  75%, 100% { transform: scale(2.2); opacity: 0; }
+}
+.stage-dot-live-ring {
+  animation: stage-dot-live-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage-dot-live-ring { animation: none; opacity: 0.35; }
+}
+
 /* Analytics consent — compact, non-obstructive bar.
    Sits above the floating action row (TARA launcher + WhatsApp, ~4.5rem tall)
    and lifts further when the sticky CTA bar is open, so it never overlaps them

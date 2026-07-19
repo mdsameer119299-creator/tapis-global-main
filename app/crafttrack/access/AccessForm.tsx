@@ -3,6 +3,7 @@
 import { useRef, useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import AdminTextField from '@/components/crafttrack/admin/AdminTextField'
+import Spinner from '@/components/crafttrack/Spinner'
 
 type Mode = 'lookup' | 'login'
 
@@ -131,8 +132,9 @@ export default function AccessForm() {
           type="submit"
           disabled={busy}
           aria-busy={busy}
-          className="mt-2 w-full bg-ink text-gold-p rounded-sm py-3 text-sm tracking-wide disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-gold/50"
+          className="mt-2 w-full bg-ink text-gold-p rounded-sm py-3 text-sm tracking-wide disabled:opacity-80 focus-visible:ring-2 focus-visible:ring-gold/50 flex items-center justify-center gap-2"
         >
+          {busy && <Spinner />}
           {busy ? 'Checking…' : mode === 'lookup' ? 'View my order' : 'Sign in'}
         </button>
       </form>

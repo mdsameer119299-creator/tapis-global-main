@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import AdminTextField from '@/components/crafttrack/admin/AdminTextField'
+import Spinner from '@/components/crafttrack/Spinner'
 
 export default function CraftTrackLoginPage() {
   const router = useRouter()
@@ -78,8 +79,9 @@ export default function CraftTrackLoginPage() {
             type="submit"
             disabled={busy}
             aria-busy={busy}
-            className="mt-2 w-full bg-ink text-gold-p rounded-sm py-3 text-sm tracking-wide disabled:opacity-60 focus-visible:ring-2 focus-visible:ring-gold/50"
+            className="mt-2 w-full bg-ink text-gold-p rounded-sm py-3 text-sm tracking-wide disabled:opacity-80 focus-visible:ring-2 focus-visible:ring-gold/50 flex items-center justify-center gap-2"
           >
+            {busy && <Spinner />}
             {busy ? 'Signing in…' : 'Sign in'}
           </button>
         </form>
