@@ -1,0 +1,64 @@
+{
+  "_comment_do_not_publish": "TEMPLATE ONLY. Lives in _templates/ so the loader (fs.readdirSync on content/market-intelligence/ is non-recursive) never scans, validates or publishes this file. To use it: copy to content/market-intelligence/<country-slug>.json, replace every [placeholder] with a verified fact or an honest 'pending-research' status, then set status to 'published'. Every SourcedClaim needs status: 'verified' | 'general' | 'pending-research' — 'verified' REQUIRES a real source citation in `source`; never invent one to satisfy the validator. sustainabilityExpectations.summary and regulationsCompliance.snapshot are validated in strict mode — do not mark them 'verified' without a specific, checkable source.",
+
+  "countrySlug": "[must match an existing slug in lib/countries.ts]",
+  "status": "draft",
+  "updatedAt": "[YYYY-MM-DD]",
+  "seo": {
+    "title": "[<= 60 chars, unique, includes the country name]",
+    "description": "[<= 155 chars, unique]",
+    "keywords": ["[keyword 1]", "[keyword 2]"]
+  },
+
+  "buyerBehaviour": {
+    "decisionMakers": ["[e.g. Architects]", "[e.g. Procurement managers]"],
+    "procurementCycle": { "text": "[how buying actually happens in this market]", "status": "pending-research" },
+    "sampleExpectations": { "text": "[sample/lead-time norms]", "status": "pending-research" },
+    "negotiationNorms": { "text": "[currency/negotiation norms]", "status": "pending-research" }
+  },
+
+  "designPreferences": {
+    "styleArchetypeSlug": "[a slug from lib/market-intelligence/style-library.ts's STYLE_ARCHETYPES]",
+    "localNotes": [
+      { "text": "[what's different about this country within the shared archetype]", "status": "pending-research" }
+    ]
+  },
+
+  "climateMaterialFit": {
+    "climateSummary": { "text": "[real climate data]", "status": "pending-research" },
+    "recommendedMaterialIds": ["[a TARA_MATERIALS id, e.g. nz-wool]"],
+    "careNotes": { "text": "[climate-driven care guidance]", "status": "pending-research" }
+  },
+
+  "architecturalContext": {
+    "buildingTypes": ["[e.g. Hospitality towers]"],
+    "narrative": { "text": "[real architectural context for this market]", "status": "pending-research" }
+  },
+
+  "sustainabilityExpectations": {
+    "summary": { "text": "[only a verified, sourced expectation — otherwise leave as pending-research]", "status": "pending-research" },
+    "regulatoryDrivers": []
+  },
+
+  "regulationsCompliance": {
+    "snapshot": { "text": "[a short snapshot only — full detail belongs on the Import & Regulatory Guide]", "status": "pending-research" },
+    "importGuideSlug": "[Knowledge Centre slug, category export-knowledge, once that guide exists]"
+  },
+
+  "procurementGuidance": {
+    "steps": ["[e.g. Share project brief]", "[e.g. Request samples]", "[e.g. Confirm specification and timeline]"],
+    "leadTimeNote": { "text": "[non-numeric, enquiry-deferred — mirror lib/export-capability.ts's tone]", "status": "general" },
+    "relatedCompanyPages": ["why-bhadohi", "export-process"]
+  },
+
+  "commercial": {
+    "headline": "[a natural next step, not a hard sell]",
+    "supportingCopy": "[informative-first, one or two sentences]",
+    "primaryCta": { "label": "[e.g. Request Catalogue]", "href": "/catalogue" },
+    "secondaryCta": { "label": "[e.g. Get a Quote]", "href": "/contact" }
+  },
+
+  "relatedCountries": ["[sibling country slugs]"],
+  "relatedIndustries": ["[relevant /industries slugs — curated 3-4, not all]"],
+  "relatedGlossaryTerms": ["[exact TARA_GLOSSARY term text]"]
+}
