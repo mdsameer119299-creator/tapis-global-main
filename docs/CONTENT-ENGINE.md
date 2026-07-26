@@ -42,6 +42,20 @@ Minimal article:
 ## Serverless bundling
 `next.config.js` `outputFileTracingIncludes` traces `content/knowledge/**` into the `/api/tara` and `/knowledge` bundles so the files ship on Vercel.
 
+## Case studies (`category: 'commercial-projects'`)
+A case study is a normal `KnowledgeArticle` plus an optional, additive `caseStudy` block (`lib/knowledge/types.ts`) — same body/faq/images/related-links/seo/structured-data pipeline as any other article, with the extra structured fields a real installed-project write-up needs: `overview`, `clientSector`, `country`, `product`, `material`, `construction`, `size`, `timeline`, `manufacturingProcess`, `challenges`, `solution`, `testimonial`. `KnowledgeArticleView` renders these as a project-spec panel, a Challenge/Solution pair, a numbered manufacturing-process list, and (only if present) a testimonial blockquote — automatically, no per-article component work.
+
+**Template, not real content:** `content/knowledge/_templates/case-study.template.json` has every field with a bracketed `[placeholder]` explaining what real fact belongs there. It lives in a subfolder so the loader (`fs.readdirSync` on `content/knowledge/` is non-recursive) never scans, validates or publishes it. To use it: copy to `content/knowledge/<real-slug>.json`, replace every bracket with a verified fact, delete the testimonial block entirely unless you hold the client's explicit written permission for that exact quote, then set `status: "published"`. `validateArticle` enforces the required `caseStudy` fields and that `caseStudy` only appears on `commercial-projects` articles.
+
+## Writing AI-readable content (`definitions` / `comparisonTable`)
+Two optional, generic fields make any article — not just materials or case studies — readable by both people and AI answer engines (Google AI Overviews, ChatGPT, Perplexity, Gemini, Bing Copilot):
+- **`definitions`** — an array of `{ term, definition }`. Put the 2–4 terms a reader genuinely needs defined up front, in one clear sentence each. Reuse the exact wording already in `lib/tara/knowledge/glossary.ts` (`TARA_GLOSSARY`) wherever the term already exists there — don't write a second, slightly different definition of "Pile" or "KPSI"; one consistent definition per term, cited everywhere, is what builds the entity consistency AI systems look for.
+- **`comparisonTable`** — `{ caption, columns, rows }`, rendered as a real HTML table. Only use it for a genuine comparison already grounded in existing data (e.g. the numeric durability/softness/luxury ratings already in `TARA_MATERIALS`), never invented figures.
+
+Both render automatically via `KnowledgeArticleView` — no per-article component work.
+
+**Avoiding keyword stuffing:** write the term once, clearly, and let the internal-linking system (`relatedMaterials`, `relatedProducts`, etc.) carry repetition instead of repeating the keyword phrase in every sentence. A `definitions` block that states a term once, precisely, reads better to a person and extracts more cleanly for an AI answer than the same phrase repeated five times across a paragraph.
+
 ## Scaling to thousands of articles
 - Content is data, not code — add files (optionally per-category subfolders).
 - The 13 categories partition the space; relationships (`related*`, `taraTags`) create the internal-link and retrieval graph.

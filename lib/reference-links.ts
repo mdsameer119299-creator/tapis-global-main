@@ -8,7 +8,13 @@
 import { TARA_MATERIALS } from './tara/knowledge/materials'
 import { TARA_CONSTRUCTIONS } from './tara/knowledge/constructions'
 import { getIndustry, getSolution } from './seo-landing'
+import { COUNTRIES } from './countries'
+import { PRODUCT_CATEGORIES } from './products'
+import { TARA_GLOSSARY } from './tara/knowledge/glossary'
+import type { Rating } from './tara/knowledge/types'
 import type { KnowledgeLink } from './knowledge/types'
+
+const glossarySlug = (term: string) => term.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
 
 // Material/construction id pair -> the existing comparison guide that already
 // covers that exact query intent. Linking here (instead of building a new
@@ -125,4 +131,78 @@ export function getReferenceLinksForProduct(productSlug: string): { construction
     .filter((m): m is NonNullable<typeof m> => Boolean(m))
     .map((m) => ({ label: `${m.name} Material Guide`, href: `/materials/${m.id}` }))
   return { construction, materials: uniq(materials) }
+}
+
+/**
+ * Which product category pages a material is genuinely relevant to — the
+ * reverse of PRODUCT_TO_MATERIALS, plus the construction chain (a product's
+ * mapped construction's suitableMaterials). Both sources are real, existing
+ * relationship data already authored elsewhere in the codebase; nothing here
+ * invents a new correspondence.
+ */
+export function getProductsUsingMaterial(materialId: string): KnowledgeLink[] {
+  const direct = Object.entries(PRODUCT_TO_MATERIALS)
+    .filter(([, materials]) => materials.includes(materialId))
+    .map(([productSlug]) => productSlug)
+  const viaConstruction = Object.entries(PRODUCT_TO_CONSTRUCTION)
+    .filter(([, constructionId]) => TARA_CONSTRUCTIONS.find((c) => c.id === constructionId)?.profile?.suitableMaterials.includes(materialId))
+    .map(([productSlug]) => productSlug)
+  const slugs = Array.from(new Set([...direct, ...viaConstruction]))
+  const products = slugs
+    .map((slug) => PRODUCT_CATEGORIES.find((p) => p.slug === slug))
+    .filter((p): p is NonNullable<typeof p> => Boolean(p))
+    .map((p) => ({ label: p.name, href: `/products/${p.slug}` }))
+  return uniq(products)
+}
+
+/**
+ * Export markets that explicitly recommend a material — read from each
+ * country page's own materialRecommendations field (authored in lib/countries.ts
+ * for the Phase-1 depth batch). Countries without that field yet are simply
+ * absent here rather than guessed.
+ */
+export function getCountriesRecommendingMaterial(materialId: string): KnowledgeLink[] {
+  const countries = COUNTRIES
+    .filter((c) => c.materialRecommendations?.includes(materialId))
+    .map((c) => ({ label: c.label, href: `/countries/${c.slug}` }))
+  return uniq(countries)
+}
+
+// Material id -> glossary terms genuinely relevant to how that fibre is used
+// (e.g. flatweave fibres link to the Flatweave definition). Conservative and
+// hand-verified against each material's own typicalApplications wording,
+// not a keyword match — avoids linking, say, "leather" to "knot density".
+const MATERIAL_TO_GLOSSARY_TERMS: Record<string, string[]> = {
+  cotton: ['Flatweave'], jute: ['Flatweave'], sisal: ['Flatweave'], hemp: ['Flatweave'], linen: ['Flatweave'],
+  'nz-wool': ['Pile', 'Cut pile'], 'indian-wool': ['Pile', 'Cut pile'], 'blended-wool': ['Pile'],
+  viscose: ['Cut pile'], 'bamboo-silk': ['Cut pile'], 'wool-viscose': ['Cut pile'], tencel: ['Cut pile'],
+  pet: ['Backing', 'Latex'],
+}
+
+/** Glossary definitions genuinely relevant to a material, linking to the live /glossary anchors. */
+export function getGlossaryLinksForMaterial(materialId: string): KnowledgeLink[] {
+  const terms = MATERIAL_TO_GLOSSARY_TERMS[materialId] ?? []
+  const links = terms
+    .map((term) => TARA_GLOSSARY.find((g) => g.term === term))
+    .filter((g): g is NonNullable<typeof g> => Boolean(g))
+    .map((g) => ({ label: g.term, href: `/glossary#${glossarySlug(g.term)}` }))
+  return uniq(links)
+}
+
+/**
+ * A same-tier or same-fibre-type comparison table's row data for a material
+ * against its own listed alternatives — real numeric ratings already in each
+ * material's profile, no new claims introduced.
+ */
+export function getMaterialComparisonRows(materialId: string, alternativeIds: string[]): Array<{
+  id: string; name: string; href: string; durability: Rating; softness: Rating; luxuryLevel: Rating; isCurrent: boolean
+}> {
+  const ids = Array.from(new Set([materialId, ...alternativeIds]))
+  return ids
+    .map((id) => TARA_MATERIALS.find((m) => m.id === id))
+    .filter((m): m is NonNullable<typeof m> => Boolean(m && m.profile))
+    .map((m) => ({
+      id: m.id, name: m.name, href: `/materials/${m.id}`, isCurrent: m.id === materialId,
+      durability: m.profile!.durability, softness: m.profile!.softness, luxuryLevel: m.profile!.luxuryLevel,
+    }))
 }

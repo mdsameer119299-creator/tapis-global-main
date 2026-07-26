@@ -1,0 +1,55 @@
+{
+  "_comment_do_not_publish": "TEMPLATE ONLY. This file lives in content/knowledge/_templates/ which the content loader never scans (lib/knowledge/content.ts reads content/knowledge/*.json non-recursively). To publish a real case study: copy this file to content/knowledge/<real-slug>.json, replace every bracketed [placeholder] with a real, verified fact, remove this comment and the testimonial block if no permissioned quote exists, then set status to \"published\". Never fill a bracket with an invented name, number or quote — leave it out entirely if the fact isn't confirmed.",
+
+  "slug": "[real-project-slug, e.g. hotel-guestroom-programme-uae]",
+  "category": "commercial-projects",
+  "status": "draft",
+  "title": "[Descriptive project title — sector + scope, not a client name unless permissioned, e.g. \"200-Key Hotel Guestroom Carpet Programme, UAE\"]",
+  "summary": "[1–2 sentence summary of what was manufactured and delivered]",
+
+  "seo": {
+    "title": "[SEO title, ≤60 chars — e.g. \"Hotel Guestroom Carpet Case Study | Tapis Global\"]",
+    "description": "[SEO description, ≤155 chars]",
+    "keywords": ["[keyword phrase]", "[keyword phrase]"]
+  },
+
+  "caseStudy": {
+    "overview": "[2–4 sentences: what was made, for which sector, delivered where and how — no invented client name unless the client has given written permission to be named]",
+    "clientSector": "[e.g. Hospitality / Government / Corporate / Residential Developer / Religious Institution]",
+    "country": "[a real country slug already in lib/countries.ts, e.g. uae, usa, saudi-arabia — only if the project's destination genuinely matches an existing country page]",
+    "product": "[a real product slug already in lib/products.ts, e.g. hand-tufted-carpet, wall-to-wall-carpets]",
+    "material": "[optional — a real material id from lib/tara/knowledge/materials.ts, e.g. nz-wool, wool-viscose — omit if not a single defining material]",
+    "construction": "[optional — a real construction id from lib/tara/knowledge/constructions.ts, e.g. hand-tufted, machine-made — omit if mixed]",
+    "size": "[real figure only — e.g. \"1,200 sqm across 200 guestrooms\" — omit the whole project rather than estimate a number nobody confirmed]",
+    "timeline": "[real figure only — e.g. \"16 weeks from purchase order to final installation\"]",
+    "manufacturingProcess": [
+      "[Step 1 — specific to this project, not a copy of the generic /company/manufacturing-process content]",
+      "[Step 2]",
+      "[Step 3 — add or remove steps as the real project actually went]"
+    ],
+    "challenges": "[What made this project genuinely non-routine — a real constraint (timeline, custom colourway, fire-rating requirement, phased delivery, etc.), not a generic claim]",
+    "solution": "[How the challenge was actually addressed — specific, not a marketing platitude]",
+    "testimonial": {
+      "_comment": "DELETE this entire testimonial block unless you have the client's explicit written permission to publish this exact quote and attribution. Never paraphrase, invent, or reuse a quote given for a different purpose.",
+      "quote": "[Exact permissioned quote — verbatim]",
+      "attribution": "[Real name and title, or role-only attribution if the client prefers, e.g. \"Procurement Director, [Company Name]\" — only with permission]"
+    }
+  },
+
+  "images": [
+    { "src": "[real, existing file already in public/images/... — never reference an image that doesn't exist]", "alt": "[descriptive alt text]" }
+  ],
+
+  "faq": [
+    { "q": "[A real buyer question this specific project answers]", "a": "[Answer grounded in the facts above, not invented]" }
+  ],
+
+  "relatedProducts": ["[real product slug(s) matching \"product\" above]"],
+  "relatedCountries": ["[real country slug matching \"country\" above]"],
+  "relatedIndustries": ["[real industry slug matching clientSector, if one exists in lib/industries.ts]"],
+  "relatedMaterials": ["[real material id matching \"material\" above, if set]"],
+  "relatedConstructions": ["[real construction id matching \"construction\" above, if set]"],
+
+  "taraTags": ["[tag]", "[tag]"],
+  "updatedAt": "[YYYY-MM-DD — the date this case study was actually written/verified]"
+}

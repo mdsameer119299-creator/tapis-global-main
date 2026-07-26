@@ -9,6 +9,20 @@
     "description": "A buyer's guide to New Zealand wool for custom carpets and rugs: characteristics, common applications and how it is used in made-to-order production. Capability-based guidance from TAPIS GLOBAL.",
     "keywords": ["New Zealand wool rugs", "wool carpet material", "custom wool rugs", "hand knotted wool"]
   },
+  "definitions": [
+    { "term": "New Zealand Wool", "definition": "A premium natural protein fibre prized for bright, even colour take-up, a soft-yet-resilient hand-feel and natural durability — commonly positioned at the luxury tier for hand-knotted and hand-tufted rugs." },
+    { "term": "Knot density (KPSI)", "definition": "Knots per square inch in a hand-knotted rug — higher density allows finer detail." },
+    { "term": "Lab-dip", "definition": "A small dyed sample approved to confirm a colour before production." }
+  ],
+  "comparisonTable": {
+    "caption": "New Zealand Wool vs Other Wool Fibres — At a Glance",
+    "columns": ["Material", "Durability", "Softness", "Luxury Level"],
+    "rows": [
+      { "Material": "New Zealand Wool", "Durability": "Excellent", "Softness": "Soft", "Luxury Level": "Top-tier" },
+      { "Material": "Indian Wool", "Durability": "Strong", "Softness": "Soft", "Luxury Level": "Mid" },
+      { "Material": "Wool-Viscose Blend", "Durability": "Moderate", "Softness": "Soft", "Luxury Level": "High" }
+    ]
+  },
   "body": [
     { "h2": "What is New Zealand wool?", "body": "New Zealand wool is a natural protein fibre commonly valued for clean, even colour take-up and a soft hand-feel. In the rug trade it is often positioned at the premium-to-luxury tier and is a popular choice for hand-knotted and hand-tufted pieces." },
     { "h2": "Why buyers commonly consider it", "body": "Designers and hospitality procurement teams often consider New Zealand wool where a refined appearance and a wide, faithful colour range matter. As a natural fibre it suits made-to-order projects where colour and design are developed to a specific brief and approved via a colour sample (lab-dip) before production." },
@@ -26,5 +40,5 @@
   "relatedCountries": ["usa", "uk", "germany"],
   "relatedArticles": ["how-to-source-custom-rugs-from-india"],
   "taraTags": ["new zealand wool", "wool", "material", "fibre", "hand knotted", "hand tufted", "custom rug"],
-  "updatedAt": "2026-07-12"
+  "updatedAt": "2026-07-26"
 }

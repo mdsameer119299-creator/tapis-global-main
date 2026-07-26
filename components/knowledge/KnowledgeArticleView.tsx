@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import type { KnowledgeArticle } from '@/lib/knowledge/types'
+import type { KnowledgeArticle, CaseStudyDetails, KnowledgeDefinition, KnowledgeComparisonTable } from '@/lib/knowledge/types'
 import type { ResolvedLinks } from '@/lib/knowledge/links'
 
 /**
@@ -26,6 +26,12 @@ export default function KnowledgeArticleView({ article, links, categoryTitle }: 
         <h1 className="font-medium leading-[1.12] mb-4" style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(30px, 4vw, 48px)', color: 'var(--ink)' }}>{article.title}</h1>
         <p className="text-[18px] font-light leading-[1.85] mb-10" style={{ color: 'var(--inkm)' }}>{article.summary}</p>
 
+        {/* Key terms — short, self-contained definitions readable by people and easy for AI answer engines to extract */}
+        {article.definitions && article.definitions.length > 0 && <DefinitionsPanel definitions={article.definitions} />}
+
+        {/* Case study — structured project facts, only present when article.caseStudy is set */}
+        {article.caseStudy && <CaseStudyPanel caseStudy={article.caseStudy} />}
+
         {/* Body sections */}
         <div className="flex flex-col gap-8">
           {(article.body ?? []).map((s) => (
@@ -35,6 +41,9 @@ export default function KnowledgeArticleView({ article, links, categoryTitle }: 
             </section>
           ))}
         </div>
+
+        {/* Comparison table */}
+        {article.comparisonTable && <ComparisonTablePanel table={article.comparisonTable} />}
 
         {/* FAQ */}
         {article.faq && article.faq.length > 0 && (
@@ -70,6 +79,106 @@ export default function KnowledgeArticleView({ article, links, categoryTitle }: 
         <RelatedBlock title="Materials & Constructions" links={[...links.materials, ...links.constructions]} />
       </div>
     </article>
+  )
+}
+
+function DefinitionsPanel({ definitions }: { definitions: KnowledgeDefinition[] }) {
+  return (
+    <div className="mb-10 rounded-xl p-6 lg:p-7" style={{ background: '#fff', border: '1px solid var(--bd)' }}>
+      <p className="text-[13px] tracking-[0.24em] uppercase font-medium mb-4" style={{ color: 'var(--gd)' }}>Key Terms</p>
+      <dl className="flex flex-col gap-3.5">
+        {definitions.map((d) => (
+          <div key={d.term}>
+            <dt className="text-[15.5px] font-medium inline" style={{ color: 'var(--inks)' }}>{d.term}</dt>
+            <dd className="text-[15.5px] font-light inline leading-[1.8]" style={{ color: 'var(--inkm)' }}> — {d.definition}</dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  )
+}
+
+function ComparisonTablePanel({ table }: { table: KnowledgeComparisonTable }) {
+  return (
+    <div className="mt-12">
+      <p className="text-[13px] tracking-[0.24em] uppercase font-medium mb-4" style={{ color: 'var(--gd)' }}>{table.caption}</p>
+      <div className="overflow-x-auto rounded-lg" style={{ border: '1px solid var(--bd)' }}>
+        <table className="w-full text-left border-collapse min-w-[480px]" style={{ background: '#fff' }}>
+          <thead>
+            <tr>
+              {table.columns.map((c) => (
+                <th key={c} className="text-[12px] tracking-[0.12em] uppercase px-4 py-3" style={{ color: 'var(--gd)', borderBottom: '1px solid var(--bd)' }}>{c}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {table.rows.map((row, i) => (
+              <tr key={i} style={{ borderTop: i > 0 ? '1px solid var(--bd)' : undefined }}>
+                {table.columns.map((c) => (
+                  <td key={c} className="text-[15px] font-light px-4 py-3" style={{ color: 'var(--inkm)' }}>{row[c] ?? ''}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+function CaseStudyPanel({ caseStudy }: { caseStudy: CaseStudyDetails }) {
+  const specs = [
+    { label: 'Sector', value: caseStudy.clientSector },
+    { label: 'Size', value: caseStudy.size },
+    { label: 'Timeline', value: caseStudy.timeline },
+  ]
+  return (
+    <div className="mb-12 rounded-xl overflow-hidden" style={{ border: '1px solid var(--bd)' }}>
+      <div className="p-6 lg:p-7" style={{ background: '#fff' }}>
+        <p className="text-[13px] tracking-[0.24em] uppercase font-medium mb-4" style={{ color: 'var(--gd)' }}>Project at a Glance</p>
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
+          {specs.map((s) => (
+            <div key={s.label}>
+              <p className="text-[12px] tracking-[0.16em] uppercase mb-1" style={{ color: 'var(--inkm)' }}>{s.label}</p>
+              <p className="text-[15.5px] font-medium" style={{ color: 'var(--inks)' }}>{s.value}</p>
+            </div>
+          ))}
+        </div>
+        <p className="text-[16.5px] font-light leading-[1.9]" style={{ color: 'var(--inkm)' }}>{caseStudy.overview}</p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-6 lg:p-7" style={{ background: 'var(--iv)', borderTop: '1px solid var(--bd)' }}>
+        <div>
+          <h2 className="font-medium leading-[1.2] mb-3" style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(20px, 2.2vw, 26px)', color: 'var(--ink)' }}>The Challenge</h2>
+          <p className="text-[15.5px] font-light leading-[1.85]" style={{ color: 'var(--inkm)' }}>{caseStudy.challenges}</p>
+        </div>
+        <div>
+          <h2 className="font-medium leading-[1.2] mb-3" style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(20px, 2.2vw, 26px)', color: 'var(--ink)' }}>The Solution</h2>
+          <p className="text-[15.5px] font-light leading-[1.85]" style={{ color: 'var(--inkm)' }}>{caseStudy.solution}</p>
+        </div>
+      </div>
+
+      {caseStudy.manufacturingProcess.length > 0 && (
+        <div className="p-6 lg:p-7" style={{ background: '#fff', borderTop: '1px solid var(--bd)' }}>
+          <p className="text-[13px] tracking-[0.24em] uppercase font-medium mb-4" style={{ color: 'var(--gd)' }}>How It Was Made</p>
+          <ol className="flex flex-col gap-2.5">
+            {caseStudy.manufacturingProcess.map((step, i) => (
+              <li key={i} className="flex items-start gap-3 text-[15.5px] font-light leading-[1.7]" style={{ color: 'var(--inkm)' }}>
+                <span className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center text-[12px] font-medium" style={{ background: 'var(--iv)', border: '1px solid var(--bd)', color: 'var(--gd)' }}>{i + 1}</span>
+                {step}
+              </li>
+            ))}
+          </ol>
+        </div>
+      )}
+
+      {caseStudy.testimonial && (
+        <blockquote className="p-6 lg:p-7" style={{ background: 'var(--iv)', borderTop: '1px solid var(--bd)' }}>
+          <p className="text-[19px] font-light italic leading-[1.7] mb-3" style={{ fontFamily: '"Cormorant Garamond", serif', color: 'var(--ink)' }}>&ldquo;{caseStudy.testimonial.quote}&rdquo;</p>
+          <cite className="text-[14px] not-italic" style={{ color: 'var(--inkm)' }}>{caseStudy.testimonial.attribution}</cite>
+        </blockquote>
+      )}
+    </div>
   )
 }
 

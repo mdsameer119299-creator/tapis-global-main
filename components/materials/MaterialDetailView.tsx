@@ -2,7 +2,11 @@ import Link from 'next/link'
 import type { TaraMaterial } from '@/lib/tara/knowledge/types'
 import { DURABILITY_WORDS, SOFTNESS_WORDS, LUXURY_WORDS, ratingWord } from '@/lib/tara/knowledge/types'
 import type { MaterialPageMeta } from '@/lib/materials-content'
-import { getMaterialAlternativeLinks, getConstructionsUsingMaterial, getProjectLinks } from '@/lib/reference-links'
+import {
+  getMaterialAlternativeLinks, getConstructionsUsingMaterial, getProjectLinks,
+  getProductsUsingMaterial, getCountriesRecommendingMaterial, getGlossaryLinksForMaterial,
+  getMaterialComparisonRows,
+} from '@/lib/reference-links'
 import { getKnowledgeArticlesFor } from '@/lib/knowledge/links'
 import { Reveal, Eyebrow } from '@/components/ui'
 import OptimizedImage from '@/components/ui/OptimizedImage'
@@ -13,6 +17,10 @@ export default function MaterialDetailView({ material, meta }: { material: TaraM
   const usedInConstructions = getConstructionsUsingMaterial(material.id)
   const { industries, solutions } = getProjectLinks(profile.recommendedProjects)
   const relatedArticles = getKnowledgeArticlesFor({ material: material.id })
+  const relatedProducts = getProductsUsingMaterial(material.id)
+  const exportMarkets = getCountriesRecommendingMaterial(material.id)
+  const glossaryLinks = getGlossaryLinksForMaterial(material.id)
+  const comparisonRows = getMaterialComparisonRows(material.id, profile.alternatives)
 
   return (
     <article>
@@ -82,6 +90,37 @@ export default function MaterialDetailView({ material, meta }: { material: TaraM
         </div>
       </section>
 
+      {/* Comparison table — real numeric ratings, no invented figures */}
+      {comparisonRows.length > 1 && (
+        <section className="py-14 lg:py-16 footer-container" style={{ background: 'var(--iv)' }}>
+          <Reveal><Eyebrow>How {material.name} Compares</Eyebrow></Reveal>
+          <div className="mt-5 overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-[480px]">
+              <thead>
+                <tr>
+                  <th className="text-[12px] tracking-[0.14em] uppercase pb-3 pr-4" style={{ color: 'var(--gd)' }}>Material</th>
+                  <th className="text-[12px] tracking-[0.14em] uppercase pb-3 pr-4" style={{ color: 'var(--gd)' }}>Durability</th>
+                  <th className="text-[12px] tracking-[0.14em] uppercase pb-3 pr-4" style={{ color: 'var(--gd)' }}>Softness</th>
+                  <th className="text-[12px] tracking-[0.14em] uppercase pb-3" style={{ color: 'var(--gd)' }}>Luxury Level</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonRows.map((row) => (
+                  <tr key={row.id} style={{ borderTop: '1px solid var(--bd)', background: row.isCurrent ? 'rgba(192,155,74,0.08)' : 'transparent' }}>
+                    <td className="py-3 pr-4 text-[15px]" style={{ color: 'var(--ink)', fontWeight: row.isCurrent ? 600 : 400 }}>
+                      {row.isCurrent ? row.name : <Link href={row.href} className="hover:text-[var(--c)] transition-colors">{row.name}</Link>}
+                    </td>
+                    <td className="py-3 pr-4 text-[15px]" style={{ color: 'var(--inkm)' }}>{capitalize(ratingWord(DURABILITY_WORDS, row.durability))}</td>
+                    <td className="py-3 pr-4 text-[15px]" style={{ color: 'var(--inkm)' }}>{capitalize(ratingWord(SOFTNESS_WORDS, row.softness))}</td>
+                    <td className="py-3 text-[15px]" style={{ color: 'var(--inkm)' }}>{capitalize(ratingWord(LUXURY_WORDS, row.luxuryLevel))}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
       {/* Applications & care */}
       <section className="py-14 lg:py-16 footer-container" style={{ background: '#fff' }}>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-4xl">
@@ -92,6 +131,16 @@ export default function MaterialDetailView({ material, meta }: { material: TaraM
                 <li key={t} className="px-4 py-2 text-[14px] rounded-full" style={{ background: 'var(--iv)', border: '1px solid var(--bd)', color: 'var(--inks)' }}>{t}</li>
               ))}
             </ul>
+            {glossaryLinks.length > 0 && (
+              <p className="mt-4 text-[14px] font-light" style={{ color: 'var(--inkm)' }}>
+                Related terms: {glossaryLinks.map((g, i) => (
+                  <span key={g.href}>
+                    <Link href={g.href} className="underline hover:text-[var(--c)] transition-colors">{g.label}</Link>
+                    {i < glossaryLinks.length - 1 ? ', ' : ''}
+                  </span>
+                ))}
+              </p>
+            )}
           </div>
           <div>
             <Reveal><Eyebrow>Care & Maintenance</Eyebrow></Reveal>
@@ -117,6 +166,9 @@ export default function MaterialDetailView({ material, meta }: { material: TaraM
 
       {/* Related */}
       <section className="py-14 lg:py-16 footer-container" style={{ background: '#fff' }}>
+        {relatedProducts.length > 0 && (
+          <RelatedBlock title="Products Made From This Material" links={relatedProducts} />
+        )}
         {usedInConstructions.length > 0 && (
           <RelatedBlock title="Constructions That Use This Material" links={usedInConstructions} />
         )}
@@ -128,6 +180,9 @@ export default function MaterialDetailView({ material, meta }: { material: TaraM
         )}
         {solutions.length > 0 && (
           <RelatedBlock title="Related Solutions" links={solutions} />
+        )}
+        {exportMarkets.length > 0 && (
+          <RelatedBlock title="Popular Export Markets for This Material" links={exportMarkets} />
         )}
         {relatedArticles.length > 0 && (
           <RelatedBlock title="Related Reading" links={relatedArticles} />

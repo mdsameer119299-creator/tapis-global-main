@@ -4,6 +4,7 @@ import { buildMetadata } from '@/lib/metadata'
 import { SEO_BASE_URL } from '@/lib/seo'
 import { webPageSchema, breadcrumbSchema, faqSchema, buildJsonLd } from '@/lib/structured-data'
 import { TARA_MATERIALS } from '@/lib/tara/knowledge/materials'
+import { DURABILITY_WORDS, ratingWord } from '@/lib/tara/knowledge/types'
 import { getAllMaterialSlugs, getMaterialPage } from '@/lib/materials-content'
 import MaterialDetailView from '@/components/materials/MaterialDetailView'
 
@@ -46,6 +47,8 @@ export default function MaterialPage({ params }: Props) {
       faqSchema([
         { q: `What is ${material.name} rug material like?`, a: profile.description },
         { q: `What are the advantages of ${material.name}?`, a: profile.advantages.join('; ') + '.' },
+        { q: `What is ${material.name} commonly used for?`, a: `${material.name} is commonly used for ${profile.typicalApplications.join(', ').toLowerCase()}.` },
+        { q: `How durable is ${material.name} compared to other rug fibres?`, a: `${material.name} is generally considered ${ratingWord(DURABILITY_WORDS, profile.durability)} for durability. ${profile.disadvantages[0] ?? ''}`.trim() },
         { q: `How do I care for a ${material.name} rug?`, a: profile.maintenance },
       ]),
     ),

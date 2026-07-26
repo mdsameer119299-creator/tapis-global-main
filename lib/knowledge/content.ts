@@ -51,6 +51,35 @@ export function validateArticle(data: unknown, file = ''): string[] {
     errs.push(`${at}invalid "images" (array of { src, alt })`)
   for (const k of REL_ARRAY_KEYS) if (o[k] !== undefined && !Array.isArray(o[k])) errs.push(`${at}"${k}" must be an array`)
 
+  if (o.definitions !== undefined && (!Array.isArray(o.definitions) || !o.definitions.every((d) => d && typeof d === 'object' && typeof (d as Record<string, unknown>).term === 'string' && typeof (d as Record<string, unknown>).definition === 'string')))
+    errs.push(`${at}invalid "definitions" (array of { term, definition })`)
+
+  if (o.comparisonTable !== undefined) {
+    const ct = o.comparisonTable as Record<string, unknown> | null
+    if (!ct || typeof ct !== 'object' || typeof ct.caption !== 'string' || !Array.isArray(ct.columns) || !ct.columns.every((c) => typeof c === 'string') || !Array.isArray(ct.rows) || !ct.rows.every((r) => r && typeof r === 'object' && !Array.isArray(r)))
+      errs.push(`${at}invalid "comparisonTable" (must be { caption: string, columns: string[], rows: object[] })`)
+  }
+
+  if (o.caseStudy !== undefined) {
+    const cs = o.caseStudy as Record<string, unknown> | null
+    if (!cs || typeof cs !== 'object' || Array.isArray(cs)) {
+      errs.push(`${at}"caseStudy" must be an object`)
+    } else {
+      const REQUIRED_STRINGS = ['overview', 'clientSector', 'country', 'product', 'size', 'timeline', 'challenges', 'solution']
+      for (const k of REQUIRED_STRINGS) if (typeof cs[k] !== 'string' || !(cs[k] as string).trim()) errs.push(`${at}"caseStudy.${k}" is required and must be a non-empty string`)
+      if (!Array.isArray(cs.manufacturingProcess) || !cs.manufacturingProcess.every((s) => typeof s === 'string' && s.trim()))
+        errs.push(`${at}"caseStudy.manufacturingProcess" must be a non-empty array of strings`)
+      if (cs.material !== undefined && typeof cs.material !== 'string') errs.push(`${at}"caseStudy.material" must be a string`)
+      if (cs.construction !== undefined && typeof cs.construction !== 'string') errs.push(`${at}"caseStudy.construction" must be a string`)
+      if (cs.testimonial !== undefined) {
+        const t = cs.testimonial as Record<string, unknown> | null
+        if (!t || typeof t.quote !== 'string' || !t.quote.trim() || typeof t.attribution !== 'string' || !t.attribution.trim())
+          errs.push(`${at}"caseStudy.testimonial" must be { quote, attribution }, both non-empty — omit the field entirely rather than publish a placeholder`)
+      }
+    }
+    if (o.category !== 'commercial-projects') errs.push(`${at}"caseStudy" is only valid on category:"commercial-projects" articles`)
+  }
+
   return errs
 }
 
