@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { taraProviderAvailable, taraComplete } from '@/lib/tara/provider'
-import { TARA_SYSTEM_PROMPT, retrieveContext, needsHandoff } from '@/lib/tara/knowledge'
+import { TARA_SYSTEM_PROMPT, retrieveContext, needsHandoff, TARA_GREETING } from '@/lib/tara/knowledge'
 import { buildConversationSignals, buildConversationGuidance } from '@/lib/tara/conversation-intelligence'
 import { buildRecommendation } from '@/lib/tara/recommend'
 import { buildComparison } from '@/lib/tara/compare'
@@ -15,8 +15,12 @@ export const runtime = 'nodejs'
 
 const HANDOFF_MSG = 'I can keep helping you here. For project-specific prices, MOQ, payment terms, samples, quotations or confirmed capabilities, the TAPIS GLOBAL team must confirm the details. If you want, use Talk to the team to share your requirement; otherwise, continue chatting with me.'
 const QUOTA_MSG = 'We have covered a lot here. You can continue browsing categories and materials, or use Talk to the team if you want the TAPIS GLOBAL team to review your project details.'
-const SAFE_FALLBACK = 'I could not reach the AI advisor just now, but I can still help with verified information about TAPIS GLOBAL, carpets, rugs, materials, constructions, custom manufacturing and project requirements. Please ask your question again or use Talk to the team for project-specific confirmation.'
-const GREETING_REPLY = 'Hello! 👋 I’m TARA, the AI Rug & Carpet Advisor for TAPIS GLOBAL INTERNATIONAL PVT LTD. How can I help you today? You can ask me about carpets, rugs, materials, constructions, care, custom manufacturing, or your project requirements.'
+// Exact wording is intentional: never invent an answer when nothing verified
+// matched — say so plainly and offer the human handoff, then keep the door
+// open to continued chat (retains "ask your question again" for that reason).
+const SAFE_FALLBACK = 'I could not verify that information from our knowledge base. Let me connect you with our team. In the meantime, please ask your question again or use Talk to the team for project-specific confirmation.'
+// Single source of truth for TARA's greeting (see lib/tara/knowledge/personality.ts) — reused as-is here.
+const GREETING_REPLY = TARA_GREETING
 
 function isGreeting(message: string): boolean {
   const normalized = message.trim().toLowerCase().replace(/[.!?]+$/g, '').trim()

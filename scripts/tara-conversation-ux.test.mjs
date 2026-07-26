@@ -21,7 +21,8 @@ ok('stale async replies are ignored', client.includes('currentRequest !== reques
 ok('API handoff message explicitly allows continued chat', HANDOFF_OK(route))
 ok('API fallback does not force lead capture', /SAFE_FALLBACK = '[^']*ask your question again/.test(route))
 ok('initial experience is chat-first', client.includes("const initialMessages = () => [mk('tara', GREETING)]"))
-ok('suggested questions are present', client.includes('tara-suggestions') && client.includes('Help me choose a rug'))
+ok('smart quick actions are present and persistent', client.includes('tara-quick-actions') && client.includes('Rug Size Guide') && client.includes('Track My Order'))
+ok('quick actions scroll instead of wrapping on mobile', /tara-quick-actions[\s\S]{0,150}overflowX: 'auto'/.test(client))
 ok('composer is sticky and prominent', client.includes('tara-sticky-composer') && client.includes('Chat with TARA…'))
 
 function HANDOFF_OK(source) {

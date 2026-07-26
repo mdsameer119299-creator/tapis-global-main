@@ -210,6 +210,11 @@ body[data-sticky-bar='open'] .wa-float-btn {
   .wa-float-icon { width: 3.25rem; height: 3.25rem; }
   body[data-sticky-bar='open'] .wa-float-btn { bottom: calc(7.5rem + env(safe-area-inset-bottom, 0px)); }
   body[data-menu-open='true'] .wa-float-btn { opacity: 0; pointer-events: none; }
+  /* TARA's panel fills the full viewport width below this breakpoint, so the
+     WhatsApp/CraftTrack buttons (higher z-index, still fixed) would otherwise
+     float on top of TARA's input and Send button. Hide them for the duration
+     TARA is open — same treatment as the mobile menu above. */
+  body[data-tara-open='true'] .wa-float-btn { opacity: 0; pointer-events: none; }
 }
 
 /* Floating CraftTrack button — the base of the pair (bottom-most), at the
@@ -260,9 +265,31 @@ body[data-sticky-bar='open'] .ct-float-btn {
   }
   body[data-sticky-bar='open'] .ct-float-btn { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); }
   body[data-menu-open='true'] .ct-float-btn { opacity: 0; pointer-events: none; }
+  /* See the matching .wa-float-btn rule above — same overlap, same fix. */
+  body[data-tara-open='true'] .ct-float-btn { opacity: 0; pointer-events: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .ct-float-btn { animation: none; }
+}
+
+/* TARA typing indicator — three pulsing dots instead of static text. */
+.tara-typing-dots { display: inline-flex; align-items: center; gap: 4px; }
+.tara-typing-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.35;
+  animation: tara-typing-pulse 1.1s ease-in-out infinite;
+}
+.tara-typing-dots span:nth-child(2) { animation-delay: 0.18s; }
+.tara-typing-dots span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes tara-typing-pulse {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tara-typing-dots span { animation: none; opacity: 0.7; }
 }
 
 /* CraftTrack customer timeline — stage stepper dots. The "currently in

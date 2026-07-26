@@ -21,6 +21,11 @@ const CONCEPTS: Array<[RegExp, string[]]> = [
   [/\b(kilim|dhurrie|durry|flatweave|flat weave)\b/i, ['kilim', 'dhurrie', 'flatweave', 'woven']],
   [/\b(how long|how many days|lead time|production time|dispatch|delivery)\b/i, ['production', 'dispatch', '3–4 weeks', 'quantity', 'specifications']],
   [/\b(custom|customize|customise|bespoke|made to order|private label|oem)\b/i, ['custom manufacturing', 'made to order', 'design', 'size', 'colour', 'material', 'quantity']],
+  [/\b(pet|pets|dog|dogs|cat|cats)\b/i, ['pet friendly', 'stain resistant', 'easy clean', 'synthetic fibre', 'durable']],
+  [/\b(eco[\s-]?friendly|sustainable|environmentally friendly|natural fibre|organic)\b/i, ['eco friendly', 'natural fibre', 'jute', 'sisal', 'wool', 'sustainability']],
+  [/\b(underfloor heating|under[\s-]?floor heating|radiant heating|heated floor)\b/i, ['underfloor heating', 'low pile', 'natural fibre', 'breathable']],
+  [/\b(dining table|dining room|under (?:the |my )?table)\b/i, ['dining room', 'size', 'durable', 'easy clean']],
+  [/\b(high traffic|heavy traffic|high[\s-]?footfall|commercial traffic)\b/i, ['high traffic', 'durable', 'commercial', 'construction']],
 ]
 
 function normalizeText(input: string): string {

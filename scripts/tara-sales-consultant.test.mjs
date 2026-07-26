@@ -19,6 +19,7 @@ ok('educational carpet and rug questions are explicitly supported', /difference 
 ok('kilims and dhurries are explicitly supported', /kilims, dhurries/i.test(prompt))
 ok('commercial questions continue conversation', /Commercial questions[\s\S]*must not abruptly end the conversation/i.test(prompt))
 ok('project summary is required before useful handoff', /summarize the known requirement concisely/i.test(prompt))
+ok('unverifiable answers use the exact required disclosure, never a guess', prompt.includes('I could not verify that information from our knowledge base. Let me connect you with our team.'))
 ok('commercial safety forbids invented prices and MOQ', /Never invent or state: prices, MOQ/i.test(safety))
 ok('commercial safety tells TARA to continue clarifying requirements', /continue helping the visitor clarify the requirement/i.test(safety))
 ok('price does not trigger deterministic handoff', !/return \/[^/]*price/.test(safety))

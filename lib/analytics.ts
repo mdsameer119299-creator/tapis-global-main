@@ -45,6 +45,7 @@ export const EVENTS = {
   taraOpen:  'tara_open',
   taraClose: 'tara_close',
   taraMessageSent:      'tara_message_sent',
+  taraQuickAction:      'tara_quick_action',
   taraCategorySelected: 'tara_category_selected',
   taraMaterialSelected: 'tara_material_selected',
   taraProjectQualified: 'tara_project_qualified',

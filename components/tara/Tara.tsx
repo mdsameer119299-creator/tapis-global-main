@@ -6,7 +6,8 @@ import { EVENTS, trackEvent } from '@/lib/analytics'
 import { captureAttribution } from '@/lib/attribution'
 import { scoreLead } from '@/lib/lead-scoring'
 import { submitEnquiry } from '@/lib/submit-enquiry'
-import { TARA_MATERIALS, TARA_CONSTRUCTIONS, COMPANY_FACTS } from '@/lib/tara/knowledge'
+import { TARA_MATERIALS, TARA_CONSTRUCTIONS, COMPANY_FACTS, TARA_GREETING } from '@/lib/tara/knowledge'
+import { CRAFTTRACK_OPEN_EVENT } from '@/lib/crafttrack/events'
 
 const NAVY = '#0e1b2e', NAVY_SOFT = '#14263d', GOLD = '#c9a24b', INK_ON_NAVY = '#e9eef5'
 type CardKind = 'materials' | 'constructions' | null
@@ -14,9 +15,30 @@ type LeadMode = 'catalogue' | 'human' | null
 interface Msg { id: number; role: 'tara' | 'user'; text: string; cards?: CardKind }
 let uid = 0
 const mk = (role: Msg['role'], text: string, cards: CardKind = null): Msg => ({ id: ++uid, role, text, cards })
-const GREETING = "Hello, I'm TARA. 👋\n\nYour AI advisor for TAPIS GLOBAL INTERNATIONAL PVT LTD.\n\nI can help you explore carpets and rugs, compare materials and constructions, understand custom manufacturing options, and find the right solution for your project.\n\nWhat are you looking for today?"
+// Single source of truth (lib/tara/knowledge/personality.ts) — also used by
+// the API route's greeting-detection reply, so there is exactly one greeting.
+const GREETING = TARA_GREETING
 const initialMessages = () => [mk('tara', GREETING)]
-const SUGGESTIONS = ['Help me choose a rug', 'Which material is best?', 'I need a custom carpet']
+
+type QuickAction = { icon: string; label: string } & (
+  | { kind: 'message'; message: string }
+  | { kind: 'catalogue' }
+  | { kind: 'human' }
+  | { kind: 'crafttrack' }
+)
+// Replaces the old pre-chat suggestion chips + separate footer buttons with
+// one persistent, always-visible set — also doubles as "suggested next
+// steps" after any reply, not just before the first message.
+const QUICK_ACTIONS: QuickAction[] = [
+  { icon: '📐', label: 'Rug Size Guide', kind: 'message', message: 'What size rug should I choose for my space?' },
+  { icon: '🧶', label: 'Compare Materials', kind: 'message', message: 'Which material is best for me?' },
+  { icon: '🎨', label: 'Design Ideas', kind: 'message', message: 'Show me some design ideas for my project.' },
+  { icon: '🏨', label: 'Hospitality Solutions', kind: 'message', message: 'I need carpets for a hotel or hospitality project.' },
+  { icon: '🏠', label: 'Residential Rugs', kind: 'message', message: 'I need a rug for my home.' },
+  { icon: '📦', label: 'Request Catalogue', kind: 'catalogue' },
+  { icon: '💬', label: 'Talk to an Expert', kind: 'human' },
+  { icon: '🚚', label: 'Track My Order', kind: 'crafttrack' },
+]
 
 export default function Tara() {
   const [open, setOpen] = useState(false), [msgs, setMsgs] = useState<Msg[]>([]), [input, setInput] = useState('')
@@ -26,6 +48,10 @@ export default function Tara() {
 
   useEffect(() => { if (open && !initialized.current) { initialized.current = true; setMsgs(initialMessages()) } }, [open])
   useEffect(() => { scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: 'smooth' }) }, [msgs, leadMode])
+  // Lets CSS reposition/hide WhatsApp & CraftTrack's floating buttons while
+  // TARA is open on mobile, where TARA's panel fills the full viewport width
+  // and would otherwise sit under their higher z-index buttons (see globals.css).
+  useEffect(() => { document.body.dataset.taraOpen = open ? 'true' : 'false'; return () => { document.body.dataset.taraOpen = 'false' } }, [open])
   function openWidget() { setOpen(true); trackEvent(EVENTS.taraOpen, { source: typeof window !== 'undefined' ? window.location.pathname : undefined }) }
   function closeWidget() { setOpen(false); trackEvent(EVENTS.taraClose) }
   function restart() { requestId.current += 1; setBusy(false); setAiOn(null); setInput(''); setLeadMode(null); setCtx({ categories: [], materials: [], constructions: [] }); companyInfoShown.current = false; initialized.current = true; setMsgs(initialMessages()) }
@@ -35,6 +61,13 @@ export default function Tara() {
   function chooseConstruction(id: string, name: string) { setCtx((c) => ({ ...c, constructions: Array.from(new Set([...c.constructions, id])) })); const con = TARA_CONSTRUCTIONS.find((x) => x.id === id); addChoice(name, `${name} — ${con?.notes ?? ''} Tell me about the space, sizes, quantity, design direction or timeline and I can continue helping you.`) }
   function openLead(mode: Exclude<LeadMode, null>) { if (leadMode === mode) return; setLeadMode(mode); const reason = mode === 'catalogue' ? 'catalogue' : 'human'; setCtx((c) => ({ ...c, handoffReason: reason })); trackEvent(EVENTS.taraHandoffRequested, { source: reason }); trackEvent(EVENTS.taraLeadCaptureStart) }
   function showCompanyInfo() { setLeadMode(null); if (companyInfoShown.current) return; companyInfoShown.current = true; pushTara(`${COMPANY_FACTS.identity} ${COMPANY_FACTS.locations} I can also answer general questions about our carpet and rug categories, materials and manufacturing knowledge.`) }
+  function runQuickAction(qa: QuickAction) {
+    trackEvent(EVENTS.taraQuickAction, { action: qa.label })
+    if (qa.kind === 'catalogue') return openLead('catalogue')
+    if (qa.kind === 'human') return openLead('human')
+    if (qa.kind === 'crafttrack') { window.dispatchEvent(new CustomEvent(CRAFTTRACK_OPEN_EVENT)); return }
+    send(qa.message)
+  }
 
   async function send(text: string) {
     const q = text.trim(); if (!q || busy) return
@@ -52,17 +85,19 @@ export default function Tara() {
     finally { if (currentRequest === requestId.current) setBusy(false) }
   }
 
-  if (!open) return <button onClick={openWidget} aria-label="Open TARA, the TAPIS AI Rug and Carpet Advisor" style={{ position: 'fixed', left: 20, bottom: 20, zIndex: 700, background: NAVY, color: GOLD, border: `1px solid ${GOLD}`, borderRadius: 999, padding: '9px 16px 9px 9px', fontSize: 15, fontWeight: 600, boxShadow: '0 8px 30px rgba(0,0,0,0.35)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 9 }}><Image src="/images/tara-avatar.webp" alt="" width={34} height={34} style={{ borderRadius: '50%' }} />Ask TARA</button>
-  return <div role="dialog" aria-label="TARA — AI Rug and Carpet Advisor" data-clarity-mask="true" style={{ position: 'fixed', left: 0, bottom: 0, zIndex: 800, width: 'min(440px, 100vw)', height: 'min(660px, 100dvh)', display: 'flex', flexDirection: 'column', background: NAVY, color: INK_ON_NAVY, boxShadow: '0 18px 60px rgba(0,0,0,0.55)', borderRadius: 18, border: `1px solid ${NAVY_SOFT}`, margin: 12, maxWidth: 'calc(100vw - 24px)', overflow: 'hidden' }}>
+  if (!open) return <button onClick={openWidget} aria-label="Open TARA, the TAPIS AI Rug and Carpet Advisor" style={{ position: 'fixed', left: 20, bottom: 'calc(20px + env(safe-area-inset-bottom, 0px))', zIndex: 700, background: NAVY, color: GOLD, border: `1px solid ${GOLD}`, borderRadius: 999, padding: '9px 16px 9px 9px', fontSize: 15, fontWeight: 600, boxShadow: '0 8px 30px rgba(0,0,0,0.35)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 9 }}><Image src="/images/tara-avatar.webp" alt="" width={34} height={34} style={{ borderRadius: '50%' }} />Ask TARA</button>
+  return <div role="dialog" aria-label="TARA — AI Rug and Carpet Advisor" data-clarity-mask="true" style={{ position: 'fixed', left: 0, bottom: 0, zIndex: 800, width: 'min(440px, 100vw)', height: 'min(660px, 100dvh)', display: 'flex', flexDirection: 'column', background: NAVY, color: INK_ON_NAVY, boxShadow: '0 18px 60px rgba(0,0,0,0.55)', borderRadius: 18, border: `1px solid ${NAVY_SOFT}`, marginLeft: 12, marginRight: 12, marginTop: 12, marginBottom: 'calc(12px + env(safe-area-inset-bottom, 0px))', maxWidth: 'calc(100vw - 24px)', maxHeight: 'calc(100dvh - 24px - env(safe-area-inset-bottom, 0px))', overflow: 'hidden' }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', borderBottom: `1px solid ${NAVY_SOFT}`, background: '#101f34' }}><Image src="/images/tara-avatar.webp" alt="TARA AI Rug and Carpet Advisor" width={52} height={52} priority style={{ borderRadius: '50%', border: `2px solid ${GOLD}` }} /><div style={{ flex: 1, minWidth: 0 }}><div style={{ fontWeight: 800, fontSize: 18 }}>TARA</div><div style={{ fontSize: 12.5, color: GOLD }}>AI Rug &amp; Carpet Advisor</div><div style={{ fontSize: 10.5, opacity: 0.68, marginTop: 2 }}>for TAPIS GLOBAL INTERNATIONAL PVT LTD</div></div><button onClick={restart} aria-label="Restart conversation" style={hdrBtn}>↺</button><button onClick={() => setOpen(false)} aria-label="Minimize" style={hdrBtn}>—</button><button onClick={closeWidget} aria-label="Close" style={hdrBtn}>✕</button></div>
     <div ref={scrollRef} style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: 16, display: 'flex', flexDirection: 'column', gap: 11 }}>
       {msgs.map((m) => <div key={m.id} style={{ display: 'flex', alignItems: 'flex-end', gap: 8, justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>{m.role === 'tara' && <Image src="/images/tara-avatar.webp" alt="" width={28} height={28} style={{ borderRadius: '50%', flexShrink: 0 }} />}<div style={{ maxWidth: '84%' }}><div style={{ background: m.role === 'user' ? GOLD : NAVY_SOFT, color: m.role === 'user' ? NAVY : INK_ON_NAVY, padding: '10px 13px', borderRadius: m.role === 'user' ? '14px 14px 4px 14px' : '14px 14px 14px 4px', fontSize: 14.5, lineHeight: 1.55, whiteSpace: 'pre-line' }}>{m.text}</div>{m.cards === 'materials' && <Chips>{TARA_MATERIALS.map((x) => <Chip key={x.id} label={x.name} onClick={() => chooseMaterial(x.id, x.name)} />)}</Chips>}{m.cards === 'constructions' && <Chips>{TARA_CONSTRUCTIONS.map((x) => <Chip key={x.id} label={x.name} onClick={() => chooseConstruction(x.id, x.name)} />)}</Chips>}</div></div>)}
-      {msgs.length === 1 && <div data-testid="tara-suggestions" style={{ paddingLeft: 36 }}><div style={{ fontSize: 12, opacity: 0.65, marginBottom: 6 }}>Start a conversation:</div><Chips>{SUGGESTIONS.map((q) => <Chip key={q} label={q} onClick={() => send(q)} />)}</Chips></div>}
-      {busy && <div style={{ fontSize: 13, opacity: 0.6, paddingLeft: 36 }}>TARA is typing…</div>}{leadMode && <LeadForm mode={leadMode} ctx={ctx} onClose={() => setLeadMode(null)} onDone={() => setLeadMode(null)} />}
+      {busy && <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, opacity: 0.6, paddingLeft: 36 }}><span className="tara-typing-dots" aria-hidden="true"><span /><span /><span /></span>TARA is typing…</div>}{leadMode && <LeadForm mode={leadMode} ctx={ctx} onClose={() => setLeadMode(null)} onDone={() => setLeadMode(null)} />}
     </div>
     <div data-testid="tara-sticky-composer" style={{ flexShrink: 0, borderTop: `1px solid ${NAVY_SOFT}`, padding: 11, background: '#0b1728' }}>
-      <form onSubmit={(e) => { e.preventDefault(); send(input) }} style={{ display: 'flex', gap: 8, marginBottom: 9 }}><input autoFocus value={input} onChange={(e) => setInput(e.target.value)} placeholder="Chat with TARA…" aria-label="Message TARA" maxLength={2000} style={{ flex: 1, minWidth: 0, background: NAVY_SOFT, color: INK_ON_NAVY, border: `1px solid ${GOLD}`, borderRadius: 12, padding: '11px 12px', fontSize: 14 }} /><button type="submit" disabled={busy} aria-label="Send message" style={{ background: GOLD, color: NAVY, border: 'none', borderRadius: 12, padding: '0 17px', fontWeight: 800, cursor: 'pointer' }}>Send</button></form>
-      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}><Chip label="Request catalogue" onClick={() => openLead('catalogue')} /><Chip label="Talk to the team" onClick={() => openLead('human')} /><Chip label="Company info" onClick={showCompanyInfo} /></div>{aiOn === false && <div style={{ fontSize: 11, opacity: 0.5, marginTop: 6 }}>Guided mode — you can keep browsing and chatting.</div>}
+      <form onSubmit={(e) => { e.preventDefault(); send(input) }} style={{ display: 'flex', gap: 8, marginBottom: 9 }}><input autoFocus value={input} onChange={(e) => setInput(e.target.value)} placeholder="Chat with TARA…" aria-label="Message TARA" maxLength={2000} style={{ flex: 1, minWidth: 0, background: NAVY_SOFT, color: INK_ON_NAVY, border: `1px solid ${GOLD}`, borderRadius: 12, padding: '11px 12px', fontSize: 14 }} /><button type="submit" disabled={busy} aria-label="Send message" style={{ flexShrink: 0, background: GOLD, color: NAVY, border: 'none', borderRadius: 12, padding: '0 17px', fontWeight: 800, cursor: 'pointer' }}>Send</button></form>
+      <div data-testid="tara-quick-actions" style={{ display: 'flex', gap: 6, overflowX: 'auto', WebkitOverflowScrolling: 'touch', paddingBottom: 2, scrollbarWidth: 'none' }}>
+        {QUICK_ACTIONS.map((qa) => <button key={qa.label} type="button" onClick={() => runQuickAction(qa)} style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 6, background: 'transparent', color: GOLD, border: `1px solid ${GOLD}`, borderRadius: 999, padding: '6px 12px', fontSize: 12.5, whiteSpace: 'nowrap', cursor: 'pointer' }}><span aria-hidden="true">{qa.icon}</span>{qa.label}</button>)}
+      </div>
+      {aiOn === false && <div style={{ fontSize: 11, opacity: 0.5, marginTop: 6 }}>Guided mode — you can keep browsing and chatting.</div>}
     </div>
   </div>
 }

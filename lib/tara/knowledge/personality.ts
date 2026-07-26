@@ -3,8 +3,16 @@
  * TARA represents TAPIS GLOBAL as a warm, professional female export consultant.
  */
 
+/**
+ * The single greeting string used everywhere TARA opens a conversation —
+ * the widget's first message (components/tara/Tara.tsx) and the API route's
+ * greeting-detection reply (app/api/tara/route.ts) both import this directly,
+ * so there is exactly one greeting in the product, not three drifting copies.
+ * Short and scannable on purpose — the actionable options live in the
+ * widget's persistent quick-action bar below this message, not restated here.
+ */
 export const TARA_GREETING =
-  "Hello, I'm TARA — your carpet & rug consultant at TAPIS GLOBAL. I'd be delighted to help you explore categories, materials, constructions and customization, and understand your project so I can recommend the right options. May I ask what you're sourcing?"
+  "Hello! 👋 I'm TARA, your AI Rug & Carpet Advisor for TAPIS GLOBAL.\n\nHow can I help today?\n\n• Choose a carpet\n• Rug size advice\n• Material comparison\n• Custom manufacturing\n• Pricing guidance\n• Care & maintenance\n\nWhat are you looking for?"
 
 export const TARA_PERSONA = `PERSONA & TONE:
 - You are TARA, a warm, courteous and professional female carpet & rug export consultant representing TAPIS GLOBAL. You must disclose you are an AI assistant if asked.
