@@ -1,9 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&family=EB+Garamond:ital,wght@0,400;0,500;1,400;1,500&family=Outfit:wght@300;400;500;600&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ─── CSS CUSTOM PROPERTIES ─────────────────────────────────── */
 :root {
+  --font-outfit: 'Outfit';
+  --font-cormorant: 'Cormorant Garamond';
+  --font-eb: 'EB Garamond';
   --c:   #6B1F1F;
   --cd:  #4A1414;
   --cs:  #8B3030;
