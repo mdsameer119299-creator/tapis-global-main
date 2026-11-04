@@ -180,8 +180,8 @@ export const COUNTRIES: SeoLanding[] = [
       { title: 'Compliance-Led Enquiries', desc: 'Material and production requirements can be reviewed against the buyer’s specification.' },
     ],
     faqs: [
-      { q: 'Can you support OEKO-TEX® Standard 100 and AZO-free requirements?', a: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. Product scope, testing, availability and supporting documents are confirmed against the buyer’s specification before order confirmation.' },
-      { q: 'Do you export carpets to Germany?', a: 'Yes. We manufacture in Bhadohi for designers, contract projects and retail buyers in Germany, with full documentation and coordinated freight.' },
+      { q: 'Can you support OEKO-TEX® Standard 100 and AZO-free requirements?', a: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. Product scope, testing, availability and supporting documentation are confirmed against the buyer’s specification before order confirmation.' },
+      { q: 'Do you export carpets to Germany?', a: 'Yes. We manufacture in Bhadohi for designers, contract projects and retail buyers in Germany, with export documentation and freight arrangements confirmed for each order.' },
       { q: 'Can you guarantee consistent quality for German trade buyers?', a: 'Yes. In-house multi-stage QC supports batch-consistent quality across orders; dye-lot planning is confirmed per order.' },
       { q: 'Do you offer natural-fibre rugs?', a: 'Yes. Jute, sisal and other natural-fibre options can be discussed, with suitability confirmed for the intended use.' },
       { q: 'What payment and shipping terms apply?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile and arrangement; our team will share the terms applicable to your enquiry. We coordinate sea freight to your preferred German port.' },
@@ -196,7 +196,7 @@ export const COUNTRIES: SeoLanding[] = [
     shipping: 'Sea freight is coordinated to German ports with disciplined dye-lot and delivery-date planning, matching the precision German trade and contract buyers plan around. Consolidated shipments suit smaller trade orders; full containers support ongoing retail and contract programmes.',
     popularStyles: ['Clean contemporary wool rugs', 'Natural-fibre jute & sisal', 'Low-pile contract carpet', 'Minimalist geometric patterns', 'Wool-blend office carpet tiles'],
     buyerSegments: [
-      { label: 'Commercial Buyers', body: 'Trade and retail buyers sourcing collections with product details confirmed per item and delivery schedules agreed per order.' },
+      { label: 'Commercial Buyers', body: 'Trade and retail buyers sourcing rug collections with product details confirmed per item and delivery schedules agreed per order.' },
       { label: 'Interior Designers', body: 'Clean, contemporary rugs developed to precise colour and material specification for German residential schemes.' },
       { label: 'Hotels', body: 'Quality-managed contract carpet for hospitality projects, produced with documented QC at every stage.' },
       { label: 'Builders', body: 'Wall-to-wall and contract carpet coordinated with build schedules for offices and multi-unit developments.' },
@@ -396,8 +396,8 @@ export const COUNTRIES: SeoLanding[] = [
       { title: 'Reliable Quality', desc: 'Consistent QC and documentation.' },
     ],
     faqs: [
-      { q: 'Do you export carpets to the Netherlands?', a: 'Yes. We manufacture in Bhadohi for designers, trade buyers and contract projects in the Netherlands, with full documentation and coordinated freight.' },
-      { q: 'Can you support OEKO-TEX® Standard 100 and AZO-free requirements?', a: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. Product scope, testing, availability and supporting documents are confirmed against the buyer’s specification before order confirmation.' },
+      { q: 'Do you export carpets to the Netherlands?', a: 'Yes. We manufacture in Bhadohi for designers, trade buyers and contract projects in the Netherlands, with export documentation and freight arrangements confirmed for each order.' },
+      { q: 'Can you support OEKO-TEX® Standard 100 and AZO-free requirements?', a: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. Product scope, testing, availability and supporting documentation are confirmed against the buyer’s specification before order confirmation.' },
       { q: 'Can you supply for onward European distribution?', a: 'Yes. We coordinate bulk supply to Dutch ports for onward European distribution.' },
       { q: 'What payment terms apply?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'How is shipping arranged?', a: 'We pack for international transit and coordinate sea freight to your preferred Dutch port and terms.' },
@@ -435,7 +435,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in Belgium — a country with deep carpet and textile heritage, supplying designers, trade buyers and contract projects with craft and quality they recognise.',
     overview: 'Belgium\'s strong textile tradition means buyers truly understand carpet construction and quality. As an Indian carpet and rug manufacturer, we meet that expertise with authentic handmade craftsmanship, material integrity and reliable documentation, supplying design, trade and contract projects.',
     sections: [
-      { h2: 'Craft for a Carpet-Literate Market', body: 'Belgian buyers appreciate construction detail and quality. Our authentic hand knotted and wool pieces, made with material integrity, suit this knowledgeable market — all customisable.' },
+      { h2: 'Craft for a Carpet-Literate Market', body: 'Belgian buyers appreciate construction detail and quality. Our authentic hand knotted and wool pieces, made with material integrity, suit this knowledgeable market — with customisation options confirmed against the project brief.' },
       { h2: 'Trade & Contract Supply', body: 'For Belgian trade and contract buyers we provide consistent bulk supply, contract carpets and documentation, with efficient freight via Belgian and neighbouring ports.' },
     ],
     applications: [
@@ -505,7 +505,7 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     faqs: [
       { q: 'Do you export carpets to Australia?', a: 'Yes. We manufacture in Bhadohi for designers, builders, hospitality and retail buyers in Australia, with full documentation and sea freight.' },
-      { q: 'Do you supply natural-fibre and wool rugs for Australia?', a: 'Yes — wool, jute and sisal rugs suit Australian tastes for natural materials, all customisable.' },
+      { q: 'Do you supply natural-fibre and wool rugs for Australia?', a: 'Yes — wool, jute and sisal rugs suit Australian tastes for natural materials, with customisation options confirmed against the project brief.' },
       { q: 'Can you supply builders and developers?', a: 'Yes. We coordinate bulk rug and carpet supply for Australian residential projects.' },
       { q: 'What payment terms apply for Australia?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'How is shipping to Australia arranged?', a: 'We pack for international transit and coordinate sea freight to your preferred Australian port and terms.' },
@@ -782,7 +782,7 @@ export const COUNTRIES: SeoLanding[] = [
     faqs: [
       { q: 'Can you supply rugs for buyers and projects in Denmark?', a: 'Yes. We manufacture bespoke handmade rugs in Bhadohi for Copenhagen design studios, restaurant and boutique hospitality, and design-led retail, and can advise on export documentation and logistics relevant to your enquiry.' },
       { q: 'Can you work to a Copenhagen designer\'s exact specification?', a: 'Yes. We develop to exact colour, texture and size with lab-dips and samples approved before production.' },
-      { q: 'What materials suit the Danish market?', a: 'Wool, wool-viscose and natural fibres (jute, sisal), with transparent provenance information, align with Danish design tastes — all customisable.' },
+      { q: 'What materials suit the Danish market?', a: 'Wool, wool-viscose and natural fibres (jute, sisal), with transparent provenance information, align with Danish design tastes — with customisation options confirmed against the project brief.' },
       { q: 'Do you support Danish restaurant and boutique-hospitality projects?', a: 'Yes. We manufacture understated, durable custom rugs and carpets for Danish restaurants and boutique hotels.' },
       { q: 'Can you develop collections for Danish design-led retail?', a: 'Yes. We develop curated rug and carpet collections to a retailer\'s design brief, realised faithfully to Danish design tastes.' },
       { q: 'Can you provide transparent material provenance information?', a: 'Yes. We provide verifiable provenance details on request — fibre origin, dyeing process and construction — matched to whatever documentation a Danish studio or retailer requires.' },
@@ -894,7 +894,7 @@ export const COUNTRIES: SeoLanding[] = [
     faqs: [
       { q: 'Can you supply rugs for buyers and projects in Norway?', a: 'Yes. We manufacture premium handmade wool rugs and custom carpets in Bhadohi for Oslo architects, premium residential buyers, and fjord-region lodge and spa hospitality, and can advise on export documentation and logistics for your enquiry.' },
       { q: 'Do you manufacture project-specific custom carpets?', a: 'Yes. We make carpets to exact project dimensions; production can be planned around your installation schedule.' },
-      { q: 'What materials suit the Norwegian market?', a: 'Premium wool and wool-viscose, with warm texture and transparent material information, align with Norway\'s natural, design-led interiors — all customisable.' },
+      { q: 'What materials suit the Norwegian market?', a: 'Premium wool and wool-viscose, with warm texture and transparent material information, align with Norway\'s natural, design-led interiors — with customisation options confirmed against the project brief.' },
       { q: 'Can you match specific colours?', a: 'Yes. We develop custom shades with lab-dips approved before production.' },
       { q: 'Can you supply carpets for lodge, resort or spa-wellness hospitality in Norway?', a: 'Yes. We manufacture custom contract carpet and rugs for fjord-region lodges, resorts and spa-wellness interiors, developed to each property\'s specification.' },
       { q: 'Can you provide information on wool provenance?', a: 'Yes. We can share wool-provenance and sourcing details relevant to your project and work to any documentation standard you specify.' },
@@ -1180,7 +1180,7 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     faqs: [
       { q: 'Can you supply rugs for buyers and projects in New Zealand?', a: 'Yes. We manufacture handmade wool and natural-fibre rugs in Bhadohi for NZ designers, builders and hospitality, and can advise on export documentation and logistics for your enquiry.' },
-      { q: 'Do you supply natural-fibre and wool rugs?', a: 'Yes — wool, jute and sisal rugs suit New Zealand tastes for natural materials, all customisable.' },
+      { q: 'Do you supply natural-fibre and wool rugs?', a: 'Yes — wool, jute and sisal rugs suit New Zealand tastes for natural materials, with customisation options confirmed against the project brief.' },
       { q: 'Can you supply builders and developers?', a: 'Yes. We coordinate custom rug and carpet supply for NZ residential projects.' },
       { q: 'Do you support hospitality projects?', a: 'Yes. We make contract carpets produced to project specifications for NZ hotels and lodges.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
