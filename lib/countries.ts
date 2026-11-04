@@ -67,6 +67,33 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     customSizesNote: 'We manufacture to US standard rug dimensions (5x8, 8x10, 9x12 and runner formats) as well as fully custom sizes and shapes, with lab-dips and sample approval before bulk production.',
     materialRecommendations: ['nz-wool', 'wool-viscose', 'jute', 'bamboo-silk'],
+    designGuide: {
+      intro: 'A useful US-facing carpet brief starts with the room, the architecture and the way the space is used — not with a trend label alone. Residential projects, boutique hospitality and larger contract interiors can interpret the same design direction differently. The notes below translate published 2026 US interiors reporting into practical rug and carpet decisions; they are design guidance, not a claim that every US buyer follows one look.',
+      trends: [
+        { title: 'Warm, layered neutrals', desc: 'Houzz\'s 2026 US Fall report describes a continued move away from stark white-and-grey rooms toward warm wood, earthy colour and layered texture. For rugs, consider oatmeal, mushroom, camel, tobacco and warm brown grounds, with enough tonal variation to sit comfortably beside timber, stone and textured upholstery.' },
+        { title: 'Collected interiors with character', desc: 'The same report highlights rooms assembled around personal history, artisan detail and a mix of old and new. Hand-knotted patterns, softened traditional motifs and contemporary interpretations of heritage designs can add depth without making a room feel overly formal.' },
+        { title: 'Tactile, natural-looking surfaces', desc: 'US design coverage in 2026 points to growing interest in tactile materials and expressive natural finishes. Wool pile, handwoven flatweaves, jute and carefully balanced wool blends can contribute texture; the right construction depends on traffic, cleaning expectations and the project brief.' },
+        { title: 'Soft geometry and expressive accents', desc: 'Curved architectural details and softer forms appear in Houzz\'s 2026 emerging-trends reporting. Rugs do not need to copy every curved form: a restrained geometric layout, organic border or a controlled rust, olive or chocolate accent can connect the floor to the wider scheme.' },
+      ],
+      architectConsiderations: [
+        { title: 'Start with the schedule and use case', desc: 'Record room dimensions, furniture clearances, door swings, circulation routes, expected footfall and whether the rug is decorative, acoustic or part of a contract flooring package.' },
+        { title: 'Specify construction before appearance', desc: 'Choose hand-knotted, hand-tufted, flatweave or broadloom construction against the required durability, pile height, maintenance regime, edge finish and budget. Do not assume a residential construction is suitable for a hospitality or workplace application.' },
+        { title: 'Coordinate colour and material samples', desc: 'Review yarn and colour approvals in the actual lighting and alongside flooring, paint, stone, timber and upholstery samples. Confirm colour tolerance, dimensions, backing and finishing details in the approved specification.' },
+        { title: 'Confirm code and performance requirements', desc: 'For hospitality, multi-family, workplace and public projects, the architect or project team should identify applicable fire, slip, indoor-air-quality, accessibility and maintenance requirements. Any test reports or certifications must be confirmed for the specific construction before they are specified.' },
+      ],
+      palette: ['Oatmeal & warm ivory', 'Mushroom & taupe', 'Chocolate & tobacco brown', 'Sage & olive green', 'Rust & terracotta accents', 'Muted blue with warm neutrals'],
+      productFit: [
+        { title: 'Residential living and bedrooms', desc: 'Hand-knotted wool, hand-tufted wool blends and custom area rugs, sized around furniture layouts and the intended underfoot feel.' },
+        { title: 'Boutique hotels and suites', desc: 'Custom area rugs or contract carpet selected around guestroom traffic, housekeeping, acoustic goals and the operator\'s maintenance plan.' },
+        { title: 'Workplace and multi-unit projects', desc: 'Specification-led broadloom, carpet tile or area-rug packages where construction, replacement strategy and documented performance matter.' },
+        { title: 'Retail and importer collections', desc: 'Repeatable size and colour families, private-label presentation and a clearly approved sample standard for each production programme.' },
+      ],
+      sources: [
+        { label: 'Houzz Research — 2026 U.S. Fall Design Trends Report (September 2, 2026)', url: 'https://www.houzz.com/magazine/2026-u-s-houzz-fall-design-trends-report-stsetivw-vs~185743042' },
+        { label: 'Houzz Research — 2026 U.S. Emerging Summer Trends Report (May 20, 2026)', url: 'https://www.houzz.com/magazine/2026-u-s-houzz-emerging-summer-trends-report-stsetivw-vs~185266615' },
+        { label: 'American Society of Interior Designers — 2026 Trends Outlook', url: 'https://www.asid.org/resources/resources/view/resource-center/393' },
+      ],
+    },
   },
   {
     slug: 'uk',
