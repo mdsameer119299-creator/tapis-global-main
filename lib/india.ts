@@ -40,13 +40,13 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     seoKeywords: ['carpet manufacturer Delhi', 'embassy carpet supplier Delhi', 'corporate carpet Delhi', 'five star hotel carpet Delhi'],
     h1: 'Carpet & Rug Manufacturer for Delhi',
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Delhi — central government ministries and civic buildings, foreign embassies and diplomatic missions, corporate headquarters in Lutyens\' Delhi and Connaught Place, and the capital\'s five-star hospitality corridor. Each order is made to your design, size and specification; we hold no ready stock.',
-    overview: 'Delhi concentrates a genuinely singular commercial market: central government ministries and institutions, one of the world\'s densest clusters of foreign embassies and diplomatic missions, established corporate headquarters in the capital\'s historic commercial core, and a five-star hospitality corridor serving both. As a manufacturer we supply documented, tender-ready carpet for government and institutional settings, culturally attuned bespoke rugs for diplomatic missions, and refined contract carpet for corporate and hospitality projects — all produced in Bhadohi and dispatched to Delhi.',
+    overview: 'Delhi concentrates a genuinely singular commercial market: central government ministries and institutions, one of the world\'s densest clusters of foreign embassies and diplomatic missions, established corporate headquarters in the capital\'s historic commercial core, and a five-star hospitality corridor serving both. As a manufacturer we supply documented, specification-led carpet for government and institutional settings, culturally attuned bespoke rugs for diplomatic missions, and refined contract carpet for corporate and hospitality projects — all produced in Bhadohi and dispatched to Delhi.',
     sections: [
       { h2: 'Government, Ministries & Diplomatic Missions', body: 'Delhi\'s central ministries, civic institutions and foreign embassies require carpet manufactured to documented specification, with the paperwork government and diplomatic procurement processes expect. We develop bespoke rugs reflecting a mission\'s own national character where required, alongside durable institutional-grade carpet for ministry and civic buildings.' },
       { h2: 'Corporate Headquarters & Five-Star Hospitality', body: 'Delhi\'s established corporate headquarters around Connaught Place and the capital\'s five-star hotel corridor both specify refined, design-led carpet. We manufacture contract-grade broadloom and carpet tile for corporate fit-outs, and design-forward custom carpet for five-star guestrooms and public areas.' },
     ],
     applications: [
-      { title: 'Government & Institutional Buildings', desc: 'Documented, tender-ready carpet for ministries and civic buildings.' },
+      { title: 'Government & Institutional Buildings', desc: 'Documented, specification-led carpet for ministries and civic buildings.' },
       { title: 'Embassies & Diplomatic Missions', desc: 'Bespoke rugs reflecting a mission\'s own national character.' },
       { title: 'Corporate Headquarters', desc: 'Refined contract carpet for Connaught Place and central Delhi offices.' },
       { title: 'Five-Star Hospitality', desc: 'Design-forward custom carpet for Delhi\'s luxury hotel corridor.' },
@@ -561,7 +561,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Kolkata — heritage hotels and clubs, cultural and civic institutions, auditoria and residential projects. We make to your brief; we are a manufacturer, not a ready-stock retailer.',
     overview: 'Kolkata\'s deep cultural heritage shapes a market that values traditional craft, rich interiors and institutional grandeur — heritage hotels, clubs, auditoria and cultural and civic buildings, alongside contemporary commercial growth. As a manufacturer we supply bespoke hand knotted rugs, hospitality carpets and documented auditorium/institutional carpets, produced in Bhadohi for supply into the city.',
     sections: [
-      { h2: 'Heritage & Institutional Interiors', body: 'For Kolkata\'s heritage hotels, clubs, auditoria and civic institutions we manufacture bespoke and contract carpets to exact design and dimension, honouring traditional aesthetics where required and supporting documented tender specification.' },
+      { h2: 'Heritage & Institutional Interiors', body: 'For Kolkata\'s heritage hotels, clubs, auditoria and civic institutions we manufacture bespoke and contract carpets to exact design and dimension, honouring traditional aesthetics where required and supporting documented project specification.' },
       { h2: 'Hospitality & Residential', body: 'For the city\'s hotels and residences we develop custom rugs and carpets to specification, from classical to contemporary.' },
     ],
     applications: [
@@ -693,7 +693,6 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     faqs: [
       { q: 'Do you supply carpets for Jaipur heritage and palace hotels?', a: 'Yes. We manufacture bespoke hand knotted and custom contract carpets to exact design and dimension in Bhadohi, for supply to Jaipur.' },
       { q: 'Can you realise traditional Rajasthani motifs?', a: 'Yes. We faithfully realise heritage and classical motifs, with samples approved before production.' },
-      { q: 'Do you support heritage-conservation or government tourism-board procurement?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support procurement and tender submissions.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
       { q: 'Do you supply luxury resorts?', a: 'Yes. We produce contract carpets produced to project specifications to specification for Jaipur hospitality.' },
       { q: 'Do you offer OEM or private-label programmes for Jaipur\'s handicraft export trade?', a: 'Yes. We provide OEM and private-label manufacturing with custom branding and packaging, alongside bulk wholesale programmes.' },
@@ -851,7 +850,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi — in the same Uttar Pradesh carpet belt — and produces for buyers across Lucknow: government and institutional buildings, hotels and heritage interiors. We make to your brief; we are a manufacturer, not a ready-stock retailer.',
     overview: 'As Uttar Pradesh\'s capital, Lucknow combines substantial government and institutional buildings with Nawabi heritage and refined hospitality. Being in the same state as our Bhadohi factory, we are well placed to make documented institutional flooring, custom contract carpets and bespoke rugs for the city\'s government projects, institutions and hotels.',
     sections: [
-      { h2: 'Government & Institutional', body: 'For Lucknow\'s government and institutional buildings we manufacture custom institutional and auditorium carpets to documented specification and tender requirements — our same-state proximity to Bhadohi keeps this process straightforward.' },
+      { h2: 'Government & Institutional', body: 'For Lucknow\'s government and institutional buildings we manufacture custom institutional and auditorium carpets to documented specification and project requirements — our same-state proximity to Bhadohi keeps this process straightforward.' },
       { h2: 'Nawabi Hospitality & Heritage', body: 'For the city\'s hotels and heritage interiors we develop bespoke hand knotted rugs and contract carpets, realising refined, ornate designs where required.' },
     ],
     applications: [
@@ -862,11 +861,10 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     ],
     whyPoints: [
       { title: 'Same-State Base', desc: 'Manufactured in Bhadohi, UP — nearby.' },
-      { title: 'Tender-Ready', desc: 'Documented specification support for tender requirements.' },
+      { title: 'specification-led', desc: 'Documented specification support for project requirements.' },
       { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
-      { q: 'Do you supply government and institutional carpets in Lucknow?', a: 'Yes. We manufacture custom institutional and auditorium carpets to documented specification and tender requirements in Bhadohi, for supply to Lucknow.' },
       { q: 'Can you supply Lucknow hotels?', a: 'Yes. We produce contract carpets produced to project specifications and bespoke rugs to specification.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
       { q: 'Are you based near Lucknow?', a: 'We manufacture in Bhadohi, in the same state (Uttar Pradesh). We do not operate a retail showroom in Lucknow; we produce to order.' },
@@ -880,8 +878,8 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     relatedIndia: ['delhi-ncr', 'jaipur', 'chandigarh', 'patna'],
     importProcess: 'We confirm specification against the government, institutional or hospitality brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Lucknow by road — our same-state proximity keeps this route short and reliable — with documentation prepared for smooth receipt at government and institutional buildings.',
-    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — institutional and tender-linked projects with fixed dates are planned around accordingly.',
-    popularStyles: ['Documented institutional-grade broadloom', 'custom auditorium carpet', 'Ornate Nawabi-heritage hand-knotted rugs', 'Government-tender-ready constructions', 'Refined hospitality contract carpet'],
+    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — institutional and institutional projects with fixed dates are planned around accordingly.',
+    popularStyles: ['Documented institutional-grade broadloom', 'custom auditorium carpet', 'Ornate Nawabi-heritage hand-knotted rugs', 'Government-specification-led constructions', 'Refined hospitality contract carpet'],
     buyerSegments: [
       { label: 'Hospitality', body: 'Nawabi-heritage bespoke carpet for Lucknow\'s hotel sector.' },
       { label: 'Architects', body: 'Custom carpet and rug specification support for institutional and heritage design-build projects in Lucknow.' },
@@ -966,7 +964,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Chandigarh and the tricity — government and administrative buildings, corporate offices, hotels and premium residences. We make to your brief; we are a manufacturer, not a ready-stock retailer.',
     overview: 'Chandigarh — India\'s planned, modernist city and the joint capital of Punjab and Haryana — pairs significant government and administrative demand with a genuine corporate-office base, affluent residential neighbourhoods and a clean, design-conscious sensibility befitting its Le Corbusier-planned architecture. As a manufacturer we supply documented institutional and office carpet and modern bespoke rugs for the tricity\'s architects and procurement teams, produced in Bhadohi.',
     sections: [
-      { h2: 'Government & Administrative Buildings', body: 'For Chandigarh\'s government and administrative buildings we manufacture custom institutional and office carpets to documented specification and tender requirements, suited to the city\'s planned civic architecture.' },
+      { h2: 'Government & Administrative Buildings', body: 'For Chandigarh\'s government and administrative buildings we manufacture custom institutional and office carpets to documented specification and project requirements, suited to the city\'s planned civic architecture.' },
       { h2: 'Corporate, Modern Residential & Hospitality', body: 'For the tricity\'s corporate offices, affluent homes and hotels we develop custom broadloom, modern clean-lined bespoke rugs and custom hospitality carpets to exact colour and size.' },
     ],
     applications: [
@@ -976,12 +974,11 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { title: 'Hotels & Hospitality', desc: 'contract carpets produced to project specifications.' },
     ],
     whyPoints: [
-      { title: 'Tender-Ready', desc: 'Documented specification support for tender requirements.' },
+      { title: 'specification-led', desc: 'Documented specification support for project requirements.' },
       { title: 'Clean, Modern Design', desc: 'Contemporary palettes suited to planned-city architecture.' },
       { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
-      { q: 'Do you supply government carpets in Chandigarh?', a: 'Yes. We manufacture custom institutional and office carpets to documented specification and tender requirements in Bhadohi, for supply to Chandigarh.' },
       { q: 'Can you supply corporate and residential projects?', a: 'Yes. We make custom broadloom and modern bespoke rugs to exact colour and size.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
       { q: 'Do you serve the wider tricity (Mohali, Panchkula)?', a: 'Yes. We produce for the Chandigarh tricity region, manufacturer-direct from Bhadohi.' },
@@ -994,8 +991,8 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     relatedIndia: ['delhi-ncr', 'jaipur', 'lucknow', 'bhubaneswar'],
     importProcess: 'We confirm specification against the government, corporate or residential brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Chandigarh by road, with documentation prepared for smooth receipt at government buildings and project sites across the tricity.',
-    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and institutional projects with fixed tender dates are planned around accordingly.',
-    popularStyles: ['Documented institutional-grade broadloom', 'Modern clean-lined bespoke rugs', 'Government-tender-ready constructions', 'Contemporary corporate carpet tile', 'Custom hospitality carpet'],
+    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and institutional projects with fixed project dates are planned around accordingly.',
+    popularStyles: ['Documented institutional-grade broadloom', 'Modern clean-lined bespoke rugs', 'Government-specification-led constructions', 'Contemporary corporate carpet tile', 'Custom hospitality carpet'],
     buyerSegments: [
       { label: 'Corporate Offices', body: 'Custom broadloom and carpet tile for tricity corporate fit-outs.' },
       { label: 'Architects', body: 'Custom carpet and rug specification support for planned-city architectural and design-build projects.' },
@@ -1080,7 +1077,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Noida and Greater Noida — IT parks, commercial and institutional buildings, media houses and residential developments. We make to your specification; we are a manufacturer, not a ready-stock retailer.',
     overview: 'Noida and Greater Noida form a fast-growing commercial, IT, institutional and expo hub within Delhi NCR, distinct from Gurugram\'s MNC corporate character or Delhi\'s government-diplomatic base, with steady office, education, media and residential development. As a manufacturer we supply custom office broadloom and carpet tiles, institutional and auditorium carpets, and residential rugs for the region\'s developers and procurement teams, produced in Bhadohi.',
     sections: [
-      { h2: 'IT Parks, Commercial & Institutional', body: 'For Noida\'s IT parks, commercial buildings and institutions we manufacture durable custom broadloom, carpet tiles and institutional/auditorium carpets to specification and, where relevant, documented tender requirements.' },
+      { h2: 'IT Parks, Commercial & Institutional', body: 'For Noida\'s IT parks, commercial buildings and institutions we manufacture durable custom broadloom, carpet tiles and institutional/auditorium carpets to specification and, where relevant, documented project requirements.' },
       { h2: 'Residential Developers & Hospitality', body: 'For the region\'s residential developments and hotels we develop custom rugs and contract carpets to exact colour and size, coordinated with build schedules.' },
     ],
     applications: [
@@ -1091,13 +1088,11 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     ],
     whyPoints: [
       { title: 'Commercial-Ready', desc: 'Durable broadloom, tiles and institutional carpets.' },
-      { title: 'Tender Support', desc: 'Documented specification support where required.' },
+      { title: 'specification review', desc: 'Documented specification support where required.' },
       { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply office carpets in Noida?', a: 'Yes. We manufacture custom office broadloom and carpet tiles to specification in Bhadohi, for supply to Noida and Greater Noida.' },
-      { q: 'Can you supply institutional and auditorium carpets?', a: 'Yes. We produce custom institutional and auditorium carpets to documented specification and tender requirements.' },
-      { q: 'Can you support UP state or municipal procurement for Noida?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
       { q: 'Do you serve Greater Noida too?', a: 'Yes. We produce for Noida and Greater Noida, manufacturer-direct from Bhadohi.' },
       { q: 'Do you hold ready stock?', a: 'No. Every order is manufactured to your project\'s requirements.' },
@@ -1269,7 +1264,6 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     ],
     faqs: [
       { q: 'Do you supply Visakhapatnam\'s port-linked trade sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing, with freight routed efficiently through Visakhapatnam\'s port and logistics network.' },
-      { q: 'Can you supply government or institutional buildings in Visakhapatnam?', a: 'Yes. We manufacture institutional-grade carpet to documented specification, with samples and specification sheets for procurement teams.' },
       { q: 'Do you supply Visakhapatnam\'s IT offices?', a: 'Yes. We manufacture custom contract carpet to specification for Visakhapatnam\'s growing IT sector.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline depends on design, size, quantity and finish, and is confirmed at quotation.' },
       { q: 'Do you have a showroom or office in Visakhapatnam?', a: 'No. We manufacture in Bhadohi and produce to order for projects across Visakhapatnam. We do not run a ready-stock retail showroom.' },
@@ -1305,12 +1299,12 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     tagline: 'Carpet and rug manufacturer in Bhadohi, producing to buyer specifications for Bhubaneswar\'s government buildings, large PSU projects and emerging IT offices.',
     seoTitle: 'Carpet Manufacturer for Bhubaneswar | Tapis Global',
     seoDescription: 'Carpet manufacturer producing to buyer specifications for Bhubaneswar — government buildings, PSU projects and emerging IT offices. Request a catalogue or quote.',
-    seoKeywords: ['carpet manufacturer Bhubaneswar', 'government carpet supplier Odisha', 'institutional carpet Bhubaneswar', 'office carpet Bhubaneswar', 'PSU tender carpet Odisha'],
+    seoKeywords: ['carpet manufacturer Bhubaneswar', 'government carpet supplier Odisha', 'institutional carpet Bhubaneswar', 'office carpet Bhubaneswar', 'institutional carpet Odisha'],
     h1: 'Carpet & Rug Manufacturer for Bhubaneswar',
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Bhubaneswar — Odisha\'s planned state capital, its government and large public-sector institutions, temple-city heritage hospitality, and a growing IT and smart-city corporate sector. Each order is made to your specification; we hold no ready stock.',
     overview: 'Bhubaneswar is Odisha\'s planned state capital, combining substantial government and public-sector-undertaking demand with the city\'s temple-heritage hospitality sector and a genuinely growing IT and smart-city corporate base. As a manufacturer we supply documented institutional carpet for the state\'s government and PSU projects, and custom office carpet for its growing corporate sector, produced in Bhadohi.',
     sections: [
-      { h2: 'Government & Large PSU Projects', body: 'Bhubaneswar\'s position as Odisha\'s state capital drives substantial government and public-sector-undertaking demand. We manufacture institutional-grade carpet to documented specification and tender requirements, with the bulk capacity large PSU programmes require.' },
+      { h2: 'Government & Large PSU Projects', body: 'Bhubaneswar\'s position as Odisha\'s state capital drives substantial government and public-sector-undertaking demand. We manufacture institutional-grade carpet to documented specification and project requirements, with the bulk capacity large PSU programmes require.' },
       { h2: 'Emerging IT Corporate & Temple-City Hospitality', body: 'Bhubaneswar\'s growing IT and smart-city corporate sector favours reliable contract-grade office carpet, while the city\'s temple-heritage hospitality sector calls for custom hotel carpet. We supply both, produced to specification in Bhadohi.' },
     ],
     applications: [
@@ -1338,7 +1332,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     relatedIndia: ['kolkata', 'raipur', 'nagpur', 'chandigarh'],
     importProcess: 'We confirm specification against the government, PSU or corporate brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Bhubaneswar by road, with documentation prepared for smooth receipt at government and PSU project sites.',
-    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and PSU projects with fixed tender dates are planned around accordingly.',
+    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and PSU projects with fixed project dates are planned around accordingly.',
     popularStyles: ['Documented government and PSU institutional carpet', 'Bulk large-project broadloom', 'Contract-grade emerging-IT office carpet', 'Temple-city heritage hospitality carpet', 'Practical civic-building constructions'],
     buyerSegments: [
       { label: 'Contract Manufacturing', body: 'Specification-led, bulk-capacity production with documentation for large PSU programmes.' },
@@ -1367,7 +1361,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Raipur — Chhattisgarh\'s state capital, its government and civic institutions, and the state\'s substantial steel and mining industrial belt. Each order is made to your specification; we hold no ready stock.',
     overview: 'Raipur is Chhattisgarh\'s state capital, combining substantial government and civic-institutional demand with the state\'s steel and mining industrial belt and a growing commercial and residential sector. As a manufacturer we supply documented institutional carpet for government and public-sector projects, durable contract carpet for industrial facilities, and custom carpet for the city\'s growing commercial base, produced in Bhadohi.',
     sections: [
-      { h2: 'Government & Civic Institutions', body: 'As Chhattisgarh\'s state capital, Raipur has substantial government and civic-institutional demand. We manufacture institutional-grade carpet to documented specification and tender requirements.' },
+      { h2: 'Government & Civic Institutions', body: 'As Chhattisgarh\'s state capital, Raipur has substantial government and civic-institutional demand. We manufacture institutional-grade carpet to documented specification and project requirements.' },
       { h2: 'Steel-Belt Industry & Growing Commercial', body: 'Raipur\'s steel and mining industrial belt supports genuine large-project demand, alongside a growing commercial and residential sector. We manufacture durable contract carpet for industrial and PSU facilities, and custom carpet for commercial and residential developments.' },
     ],
     applications: [
@@ -1395,7 +1389,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     relatedIndia: ['bhubaneswar', 'kolkata', 'nagpur', 'patna'],
     importProcess: 'We confirm specification against the government, industrial or residential brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Raipur by road, with documentation prepared for smooth receipt at government buildings, industrial facilities and project sites.',
-    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and PSU projects with fixed tender dates are planned around accordingly.',
+    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and PSU projects with fixed project dates are planned around accordingly.',
     popularStyles: ['Documented government and civic institutional carpet', 'Durable steel-belt industrial constructions', 'Contract-grade commercial broadloom', 'Practical PSU-facility carpet', 'Coordinated residential-development rugs'],
     buyerSegments: [
       { label: 'Contract Manufacturing', body: 'Specification-led production with documentation for steel-belt industrial and PSU programmes.' },
@@ -1424,7 +1418,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Patna — Bihar\'s state capital, its government and civic institutions, and a growing retail and trade sector. Each order is made to your specification; we hold no ready stock.',
     overview: 'As Bihar\'s state capital, Patna carries substantial government and civic-institutional demand, alongside a growing retail and trade sector and steady residential development. Being within reasonable reach of our Bhadohi factory in neighbouring Uttar Pradesh, we are well placed to make documented institutional carpet, trade-ready wholesale product and custom rugs for the city\'s government projects, retailers and residences.',
     sections: [
-      { h2: 'Government & Civic Institutions', body: 'For Patna\'s government and civic buildings we manufacture custom institutional carpet to documented specification and tender requirements.' },
+      { h2: 'Government & Civic Institutions', body: 'For Patna\'s government and civic buildings we manufacture custom institutional carpet to documented specification and project requirements.' },
       { h2: 'Retail Trade & Residential', body: 'Patna\'s growing retail and trade sector supports wholesale demand, alongside a steady residential development sector. We supply bulk, batch-consistent carpet and bespoke rugs to both.' },
     ],
     applications: [
@@ -1452,7 +1446,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     relatedIndia: ['lucknow', 'kolkata', 'bhubaneswar', 'raipur'],
     importProcess: 'We confirm specification against the government, retail or residential brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Patna by road, with documentation prepared for smooth receipt at government buildings, trade warehouses and project sites.',
-    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and institutional projects with fixed tender dates are planned around accordingly.',
+    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and institutional projects with fixed project dates are planned around accordingly.',
     popularStyles: ['Documented government and civic institutional carpet', 'Bulk trade-ready wholesale collections', 'Practical office broadloom', 'Coordinated residential-development rugs', 'Durable civic-building constructions'],
     buyerSegments: [
       { label: 'Retail', body: 'Custom carpet and rug fit-out for Patna\'s growing retail sector.' },
@@ -1482,7 +1476,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     overview: 'Ludhiana is Punjab\'s largest industrial city, anchored by a substantial hosiery and textile export-manufacturing base rather than a corporate-office market. As a manufacturer with textile roots ourselves, we supply trade-ready, batch-consistent carpet for the city\'s export-oriented wholesale sector and OEM/private-label manufacturing for brands sourcing through Ludhiana\'s trade network, produced in Bhadohi.',
     sections: [
       { h2: 'Hosiery & Textile Export Trade', body: 'Ludhiana\'s hosiery and textile export-manufacturing base supports genuine wholesale and brand-sourcing demand. We manufacture bulk, batch-consistent carpet and rugs for distributors, with OEM and private-label programmes suited to the city\'s export sector.' },
-      { h2: 'Industrial & Institutional', body: 'Alongside its trade base, Ludhiana has a steady industrial and institutional sector. We manufacture durable contract carpet to specification, supporting documented tender requirements where relevant.' },
+      { h2: 'Industrial & Institutional', body: 'Alongside its trade base, Ludhiana has a steady industrial and institutional sector. We manufacture durable contract carpet to specification, supporting documented project requirements where relevant.' },
     ],
     applications: [
       { title: 'Hosiery & Textile Export Trade', desc: 'Bulk, batch-consistent supply for Ludhiana\'s export-oriented trade sector.' },
@@ -1652,7 +1646,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Nashik — the city\'s industrial-corporate base, its wine-country and agro-processing hospitality sector, and its defence-adjacent institutional presence. Each order is made to your specification; we hold no ready stock.',
     overview: 'Nashik pairs a genuine industrial-corporate base and a defence-adjacent institutional presence with Maharashtra\'s wine-country tourism and agro-processing economy, distinct from Mumbai\'s luxury-financial character or Pune\'s automotive-IT base. As a manufacturer we supply custom office carpet for the city\'s industrial-corporate sector, documented institutional carpet, and custom hospitality carpet for its growing wine-tourism sector, produced in Bhadohi.',
     sections: [
-      { h2: 'Industrial Corporate & Defence-Adjacent Institutions', body: 'Nashik\'s industrial-corporate base and defence-adjacent institutional presence favour reliable, documented carpet. We manufacture custom broadloom and institutional-grade carpet to specification and tender requirements.' },
+      { h2: 'Industrial Corporate & Defence-Adjacent Institutions', body: 'Nashik\'s industrial-corporate base and defence-adjacent institutional presence favour reliable, documented carpet. We manufacture custom broadloom and institutional-grade carpet to specification and project requirements.' },
       { h2: 'Wine-Country Hospitality & Agro-Processing', body: 'Nashik\'s wine-country tourism and agro-processing economy support a genuine hospitality sector. We manufacture custom carpet for wineries, boutique hotels and resorts, suited to the region\'s relaxed hospitality character.' },
     ],
     applications: [
@@ -1710,7 +1704,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     overview: 'Kanpur is one of India\'s major leather and industrial-manufacturing export hubs, with genuine wholesale and OEM demand distinct from Lucknow\'s government and Nawabi-heritage character despite being in the same state. Being in the same state as our Bhadohi factory, we are well placed to make trade-ready wholesale carpet, OEM/private-label programmes for export-oriented buyers, and documented institutional carpet for the city\'s civic buildings.',
     sections: [
       { h2: 'Leather & Industrial Export Trade', body: 'Kanpur\'s leather and industrial-manufacturing export base supports genuine wholesale and brand-sourcing demand. We manufacture bulk, batch-consistent carpet and rugs for distributors, with OEM and private-label programmes suited to the city\'s export sector.' },
-      { h2: 'Institutional & Civic', body: 'For Kanpur\'s civic and institutional buildings we manufacture custom institutional carpet to documented specification and tender requirements — our same-state proximity to Bhadohi keeps this process straightforward.' },
+      { h2: 'Institutional & Civic', body: 'For Kanpur\'s civic and institutional buildings we manufacture custom institutional carpet to documented specification and project requirements — our same-state proximity to Bhadohi keeps this process straightforward.' },
     ],
     applications: [
       { title: 'Leather & Industrial Trade', desc: 'Bulk, batch-consistent supply for Kanpur\'s export-oriented trade sector.' },
@@ -1767,7 +1761,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Bhopal — Madhya Pradesh\'s state capital, its government and civic institutions, and its heritage lake-city hospitality sector. Each order is made to your specification; we hold no ready stock.',
     overview: 'As Madhya Pradesh\'s state capital, Bhopal carries substantial government and civic-institutional demand, layered with a genuine heritage lake-city character — old-city architecture and lakeside hospitality distinct from the government-institutional framing of Bhubaneswar, Raipur or Chandigarh. As a manufacturer we supply documented institutional carpet for the state\'s government projects, and heritage-appropriate bespoke rugs and hospitality carpet for the city\'s lakeside hotels, produced in Bhadohi.',
     sections: [
-      { h2: 'Government & Civic Institutions', body: 'As Madhya Pradesh\'s state capital, Bhopal has substantial government and civic-institutional demand. We manufacture institutional-grade carpet to documented specification and tender requirements.' },
+      { h2: 'Government & Civic Institutions', body: 'As Madhya Pradesh\'s state capital, Bhopal has substantial government and civic-institutional demand. We manufacture institutional-grade carpet to documented specification and project requirements.' },
       { h2: 'Heritage Lake-City Hospitality', body: 'Bhopal\'s old-city heritage architecture and lakeside hospitality sector call for characterful, heritage-appropriate carpet. We develop bespoke rugs and custom hospitality carpet to exact colour and design.' },
     ],
     applications: [
@@ -1795,7 +1789,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     relatedIndia: ['indore', 'raipur', 'nagpur', 'lucknow'],
     importProcess: 'We confirm specification against the government, heritage or institutional brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Bhopal by road, with documentation prepared for smooth receipt at government buildings and heritage-hospitality project sites.',
-    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and institutional projects with fixed tender dates are planned around accordingly.',
+    leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and institutional projects with fixed project dates are planned around accordingly.',
     popularStyles: ['Documented government and civic institutional carpet', 'Heritage lake-city hospitality carpet', 'Characterful old-city bespoke rugs', 'Practical civic-building constructions', 'custom hotel broadloom'],
     buyerSegments: [
       { label: 'Hospitality', body: 'Bespoke, heritage-appropriate carpet for Bhopal\'s lakeside hotel sector.' },
