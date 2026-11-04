@@ -134,4 +134,32 @@ export const COUNTRY_DESIGN_GUIDES: Record<string, CountryDesignGuide> = {
       { label: 'Wood Industry Canada — 2026 Design Trends Report (January 28, 2026)', url: 'https://woodindustry.ca/the-design-trends-shaping-2026-report/' },
     ],
   }
+,
+  'uae': {
+    intro: 'UAE projects range from contemporary villas and apartments to destination hospitality, retail and workplace environments. Regional 2026 design commentary points toward warmer material palettes, culturally grounded detailing and experiential hospitality. Carpet specifications must account for climate, occupancy and maintenance.',
+    trends: [
+      { title: 'Warm minimalism and natural materials', desc: 'Dubai-focused 2026 reporting describes warm neutrals, natural stone, timber and tactile surfaces replacing colder, high-gloss schemes. Sand, bone and taupe rugs can add softness and continuity.' },
+      { title: 'Contemporary regional identity', desc: 'Modern Arabic interiors reinterpret regional geometry, screens and gathering spaces through contemporary detailing. Bespoke geometric pattern can reference this language when developed with the client and design team.' },
+      { title: 'Hospitality with emotional character', desc: 'Middle East design coverage for 2026 places emphasis on meaning, longevity, local craft and guest experience. Carpet can contribute to wayfinding, acoustic comfort and a distinct sense of place.' },
+      { title: 'Biophilic and climate-aware interiors', desc: 'UAE project commentary highlights natural references and climate-responsive planning. Natural-looking palettes can connect interiors to landscape, while fibre and construction must suit indoor conditions and cleaning.' },
+    ],
+    architectConsiderations: [
+      { title: 'Account for heat, dust and cleaning', desc: 'Clarify whether spaces are fully conditioned or near entrances. Specify pile, colour and fibre around dust loading and the operator’s cleaning equipment.' },
+      { title: 'Coordinate hospitality traffic', desc: 'For lobbies, corridors and guest floors, define traffic intensity, trolley movement, cleaning cycles, acoustic goals and replacement strategy.' },
+      { title: 'Use cultural references with context', desc: 'Develop requested geometric motifs with the client around project narrative, scale and setting rather than applying generic decorative references.' },
+      { title: 'Confirm performance documentation', desc: 'Identify applicable project and operator requirements, then obtain valid evidence for the precise construction before specification.' },
+    ],
+    palette: ['Sand & warm ivory', 'Travertine beige', 'Date-palm brown', 'Terracotta & burnt ochre', 'Olive & mineral green', 'Bronze accents'],
+    productFit: [
+      { title: 'Luxury villas and residences', desc: 'Custom hand-knotted and hand-tufted rugs for majlis, living rooms and bedrooms.' },
+      { title: 'Hotels and resorts', desc: 'Contract carpet and area-rug programmes planned for guest traffic, cleaning and brand identity.' },
+      { title: 'Retail and F&B', desc: 'Custom statement rugs aligned with concept, customer flow and operational needs.' },
+      { title: 'Workplace and mixed-use', desc: 'Specification-led carpet packages for reception, collaboration and circulation areas.' },
+    ],
+    sources: [
+      { label: 'identity — 2026 and Beyond: The Identity Trend Report (January 9, 2026)', url: 'https://identity.ae/2026-and-beyond-the-identity-trend-report/' },
+      { label: 'Tarmeer — 2026 Dubai Interior Design Trends (July 3, 2026)', url: 'https://www.tarmeer.com/insights/dubai-interior-design-trends-2026' },
+      { label: 'Studio by Three — Dubai Hotel Interior Design Trends (August 29, 2026)', url: 'https://www.studiobythree.com/journal/hotel-interior-design-trends-dubai-2026/' },
+    ],
+  }
 }
