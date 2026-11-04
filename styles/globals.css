@@ -9,6 +9,9 @@
   --font-outfit: 'Outfit';
   --font-cormorant: 'Cormorant Garamond';
   --font-eb: 'EB Garamond';
+  --font-outfit: 'Outfit';
+  --font-cormorant: 'Cormorant Garamond';
+  --font-eb: 'EB Garamond';
   --c:   #6B1F1F;
   --cd:  #4A1414;
   --cs:  #8B3030;
@@ -32,6 +35,10 @@
   --text-base: 1.0625rem;  /* 17px */
   --text-md:   1.125rem;   /* 18px */
 }
+
+.font-outfit { font-family: 'Outfit', sans-serif; }
+.font-cormorant { font-family: 'Cormorant Garamond', serif; }
+.font-eb-garamond { font-family: 'EB Garamond', serif; }
 
 /* ─── GLOBAL KEYFRAMES (used by inline animation styles) ─────── */
 @keyframes kbzoom {
