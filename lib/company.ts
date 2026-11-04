@@ -229,7 +229,7 @@ export const COMPANY_PAGES: SeoLanding[] = [
     tagline: 'Any size, colour, pattern and construction — full custom carpet manufacturing capability.',
     seoTitle: 'Custom Carpet Manufacturing Capability — Tapis Global',
     seoDescription: 'Tapis Global custom carpet manufacturing — any size, colour, pattern, pile and construction, with lab-dips, samples and design development. Request a quote.',
-    seoKeywords: ['custom carpet manufacturing', 'bespoke carpet capability', 'custom rug manufacturer', 'made to order carpets', 'design development carpets'],
+    seoKeywords: ['custom carpet manufacturing', 'bespoke carpet capability', 'custom rug manufacturer', 'custom specifications carpets', 'design development carpets'],
     h1: 'Custom Carpet Manufacturing Capability',
     intro: 'Bespoke is at the core of what we do. Tapis Global manufactures carpets to any size, colour, pattern, pile and construction — with a structured design-development service refined across three generations of family carpet-making.',
     overview: 'Off-the-shelf rarely fits a real project. Our custom capability gives architects, designers, hospitality groups and retailers exactly the carpet a space needs, with the in-house control to develop, sample and produce it accurately.',
