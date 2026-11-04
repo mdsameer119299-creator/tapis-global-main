@@ -54,7 +54,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Tender-Ready', desc: 'Documented specification to support government procurement.' },
       { title: 'Culturally Attuned', desc: 'Bespoke development reflecting a mission\'s own character.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Can you support government tender or procurement requirements for Delhi buildings?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions for government and institutional projects.' },
@@ -115,10 +115,10 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Value-Conscious', desc: 'Practical constructions for procurement-led, budget-aware buyers.' },
       { title: 'Institutional-Grade', desc: 'Durable carpet built for sustained civic and industrial use.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
-      { q: 'Do you manufacture carpets for Faridabad industrial estates?', a: 'Yes. We manufacture durable carpet manufactured to specification to specification for warehousing, back-office and industrial-estate facilities across Faridabad.' },
+      { q: 'Do you manufacture carpets for Faridabad industrial estates?', a: 'Yes. We manufacture durable carpet to specification for warehousing, back-office and industrial-estate facilities across Faridabad.' },
       { q: 'Can you supply Faridabad schools, hospitals and municipal buildings?', a: 'Yes. We manufacture practical, documented carpet for civic and institutional buildings, with samples and specification sheets available for procurement teams.' },
       { q: 'Can you support municipal or government tender requirements?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions.' },
       { q: 'Do you offer wholesale programmes for Faridabad trade buyers?', a: 'Yes. We provide bulk, batch-consistent wholesale supply for Faridabad\'s trade and distribution sector.' },
@@ -174,7 +174,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Refined Craft', desc: 'Fine hand knotting and premium materials.' },
       { title: 'Fully Custom', desc: 'Made to your design, size and colour.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply luxury rugs in Mumbai?', a: 'Yes. We manufacture bespoke hand knotted and wool-silk rugs to exact colour, size and design in Bhadohi, for supply to Mumbai. We do not hold ready stock — each piece is produced to the agreed specification.' },
@@ -236,7 +236,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Workspace-Ready', desc: 'Durable broadloom and tiles for high-traffic tech campuses.' },
       { title: 'Contemporary Design', desc: 'Modern palettes and patterns developed to brief.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply office carpets and tiles in Bengaluru?', a: 'Yes. We manufacture custom office broadloom and carpet tiles to specification in Bhadohi, for supply to Bengaluru, with dye-lot consistency across large orders.' },
@@ -297,7 +297,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Custom Craft', desc: 'From workspace tiles to opulent hand knots.' },
       { title: 'Custom Design & Sizing', desc: 'Your design, size, colour and quantity.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply office carpets in Hyderabad?', a: 'Yes. We manufacture custom office broadloom and carpet tiles to specification in Bhadohi, for supply to Hyderabad and the HITEC City corridor.' },
@@ -358,10 +358,10 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Trade-Ready', desc: 'Freight routed efficiently through Chennai\'s port and logistics network.' },
       { title: 'Industrial-Grade', desc: 'Durable constructions built for manufacturing-sector facilities.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
-      { q: 'Do you supply carpets for Chennai\'s industrial and manufacturing facilities?', a: 'Yes. We manufacture durable carpet manufactured to specification to specification for industrial and corporate facilities across Chennai.' },
+      { q: 'Do you supply carpets for Chennai\'s industrial and manufacturing facilities?', a: 'Yes. We manufacture durable carpet to specification for industrial and corporate facilities across Chennai.' },
       { q: 'Can you supply Chennai\'s port-linked trade and distribution sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing, with freight routed efficiently through Chennai\'s port and logistics network.' },
       { q: 'Do you supply hotel carpets in Chennai?', a: 'Yes. We manufacture contract carpets produced to project specifications to specification in Bhadohi, for supply to Chennai; fire-safety and technical requirements are discussed and specified per project.' },
       { q: 'Can you supply office and commercial fit-outs?', a: 'Yes. We make custom broadloom and carpet tiles for Chennai commercial projects.' },
@@ -420,7 +420,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Workspace-Ready', desc: 'Durable broadloom and tiles for automotive and IT campuses.' },
       { title: 'Development-Ready', desc: 'Coordinated rug supply timed to build schedules.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply carpets for Pune automotive-sector corporate campuses?', a: 'Yes. We manufacture custom, durable contract carpet to specification for Pune\'s automotive and IT corporate campuses, with dye-lot consistency across large orders.' },
@@ -482,7 +482,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Trade-Ready', desc: 'Bulk wholesale supply suited to Indore\'s retail-hub role.' },
       { title: 'Institutional-Grade', desc: 'Durable, documented carpet for civic and educational use.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you manufacture carpets for Indore IT-ITES offices?', a: 'Yes. We manufacture custom contract carpet to specification for Indore\'s growing IT-ITES corporate offices.' },
@@ -585,7 +585,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Traditional Craft', desc: 'Classical designs realised faithfully.' },
       { title: 'Tender-Ready', desc: 'Documented specification for civic and auditorium projects.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply carpets for Kolkata heritage hotels and clubs?', a: 'Yes. We manufacture bespoke and contract carpets to exact design and dimension in Bhadohi, for supply to Kolkata.' },
@@ -644,7 +644,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Textile Heritage', desc: 'A manufacturer that understands cloth and craft.' },
       { title: 'Trade-Ready', desc: 'Bulk wholesale supply suited to Ahmedabad\'s retail base.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply commercial carpets in Ahmedabad and GIFT City?', a: 'Yes. We manufacture custom broadloom and carpet tiles to specification in Bhadohi, for supply to Ahmedabad, with dye-lot consistency across large orders.' },
@@ -704,7 +704,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Heritage Craft', desc: 'Rich, intricate designs realised faithfully.' },
       { title: 'Custom Design & Sizing', desc: 'Your design, size, colour and motif.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply carpets for Jaipur heritage and palace hotels?', a: 'Yes. We manufacture bespoke hand knotted and custom contract carpets to exact design and dimension in Bhadohi, for supply to Jaipur.' },
@@ -764,7 +764,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Luxury Craft', desc: 'Fine hand knotting and premium materials.' },
       { title: 'Trade-Ready', desc: 'Bulk wholesale supply suited to Surat\'s trade base.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply luxury rugs in Surat?', a: 'Yes. We manufacture bespoke hand knotted and wool-silk rugs to exact colour, size and design in Bhadohi, for supply to Surat.' },
@@ -824,7 +824,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Coastal Character', desc: 'Relaxed, natural, characterful designs.' },
       { title: 'Custom Design & Sizing', desc: 'Your design, size, colour and quantity.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply resort carpets in Goa?', a: 'Yes. We manufacture contract carpets produced to project specifications and rugs to specification in Bhadohi, for supply to Goa; fire-safety and technical requirements are specified per project.' },
@@ -883,7 +883,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Same-State Base', desc: 'Manufactured in Bhadohi, UP — nearby.' },
       { title: 'Tender-Ready', desc: 'Documented specification support for tender requirements.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply government and institutional carpets in Lucknow?', a: 'Yes. We manufacture custom institutional and auditorium carpets to documented specification and tender requirements in Bhadohi, for supply to Lucknow.' },
@@ -943,7 +943,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Tropical Materials', desc: 'Natural fibres suited to Kerala interiors.' },
       { title: 'Custom Design & Sizing', desc: 'Your design, size, colour and quantity.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply resort carpets in Kochi?', a: 'Yes. We manufacture contract carpets produced to project specifications and rugs to specification in Bhadohi, for supply to Kochi.' },
@@ -1002,7 +1002,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Tender-Ready', desc: 'Documented specification support for tender requirements.' },
       { title: 'Clean, Modern Design', desc: 'Contemporary palettes suited to planned-city architecture.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply government carpets in Chandigarh?', a: 'Yes. We manufacture custom institutional and office carpets to documented specification and tender requirements in Bhadohi, for supply to Chandigarh.' },
@@ -1061,7 +1061,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Scale & Consistency', desc: 'Bulk broadloom and tiles to a single specification.' },
       { title: 'Fully Custom', desc: 'Made to your design, size and specification.' },
-      { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply office carpets and tiles in Gurugram?', a: 'Yes. We manufacture custom office broadloom and carpet tiles to specification in Bhadohi, for supply to Gurugram, with dye-lot consistency across MNC-scale multi-floor orders.' },
@@ -1120,7 +1120,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Commercial-Ready', desc: 'Durable broadloom, tiles and institutional carpets.' },
       { title: 'Tender Support', desc: 'Documented specification support where required.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply office carpets in Noida?', a: 'Yes. We manufacture custom office broadloom and carpet tiles to specification in Bhadohi, for supply to Noida and Greater Noida.' },
@@ -1179,7 +1179,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Trade-Ready', desc: 'Freight routed efficiently through Nagpur\'s logistics network.' },
       { title: 'Institutional-Grade', desc: 'Durable, documented carpet for civic and educational use.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply Nagpur\'s retail and trade sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and private-label manufacturing suited to Vidarbha\'s principal retail and trade centre.' },
@@ -1238,7 +1238,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Trade-Ready', desc: 'OEM and private-label programmes for export-oriented buyers.' },
       { title: 'Industrial-Grade', desc: 'Durable constructions for manufacturing-sector facilities.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply Coimbatore\'s textile and engineering trade sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing suited to Coimbatore\'s export-oriented trade.' },
@@ -1298,7 +1298,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Trade-Ready', desc: 'Freight routed efficiently through Visakhapatnam\'s port network.' },
       { title: 'Institutional-Grade', desc: 'Documented carpet for government and civic use.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply Visakhapatnam\'s port-linked trade sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing, with freight routed efficiently through Visakhapatnam\'s port and logistics network.' },
@@ -1357,7 +1357,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Tender-Ready', desc: 'Documented specification support for state and PSU procurement.' },
       { title: 'Bulk Capacity', desc: 'Large-volume production for government and PSU programmes.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply carpets for Bhubaneswar government and PSU buildings?', a: 'Yes. We manufacture custom institutional carpet to documented specification for Odisha state and public-sector-undertaking projects.' },
@@ -1416,7 +1416,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Tender-Ready', desc: 'Documented specification support for state and PSU procurement.' },
       { title: 'Industrial-Grade', desc: 'Durable constructions for steel and mining-belt facilities.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply carpets for Raipur government and civic buildings?', a: 'Yes. We manufacture custom institutional carpet to documented specification for Chhattisgarh state and civic projects.' },
@@ -1475,7 +1475,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Tender-Ready', desc: 'Documented specification support for government procurement.' },
       { title: 'Trade-Ready', desc: 'Bulk wholesale supply for Patna\'s retail sector.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply government and institutional carpets in Patna?', a: 'Yes. We manufacture custom institutional carpet to documented specification in Bhadohi, for supply to Patna.' },
@@ -1534,7 +1534,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Trade-Ready', desc: 'OEM and private-label programmes for export-oriented buyers.' },
       { title: 'Textile Heritage', desc: 'A manufacturer that understands cloth, craft and trade.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply Ludhiana\'s hosiery and textile trade sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing suited to Ludhiana\'s export-oriented trade.' },
@@ -1593,10 +1593,10 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Visitor-Traffic Durability', desc: 'Constructions built for sustained pilgrimage-hospitality traffic.' },
       { title: 'Heritage-Appropriate', desc: 'Rugs developed for Amritsar\'s heritage interiors.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
-      { q: 'Do you supply hotel carpets in Amritsar?', a: 'Yes. We manufacture durable carpet manufactured to specification to specification for Amritsar\'s pilgrimage-hospitality hotel sector, with fire-safety construction specified per project.' },
+      { q: 'Do you supply hotel carpets in Amritsar?', a: 'Yes. We manufacture durable carpet to specification for Amritsar\'s pilgrimage-hospitality hotel sector, with fire-safety construction specified per project.' },
       { q: 'Can you develop rugs for heritage properties in Amritsar?', a: 'Yes. We develop lab-dips and samples to exact colour and design for heritage-appropriate interiors.' },
       { q: 'Do you supply Amritsar\'s retail and trade sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply for Amritsar\'s retail sector serving pilgrims and visitors.' },
       { q: 'Can you support Punjab government or heritage-conservation tender requirements?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions.' },
@@ -1652,7 +1652,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Corporate-Ready', desc: 'Contract-grade carpet for engineering and petrochemical offices.' },
       { title: 'Refined Craft', desc: 'Fine hand-tufted and bespoke pieces for HNI residences.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply corporate offices in Vadodara?', a: 'Yes. We manufacture custom contract carpet to specification for Vadodara\'s petrochemical and engineering-industry corporate offices.' },
@@ -1711,7 +1711,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Tender-Ready', desc: 'Documented specification for institutional procurement.' },
       { title: 'Industrial-Grade', desc: 'Durable constructions for corporate and industrial facilities.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply corporate offices in Nashik?', a: 'Yes. We manufacture custom contract carpet to specification for Nashik\'s industrial-corporate offices.' },
@@ -1770,7 +1770,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Same-State Base', desc: 'Manufactured in Bhadohi, UP — nearby.' },
       { title: 'Trade-Ready', desc: 'OEM and private-label programmes for export-oriented buyers.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply Kanpur\'s leather and industrial trade sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing suited to Kanpur\'s export-oriented trade.' },
@@ -1829,7 +1829,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'Tender-Ready', desc: 'Documented specification support for government procurement.' },
       { title: 'Heritage-Appropriate', desc: 'Characterful rugs for Bhopal\'s lake-city interiors.' },
-      { title: 'Manufacturer-Direct', desc: 'Made in our own Bhadohi facility, no middlemen.' },
+      { title: 'Manufacturer-Direct', desc: 'Manufactured in Bhadohi, India.' },
     ],
     faqs: [
       { q: 'Do you supply government and institutional carpets in Bhopal?', a: 'Yes. We manufacture custom institutional carpet to documented specification in Bhadohi, for supply to Bhopal.' },
