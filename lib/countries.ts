@@ -713,7 +713,7 @@ export const COUNTRIES: SeoLanding[] = [
     whyPoints: [
       { title: 'Trade-Scale Sourcing', desc: 'Collections developed for repeat trade and retail ordering.' },
       { title: 'Transparent Sourcing', desc: 'Honest material information, no overclaiming.' },
-      { title: 'Custom specifications', desc: 'Custom size, shade and construction to brief.' },
+      { title: 'custom design and sizing', desc: 'Custom size, shade and construction to brief.' },
     ],
     faqs: [
       { q: 'Can you supply rugs for buyers and projects in Sweden?', a: 'Yes. We manufacture handmade wool and natural-fibre rugs to order in Bhadohi for Swedish trade, retail and workspace buyers, and can advise on export documentation and logistics relevant to your enquiry.' },
@@ -818,7 +818,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Finland\'s carpet and rug demand is led by institutional and public-sector procurement — schools, senior-living and care facilities, and public buildings — alongside Helsinki\'s office and workspace contract-carpet market. We build with resilient wool and wool-blend pile and robust, easy-maintain constructions suited to winter foot traffic and heavy everyday use, developed to a buyer\'s specification and service-life requirements.',
     sections: [
       { h2: 'Institutional & Public-Sector Durability', body: 'Finnish institutional buyers — schools, senior-living and care facilities, and public buildings — specify carpet for long service life under heavy daily use. We build with resilient wool and wool-blend pile, and machine-made broadloom and wall-to-wall constructions suited to large-scale institutional and commercial installations.' },
-      { h2: 'Helsinki Office & Workspace Contract Carpet', body: 'Helsinki\'s office and workspace market calls for functional, easy-maintain contract carpet that withstands winter foot traffic — melting snow, grit and boot wear at entryways — alongside everyday office use. We also develop moisture-tolerant PET rugs for entryways, boot rooms and other high-moisture areas, custom specifications.' },
+      { h2: 'Helsinki Office & Workspace Contract Carpet', body: 'Helsinki\'s office and workspace market calls for functional, easy-maintain contract carpet that withstands winter foot traffic — melting snow, grit and boot wear at entryways — alongside everyday office use. We also develop moisture-tolerant PET rugs for entryways, boot rooms and other high-moisture areas, tailored to the project specification.' },
     ],
     applications: [
       { title: 'Schools & Educational Facilities', desc: 'Durable, easy-maintain carpet specified for long service life in schools.' },
@@ -881,7 +881,7 @@ export const COUNTRIES: SeoLanding[] = [
     applications: [
       { title: 'Oslo Architects & Designers', desc: 'Premium wool rugs developed to Oslo architecture and design project briefs.' },
       { title: 'Premium Residential', desc: 'Warm, tactile wool rugs for high-end Norwegian homes.' },
-      { title: 'Lodge & Resort Hospitality', desc: 'Custom custom carpets for fjord-region lodges and resorts.' },
+      { title: 'Lodge & Resort Hospitality', desc: 'Custom carpets for fjord-region lodges and resorts.' },
       { title: 'Spa & Wellness Interiors', desc: 'Rugs and carpets developed for spa and wellness hospitality settings.' },
     ],
     whyPoints: [
@@ -910,7 +910,7 @@ export const COUNTRIES: SeoLanding[] = [
     buyerSegments: [
       { label: 'Commercial Buyers', body: 'Lodge, resort and spa-wellness operators sourcing custom contract carpet to property specification.' },
       { label: 'Interior Designers', body: 'Premium wool and wool-viscose rugs developed to Oslo residential and hospitality design briefs.' },
-      { label: 'Hotels', body: 'Custom custom carpets for Norwegian lodge, resort and hotel guestrooms and public areas.' },
+      { label: 'Hotels', body: 'Custom carpets for Norwegian lodge, resort and hotel guestrooms and public areas.' },
       { label: 'Builders', body: 'Rug and carpet supply coordinated with premium residential and lodge or resort build schedules.' },
       { label: 'Architects', body: 'Specification support and sampling for Oslo architecture and fjord-region hospitality projects.' },
       { label: 'Government Buyers', body: 'Production to documented specification for public-sector and institutional procurement in Norway.' },
@@ -968,7 +968,7 @@ export const COUNTRIES: SeoLanding[] = [
     buyerSegments: [
       { label: 'Commercial Buyers', body: 'Banking, corporate and institutional facilities teams in Zurich and Geneva sourcing quality-managed contract carpet to strict specification.' },
       { label: 'Interior Designers', body: 'Refined bespoke rugs developed to precise colour and material specification for Swiss residential, alpine chalet and diplomatic-interior briefs.' },
-      { label: 'Hotels', body: 'Custom custom carpets for Swiss luxury hotel guestrooms and public areas.' },
+      { label: 'Hotels', body: 'Custom carpets for Swiss luxury hotel guestrooms and public areas.' },
       { label: 'Builders', body: 'Bespoke rug and contract-carpet supply coordinated with alpine chalet, residential and institutional build schedules.' },
       { label: 'Architects', body: 'Specification-exact development to drawings, colour and dimension, with disciplined in-house quality control for Swiss projects.' },
       { label: 'Government Buyers', body: 'Production to documented specification for diplomatic, embassy and public-institutional procurement in Geneva and across Switzerland.' },
@@ -996,7 +996,7 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     applications: [
       { title: 'Interior Designers', desc: 'Bespoke wool rugs for Austrian residential schemes.' },
-      { title: 'Hospitality', desc: 'Custom custom carpets for Austrian hotels and resorts.' },
+      { title: 'Hospitality', desc: 'Custom carpets for Austrian hotels and resorts.' },
       { title: 'Premium Residential', desc: 'Warm, quality wool pieces for Alpine homes.' },
       { title: 'Trade & Retail', desc: 'Quality collections for Austrian rug retail.' },
     ],
@@ -1083,7 +1083,7 @@ export const COUNTRIES: SeoLanding[] = [
     whyPoints: [
       { title: 'Contract-Ready', desc: 'Durable carpets built to project specification.' },
       { title: 'Warm Wool', desc: 'Quality wool and wool-blend rugs.' },
-      { title: 'Custom specifications', desc: 'Custom design, size and colour.' },
+      { title: 'custom design and sizing', desc: 'Custom design, size and colour.' },
     ],
     faqs: [
       { q: 'Can you supply carpets for buyers and projects in Ireland?', a: 'Yes. We manufacture to order in Bhadohi for Irish hospitality, designers and contract projects, and can advise on export documentation and logistics for your enquiry.' },
@@ -1178,7 +1178,7 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     whyPoints: [
       { title: 'Natural Materials', desc: 'Wool and natural fibres for NZ tastes.' },
-      { title: 'Custom specifications', desc: 'Custom sizes and constructions.' },
+      { title: 'custom design and sizing', desc: 'Custom sizes and constructions.' },
       { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
     ],
     faqs: [
@@ -1235,7 +1235,7 @@ export const COUNTRIES: SeoLanding[] = [
     whyPoints: [
       { title: 'Specification-Exact', desc: 'Made to architect drawings and dimensions.' },
       { title: 'Quality Control', desc: 'Multi-stage in-house inspection.' },
-      { title: 'Custom specifications', desc: 'Custom design, size and finish.' },
+      { title: 'custom design and sizing', desc: 'Custom design, size and finish.' },
     ],
     faqs: [
       { q: 'Can you supply carpets for Singapore hospitality projects?', a: 'Yes. We manufacture custom and contract carpets to order in Bhadohi for Singapore luxury hotels, residential towers and commercial interiors, and can advise on export documentation and logistics for your enquiry.' },
@@ -1285,7 +1285,7 @@ export const COUNTRIES: SeoLanding[] = [
     applications: [
       { title: 'Design Studios', desc: 'Precise custom rugs realised to Japanese design briefs.' },
       { title: 'Luxury Interiors', desc: 'Refined hand knotted and silk pieces for luxury homes.' },
-      { title: 'Hospitality', desc: 'Custom custom carpets for Japanese hotels.' },
+      { title: 'Hospitality', desc: 'Custom carpets for Japanese hotels.' },
       { title: 'Premium Retail', desc: 'Refined collections for Japanese design retail.' },
     ],
     whyPoints: [
@@ -1313,7 +1313,7 @@ export const COUNTRIES: SeoLanding[] = [
     buyerSegments: [
       { label: 'Commercial Buyers', body: 'Premium retailers and distributors sourcing refined, finishing-exact collections for the Japanese market.' },
       { label: 'Interior Designers', body: 'Precise custom rugs realised faithfully to Japanese design-studio briefs, with exact colour matching.' },
-      { label: 'Hotels', body: 'Custom custom carpets for Japanese hospitality guestrooms and public areas.' },
+      { label: 'Hotels', body: 'Custom carpets for Japanese hospitality guestrooms and public areas.' },
       { label: 'Builders', body: 'Bespoke carpet supply coordinated with fit-out schedules for residential and hospitality developments.' },
       { label: 'Architects', body: 'Specification support and precise sampling for design-led luxury and cultural-institution projects.' },
       { label: 'Government Buyers', body: 'Production to documented specification for public-sector and cultural-institution procurement.' },
@@ -1346,7 +1346,7 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     whyPoints: [
       { title: 'Contemporary Style', desc: 'Modern patterns and current palettes.' },
-      { title: 'Custom specifications', desc: 'Exact size and shade to brief.' },
+      { title: 'custom design and sizing', desc: 'Exact size and shade to brief.' },
       { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
     ],
     faqs: [
@@ -1564,7 +1564,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'South Africa blends a vibrant hospitality and lodge sector with a design market that draws on natural materials, texture and bold, characterful interiors. We make contract carpets for hotels and lodges, bespoke wool and natural-fibre rugs for designers, and custom supply for commercial projects.',
     sections: [
       { h2: 'Hospitality & Lodge Interiors', body: 'South Africa\'s hotels and safari lodges need durable, characterful carpets. We manufacture contract carpets manufactured to project specifications and bespoke rugs to specification; fire-safety requirements can be specified per project.' },
-      { h2: 'Designer & Commercial Supply', body: 'For South African designers and commercial projects we develop wool and natural-fibre rugs in textured, characterful designs, custom specifications.' },
+      { h2: 'Designer & Commercial Supply', body: 'For South African designers and commercial projects we develop wool and natural-fibre rugs in textured, characterful designs, tailored to the project specification.' },
     ],
     applications: [
       { title: 'Hotels & Lodges', desc: 'Durable contract carpets manufactured to project specifications for South African hospitality.' },
@@ -1575,7 +1575,7 @@ export const COUNTRIES: SeoLanding[] = [
     whyPoints: [
       { title: 'Characterful Design', desc: 'Textured, natural, bold pieces to brief.' },
       { title: 'Contract-Ready', desc: 'Durable carpets built to specification.' },
-      { title: 'Custom specifications', desc: 'Custom design, size and colour.' },
+      { title: 'custom design and sizing', desc: 'Custom design, size and colour.' },
     ],
     faqs: [
       { q: 'Can you supply carpets for buyers and projects in South Africa?', a: 'Yes. We manufacture to order in Bhadohi for South African hospitality, lodges, designers and commercial projects, and can advise on export documentation and logistics for your enquiry.' },
