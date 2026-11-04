@@ -1,4 +1,5 @@
 import type { SeoLanding } from './seo-landing'
+import { COUNTRY_DESIGN_GUIDES } from './country-design-guides'
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Export-market landing pages — /countries/[country]
@@ -1617,3 +1618,9 @@ export const COUNTRIES: SeoLanding[] = [
     relatedCountries: ['uae', 'uk', 'australia'],
   },
 ]
+
+// Attach the researched design guide only to markets with verified local references.
+for (const country of COUNTRIES) {
+  const guide = COUNTRY_DESIGN_GUIDES[country.slug]
+  if (guide) country.designGuide = guide
+}
