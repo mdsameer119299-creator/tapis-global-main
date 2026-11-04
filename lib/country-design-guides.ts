@@ -78,7 +78,7 @@ export const COUNTRY_DESIGN_GUIDES: Record<string, CountryDesignGuide> = {
       { label: 'AD Magazine France — Ten Decoration Trends for 2026 (December 22, 2025)', url: 'https://www.admagazine.fr/article/decoration-tendances-pressenties-2026-experts' },
       { label: 'AD Magazine France — Red and Blue in Contemporary Interiors (September 2, 2026)', url: 'https://www.admagazine.fr/article/duo-rouge-bleu-tendance-deco' },
     ],
-  }
+  },
   australia: {
     intro: 'Australian projects balance indoor-outdoor living, strong natural light, varied climates and relaxed material palettes. 2026 design coverage points to individuality, tactile finishes and grounded natural materials; suitability depends on location and use.',
     trends: [
@@ -104,7 +104,7 @@ export const COUNTRY_DESIGN_GUIDES: Record<string, CountryDesignGuide> = {
       { label: 'ABI Interiors — Interior Design Trends to Watch in 2026 (January 4, 2026)', url: 'https://www.abiinteriors.com.au/the-interior-edit/top-interior-design-trends/' },
       { label: 'BUILD Australia — Interior Trends Shaping Australian Homes in 2026', url: 'https://build.com.au/the-interior-trends-set-to-shape-australian-homes-in-2026/' },
     ],
-  }
+  },
   canada: {
     intro: 'Canadian projects range from urban homes to mountain properties and hospitality spaces. Local 2026 design reporting points to warmer, more personal interiors and layered materials; project specifications must still respond to climate and use.',
     trends: [
@@ -130,7 +130,7 @@ export const COUNTRY_DESIGN_GUIDES: Record<string, CountryDesignGuide> = {
       { label: 'BC Living — 2026 Interior Design Trends from BC Designers (January 21, 2026)', url: 'https://bcliving.ca/home/decor/9-interior-design-trends-in-2026/' },
       { label: 'Wood Industry Canada — 2026 Design Trends Report (January 28, 2026)', url: 'https://woodindustry.ca/the-design-trends-shaping-2026-report/' },
     ],
-  }
+  },
   'uae': {
     intro: 'UAE projects range from contemporary villas and apartments to destination hospitality, retail and workplace environments. Regional 2026 design commentary points toward warmer material palettes, culturally grounded detailing and experiential hospitality. Carpet specifications must account for climate, occupancy and maintenance.',
     trends: [
