@@ -61,7 +61,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { q: 'Can you develop a rug reflecting an embassy\'s own national character?', a: 'Yes. We develop bespoke pieces to an embassy or mission\'s exact colour, motif and cultural references, with samples approved before production.' },
       { q: 'Do you supply corporate offices in Connaught Place or central Delhi?', a: 'Yes. We manufacture contract-grade broadloom and carpet tile to specification for corporate fit-outs.' },
       { q: 'Can you make carpets for a Delhi five-star hotel?', a: 'Yes. We manufacture contract carpets produced to project specifications to your design, size and specification; fire-safety construction can be discussed and specified per project.' },
-      { q: 'Do you have a showroom or office in Delhi?', a: 'No. We manufacture in Bhadohi and produce to order for projects across Delhi. We do not run a ready-stock retail showroom; we work from samples, catalogues and specifications.' },
+      { q: 'Do you have a showroom or office in Delhi?', a: 'No. We manufacture in Bhadohi for projects across Delhi. We do not run a ready-stock retail showroom; we work from samples, catalogues and specifications.' },
       { q: 'Do you offer wholesale or private-label programmes for Delhi trade buyers?', a: 'Yes. Delhi\'s established trade and distribution base is well served by our bulk wholesale and private-label manufacturing programmes, with custom branding and packaging available.' },
       { q: 'What is the production timeline for a carpet?', a: 'Production timing depends on design, size, quantity and finish, and is confirmed when we quote your enquiry.' },
     ],
