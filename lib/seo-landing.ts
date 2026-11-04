@@ -25,6 +25,15 @@ export type LandingFaq = {
   a: string
 }
 
+export type CountryDesignGuide = {
+  intro: string
+  trends: LandingItem[]
+  architectConsiderations: LandingItem[]
+  palette: string[]
+  productFit: LandingItem[]
+  sources: { label: string; url: string }[]
+}
+
 export type SeoLanding = {
   slug:        string
   kind:        'industry' | 'solution' | 'country' | 'dhurrie' | 'company' | 'india' | 'usa-state' | 'usa-city'
@@ -66,6 +75,8 @@ export type SeoLanding = {
   popularStyles?: string[]
   /** Country pages: exactly 6 (Commercial Buyers, Interior Designers, Hotels, Builders, Architects, Government Buyers). USA state/city pages: up to 10 (adds Luxury Homes, Corporate Offices, Hospitality, OEM, Private Label, Wholesale, Contract Manufacturing) — only genuinely differentiated entries, not padded to a count. */
   buyerSegments?: { label: string; body: string }[]
+  /** Country-specific interiors, design-trend and architect specification guide. */
+  designGuide?: CountryDesignGuide
   /** Custom-size capability framed for this market's standard dimensions/units. */
   customSizesNote?: string
   /** TARA_MATERIALS ids most relevant to this market's design preferences. */
