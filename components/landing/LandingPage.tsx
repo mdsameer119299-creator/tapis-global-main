@@ -291,10 +291,10 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
               Manufacturer · Supplier · Exporter
             </p>
             <h2 className="font-medium leading-[1.08] mb-4 max-w-2xl" style={{ fontFamily: '"Cormorant Garamond", serif', fontSize: 'clamp(26px, 2.8vw, 38px)', color: 'var(--ink)' }}>
-              Discuss Your {page.label} Requirement
+              {page.kind === 'country' ? `Partner with an Indian Carpet & Rug Manufacturer for the ${page.label} Market` : `Discuss Your ${page.label} Requirement`}
             </h2>
             <p className="text-[16px] font-light leading-[1.82] max-w-2xl mb-8" style={{ color: 'var(--inkm)' }}>
-              Manufactured in Bhadohi and supplied across India and international markets. Request our catalogue, get a quote, request a sample, or message us on WhatsApp.
+              {page.kind === 'country' ? `TAPIS GLOBAL INTERNATIONAL manufactures carpets and rugs in Bhadohi, India for ${page.label} importers, wholesalers, retailers, interior designers, architects and hospitality buyers. Request product details, discuss your specification or ask for a quotation.` : 'Manufactured in Bhadohi and supplied across India and international markets. Request our catalogue, get a quote, request a sample, or message us on WhatsApp.'}
             </p>
             <div className="flex flex-wrap gap-3.5">
               <Link href="/catalogue" className="px-9 py-3.5 text-[15px] tracking-[0.18em] uppercase font-semibold rounded-sm transition-all duration-300 hover:brightness-110" style={{ background: 'var(--g)', color: 'var(--ink)' }}>
