@@ -60,7 +60,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { q: 'Can you support government tender or procurement requirements for Delhi buildings?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions for government and institutional projects.' },
       { q: 'Can you develop a rug reflecting an embassy\'s own national character?', a: 'Yes. We develop bespoke pieces to an embassy or mission\'s exact colour, motif and cultural references, with samples approved before production.' },
       { q: 'Do you supply corporate offices in Connaught Place or central Delhi?', a: 'Yes. We manufacture contract-grade broadloom and carpet tile to specification for corporate fit-outs.' },
-      { q: 'Can you make carpets for a Delhi five-star hotel?', a: 'Yes. We manufacture contract carpets manufactured to project specifications to your design, size and specification; fire-safety construction can be discussed and specified per project.' },
+      { q: 'Can you make carpets for a Delhi five-star hotel?', a: 'Yes. We manufacture contract carpets produced to project specifications to your design, size and specification; fire-safety construction can be discussed and specified per project.' },
       { q: 'Do you have a showroom or office in Delhi?', a: 'No. We manufacture in Bhadohi and produce to order for projects across Delhi. We do not run a ready-stock retail showroom; we work from samples, catalogues and specifications.' },
       { q: 'Do you offer wholesale or private-label programmes for Delhi trade buyers?', a: 'Yes. Delhi\'s established trade and distribution base is well served by our bulk wholesale and private-label manufacturing programmes, with custom branding and packaging available.' },
       { q: 'What is the production timeline for a carpet?', a: 'Production timing depends on design, size, quantity and finish, and is confirmed when we quote your enquiry.' },
@@ -163,11 +163,11 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     overview: 'As India\'s financial capital, Mumbai concentrates some of the country\'s highest-value residential towers, flagship five-star hotels and premium corporate headquarters, where specification and finish matter enormously. As a manufacturer we develop bespoke hand knotted and hand tufted rugs, luxury custom pieces and contract carpet to designer briefs, all made in Bhadohi for supply into the city.',
     sections: [
       { h2: 'Luxury Residential Towers', body: 'Mumbai\'s premium apartments and residential towers call for refined, bespoke rugs. We develop fine hand knotted and wool-silk pieces to exact colour, size and design for the city\'s interior designers and private clients.' },
-      { h2: 'Five-Star Hospitality & Corporate Headquarters', body: 'For Mumbai\'s flagship hotels and corporate headquarters we manufacture contract carpets manufactured to project specifications — durable, design-led and specification-exact; fire-safety and other technical requirements are discussed and specified per project.' },
+      { h2: 'Five-Star Hospitality & Corporate Headquarters', body: 'For Mumbai\'s flagship hotels and corporate headquarters we manufacture contract carpets produced to project specifications — durable, design-led and specification-exact; fire-safety and other technical requirements are discussed and specified per project.' },
     ],
     applications: [
       { title: 'Luxury Residential', desc: 'Bespoke rugs for Mumbai\'s premium towers and apartments.' },
-      { title: 'Five-Star Hotels', desc: 'contract carpets manufactured to project specifications for flagship hospitality.' },
+      { title: 'Five-Star Hotels', desc: 'contract carpets produced to project specifications for flagship hospitality.' },
       { title: 'Corporate Headquarters', desc: 'Custom broadloom for premium office fit-outs.' },
       { title: 'Interior Designers', desc: 'Fine bespoke pieces to exact design briefs.' },
     ],
@@ -178,7 +178,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     ],
     faqs: [
       { q: 'Do you supply luxury rugs in Mumbai?', a: 'Yes. We manufacture bespoke hand knotted and wool-silk rugs to exact colour, size and design in Bhadohi, for supply to Mumbai. We do not hold ready stock — each piece is produced to the agreed specification.' },
-      { q: 'Can you make carpets for a Mumbai five-star hotel?', a: 'Yes. We produce contract carpets manufactured to project specifications to specification; fire-safety and technical requirements are discussed and specified per project.' },
+      { q: 'Can you make carpets for a Mumbai five-star hotel?', a: 'Yes. We produce contract carpets produced to project specifications to specification; fire-safety and technical requirements are discussed and specified per project.' },
       { q: 'Do you supply Mumbai corporate headquarters?', a: 'Yes. We manufacture contract-grade broadloom and carpet tile to specification for corporate fit-outs.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects the design, size, quantity and finish and is confirmed at the quotation stage.' },
       { q: 'Do you work with Mumbai interior designers directly?', a: 'Yes. We work directly with designers and private clients, with lab-dips and samples approved before production.' },
@@ -230,7 +230,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     applications: [
       { title: 'Tech Campuses & Offices', desc: 'Custom broadloom and carpet tiles for workspaces.' },
       { title: 'Coworking Operators', desc: 'Durable, modular flooring for coworking floors.' },
-      { title: 'Hospitality', desc: 'custom carpets for boutique hotels.' },
+      { title: 'Hospitality', desc: 'Custom carpets for boutique hotels.' },
       { title: 'Modern Residential', desc: 'Contemporary rugs to exact design briefs.' },
     ],
     whyPoints: [
@@ -286,17 +286,17 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     overview: 'Hyderabad pairs a large IT corridor generating steady office and coworking demand with a hospitality sector and a heritage-luxury tradition rooted in the city\'s palatial interiors and Nizami-era design vocabulary. As a manufacturer we supply custom office carpets and tiles, contract hospitality carpets and opulent hand knotted rugs, produced in Bhadohi for supply into the city.',
     sections: [
       { h2: 'HITEC City & IT Corridor', body: 'For Hyderabad\'s office parks and coworking spaces around HITEC City and Gachibowli we manufacture durable custom broadloom and carpet tiles to specification, in contemporary, workspace-appropriate designs with dye-lot consistency across large orders.' },
-      { h2: 'Hospitality & Heritage-Luxury Interiors', body: 'For the city\'s hotels and heritage-luxury apartments we develop bespoke hand knotted rugs and contract carpets manufactured to project specifications, rich or restrained, to exact colour and dimension — drawing on classical pattern development where a project calls for it.' },
+      { h2: 'Hospitality & Heritage-Luxury Interiors', body: 'For the city\'s hotels and heritage-luxury apartments we develop bespoke hand knotted rugs and contract carpets produced to project specifications, rich or restrained, to exact colour and dimension — drawing on classical pattern development where a project calls for it.' },
     ],
     applications: [
       { title: 'IT & Office Parks', desc: 'Custom broadloom and tiles for HITEC City workspaces.' },
-      { title: 'Hotels & Hospitality', desc: 'contract carpets manufactured to project specifications for Hyderabad hotels.' },
+      { title: 'Hotels & Hospitality', desc: 'contract carpets produced to project specifications for Hyderabad hotels.' },
       { title: 'Heritage-Luxury Apartments', desc: 'Opulent hand knotted rugs to exact brief.' },
       { title: 'Interior Designers', desc: 'Bespoke pieces for residential and commercial schemes.' },
     ],
     whyPoints: [
       { title: 'Custom Craft', desc: 'From workspace tiles to opulent hand knots.' },
-      { title: 'custom design and sizing', desc: 'Your design, size, colour and quantity.' },
+      { title: 'Custom Design & Sizing', desc: 'Your design, size, colour and quantity.' },
       { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
     ],
     faqs: [
@@ -304,7 +304,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { q: 'Can you make opulent hand knotted rugs for heritage-luxury interiors?', a: 'Yes. We craft bespoke hand knotted rugs to exact colour, motif and dimension, including classical pattern development.' },
       { q: 'Can you support architect and developer specification for luxury apartments?', a: 'Yes. We develop lab-dips and samples to exact colour and design before production, working directly with architects and developers.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
-      { q: 'Do you supply hotels and hospitality projects?', a: 'Yes. We produce contract carpets manufactured to project specifications to specification for Hyderabad hospitality.' },
+      { q: 'Do you supply hotels and hospitality projects?', a: 'Yes. We produce contract carpets produced to project specifications to specification for Hyderabad hospitality.' },
       { q: 'Do you offer wholesale or private-label programmes?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing with custom branding.' },
       { q: 'Are you a retail store?', a: 'No. We are a manufacturer and supplier producing carpets and rugs to order.' },
     ],
@@ -319,7 +319,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     popularStyles: ['Modular IT-corridor carpet tile', 'Opulent heritage hand-knotted rugs', 'Design-forward hospitality carpet', 'Classical Nizami-inspired pattern work', 'Contemporary luxury-apartment rugs'],
     buyerSegments: [
       { label: 'Corporate Offices', body: 'Custom broadloom and carpet tile manufactured to specification for HITEC City and Gachibowli offices.' },
-      { label: 'Hospitality', body: 'custom contract carpet for Hyderabad\'s hotel sector.' },
+      { label: 'Hospitality', body: 'Custom contract carpet for Hyderabad\'s hotel sector.' },
       { label: 'Luxury Residential', body: 'Opulent bespoke hand knotted rugs for Hyderabad\'s heritage-luxury apartments.' },
       { label: 'Interior Designers', body: 'Bespoke rug development for residential and commercial design schemes.' },
       { label: 'Architects', body: 'Custom carpet and rug specification support for architectural and design-build projects across Hyderabad.' },
@@ -353,7 +353,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { title: 'Industrial & Manufacturing', desc: 'Durable contract carpet for industrial and corporate facilities.' },
       { title: 'Port-Linked Trade', desc: 'Bulk, batch-consistent supply for Chennai\'s import-export sector.' },
       { title: 'Corporate Offices', desc: 'Custom broadloom and tiles for commercial fit-outs.' },
-      { title: 'Hotels & Hospitality', desc: 'contract carpets manufactured to project specifications for Chennai hotels.' },
+      { title: 'Hotels & Hospitality', desc: 'contract carpets produced to project specifications for Chennai hotels.' },
     ],
     whyPoints: [
       { title: 'Trade-Ready', desc: 'Freight routed efficiently through Chennai\'s port and logistics network.' },
@@ -363,7 +363,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     faqs: [
       { q: 'Do you supply carpets for Chennai\'s industrial and manufacturing facilities?', a: 'Yes. We manufacture durable carpet manufactured to specification to specification for industrial and corporate facilities across Chennai.' },
       { q: 'Can you supply Chennai\'s port-linked trade and distribution sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing, with freight routed efficiently through Chennai\'s port and logistics network.' },
-      { q: 'Do you supply hotel carpets in Chennai?', a: 'Yes. We manufacture contract carpets manufactured to project specifications to specification in Bhadohi, for supply to Chennai; fire-safety and technical requirements are discussed and specified per project.' },
+      { q: 'Do you supply hotel carpets in Chennai?', a: 'Yes. We manufacture contract carpets produced to project specifications to specification in Bhadohi, for supply to Chennai; fire-safety and technical requirements are discussed and specified per project.' },
       { q: 'Can you supply office and commercial fit-outs?', a: 'Yes. We make custom broadloom and carpet tiles for Chennai commercial projects.' },
       { q: 'How are lead times decided?', a: 'As each piece is produced to the agreed specification, the timeline depends on design, size, quantity and finish and is confirmed at quotation.' },
       { q: 'Do you work with Chennai designers and developers?', a: 'Yes. We supply designers, developers and procurement teams directly, with samples approved before production.' },
@@ -377,12 +377,12 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     importProcess: 'We confirm specification and volume, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection — the same disciplined process for a bulk trade programme as for a single hospitality order.',
     shipping: 'Freight is coordinated from Bhadohi to Chennai, with routing efficient for the city\'s port-linked distribution network and consolidated shipments for smaller hospitality and design orders.',
     leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved.',
-    popularStyles: ['Durable industrial-facility carpet', 'Bulk trade-ready broadloom', 'custom hospitality carpet', 'Practical corporate-office constructions', 'Custom designer residential rugs'],
+    popularStyles: ['Durable industrial-facility carpet', 'Bulk trade-ready broadloom', 'Custom hospitality carpet', 'Practical corporate-office constructions', 'Custom designer residential rugs'],
     buyerSegments: [
       { label: 'Contract Manufacturing', body: 'Specification-led production with documentation for industrial and manufacturing-sector projects.' },
       { label: 'Wholesale', body: 'Bulk, batch-consistent programmes for Chennai\'s port-linked trade and distribution sector.' },
       { label: 'Corporate Offices', body: 'Custom broadloom and carpet tile for Chennai commercial fit-outs.' },
-      { label: 'Hospitality', body: 'custom contract carpet for Chennai\'s hotel sector.' },
+      { label: 'Hospitality', body: 'Custom contract carpet for Chennai\'s hotel sector.' },
       { label: 'Architects', body: 'Custom carpet and rug specification support for architectural and design-build projects across Chennai.' },
       { label: 'Government Procurement', body: 'Documented, specification-compliant carpet for institutional and civic tenders.' },
       { label: 'Builders', body: 'Carpet supply coordinated with build schedules for commercial and residential developments.' },
@@ -415,7 +415,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { title: 'Automotive & Corporate Campuses', desc: 'Durable custom broadloom and tiles for Pune workspaces.' },
       { title: 'IT Offices', desc: 'Custom broadloom and carpet tiles for IT-sector fit-outs.' },
       { title: 'Residential Developers', desc: 'Coordinated rug supply for new developments.' },
-      { title: 'Hospitality', desc: 'custom carpets for Pune hotels.' },
+      { title: 'Hospitality', desc: 'Custom carpets for Pune hotels.' },
     ],
     whyPoints: [
       { title: 'Workspace-Ready', desc: 'Durable broadloom and tiles for automotive and IT campuses.' },
@@ -427,7 +427,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { q: 'Can you coordinate rug supply for residential developers?', a: 'Yes. We make custom rugs and carpets coordinated with your project timeline.' },
       { q: 'Do you supply office carpets in Pune?', a: 'Yes. We manufacture custom office broadloom and carpet tiles to specification in Bhadohi, for supply to Pune.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
-      { q: 'Do you supply hotels in Pune?', a: 'Yes. We produce contract carpets manufactured to project specifications to specification for Pune hospitality.' },
+      { q: 'Do you supply hotels in Pune?', a: 'Yes. We produce contract carpets produced to project specifications to specification for Pune hospitality.' },
       { q: 'Do you offer wholesale programmes for Pune buyers?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and private-label manufacturing.' },
       { q: 'Do you hold ready stock?', a: 'No. Every order is made to your project\'s requirements.' },
     ],
@@ -439,12 +439,12 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     importProcess: 'We confirm specification against the automotive-campus, IT-office or residential brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Pune by road, with documentation prepared for smooth receipt at your project site.',
     leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved.',
-    popularStyles: ['Durable automotive-campus contract carpet', 'IT-office carpet tile', 'Coordinated residential-development rugs', 'custom hospitality carpet', 'Practical multi-building broadloom'],
+    popularStyles: ['Durable automotive-campus contract carpet', 'IT-office carpet tile', 'Coordinated residential-development rugs', 'Custom hospitality carpet', 'Practical multi-building broadloom'],
     buyerSegments: [
       { label: 'Corporate Offices', body: 'Durable contract carpet manufactured to specification for Pune\'s automotive and IT corporate campuses.' },
       { label: 'Luxury Residential', body: 'Coordinated rug and carpet supply for Pune\'s residential development sector.' },
       { label: 'Builders', body: 'Carpet supply coordinated with build schedules for commercial and residential developments.' },
-      { label: 'Hospitality', body: 'custom contract carpet for Pune\'s hotel sector.' },
+      { label: 'Hospitality', body: 'Custom contract carpet for Pune\'s hotel sector.' },
       { label: 'Interior Designers', body: 'Custom rug development to Pune residential and commercial design briefs.' },
       { label: 'Architects', body: 'Custom carpet and rug specification support for architectural and design-build projects across Pune.' },
       { label: 'Government Procurement', body: 'Documented, specification-compliant carpet for Maharashtra state and Pune Municipal Corporation institutional tenders.' },
@@ -542,7 +542,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     whyPoints: [
       { title: 'At Source', desc: 'Buy manufacturer-direct in the carpet belt.' },
       { title: 'Full Control', desc: 'Design, material, construction and quality.' },
-      { title: 'custom design and sizing', desc: 'Your specification and quantity.' },
+      { title: 'Custom Design & Sizing', desc: 'Your specification and quantity.' },
     ],
     faqs: [
       { q: 'Are you actually based in Bhadohi?', a: 'Yes. Bhadohi, Uttar Pradesh is our manufacturing base — India\'s carpet-weaving belt. We produce hand knotted, hand tufted and custom carpets to order here.' },
@@ -603,7 +603,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     importProcess: 'We confirm specification against the heritage, hospitality or institutional brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Kolkata by road, with documentation prepared for smooth receipt at heritage properties, civic buildings and project sites.',
     leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — auditorium and institutional projects with fixed dates are planned around accordingly.',
-    popularStyles: ['Bespoke heritage-club hand-knotted rugs', 'Documented auditorium and institutional carpet', 'Classical Bengal-appropriate pattern work', 'custom hospitality carpet', 'Traditional residential rugs'],
+    popularStyles: ['Bespoke heritage-club hand-knotted rugs', 'Documented auditorium and institutional carpet', 'Classical Bengal-appropriate pattern work', 'Custom hospitality carpet', 'Traditional residential rugs'],
     buyerSegments: [
       { label: 'Hospitality', body: 'Bespoke carpet for Kolkata\'s heritage hotel and club sector.' },
       { label: 'Contract Manufacturing', body: 'Specification-led production with documentation for auditorium and cultural-institution programmes.' },
@@ -687,7 +687,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     tagline: 'Carpet and rug manufacturer producing to buyer specifications producing for Jaipur\'s heritage hotels, palaces and luxury hospitality.',
     seoTitle: 'Carpet Manufacturer for Jaipur | Tapis Global',
     seoDescription: 'Carpet manufacturer producing to buyer specifications for Jaipur — heritage hotels, palaces, luxury resorts and Rajasthani interiors. Request a catalogue or quote.',
-    seoKeywords: ['carpet manufacturer Jaipur', 'heritage hotel carpet Jaipur', 'luxury rugs Jaipur', 'custom carpets Jaipur', 'palace carpet supplier Rajasthan'],
+    seoKeywords: ['carpet manufacturer Jaipur', 'heritage hotel carpet Jaipur', 'luxury rugs Jaipur', 'Custom carpets Jaipur', 'palace carpet supplier Rajasthan'],
     h1: 'Carpet & Rug Manufacturer for Jaipur',
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Jaipur — heritage hotels, palace conversions, luxury resorts and designers. We make to your brief; we are a manufacturer, not a ready-stock retailer.',
     overview: 'Jaipur is one of India\'s premier heritage-tourism and luxury-hospitality destinations, where palace hotels, boutique resorts and Rajasthani interiors call for rich, bespoke carpets. As a manufacturer we develop opulent hand knotted rugs, custom hospitality carpets and heritage-inspired designs to exact colour and dimension, produced in Bhadohi.',
@@ -697,13 +697,13 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     ],
     applications: [
       { title: 'Heritage & Palace Hotels', desc: 'Opulent bespoke carpets for Jaipur\'s heritage venues.' },
-      { title: 'Luxury Resorts', desc: 'contract carpets manufactured to project specifications to specification.' },
+      { title: 'Luxury Resorts', desc: 'contract carpets produced to project specifications to specification.' },
       { title: 'Interior Designers', desc: 'Bespoke heritage-inspired rugs to brief.' },
       { title: 'Palace Residences', desc: 'Custom rugs for luxury Rajasthani interiors.' },
     ],
     whyPoints: [
       { title: 'Heritage Craft', desc: 'Rich, intricate designs realised faithfully.' },
-      { title: 'custom design and sizing', desc: 'Your design, size, colour and motif.' },
+      { title: 'Custom Design & Sizing', desc: 'Your design, size, colour and motif.' },
       { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
     ],
     faqs: [
@@ -711,7 +711,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { q: 'Can you realise traditional Rajasthani motifs?', a: 'Yes. We faithfully realise heritage and classical motifs, with samples approved before production.' },
       { q: 'Do you support heritage-conservation or government tourism-board procurement?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support procurement and tender submissions.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
-      { q: 'Do you supply luxury resorts?', a: 'Yes. We produce contract carpets manufactured to project specifications to specification for Jaipur hospitality.' },
+      { q: 'Do you supply luxury resorts?', a: 'Yes. We produce contract carpets produced to project specifications to specification for Jaipur hospitality.' },
       { q: 'Do you offer OEM or private-label programmes for Jaipur\'s handicraft export trade?', a: 'Yes. We provide OEM and private-label manufacturing with custom branding and packaging, alongside bulk wholesale programmes.' },
       { q: 'Do you hold ready stock?', a: 'No. Every carpet and rug is made to your project\'s requirements.' },
     ],
@@ -753,13 +753,13 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     overview: 'Surat\'s diamond and textile wealth drives a strong market for premium residential interiors, alongside a genuine textile-trade and retail sector and growing commercial development and hospitality. As a manufacturer we supply bespoke luxury rugs for the city\'s affluent residences, trade-ready carpet for its textile-trade sector, and custom broadloom and contract carpets for its commercial developments, produced in Bhadohi.',
     sections: [
       { h2: 'HNI Residential & Luxury Rugs', body: 'For Surat\'s affluent residences we develop bespoke luxury rugs — fine hand knotted and wool-silk — to exact colour, size and design.' },
-      { h2: 'Textile Trade & Commercial', body: 'Surat\'s genuine textile-trade and diamond-trade base supports wholesale and export-adjacent demand, alongside commercial developments and hotels that call for custom broadloom and contract carpets manufactured to project specifications to specification.' },
+      { h2: 'Textile Trade & Commercial', body: 'Surat\'s genuine textile-trade and diamond-trade base supports wholesale and export-adjacent demand, alongside commercial developments and hotels that call for custom broadloom and contract carpets produced to project specifications to specification.' },
     ],
     applications: [
       { title: 'HNI Residences', desc: 'Bespoke luxury rugs for Surat\'s premium homes.' },
       { title: 'Textile & Diamond Trade', desc: 'Bulk, batch-consistent supply for Surat\'s trade sector.' },
       { title: 'Commercial Projects', desc: 'Custom broadloom for commercial developments.' },
-      { title: 'Hotels & Hospitality', desc: 'contract carpets manufactured to project specifications.' },
+      { title: 'Hotels & Hospitality', desc: 'contract carpets produced to project specifications.' },
     ],
     whyPoints: [
       { title: 'Luxury Craft', desc: 'Fine hand knotting and premium materials.' },
@@ -769,7 +769,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     faqs: [
       { q: 'Do you supply luxury rugs in Surat?', a: 'Yes. We manufacture bespoke hand knotted and wool-silk rugs to exact colour, size and design in Bhadohi, for supply to Surat.' },
       { q: 'Do you supply Surat\'s textile and diamond trade sector?', a: 'Yes. We provide bulk, batch-consistent wholesale supply and OEM/private-label manufacturing suited to Surat\'s export-adjacent trade.' },
-      { q: 'Can you supply commercial and hospitality projects?', a: 'Yes. We make custom broadloom and contract carpets manufactured to project specifications to specification.' },
+      { q: 'Can you supply commercial and hospitality projects?', a: 'Yes. We make custom broadloom and contract carpets produced to project specifications to specification.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
       { q: 'Do you work with Surat designers directly?', a: 'Yes. We supply designers and private clients directly, with samples approved before production.' },
       { q: 'Are you a retail store?', a: 'No. We are a manufacturer and supplier producing carpets and rugs to order.' },
@@ -782,7 +782,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     importProcess: 'We confirm specification, construction and quantity, then develop lab-dips and a sample for sign-off before production begins — the same process for a single bespoke HNI residential rug as for a bulk textile-trade programme.',
     shipping: 'Freight is coordinated from Bhadohi to Surat by road, with documentation prepared for smooth receipt at your project site or trade warehouse.',
     leadTime: 'Because each piece is produced to the agreed specification, lead time follows the construction, size and quantity specified — confirmed once your specification and samples are approved.',
-    popularStyles: ['Fine hand-knotted HNI residential rugs', 'Wool-silk luxury statement pieces', 'Bulk trade-ready wholesale collections', 'custom hospitality carpet', 'Custom commercial broadloom'],
+    popularStyles: ['Fine hand-knotted HNI residential rugs', 'Wool-silk luxury statement pieces', 'Bulk trade-ready wholesale collections', 'Custom hospitality carpet', 'Custom commercial broadloom'],
     buyerSegments: [
       { label: 'Luxury Residential', body: 'Bespoke fine rugs for Surat\'s high-net-worth residences.' },
       { label: 'Retail', body: 'Custom carpet and rug fit-out for Surat\'s textile and diamond-trade showrooms.' },
@@ -812,22 +812,22 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Goa — beach and boutique resorts, luxury villas and hospitality projects. We make to your brief; we are a manufacturer, not a ready-stock retailer.',
     overview: 'Goa\'s tourism-driven economy centres on resorts, boutique hotels and a booming luxury-villa market, where relaxed, natural, characterful interiors prevail. As a manufacturer we supply resort and villa carpets, natural-fibre rugs and bespoke pieces for the region\'s designers and hospitality developers, produced in Bhadohi.',
     sections: [
-      { h2: 'Resorts & Boutique Hospitality', body: 'For Goa\'s resorts and boutique hotels we manufacture contract carpets manufactured to project specifications and rugs to specification, in relaxed, characterful designs suited to coastal hospitality; fire-safety and technical requirements are specified per project.' },
+      { h2: 'Resorts & Boutique Hospitality', body: 'For Goa\'s resorts and boutique hotels we manufacture contract carpets produced to project specifications and rugs to specification, in relaxed, characterful designs suited to coastal hospitality; fire-safety and technical requirements are specified per project.' },
       { h2: 'Luxury Villas & Natural Fibres', body: 'For Goa\'s luxury villas we develop bespoke rugs and natural-fibre (jute, sisal) pieces to exact colour and size, matched to relaxed coastal interiors.' },
     ],
     applications: [
-      { title: 'Resorts & Boutique Hotels', desc: 'custom carpets for Goa hospitality.' },
+      { title: 'Resorts & Boutique Hotels', desc: 'Custom carpets for Goa hospitality.' },
       { title: 'Luxury Villas', desc: 'Bespoke rugs for Goa\'s villa market.' },
       { title: 'Natural-Fibre Interiors', desc: 'Jute and sisal rugs for coastal schemes.' },
       { title: 'Interior Designers', desc: 'Characterful pieces to exact design briefs.' },
     ],
     whyPoints: [
       { title: 'Coastal Character', desc: 'Relaxed, natural, characterful designs.' },
-      { title: 'custom design and sizing', desc: 'Your design, size, colour and quantity.' },
+      { title: 'Custom Design & Sizing', desc: 'Your design, size, colour and quantity.' },
       { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
     ],
     faqs: [
-      { q: 'Do you supply resort carpets in Goa?', a: 'Yes. We manufacture contract carpets manufactured to project specifications and rugs to specification in Bhadohi, for supply to Goa; fire-safety and technical requirements are specified per project.' },
+      { q: 'Do you supply resort carpets in Goa?', a: 'Yes. We manufacture contract carpets produced to project specifications and rugs to specification in Bhadohi, for supply to Goa; fire-safety and technical requirements are specified per project.' },
       { q: 'Can you make natural-fibre rugs for villas?', a: 'Yes. We craft jute, sisal and wool rugs to exact colour and size for Goa\'s villa interiors.' },
       { q: 'Can you support Goa tourism-board or government tender requirements?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
@@ -888,7 +888,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     faqs: [
       { q: 'Do you supply government and institutional carpets in Lucknow?', a: 'Yes. We manufacture custom institutional and auditorium carpets to documented specification and tender requirements in Bhadohi, for supply to Lucknow.' },
       { q: 'Can you support UP state government procurement or tender requirements?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions.' },
-      { q: 'Can you supply Lucknow hotels?', a: 'Yes. We produce contract carpets manufactured to project specifications and bespoke rugs to specification.' },
+      { q: 'Can you supply Lucknow hotels?', a: 'Yes. We produce contract carpets produced to project specifications and bespoke rugs to specification.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
       { q: 'Are you based near Lucknow?', a: 'We manufacture in Bhadohi, in the same state (Uttar Pradesh). We do not operate a retail showroom in Lucknow; we produce to order.' },
       { q: 'Do you offer OEM or private-label programmes for Lucknow handicraft trade?', a: 'Yes. We provide OEM and private-label manufacturing with custom branding, drawing on our same-state proximity to Bhadohi\'s handicraft cluster.' },
@@ -931,22 +931,22 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     intro: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi and produces for buyers across Kochi and Kerala — hotels, backwater resorts, the city\'s growing IT-park corporate sector and commercial projects. We make to your brief; we are a manufacturer, not a ready-stock retailer.',
     overview: 'Kochi anchors Kerala\'s tourism and hospitality economy — heritage hotels, backwater and beach resorts and growing commercial development — alongside a genuinely growing IT-park corporate sector around Infopark and SmartCity. As a manufacturer we supply hospitality carpets, natural-fibre rugs suited to Kerala\'s tropical aesthetic, and custom office carpet for the region\'s developers and growing corporate base, produced in Bhadohi.',
     sections: [
-      { h2: 'Hospitality & Backwater Resorts', body: 'For Kochi\'s hotels and backwater resorts we manufacture contract carpets manufactured to project specifications and rugs to specification, in relaxed designs suited to tropical hospitality.' },
+      { h2: 'Hospitality & Backwater Resorts', body: 'For Kochi\'s hotels and backwater resorts we manufacture contract carpets produced to project specifications and rugs to specification, in relaxed designs suited to tropical hospitality.' },
       { h2: 'Natural Fibres & Growing IT-Park Corporate', body: 'For Kerala interiors we develop natural-fibre (jute, sisal, coir) rugs to exact size, plus custom broadloom and carpet tile for Kochi\'s growing IT-park and commercial office sector.' },
     ],
     applications: [
-      { title: 'Hotels & Resorts', desc: 'custom carpets for Kochi hospitality.' },
+      { title: 'Hotels & Resorts', desc: 'Custom carpets for Kochi hospitality.' },
       { title: 'Natural-Fibre Interiors', desc: 'Jute, sisal and coir rugs for tropical schemes.' },
       { title: 'IT Parks & Commercial', desc: 'Custom broadloom for Infopark and commercial fit-outs.' },
       { title: 'Interior Designers', desc: 'Bespoke pieces to exact design briefs.' },
     ],
     whyPoints: [
       { title: 'Tropical Materials', desc: 'Natural fibres suited to Kerala interiors.' },
-      { title: 'custom design and sizing', desc: 'Your design, size, colour and quantity.' },
+      { title: 'Custom Design & Sizing', desc: 'Your design, size, colour and quantity.' },
       { title: 'Manufacturer-Direct', desc: 'Produced in our own Bhadohi facility.' },
     ],
     faqs: [
-      { q: 'Do you supply resort carpets in Kochi?', a: 'Yes. We manufacture contract carpets manufactured to project specifications and rugs to specification in Bhadohi, for supply to Kochi.' },
+      { q: 'Do you supply resort carpets in Kochi?', a: 'Yes. We manufacture contract carpets produced to project specifications and rugs to specification in Bhadohi, for supply to Kochi.' },
       { q: 'Can you make natural-fibre rugs?', a: 'Yes. We craft jute, sisal and coir rugs to exact size for Kerala interiors.' },
       { q: 'Do you supply Kochi\'s IT parks and commercial offices?', a: 'Yes. We manufacture custom office broadloom and carpet tiles to specification for Kochi\'s growing IT-park corporate sector.' },
       { q: 'Can you support Kerala government or tourism-board tender requirements?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions.' },
@@ -997,7 +997,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { title: 'Government & Institutions', desc: 'Documented institutional carpets to spec.' },
       { title: 'Corporate Offices', desc: 'Custom broadloom for corporate fit-outs.' },
       { title: 'Premium Residential', desc: 'Modern bespoke rugs to exact brief.' },
-      { title: 'Hotels & Hospitality', desc: 'contract carpets manufactured to project specifications.' },
+      { title: 'Hotels & Hospitality', desc: 'contract carpets produced to project specifications.' },
     ],
     whyPoints: [
       { title: 'Tender-Ready', desc: 'Documented specification support for tender requirements.' },
@@ -1020,7 +1020,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     importProcess: 'We confirm specification against the government, corporate or residential brief, develop lab-dips and a sample for approval, then produce with staged quality checks and a documented pre-dispatch inspection before shipment.',
     shipping: 'Freight is coordinated from Bhadohi to Chandigarh by road, with documentation prepared for smooth receipt at government buildings and project sites across the tricity.',
     leadTime: 'Production timelines follow construction, size and quantity, confirmed once specification and samples are approved — government and institutional projects with fixed tender dates are planned around accordingly.',
-    popularStyles: ['Documented institutional-grade broadloom', 'Modern clean-lined bespoke rugs', 'Government-tender-ready constructions', 'Contemporary corporate carpet tile', 'custom hospitality carpet'],
+    popularStyles: ['Documented institutional-grade broadloom', 'Modern clean-lined bespoke rugs', 'Government-tender-ready constructions', 'Contemporary corporate carpet tile', 'Custom hospitality carpet'],
     buyerSegments: [
       { label: 'Government Procurement', body: 'Documented, tender-ready carpet manufactured to specification for Chandigarh\'s government and administrative buildings.' },
       { label: 'Corporate Offices', body: 'Custom broadloom and carpet tile for tricity corporate fit-outs.' },
@@ -1050,11 +1050,11 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     overview: 'Gurugram is the corporate heart of Delhi NCR — dense with multinational headquarters, Grade-A office towers, luxury hospitality and premium high-rise residential, distinct from Delhi\'s government and diplomatic character or Noida\'s IT-institutional base. As a manufacturer we supply custom office broadloom and carpet tiles at MNC scale, luxury hospitality carpets and bespoke residential rugs for the city\'s fit-out contractors and designers, produced in Bhadohi.',
     sections: [
       { h2: 'MNC Corporate Fit-Outs', body: 'For Gurugram\'s MNC offices and Grade-A towers we manufacture durable custom broadloom and carpet tiles in modular, workspace-appropriate formats, made to specification and coordinated with fit-out schedules across multi-floor programmes.' },
-      { h2: 'Luxury Hospitality & High-Rise Residential', body: 'For the city\'s luxury hotels and premium apartments we develop contract carpets manufactured to project specifications and bespoke rugs to exact colour, size and specification.' },
+      { h2: 'Luxury Hospitality & High-Rise Residential', body: 'For the city\'s luxury hotels and premium apartments we develop contract carpets produced to project specifications and bespoke rugs to exact colour, size and specification.' },
     ],
     applications: [
       { title: 'MNC & Corporate Offices', desc: 'Custom broadloom and tiles for Gurugram towers.' },
-      { title: 'Luxury Hotels', desc: 'contract carpets manufactured to project specifications to specification.' },
+      { title: 'Luxury Hotels', desc: 'contract carpets produced to project specifications to specification.' },
       { title: 'High-Rise Residential', desc: 'Bespoke rugs for premium apartments.' },
       { title: 'Fit-Out Contractors', desc: 'Custom supply coordinated with project schedules.' },
     ],
@@ -1065,7 +1065,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     ],
     faqs: [
       { q: 'Do you supply office carpets and tiles in Gurugram?', a: 'Yes. We manufacture custom office broadloom and carpet tiles to specification in Bhadohi, for supply to Gurugram, with dye-lot consistency across MNC-scale multi-floor orders.' },
-      { q: 'Can you supply luxury hotels in Gurugram?', a: 'Yes. We produce contract carpets manufactured to project specifications to specification; fire-safety and technical requirements are specified per project.' },
+      { q: 'Can you supply luxury hotels in Gurugram?', a: 'Yes. We produce contract carpets produced to project specifications to specification; fire-safety and technical requirements are specified per project.' },
       { q: 'Can you support Haryana state or municipal procurement requirements?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline reflects design, size, quantity and finish and is confirmed at quotation.' },
       { q: 'Can production be coordinated with a fit-out schedule?', a: 'Yes. We coordinate production and dispatch with your installation programme where possible; details are agreed at the quotation stage.' },
@@ -1083,7 +1083,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
     buyerSegments: [
       { label: 'Corporate Offices', body: 'Custom broadloom and carpet tile manufactured to MNC-scale specification for Gurugram\'s Grade-A towers.' },
       { label: 'Luxury Residential', body: 'Bespoke rugs for Gurugram\'s premium high-rise apartments.' },
-      { label: 'Hospitality', body: 'custom contract carpet for Gurugram\'s luxury hotel sector.' },
+      { label: 'Hospitality', body: 'Custom contract carpet for Gurugram\'s luxury hotel sector.' },
       { label: 'Architects', body: 'Custom carpet and rug specification support for architectural and design-build projects across Gurugram.' },
       { label: 'Government Procurement', body: 'Documented, specification-compliant carpet for Haryana state and municipal institutional tenders.' },
       { label: 'Builders', body: 'Carpet supply coordinated with fit-out schedules for corporate and residential developments.' },
@@ -1115,7 +1115,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { title: 'IT Parks & Offices', desc: 'Custom broadloom and tiles for Noida workspaces.' },
       { title: 'Institutions & Auditoria', desc: 'custom institutional carpets to spec.' },
       { title: 'Residential Developers', desc: 'Coordinated rug supply for developments.' },
-      { title: 'Hotels & Hospitality', desc: 'contract carpets manufactured to project specifications.' },
+      { title: 'Hotels & Hospitality', desc: 'contract carpets produced to project specifications.' },
     ],
     whyPoints: [
       { title: 'Commercial-Ready', desc: 'Durable broadloom, tiles and institutional carpets.' },
@@ -1363,7 +1363,7 @@ export const INDIA_LOCATIONS: SeoLanding[] = [
       { q: 'Do you supply carpets for Bhubaneswar government and PSU buildings?', a: 'Yes. We manufacture custom institutional carpet to documented specification for Odisha state and public-sector-undertaking projects.' },
       { q: 'Can you support Odisha government tender requirements?', a: 'Yes. We produce to documented specification and can supply samples and specification sheets to support tender submissions.' },
       { q: 'Do you supply Bhubaneswar\'s IT and smart-city corporate sector?', a: 'Yes. We manufacture custom contract carpet to specification for Bhubaneswar\'s growing IT offices.' },
-      { q: 'Can you supply heritage or temple-city hospitality projects?', a: 'Yes. We produce contract carpets manufactured to project specifications to specification for Bhubaneswar hotels.' },
+      { q: 'Can you supply heritage or temple-city hospitality projects?', a: 'Yes. We produce contract carpets produced to project specifications to specification for Bhubaneswar hotels.' },
       { q: 'How are lead times decided?', a: 'Every order is customised to the agreed specification, so the timeline depends on design, size, quantity and finish, and is confirmed at quotation.' },
       { q: 'Do you have a showroom or office in Bhubaneswar?', a: 'No. We manufacture in Bhadohi and produce to order for projects across Bhubaneswar. We do not run a ready-stock retail showroom.' },
     ],
