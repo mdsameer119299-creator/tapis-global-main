@@ -160,30 +160,30 @@ export const COUNTRIES: SeoLanding[] = [
     tagline: 'Carpet and rug export from India to Germany — quality-driven supply for designers, contract and retail.',
     seoTitle: 'Carpet & Rug Exporter to Germany | Tapis Global',
     seoDescription: 'Indian carpet and rug exporter to Germany. Quality wool, hand knotted and custom carpets from Bhadohi for German designers. Request a catalogue.',
-    seoKeywords: ['carpet exporter to Germany', 'Indian rug supplier Germany', 'OEKO-TEX carpets Germany', 'wholesale rugs Germany', 'wool carpets Germany supplier'],
+    seoKeywords: ['carpet exporter to Germany', 'Indian rug supplier Germany', 'carpet supplier Germany', 'wholesale rugs Germany', 'wool carpets Germany supplier'],
     h1: 'Carpet & Rug Exporter from India to Germany',
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in Germany — serving designers, contract projects and retail buyers in one of Europe\'s most quality- and sustainability-conscious markets.',
-    overview: 'German buyers demand verifiable quality, material safety and reliable, precise supply. As a manufacturer we meet these expectations with OEKO-TEX-aligned, AZO-free production, consistent quality control and dependable documentation and logistics — for clean contemporary designs and natural fibres that suit German interiors.',
+    overview: 'German buyers demand verifiable quality, material safety and reliable, precise supply. As a manufacturer we meet these expectations with product-specific material information and any available test documentation, consistent quality control and dependable documentation and logistics — for clean contemporary designs and natural fibres that suit German interiors.',
     sections: [
-      { h2: 'Quality & Material Safety', body: 'We manufacture with OEKO-TEX Standard 100-aligned practices and AZO-free dyes, supporting the material-safety assurance German buyers and regulations prioritise.' },
+      { h2: 'Quality & Material Safety', body: 'We manufacture with OEKO-TEX Standard 100-aligned practices and dye information confirmed per product dyes, supporting the material-safety assurance German buyers and regulations prioritise.' },
       { h2: 'Precision & Reliability', body: 'German trade and contract buyers value consistency and on-time supply. Our in-house QC and disciplined logistics support the precision this market expects; dye-lot and delivery planning are confirmed per order.' },
     ],
     applications: [
       { title: 'Designers & Architects', desc: 'Clean contemporary and natural-fibre rugs for German schemes.' },
       { title: 'Contract Projects', desc: 'Quality-managed contract carpets for offices and hospitality.' },
-      { title: 'Retail & Trade', desc: 'OEKO-TEX-aligned collections for German rug retail.' },
+      { title: 'Retail & Trade', desc: 'collections with material details confirmed per product for German rug retail.' },
       { title: 'Sustainable Interiors', desc: 'Natural jute and sisal for eco-conscious projects.' },
     ],
     whyPoints: [
       { title: 'OEKO-TEX-Aligned', desc: 'Material-safety-aligned practices for the German market.' },
       { title: 'Precision Supply', desc: 'Consistent QC and disciplined, documented delivery.' },
-      { title: 'Sustainable Options', desc: 'AZO-free dyes and natural-fibre collections.' },
+      { title: 'Sustainable Options', desc: 'natural-fibre collections, with dye and material information confirmed per product.' },
     ],
     faqs: [
       { q: 'Are your carpets OEKO-TEX certified for Germany?', a: 'We can discuss fibre, dyeing and material information for the selected product. Any certification or restricted-substance documentation must be confirmed against current, product-specific records; no certification is implied by this page.' },
       { q: 'Do you export carpets to Germany?', a: 'Yes. We manufacture in Bhadohi for designers, contract projects and retail buyers in Germany, with full documentation and coordinated freight.' },
       { q: 'Can you guarantee consistent quality for German trade buyers?', a: 'Yes. In-house multi-stage QC supports batch-consistent quality across orders; dye-lot planning is confirmed per order.' },
-      { q: 'Do you offer sustainable natural-fibre rugs?', a: 'Yes — jute, sisal and seagrass rugs with AZO-free dyes suit Germany\'s sustainability focus.' },
+      { q: 'Do you offer sustainable natural-fibre rugs?', a: 'Yes — jute, sisal and seagrass rugs with dye information confirmed per product dyes suit Germany\'s sustainability focus.' },
       { q: 'What payment and shipping terms apply?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile and arrangement; our team will share the terms applicable to your enquiry. We coordinate sea freight to your preferred German port.' },
       { q: 'What carpet styles are most requested by German buyers?', a: 'Clean, contemporary wool rugs and natural-fibre jute and sisal collections lead demand, reflecting Germany\'s preference for functional design and verifiable material safety.' },
       { q: 'What is your minimum order quantity for German buyers?', a: 'Minimum order quantities depend on construction, size and customisation. Share your project brief and our team will confirm the MOQ that applies.' },
@@ -192,17 +192,17 @@ export const COUNTRIES: SeoLanding[] = [
     relatedIndustries: ['office-carpets', 'hotel-carpets', 'retail-carpets'],
     relatedSolutions: ['carpet-exporter-india', 'commercial-carpet-manufacturer'],
     relatedCountries: ['france', 'netherlands', 'belgium'],
-    importProcess: 'German enquiries are typically specification-first: fibre, dye-lot and construction confirmed before any sample is cut. We prepare OEKO-TEX-aligned, AZO-free lab-dips for approval, then move into production with staged QC and a documented pre-dispatch inspection, supported by the commercial and compliance paperwork German import and procurement teams expect.',
+    importProcess: 'German enquiries are typically specification-first: fibre, dye-lot and construction confirmed before any sample is cut. We prepare colour and material samples for approval, then move into production with staged QC and a documented pre-dispatch inspection, supported by the commercial and compliance paperwork German import and procurement teams expect.',
     shipping: 'Sea freight is coordinated to German ports with disciplined dye-lot and delivery-date planning, matching the precision German trade and contract buyers plan around. Consolidated shipments suit smaller trade orders; full containers support ongoing retail and contract programmes.',
     popularStyles: ['Clean contemporary wool rugs', 'Natural-fibre jute & sisal', 'Low-pile contract carpet', 'Minimalist geometric patterns', 'Wool-blend office carpet tiles'],
     buyerSegments: [
-      { label: 'Commercial Buyers', body: 'Trade and retail buyers sourcing OEKO-TEX-aligned collections with dependable, on-schedule delivery.' },
+      { label: 'Commercial Buyers', body: 'Trade and retail buyers sourcing collections with material details confirmed per product with dependable, on-schedule delivery.' },
       { label: 'Interior Designers', body: 'Clean, contemporary rugs developed to precise colour and material specification for German residential schemes.' },
       { label: 'Hotels', body: 'Quality-managed contract carpet for hospitality projects, produced with documented QC at every stage.' },
       { label: 'Builders', body: 'Wall-to-wall and contract carpet coordinated with build schedules for offices and multi-unit developments.' },
-      { label: 'Architects', body: 'Specification support and OEKO-TEX-aligned sampling for design-led commercial and institutional projects.' },
+      { label: 'Architects', body: 'Specification support and sampling with product-specific material details for design-led commercial and institutional projects.' },
     ],
-    customSizesNote: 'We manufacture to European standard rug and carpet-tile dimensions as well as fully custom sizes, with OEKO-TEX-aligned lab-dips approved before bulk production.',
+    customSizesNote: 'We manufacture to European standard rug and carpet-tile dimensions as well as fully custom sizes, with colour and material samples approved before bulk production.',
     materialRecommendations: ['nz-wool', 'jute', 'sisal', 'wool-viscose'],
   },
   {
@@ -379,9 +379,9 @@ export const COUNTRIES: SeoLanding[] = [
     seoKeywords: ['carpet exporter to Netherlands', 'Indian rug supplier Netherlands', 'sustainable rugs Netherlands', 'wholesale rugs Netherlands', 'natural fibre rugs Netherlands'],
     h1: 'Carpet & Rug Exporter from India to the Netherlands',
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in the Netherlands — supplying Dutch designers, trade buyers and contract projects in a market known for clean design and strong sustainability values.',
-    overview: 'Dutch buyers favour clean, functional design and sustainable materials, and the Netherlands is a key European trade and logistics hub. As a manufacturer we supply OEKO-TEX-aligned wool and natural-fibre rugs and contract carpets, with freight coordinated through Dutch ports.',
+    overview: 'Dutch buyers favour clean, functional design and sustainable materials, and the Netherlands is a key European trade and logistics hub. As a manufacturer we supply wool and natural-fibre rugs with product details confirmed per item and contract carpets, with freight coordinated through Dutch ports.',
     sections: [
-      { h2: 'Sustainable & Clean Design', body: 'We supply AZO-free, OEKO-TEX-aligned wool and natural-fibre rugs in the clean, functional designs Dutch interiors favour, all customisable.' },
+      { h2: 'Sustainable & Clean Design', body: 'We supply dye information confirmed per product, wool and natural-fibre rugs with product details confirmed per item in the clean, functional designs Dutch interiors favour, all customisable.' },
       { h2: 'European Trade Hub', body: 'The Netherlands is a major logistics gateway. We coordinate freight to Dutch ports for onward European distribution, with full documentation.' },
     ],
     applications: [
@@ -391,7 +391,7 @@ export const COUNTRIES: SeoLanding[] = [
       { title: 'European Distribution', desc: 'Bulk supply via the Netherlands logistics hub.' },
     ],
     whyPoints: [
-      { title: 'Sustainable Materials', desc: 'OEKO-TEX-aligned, AZO-free, natural-fibre options.' },
+      { title: 'Sustainable Materials', desc: 'product-specific material and test information, natural-fibre options.' },
       { title: 'Coordinated Freight', desc: 'Shipping coordinated via Dutch ports.' },
       { title: 'Reliable Quality', desc: 'Consistent QC and documentation.' },
     ],
@@ -408,17 +408,17 @@ export const COUNTRIES: SeoLanding[] = [
     relatedIndustries: ['office-carpets', 'retail-carpets', 'hotel-carpets'],
     relatedSolutions: ['wholesale-carpet-supplier', 'carpet-exporter-india'],
     relatedCountries: ['belgium', 'germany', 'uk'],
-    importProcess: 'Dutch trade and contract buyers typically confirm specification and sustainability requirements up front. We prepare OEKO-TEX-aligned, AZO-free lab-dips for sign-off, produce with staged QC, and prepare the documentation needed for import through Dutch ports and onward European distribution.',
+    importProcess: 'Dutch trade and contract buyers typically confirm specification and sustainability requirements up front. We prepare colour and material samples for sign-off, produce with staged QC, and prepare the documentation needed for import through Dutch ports and onward European distribution.',
     shipping: 'Rotterdam and neighbouring Dutch ports are our standard routing for both direct Dutch orders and onward European distribution, with consolidated part-loads available for smaller trade orders and full containers for repeat programmes.',
     popularStyles: ['Clean functional wool rugs', 'Natural-fibre jute & sisal', 'Low-pile contract carpet', 'Minimalist neutral-tone rugs', 'Recycled-content synthetic rugs'],
     buyerSegments: [
-      { label: 'Commercial Buyers', body: 'Trade and distribution buyers sourcing sustainable, OEKO-TEX-aligned collections for onward European supply.' },
+      { label: 'Commercial Buyers', body: 'Trade and distribution buyers sourcing sustainable, collections with material details confirmed per product for onward European supply.' },
       { label: 'Interior Designers', body: 'Clean, functional rugs developed to precise colour and material specification for Dutch residential schemes.' },
       { label: 'Hotels', body: 'Quality-managed contract carpet for hospitality projects, documented for Dutch and EU compliance.' },
       { label: 'Builders', body: 'Wall-to-wall and contract carpet coordinated with build schedules for offices and residential developments.' },
       { label: 'Architects', body: 'Specification support and sustainable-material sampling for design-led commercial projects.' },
     ],
-    customSizesNote: 'We manufacture to European standard rug and carpet-tile dimensions as well as fully custom sizes, with OEKO-TEX-aligned lab-dips approved before bulk production.',
+    customSizesNote: 'We manufacture to European standard rug and carpet-tile dimensions as well as fully custom sizes, with colour and material samples approved before bulk production.',
     materialRecommendations: ['jute', 'sisal', 'pet'],
   },
   {
@@ -1070,7 +1070,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in Ireland — hospitality groups, interior designers and contract projects across a market with a strong hotel sector and appreciation for natural wool interiors.',
     overview: 'Ireland combines an active hospitality and tourism sector with residential design that favours warm wool and traditional-to-contemporary style. We make contract carpets for Irish hotels and bespoke wool rugs for designers, developed to specification.',
     sections: [
-      { h2: 'Hospitality & Contract Supply', body: 'Ireland\'s hotels and hospitality venues need durable, design-led carpets. We manufacture contract carpets produced to project specifications; Any applicable fire-performance requirements must be confirmed against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Hospitality & Contract Supply', body: 'Ireland\'s hotels and hospitality venues need durable, design-led carpets. We manufacture contract carpets produced to project specifications; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
       { h2: 'Wool Rugs for Irish Interiors', body: 'For Irish designers and residential projects we craft warm wool and wool-blend rugs, traditional or contemporary, customised to colour and size.' },
     ],
     applications: [
@@ -1165,7 +1165,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'New Zealand interiors lean heavily on natural materials, wool and understated contemporary style, backed by an active residential construction and hospitality sector. We make wool and natural-fibre rugs, bespoke designer pieces and contract carpets, to custom size.',
     sections: [
       { h2: 'Natural Fibres & Wool', body: 'We make wool, jute and sisal rugs in relaxed, contemporary designs suited to New Zealand\'s natural interior aesthetic, all customisable to size and shade.' },
-      { h2: 'Builders & Hospitality', body: 'For NZ builders and hospitality we coordinate bespoke and custom contract carpet supply; Any applicable fire-performance requirements must be confirmed against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Builders & Hospitality', body: 'For NZ builders and hospitality we coordinate bespoke and custom contract carpet supply; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Interior Designers', desc: 'Bespoke wool and natural-fibre rugs for NZ homes.' },
@@ -1219,7 +1219,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Singapore concentrates world-class hospitality, prestige residential towers and sophisticated commercial interiors into a compact, high-specification market. We make custom carpets and bespoke rugs to exact architect specifications — luxury pieces and contract carpets — with disciplined in-house quality control.',
     sections: [
       { h2: 'Luxury Hospitality & Residential Projects', body: 'Singapore\'s luxury hotels and residential towers call for refined, specification-exact carpets. We develop custom pieces to an architect\'s drawing, colour and dimension, with quality control at each stage.' },
-      { h2: 'Commercial & Contract Interiors', body: 'For Singapore commercial and hospitality interiors we manufacture contract carpets produced to project specifications; Any applicable fire-performance requirements must be confirmed against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Commercial & Contract Interiors', body: 'For Singapore commercial and hospitality interiors we manufacture contract carpets produced to project specifications; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Luxury Hospitality', desc: 'Custom carpets for Singapore hotels and resorts.' },
@@ -1381,7 +1381,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Bahrain concentrates almost all of its commercial activity into Manama, a regional financial-services hub with a corresponding cluster of business-oriented hotels. We make custom mosque (saff) carpets, custom contract carpet for business hotels, modular carpet-tile programmes for office fit-outs, and bespoke villa rugs — developed to exact requirements.',
     sections: [
       { h2: 'Mosque & Prayer Carpets', body: 'We manufacture custom mosque carpets with precise prayer-row (saff) layouts, durable comfortable pile and dignified design, made to the exact dimensions and orientation of Bahrain\'s prayer halls.' },
-      { h2: 'Manama\'s Business & Financial District', body: 'Bahrain\'s commercial activity concentrates in Manama, home to a regional financial-services sector and a matching concentration of business-oriented hotels. We supply custom contract carpet for business-hotel guestrooms and public areas, wall-to-wall and modular carpet-tile programmes for financial-district office fit-outs, and bespoke rugs for Bahraini villas and residences — developed to the specification and dye-lot consistency multi-floor commercial projects require; Any applicable fire-performance requirements must be confirmed against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Manama\'s Business & Financial District', body: 'Bahrain\'s commercial activity concentrates in Manama, home to a regional financial-services sector and a matching concentration of business-oriented hotels. We supply custom contract carpet for business-hotel guestrooms and public areas, wall-to-wall and modular carpet-tile programmes for financial-district office fit-outs, and bespoke rugs for Bahraini villas and residences — developed to the specification and dye-lot consistency multi-floor commercial projects require; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Mosques & Prayer Halls', desc: 'Custom saff prayer carpets for Bahrain.' },
@@ -1437,7 +1437,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Kuwait combines strong mosque-carpet demand with luxury residential diwaniyas, a growing hospitality sector and commercial development. We make custom mosque (saff) carpets, opulent villa and majlis rugs, hospitality carpets and custom commercial supply, to exact requirements.',
     sections: [
       { h2: 'Mosque & Majlis Carpets', body: 'We manufacture custom mosque carpets with precise saff prayer-row layouts, and opulent majlis and diwaniya rugs for Kuwaiti residences, developed to exact colour, motif and dimension.' },
-      { h2: 'Hospitality & Commercial Supply', body: 'For Kuwait\'s hotels and commercial projects we make custom carpets; Any applicable fire-performance requirements must be confirmed against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Hospitality & Commercial Supply', body: 'For Kuwait\'s hotels and commercial projects we make custom carpets; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Mosques & Prayer Halls', desc: 'Custom saff prayer carpets for Kuwait.' },
@@ -1491,7 +1491,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Oman\'s commercial activity is spread across Muscat and the southern coastal city of Salalah, home to a distinct resort and heritage-tourism sector. We make custom mosque (saff) carpets, custom resort and hotel carpet, heritage-style villa rugs, and rugs for covered terrace applications, subject to material suitability for terraces and courtyards — developed to exact requirements.',
     sections: [
       { h2: 'Mosque & Prayer Carpets', body: 'We manufacture custom mosque carpets with precise prayer-row (saff) layouts, durable comfortable pile and dignified design, to the exact dimensions and orientation of Oman\'s prayer halls, including the larger-format halls found in Muscat\'s major mosques.' },
-      { h2: 'Resort & Heritage-Style Hospitality', body: 'Oman\'s hospitality sector spans Muscat business hotels and Salalah\'s resort properties, both of which favour heritage-sensitive interior schemes. We supply custom contract carpet for resort and hotel guestrooms and public areas, heritage-style rugs for villas and residences that reference traditional Omani motifs and craft character, and rugs for covered terrace applications, subject to material suitability for the terraces and courtyards common to resort and villa design in Oman\'s climate; Any applicable fire-performance requirements must be confirmed against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Resort & Heritage-Style Hospitality', body: 'Oman\'s hospitality sector spans Muscat business hotels and Salalah\'s resort properties, both of which favour heritage-sensitive interior schemes. We supply custom contract carpet for resort and hotel guestrooms and public areas, heritage-style rugs for villas and residences that reference traditional Omani motifs and craft character, and rugs for covered terrace applications, subject to material suitability for the terraces and courtyards common to resort and villa design in Oman\'s climate; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Mosques & Prayer Halls', desc: 'Custom saff prayer carpets for Oman, including larger-format Muscat mosque halls.' },
@@ -1546,7 +1546,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in South Africa — hospitality groups, safari lodges, interior designers and commercial projects across a market with a distinctive design sensibility and a strong tourism sector.',
     overview: 'South Africa blends a vibrant hospitality and lodge sector with a design market that draws on natural materials, texture and bold, characterful interiors. We make contract carpets for hotels and lodges, bespoke wool and natural-fibre rugs for designers, and custom supply for commercial projects.',
     sections: [
-      { h2: 'Hospitality & Lodge Interiors', body: 'South Africa\'s hotels and safari lodges need durable, characterful carpets. We manufacture contract carpets produced to project specifications and bespoke rugs to specification; Any applicable fire-performance requirements must be confirmed against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Hospitality & Lodge Interiors', body: 'South Africa\'s hotels and safari lodges need durable, characterful carpets. We manufacture contract carpets produced to project specifications and bespoke rugs to specification; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
       { h2: 'Designer & Commercial Supply', body: 'For South African designers and commercial projects we develop wool and natural-fibre rugs in textured, characterful designs, tailored to the project specification.' },
     ],
     applications: [
