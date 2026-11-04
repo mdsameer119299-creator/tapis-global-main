@@ -80,4 +80,31 @@ export const COUNTRY_DESIGN_GUIDES: Record<string, CountryDesignGuide> = {
       { label: 'AD Magazine France — Red and Blue in Contemporary Interiors (September 2, 2026)', url: 'https://www.admagazine.fr/article/duo-rouge-bleu-tendance-deco' },
     ],
   }
+,
+  australia: {
+    intro: 'Australian projects balance indoor-outdoor living, strong natural light, varied climates and relaxed material palettes. 2026 design coverage points to individuality, tactile finishes and grounded natural materials; suitability depends on location and use.',
+    trends: [
+      { title: 'Warmth with individual colour', desc: 'Australian 2026 interiors commentary describes personal colour including burgundy, muted jade, pistachio and powder blue, balanced by warm beige and cream.' },
+      { title: 'Texture as comfort', desc: 'Tactile textiles and matte natural-looking finishes recur in Australian coverage. Wool pile and woven structures can soften timber, stone and polished concrete.' },
+      { title: 'Organic forms', desc: 'Curved forms and natural material references influence Australian interiors. Organic rug shapes and landscape-inspired palettes can connect living areas with outdoor settings.' },
+    ],
+    architectConsiderations: [
+      { title: 'Account for climate and exposure', desc: 'Clarify whether the rug is in a conditioned interior, covered outdoor area or exposed to direct sun or moisture. Do not use indoor construction outdoors without confirmation.' },
+      { title: 'Plan open layouts by zones', desc: 'Use rug dimensions to define living and dining zones while preserving furniture clearances and accessible pathways.' },
+      { title: 'Specify household maintenance', desc: 'Discuss pets, children, beach sand, spills, vacuuming and professional cleaning before choosing fibre and pile.' },
+      { title: 'Check performance evidence', desc: 'For commercial settings, confirm applicable fire, slip, accessibility and maintenance requirements and obtain evidence for the exact construction.' },
+    ],
+    palette: ['Warm sand & cream', 'Muted jade & eucalyptus', 'Burgundy accents', 'Powder blue', 'Clay & ochre', 'Natural wool tones'],
+    productFit: [
+      { title: 'Open-plan homes', desc: 'Area rugs sized to anchor furniture groupings and distinguish living and dining zones.' },
+      { title: 'Coastal residences', desc: 'Textured constructions selected for actual indoor conditions and care requirements.' },
+      { title: 'Hotels and resorts', desc: 'Custom carpet and rugs specified around guest turnover, traffic and cleaning.' },
+      { title: 'Retail and trade', desc: 'Coordinated collections with repeatable sizes, colourways and product-care information.' },
+    ],
+    sources: [
+      { label: 'Henley Homes Australia — Top Five Interior Trends for 2026 (December 18, 2025)', url: 'https://www.henley.com.au/news/top-five-interior-trends-for-2026' },
+      { label: 'ABI Interiors — Interior Design Trends to Watch in 2026 (January 4, 2026)', url: 'https://www.abiinteriors.com.au/the-interior-edit/top-interior-design-trends/' },
+      { label: 'BUILD Australia — Interior Trends Shaping Australian Homes in 2026', url: 'https://build.com.au/the-interior-trends-set-to-shape-australian-homes-in-2026/' },
+    ],
+  }
 }
