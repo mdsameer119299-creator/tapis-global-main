@@ -1,45 +1,44 @@
-import { SITE } from '@/lib/data'
 import { Reveal } from '@/components/ui'
 
 const SIGNALS: { title: string; desc: string; icon: React.ReactNode }[] = [
   {
-    title: `Manufactured in Bhadohi, India`,
-    desc: 'Produced in our own integrated facility — the heart of India\'s handmade carpet industry.',
+    title: 'Bhadohi-Based Manufacturing',
+    desc: 'Carpets and rugs manufactured in Bhadohi, Uttar Pradesh, India — a recognised centre for handmade carpet production.',
     icon: (
       <path d="M3 21V9l9-6 9 6v12M3 21h18M9 21v-6h6v6M9 12h.01M15 12h.01" />
     ),
   },
   {
-    title: 'Custom Production Capabilities',
-    desc: 'Any size, colour, pattern and construction — developed and sampled in-house.',
+    title: 'A Range of Constructions',
+    desc: 'Explore hand-knotted, hand-tufted, wool, wool-blend, jute, coir, dhurrie and other rug and carpet options.',
     icon: (
-      <path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z" />
+      <path d="M4 7h16M4 12h16M4 17h16M7 4v16M17 4v16" />
     ),
   },
   {
-    title: 'Project-Based Manufacturing',
-    desc: 'Specification-led production to architect drawings, mood boards and Pantone references.',
+    title: 'Specification-Led Enquiries',
+    desc: 'Discuss dimensions, colours, patterns, materials and construction against your product brief or project requirements.',
     icon: (
       <path d="M9 11l3 3L22 4M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11" />
     ),
   },
   {
-    title: 'Bulk & Contract Order Capacity',
-    desc: 'A large in-house campus with hundreds of artisans for large volumes and phased delivery.',
-    icon: (
-      <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-    ),
-  },
-  {
-    title: 'Hospitality & Commercial Experience',
-    desc: 'Trusted for hotels, offices, retail and developments across India and abroad.',
+    title: 'Residential & Commercial Use',
+    desc: 'Product discussions for homes, interior design schemes, retail collections, hospitality and other commercial spaces.',
     icon: (
       <path d="M3 21h18M5 21V7l8-4v18M19 21V11l-6-4M9 9v.01M9 12v.01M9 15v.01M9 18v.01" />
     ),
   },
   {
-    title: `Family Heritage Since ${SITE.established}`,
-    desc: 'A third-generation, family-owned business — six decades of handmade carpet-making knowledge.',
+    title: 'India & Export Enquiries',
+    desc: 'Connect with our team about domestic supply or export requirements, destination markets and order details.',
+    icon: (
+      <path d="M2 12h20M12 2a15.3 15.3 0 010 20M12 2a15.3 15.3 0 000 20M2 12a10 10 0 0020 0 10 10 0 00-20 0z" />
+    ),
+  },
+  {
+    title: 'Order-Specific Quotations',
+    desc: 'Pricing, minimum quantities, production schedules and shipping arrangements are confirmed against the selected products and order brief.',
     icon: (
       <path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
     ),
@@ -53,7 +52,7 @@ export default function CategoryTrustSignals() {
         <div className="flex items-center gap-3 mb-8">
           <span className="block h-px w-8" style={{ background: 'rgba(192,155,74,0.5)' }} />
           <span className="text-[14px] tracking-[0.32em] uppercase font-medium" style={{ color: 'var(--gl)' }}>
-            A Genuine Manufacturer — Not a Trading Company
+            Manufacturing & Supply Approach
           </span>
         </div>
       </Reveal>
