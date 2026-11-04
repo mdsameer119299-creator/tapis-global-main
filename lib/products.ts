@@ -716,7 +716,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
       { label: 'Primary Materials', value: 'Wool, Cotton, Jute, Recycled Fibre' },
       { label: 'Pile',           value: 'Pile-free (flat construction)' },
       { label: 'Edge Finish',    value: 'Reinforced selvedge' },
-      { label: 'Dyes',           value: 'Specified and confirmed per order' }
+      { label: 'Dyes',           value: 'Specified and confirmed per order' },
       { label: 'Buyer Requirements', value: 'OEKO-TEX® Standard 100 and AZO-free production can be discussed for qualifying orders, subject to scope and confirmation' },
     ],
     idealFor:  ['Contemporary Homes', 'Scandinavian Retail', 'Boutique Hotels', 'Designer Showrooms'],
