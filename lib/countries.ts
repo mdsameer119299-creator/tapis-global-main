@@ -165,7 +165,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in Germany — serving designers, contract projects and retail buyers in one of Europe\'s most quality- and sustainability-conscious markets.',
     overview: 'German buyers demand verifiable quality, material safety and reliable, precise supply. As a manufacturer we meet these expectations with product-specific material information and any available test documentation, consistent quality control and dependable documentation and logistics — for clean contemporary designs and natural fibres that suit German interiors.',
     sections: [
-      { h2: 'Quality & Material Safety', body: 'We manufacture with OEKO-TEX Standard 100-aligned practices and dye information confirmed per product dyes, supporting the material-safety assurance German buyers and regulations prioritise.' },
+      { h2: 'Quality & Material Safety', body: 'We can share available fibre, dyeing and material information for the selected product. Any certification or chemical-safety claim must be verified against current documentation for that exact construction.' },
       { h2: 'Precision & Reliability', body: 'German trade and contract buyers value consistency and on-time supply. Our in-house QC and disciplined logistics support the precision this market expects; dye-lot and delivery planning are confirmed per order.' },
     ],
     applications: [
@@ -175,12 +175,12 @@ export const COUNTRIES: SeoLanding[] = [
       { title: 'Sustainable Interiors', desc: 'Natural jute and sisal for eco-conscious projects.' },
     ],
     whyPoints: [
-      { title: 'OEKO-TEX-Aligned', desc: 'Material-safety-aligned practices for the German market.' },
+      { title: 'Product Information', desc: 'Material and test documentation can be reviewed for the selected product.' },
       { title: 'Precision Supply', desc: 'Consistent QC and disciplined, documented delivery.' },
-      { title: 'Sustainable Options', desc: 'natural-fibre collections, with dye and material information confirmed per product.' },
+      { title: 'Material Options', desc: 'Natural-fibre options, with product-specific material information confirmed for each enquiry.' },
     ],
     faqs: [
-      { q: 'Are your carpets OEKO-TEX certified for Germany?', a: 'We can discuss fibre, dyeing and material information for the selected product. Any certification or restricted-substance documentation must be confirmed against current, product-specific records; no certification is implied by this page.' },
+      { q: 'Can you provide material or test documentation for German buyers?', a: 'We can discuss fibre, dyeing and material information for the selected product. Any certification or restricted-substance documentation must be confirmed against current, product-specific records; no certification is implied by this page.' },
       { q: 'Do you export carpets to Germany?', a: 'Yes. We manufacture in Bhadohi for designers, contract projects and retail buyers in Germany, with full documentation and coordinated freight.' },
       { q: 'Can you guarantee consistent quality for German trade buyers?', a: 'Yes. In-house multi-stage QC supports batch-consistent quality across orders; dye-lot planning is confirmed per order.' },
       { q: 'Do you offer sustainable natural-fibre rugs?', a: 'Yes — jute, sisal and seagrass rugs with dye information confirmed per product dyes suit Germany\'s sustainability focus.' },
@@ -196,7 +196,7 @@ export const COUNTRIES: SeoLanding[] = [
     shipping: 'Sea freight is coordinated to German ports with disciplined dye-lot and delivery-date planning, matching the precision German trade and contract buyers plan around. Consolidated shipments suit smaller trade orders; full containers support ongoing retail and contract programmes.',
     popularStyles: ['Clean contemporary wool rugs', 'Natural-fibre jute & sisal', 'Low-pile contract carpet', 'Minimalist geometric patterns', 'Wool-blend office carpet tiles'],
     buyerSegments: [
-      { label: 'Commercial Buyers', body: 'Trade and retail buyers sourcing collections with material details confirmed per product with dependable, on-schedule delivery.' },
+      { label: 'Commercial Buyers', body: 'Trade and retail buyers sourcing collections with product details confirmed per item and delivery schedules agreed per order.' },
       { label: 'Interior Designers', body: 'Clean, contemporary rugs developed to precise colour and material specification for German residential schemes.' },
       { label: 'Hotels', body: 'Quality-managed contract carpet for hospitality projects, produced with documented QC at every stage.' },
       { label: 'Builders', body: 'Wall-to-wall and contract carpet coordinated with build schedules for offices and multi-unit developments.' },
@@ -381,7 +381,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in the Netherlands — supplying Dutch designers, trade buyers and contract projects in a market known for clean design and strong sustainability values.',
     overview: 'Dutch buyers favour clean, functional design and sustainable materials, and the Netherlands is a key European trade and logistics hub. As a manufacturer we supply wool and natural-fibre rugs with product details confirmed per item and contract carpets, with freight coordinated through Dutch ports.',
     sections: [
-      { h2: 'Sustainable & Clean Design', body: 'We supply dye information confirmed per product, wool and natural-fibre rugs with product details confirmed per item in the clean, functional designs Dutch interiors favour, all customisable.' },
+      { h2: 'Sustainable & Clean Design', body: 'We supply wool and natural-fibre rugs, with fibre and dye information confirmed for the selected product in the clean, functional designs Dutch interiors favour, all customisable.' },
       { h2: 'European Trade Hub', body: 'The Netherlands is a major logistics gateway. We coordinate freight to Dutch ports for onward European distribution, with full documentation.' },
     ],
     applications: [
@@ -391,13 +391,13 @@ export const COUNTRIES: SeoLanding[] = [
       { title: 'European Distribution', desc: 'Bulk supply via the Netherlands logistics hub.' },
     ],
     whyPoints: [
-      { title: 'Sustainable Materials', desc: 'product-specific material and test information, natural-fibre options.' },
+      { title: 'Sustainable Materials', desc: 'Natural-fibre options, with material and test information confirmed per product.' },
       { title: 'Coordinated Freight', desc: 'Shipping coordinated via Dutch ports.' },
       { title: 'Reliable Quality', desc: 'Consistent QC and documentation.' },
     ],
     faqs: [
       { q: 'Do you export carpets to the Netherlands?', a: 'Yes. We manufacture in Bhadohi for designers, trade buyers and contract projects in the Netherlands, with full documentation and coordinated freight.' },
-      { q: 'Are your carpets sustainable and OEKO-TEX compliant?', a: 'We offer natural-fibre options such as jute and sisal. Any sustainability, chemical-safety or certification claim must be supported by current documentation for the specific product.' },
+      { q: 'Can you provide material and sustainability information for Dutch buyers?', a: 'We offer natural-fibre options such as jute and sisal. Fibre origin, treatments and any sustainability or certification claim should be checked against current documentation for the specific product.' },
       { q: 'Can you supply for onward European distribution?', a: 'Yes. We coordinate bulk supply to Dutch ports for onward European distribution.' },
       { q: 'What payment terms apply?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'How is shipping arranged?', a: 'We pack for international transit and coordinate sea freight to your preferred Dutch port and terms.' },
@@ -412,7 +412,7 @@ export const COUNTRIES: SeoLanding[] = [
     shipping: 'Rotterdam and neighbouring Dutch ports are our standard routing for both direct Dutch orders and onward European distribution, with consolidated part-loads available for smaller trade orders and full containers for repeat programmes.',
     popularStyles: ['Clean functional wool rugs', 'Natural-fibre jute & sisal', 'Low-pile contract carpet', 'Minimalist neutral-tone rugs', 'Recycled-content synthetic rugs'],
     buyerSegments: [
-      { label: 'Commercial Buyers', body: 'Trade and distribution buyers sourcing sustainable, collections with material details confirmed per product for onward European supply.' },
+      { label: 'Commercial Buyers', body: 'Trade and distribution buyers sourcing wool and natural-fibre collections for onward European supply, with product details confirmed per item.' },
       { label: 'Interior Designers', body: 'Clean, functional rugs developed to precise colour and material specification for Dutch residential schemes.' },
       { label: 'Hotels', body: 'Quality-managed contract carpet for hospitality projects, documented for Dutch and EU compliance.' },
       { label: 'Builders', body: 'Wall-to-wall and contract carpet coordinated with build schedules for offices and residential developments.' },
