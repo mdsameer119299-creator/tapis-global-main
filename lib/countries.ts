@@ -165,7 +165,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in Germany — serving designers, contract projects and retail buyers in one of Europe\'s most quality- and sustainability-conscious markets.',
     overview: 'German buyers demand verifiable quality, material safety and reliable, precise supply. As a manufacturer we meet these expectations with product-specific material information and any available test documentation, consistent quality control and dependable documentation and logistics — for clean contemporary designs and natural fibres that suit German interiors.',
     sections: [
-      { h2: 'Quality & Material Safety', body: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. The applicable product scope, testing and supporting documentation are confirmed against the buyer's specification before order confirmation.' },
+      { h2: 'Quality & Material Safety', body: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. The applicable product scope, testing and supporting documentation are confirmed against the buyer’s specification before order confirmation.' },
       { h2: 'Precision & Reliability', body: 'German trade and contract buyers value consistency and on-time supply. Our in-house QC and disciplined logistics support the precision this market expects; dye-lot and delivery planning are confirmed per order.' },
     ],
     applications: [
