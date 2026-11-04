@@ -719,7 +719,7 @@ export const COUNTRIES: SeoLanding[] = [
       { q: 'Can you supply rugs for buyers and projects in Sweden?', a: 'Yes. We manufacture handmade wool and natural-fibre rugs to order in Bhadohi for Swedish trade, retail and workspace buyers, and can advise on export documentation and logistics relevant to your enquiry.' },
       { q: 'Can you supply at the volumes trade and retail buyers need?', a: 'Yes. We develop collections for repeat trade and retail ordering, with consistent dye-lot and construction matching maintained across order runs.' },
       { q: 'Can you provide material and sourcing information?', a: 'We share verifiable information on fibre sourcing and dyeing and can align to a standard you specify. We do not claim certifications we do not hold.' },
-      { q: 'Do you make custom-size rugs?', a: 'Yes. All pieces are custom specifications in custom sizes and constructions to suit specific rooms and projects.' },
+      { q: 'Do you make custom-size rugs?', a: 'Yes. All pieces are manufactured to your requested sizes and constructions to suit specific rooms and projects.' },
       { q: 'Can you supply rugs and carpets for workspace or coworking interiors?', a: 'Yes. We manufacture custom-manufactured rugs and carpets for workspace and coworking fit-outs, developed to exact size and shade for the interior.' },
       { q: 'Do you support Swedish hospitality and café projects?', a: 'Yes. We manufacture understated, durable custom-manufactured rugs and carpets for Swedish hotels and cafés, to specification.' },
       { q: 'What is your minimum order quantity for Swedish trade buyers?', a: 'Minimum order quantities depend on construction, size and customisation. Share your project brief and our team will confirm the MOQ that applies.' },
@@ -992,7 +992,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Austrian buyers value craftsmanship, warm natural materials and dependable quality. We develop quality wool and wool-silk rugs and custom carpets for Austrian designers and hospitality — traditional and contemporary — with careful in-house quality control.',
     sections: [
       { h2: 'Craft & Warm Materials', body: 'Austria\'s design and craft heritage appreciates authentic construction and warm wool textures. We craft hand knotted and hand tufted pieces, classical or contemporary, all customisable to brief.' },
-      { h2: 'Designer & Hospitality Supply', body: 'For Austrian designers and hospitality we make bespoke and custom-manufactured contract carpets developed to exact colour and size, with quality control before dispatch.' },
+      { h2: 'Designer & Hospitality Supply', body: 'For Austrian designers and hospitality we make bespoke and contract carpets manufactured to project specifications developed to exact colour and size, with quality control before dispatch.' },
     ],
     applications: [
       { title: 'Interior Designers', desc: 'Bespoke wool rugs for Austrian residential schemes.' },
@@ -1009,7 +1009,7 @@ export const COUNTRIES: SeoLanding[] = [
       { q: 'Can you supply carpets for buyers and projects in Austria?', a: 'Yes. We manufacture handmade wool rugs and custom carpets to order in Bhadohi for Austrian designers, hospitality and premium residences, and can advise on export documentation and logistics for your enquiry.' },
       { q: 'Can you develop bespoke rugs for Austrian designers?', a: 'Yes. We develop to exact colour, texture and size with samples approved before production.' },
       { q: 'Do you supply classical and contemporary designs?', a: 'Yes. We craft both traditional and contemporary pieces to your brief.' },
-      { q: 'Do you support Austrian hospitality projects?', a: 'Yes. We make custom-manufactured contract carpets to specification for Austrian hotels and resorts.' },
+      { q: 'Do you support Austrian hospitality projects?', a: 'Yes. We make contract carpets manufactured to project specifications to specification for Austrian hotels and resorts.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
     ],
     relatedProducts: ['hand-knotted-carpet', 'hand-tufted-carpet', 'shaggy-rugs'],
@@ -1037,7 +1037,7 @@ export const COUNTRIES: SeoLanding[] = [
     applications: [
       { title: 'Importers & Distributors', desc: 'Custom-manufactured bulk programmes for Polish trade.' },
       { title: 'Furniture Retailers', desc: 'Private-label rug collections with custom branding.' },
-      { title: 'Hospitality Projects', desc: 'Custom-manufactured contract carpets for Polish hotels.' },
+      { title: 'Hospitality Projects', desc: 'contract carpets manufactured to project specifications for Polish hotels.' },
       { title: 'Commercial Procurement', desc: 'Bulk carpet supply for commercial developments.' },
     ],
     whyPoints: [
@@ -1049,7 +1049,7 @@ export const COUNTRIES: SeoLanding[] = [
       { q: 'Can you supply carpets for buyers in Poland?', a: 'Yes. We manufacture to order in Bhadohi for Polish importers, distributors, furniture retailers and hospitality, and can advise on export documentation and logistics for your enquiry.' },
       { q: 'Do you offer private-label manufacturing for Polish retailers?', a: 'Yes. We provide OEM and private-label rug collections with custom branding and packaging.' },
       { q: 'Can you supply consistent bulk volumes?', a: 'Yes. We run repeatable custom-manufactured production for reliable bulk supply.' },
-      { q: 'Do you support Polish hospitality and commercial projects?', a: 'Yes. We make custom-manufactured contract carpets to specification.' },
+      { q: 'Do you support Polish hospitality and commercial projects?', a: 'Yes. We make contract carpets manufactured to project specifications to specification.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
     ],
     relatedProducts: ['hand-tufted-carpet', 'shaggy-rugs', 'jute-sisal-rugs'],
@@ -1071,11 +1071,11 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs to order in Bhadohi for buyers and projects in Ireland — hospitality groups, interior designers and contract projects across a market with a strong hotel sector and appreciation for natural wool interiors.',
     overview: 'Ireland combines an active hospitality and tourism sector with residential design that favours warm wool and traditional-to-contemporary style. We make contract carpets for Irish hotels and bespoke wool rugs for designers, developed to specification.',
     sections: [
-      { h2: 'Hospitality & Contract Supply', body: 'Ireland\'s hotels and hospitality venues need durable, design-led carpets. We manufacture custom-manufactured contract carpets to specification; fire-safety requirements can be specified per project.' },
+      { h2: 'Hospitality & Contract Supply', body: 'Ireland\'s hotels and hospitality venues need durable, design-led carpets. We manufacture contract carpets manufactured to project specifications to specification; fire-safety requirements can be specified per project.' },
       { h2: 'Wool Rugs for Irish Interiors', body: 'For Irish designers and residential projects we craft warm wool and wool-blend rugs, traditional or contemporary, customised to colour and size.' },
     ],
     applications: [
-      { title: 'Hotels & Hospitality', desc: 'Durable custom-manufactured contract carpets for Irish hotels.' },
+      { title: 'Hotels & Hospitality', desc: 'Durable contract carpets manufactured to project specifications for Irish hotels.' },
       { title: 'Interior Designers', desc: 'Bespoke wool rugs for Irish residential schemes.' },
       { title: 'Contract Projects', desc: 'Specification-led carpets for commercial venues.' },
       { title: 'Trade & Retail', desc: 'Wool and natural-fibre collections for Irish retail.' },
@@ -1087,7 +1087,7 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     faqs: [
       { q: 'Can you supply carpets for buyers and projects in Ireland?', a: 'Yes. We manufacture to order in Bhadohi for Irish hospitality, designers and contract projects, and can advise on export documentation and logistics for your enquiry.' },
-      { q: 'Can you supply contract carpets for Irish hotels?', a: 'Yes. We manufacture durable custom-manufactured contract carpets to specification; fire-safety requirements can be specified per project.' },
+      { q: 'Can you supply contract carpets for Irish hotels?', a: 'Yes. We manufacture durable contract carpets manufactured to project specifications to specification; fire-safety requirements can be specified per project.' },
       { q: 'Do you make bespoke wool rugs?', a: 'Yes. We craft warm wool and wool-blend rugs customised to colour and size for Irish interiors.' },
       { q: 'Do you support contract and commercial projects?', a: 'Yes. We make specification-led carpets for Irish commercial and hospitality venues.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
@@ -1117,7 +1117,7 @@ export const COUNTRIES: SeoLanding[] = [
     applications: [
       { title: 'Importers & Distributors', desc: 'Custom-manufactured bulk and private-label programmes.' },
       { title: 'Interior Designers', desc: 'Bespoke rugs for Canadian residential schemes.' },
-      { title: 'Hospitality', desc: 'Custom-manufactured contract carpets for Canadian hotels and resorts.' },
+      { title: 'Hospitality', desc: 'contract carpets manufactured to project specifications for Canadian hotels and resorts.' },
       { title: 'Commercial Projects', desc: 'Coordinated custom carpet supply for developments.' },
     ],
     whyPoints: [
@@ -1129,7 +1129,7 @@ export const COUNTRIES: SeoLanding[] = [
       { q: 'Can you supply carpets for buyers and projects in Canada?', a: 'Yes. We manufacture to order in Bhadohi for Canadian importers, designers, hospitality and commercial projects, and can advise on export documentation and logistics for your enquiry.' },
       { q: 'Do you offer private-label for Canadian importers?', a: 'Yes. We provide OEM and private-label manufacturing with custom branding and packaging.' },
       { q: 'Can you produce North American standard rug sizes?', a: 'Yes. We manufacture to standard and fully custom dimensions, with samples approved before production.' },
-      { q: 'Do you support hospitality and commercial projects?', a: 'Yes. We make custom-manufactured contract carpets to specification.' },
+      { q: 'Do you support hospitality and commercial projects?', a: 'Yes. We make contract carpets manufactured to project specifications to specification.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'What carpet styles do Canadian buyers request most?', a: 'Natural-fibre and wool rugs in relaxed, contemporary styles lead demand, alongside shaggy and textured pile for residential retail and hand-tufted contract carpet for hospitality.' },
       { q: 'Can you support Canadian government or institutional procurement?', a: 'Yes. We produce to documented specification for public-sector and institutional projects in Canada.' },
@@ -1173,7 +1173,7 @@ export const COUNTRIES: SeoLanding[] = [
     applications: [
       { title: 'Interior Designers', desc: 'Bespoke wool and natural-fibre rugs for NZ homes.' },
       { title: 'Builders & Developers', desc: 'Coordinated rug and carpet supply for residential projects.' },
-      { title: 'Hospitality', desc: 'Custom-manufactured contract carpets for New Zealand hotels and lodges.' },
+      { title: 'Hospitality', desc: 'contract carpets manufactured to project specifications for New Zealand hotels and lodges.' },
       { title: 'Trade & Retail', desc: 'Natural-fibre collections for NZ retail.' },
     ],
     whyPoints: [
@@ -1185,7 +1185,7 @@ export const COUNTRIES: SeoLanding[] = [
       { q: 'Can you supply rugs for buyers and projects in New Zealand?', a: 'Yes. We manufacture handmade wool and natural-fibre rugs to order in Bhadohi for NZ designers, builders and hospitality, and can advise on export documentation and logistics for your enquiry.' },
       { q: 'Do you supply natural-fibre and wool rugs?', a: 'Yes — wool, jute and sisal rugs suit New Zealand tastes for natural materials, all customisable.' },
       { q: 'Can you supply builders and developers?', a: 'Yes. We coordinate custom-manufactured rug and carpet supply for NZ residential projects.' },
-      { q: 'Do you support hospitality projects?', a: 'Yes. We make custom-manufactured contract carpets to specification for NZ hotels and lodges.' },
+      { q: 'Do you support hospitality projects?', a: 'Yes. We make contract carpets manufactured to project specifications to specification for NZ hotels and lodges.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'What carpet styles do New Zealand buyers request most?', a: 'Natural-fibre wool and jute rugs in relaxed, contemporary designs lead demand, alongside custom-manufactured contract carpet for lodges and hospitality.' },
       { q: 'Can you support New Zealand government or institutional procurement?', a: 'Yes. We produce to documented specification for public-sector and institutional projects in New Zealand.' },
@@ -1224,7 +1224,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Singapore concentrates world-class hospitality, prestige residential towers and sophisticated commercial interiors into a compact, high-specification market. We make custom carpets and bespoke rugs to exact architect specifications — luxury pieces and contract carpets — with disciplined in-house quality control.',
     sections: [
       { h2: 'Luxury Hospitality & Residential Projects', body: 'Singapore\'s luxury hotels and residential towers call for refined, specification-exact carpets. We develop custom pieces to an architect\'s drawing, colour and dimension, with quality control at each stage.' },
-      { h2: 'Commercial & Contract Interiors', body: 'For Singapore commercial and hospitality interiors we manufacture custom-manufactured contract carpets; fire-safety requirements can be specified per project.' },
+      { h2: 'Commercial & Contract Interiors', body: 'For Singapore commercial and hospitality interiors we manufacture contract carpets manufactured to project specifications; fire-safety requirements can be specified per project.' },
     ],
     applications: [
       { title: 'Luxury Hospitality', desc: 'Custom carpets for Singapore hotels and resorts.' },
@@ -1241,7 +1241,7 @@ export const COUNTRIES: SeoLanding[] = [
       { q: 'Can you supply carpets for Singapore hospitality projects?', a: 'Yes. We manufacture custom and contract carpets to order in Bhadohi for Singapore luxury hotels, residential towers and commercial interiors, and can advise on export documentation and logistics for your enquiry.' },
       { q: 'Can you manufacture to an architect\'s specification?', a: 'Yes. We develop to precise drawings, colours and dimensions, with samples approved before production.' },
       { q: 'Can technical requirements like fire-safety be specified?', a: 'Yes. Fire-safety and other technical requirements can be specified for a project and discussed at the enquiry stage.' },
-      { q: 'Do you support commercial and residential projects?', a: 'Yes. We make custom-manufactured contract carpets and bespoke rugs to specification.' },
+      { q: 'Do you support commercial and residential projects?', a: 'Yes. We make contract carpets manufactured to project specifications and bespoke rugs to specification.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'What carpet styles are most requested in Singapore?', a: 'Refined custom carpets developed to exact architect drawings lead demand, alongside fire-rated contract carpet for hospitality and commercial towers.' },
       { q: 'Can you support Singapore government or institutional procurement?', a: 'Yes. We produce to documented specification for public-sector and institutional projects in Singapore.' },
@@ -1297,7 +1297,7 @@ export const COUNTRIES: SeoLanding[] = [
       { q: 'Can you supply rugs for buyers and projects in Japan?', a: 'Yes. We manufacture precise, refined custom rugs to order in Bhadohi for Japanese design studios, luxury interiors and hospitality, and can advise on export documentation and logistics for your enquiry.' },
       { q: 'Can you meet exacting Japanese finishing standards?', a: 'We apply multi-stage quality control and precise colour matching, with samples approved before production to meet high finishing expectations.' },
       { q: 'Can you match exact colours?', a: 'Yes. We develop custom shades with lab-dips approved before production.' },
-      { q: 'Do you support hospitality projects?', a: 'Yes. We make custom-manufactured contract carpets to specification for Japanese hospitality.' },
+      { q: 'Do you support hospitality projects?', a: 'Yes. We make contract carpets manufactured to project specifications to specification for Japanese hospitality.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'What carpet styles are most requested in Japan?', a: 'Fine hand-knotted rugs in quiet, restrained palettes lead demand, alongside subtle contemporary designs and natural-fibre flat-weaves for understated luxury interiors.' },
       { q: 'Can you support Japanese government or institutional procurement?', a: 'Yes. We produce to documented specification for public-sector and institutional projects in Japan.' },
@@ -1342,7 +1342,7 @@ export const COUNTRIES: SeoLanding[] = [
       { title: 'Interior Designers', desc: 'Custom contemporary rugs for Korean residential schemes.' },
       { title: 'Retail Brands', desc: 'Private-label and collection development for Korean retail.' },
       { title: 'Residential Projects', desc: 'Made-to-size rugs for apartments and homes.' },
-      { title: 'Hospitality', desc: 'Custom-manufactured contract carpets for Korean hotels.' },
+      { title: 'Hospitality', desc: 'contract carpets manufactured to project specifications for Korean hotels.' },
     ],
     whyPoints: [
       { title: 'Contemporary Style', desc: 'Modern patterns and current palettes.' },
@@ -1353,7 +1353,7 @@ export const COUNTRIES: SeoLanding[] = [
       { q: 'Can you supply rugs for buyers and projects in South Korea?', a: 'Yes. We manufacture custom and contemporary rugs to order in Bhadohi for Korean designers, retail, residential and hospitality, and can advise on export documentation and logistics for your enquiry.' },
       { q: 'Do you develop contemporary designs?', a: 'Yes. We create modern, contemporary rugs in current palettes and patterns, made to exact size and shade.' },
       { q: 'Do you offer private-label for Korean retail brands?', a: 'Yes. We provide OEM and private-label collection development with custom branding.' },
-      { q: 'Do you support hospitality projects?', a: 'Yes. We make custom-manufactured contract carpets to specification.' },
+      { q: 'Do you support hospitality projects?', a: 'Yes. We make contract carpets manufactured to project specifications to specification.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'What carpet styles are most requested in South Korea?', a: 'Modern contemporary rugs in current palettes and patterns lead demand, alongside private-label collection pieces for Korean retail brands and custom-manufactured contract carpet for hospitality.' },
       { q: 'Can you support South Korean government or institutional procurement?', a: 'Yes. We produce to documented specification for public-sector and institutional projects in South Korea.' },
@@ -1455,7 +1455,7 @@ export const COUNTRIES: SeoLanding[] = [
     applications: [
       { title: 'Mosques & Prayer Halls', desc: 'Custom saff prayer carpets for Kuwait.' },
       { title: 'Luxury Villas & Majlis', desc: 'Opulent custom rugs for Kuwaiti residences.' },
-      { title: 'Hotels & Hospitality', desc: 'Custom-manufactured contract carpets for Kuwait hospitality.' },
+      { title: 'Hotels & Hospitality', desc: 'contract carpets manufactured to project specifications for Kuwait hospitality.' },
       { title: 'Commercial Projects', desc: 'Custom-manufactured carpet supply for developments.' },
     ],
     whyPoints: [
@@ -1563,11 +1563,11 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs to order in Bhadohi for buyers and projects in South Africa — hospitality groups, safari lodges, interior designers and commercial projects across a market with a distinctive design sensibility and a strong tourism sector.',
     overview: 'South Africa blends a vibrant hospitality and lodge sector with a design market that draws on natural materials, texture and bold, characterful interiors. We make contract carpets for hotels and lodges, bespoke wool and natural-fibre rugs for designers, and custom-manufactured supply for commercial projects.',
     sections: [
-      { h2: 'Hospitality & Lodge Interiors', body: 'South Africa\'s hotels and safari lodges need durable, characterful carpets. We manufacture custom-manufactured contract carpets and bespoke rugs to specification; fire-safety requirements can be specified per project.' },
+      { h2: 'Hospitality & Lodge Interiors', body: 'South Africa\'s hotels and safari lodges need durable, characterful carpets. We manufacture contract carpets manufactured to project specifications and bespoke rugs to specification; fire-safety requirements can be specified per project.' },
       { h2: 'Designer & Commercial Supply', body: 'For South African designers and commercial projects we develop wool and natural-fibre rugs in textured, characterful designs, custom specifications.' },
     ],
     applications: [
-      { title: 'Hotels & Lodges', desc: 'Durable custom-manufactured contract carpets for South African hospitality.' },
+      { title: 'Hotels & Lodges', desc: 'Durable contract carpets manufactured to project specifications for South African hospitality.' },
       { title: 'Interior Designers', desc: 'Bespoke wool and natural-fibre rugs.' },
       { title: 'Commercial Projects', desc: 'Custom-manufactured carpet supply for developments.' },
       { title: 'Trade & Retail', desc: 'Textured collections for South African retail.' },
@@ -1579,7 +1579,7 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     faqs: [
       { q: 'Can you supply carpets for buyers and projects in South Africa?', a: 'Yes. We manufacture to order in Bhadohi for South African hospitality, lodges, designers and commercial projects, and can advise on export documentation and logistics for your enquiry.' },
-      { q: 'Can you supply lodge and hotel carpets?', a: 'Yes. We manufacture durable custom-manufactured contract carpets and bespoke rugs to specification; fire-safety requirements can be specified per project.' },
+      { q: 'Can you supply lodge and hotel carpets?', a: 'Yes. We manufacture durable contract carpets manufactured to project specifications and bespoke rugs to specification; fire-safety requirements can be specified per project.' },
       { q: 'Do you make textured, natural-fibre rugs?', a: 'Yes. We craft wool and natural-fibre rugs in textured, characterful designs suited to South African interiors.' },
       { q: 'Do you support commercial projects?', a: 'Yes. We make custom-manufactured commercial carpets to specification.' },
       { q: 'How are commercial terms handled?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile, destination and arrangement; our team will share the terms applicable to your enquiry.' },
