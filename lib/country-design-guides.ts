@@ -107,4 +107,31 @@ export const COUNTRY_DESIGN_GUIDES: Record<string, CountryDesignGuide> = {
       { label: 'BUILD Australia — Interior Trends Shaping Australian Homes in 2026', url: 'https://build.com.au/the-interior-trends-set-to-shape-australian-homes-in-2026/' },
     ],
   }
+,
+  canada: {
+    intro: 'Canadian projects range from urban homes to mountain properties and hospitality spaces. Local 2026 design reporting points to warmer, more personal interiors and layered materials; project specifications must still respond to climate and use.',
+    trends: [
+      { title: 'Modern heritage', desc: 'A Canadian furniture-industry survey identified a Future Heirloom theme for 2026, combining heritage details, rich finishes and imperfection.' },
+      { title: 'Confident colour', desc: 'The same report points to renewed interest in expressive colour. Deep green, burgundy, warm brown and selective blue can be balanced with flexible neutrals.' },
+      { title: 'Earthy texture', desc: 'British Columbia designer commentary highlights earthy tones, layered textures and organic forms. Wool texture and grounded palettes can complement timber and stone.' },
+    ],
+    architectConsiderations: [
+      { title: 'Plan for seasonal conditions', desc: 'Snow, moisture and grit affect entry-zone wear. Clarify whether the rug is in a protected room or a high-traffic transition area.' },
+      { title: 'Check radiant heating compatibility', desc: 'Confirm the construction, backing and underlay suit the flooring and heating system.' },
+      { title: 'Resolve dimensions early', desc: 'Record furniture footprints, circulation and door clearances before confirming rug dimensions.' },
+      { title: 'Verify project requirements', desc: 'For commercial spaces, identify applicable fire, slip, accessibility and maintenance requirements and verify evidence for the exact product.' },
+    ],
+    palette: ['Warm taupe & oatmeal', 'Walnut & chocolate', 'Moss & evergreen', 'Burgundy', 'Slate blue', 'Clay & muted rust'],
+    productFit: [
+      { title: 'Family living spaces', desc: 'Wool and wool-blend rugs selected for pile, cleanability and furniture scale.' },
+      { title: 'Mountain and cottage homes', desc: 'Textured palettes that coordinate with timber and stone.' },
+      { title: 'Urban condominiums', desc: 'Custom sizes and low-profile constructions for compact layouts.' },
+      { title: 'Hospitality and commercial', desc: 'Contract carpets with documented performance and maintenance plans.' },
+    ],
+    sources: [
+      { label: 'HomeGoodsOnline Canada — Design Themes for 2026 (January 20, 2026)', url: 'https://homegoodsonline.ca/design-themes-that-will-define-2026-report/' },
+      { label: 'BC Living — 2026 Interior Design Trends from BC Designers (January 21, 2026)', url: 'https://bcliving.ca/home/decor/9-interior-design-trends-in-2026/' },
+      { label: 'Wood Industry Canada — 2026 Design Trends Report (January 28, 2026)', url: 'https://woodindustry.ca/the-design-trends-shaping-2026-report/' },
+    ],
+  }
 }
