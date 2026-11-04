@@ -736,7 +736,7 @@ export const COUNTRIES: SeoLanding[] = [
     relatedIndustries: ['retail-carpets', 'coworking-carpets', 'hotel-carpets'],
     relatedSolutions: ['wholesale-carpet-supplier', 'carpet-exporter-india'],
     relatedCountries: ['denmark', 'finland', 'norway'],
-    importProcess: 'Swedish enquiries typically confirm order scale and specification up front — a trade or retail collection quantity, a workspace or coworking fit-out brief, or a hospitality or café project size. We prepare lab-dips and a sample for sign-off, produce with staged QC, and prepare documentation for import to Sweden, sharing verifiable sourcing information rather than asserting certifications we do not hold.',
+    importProcess: 'Swedish enquiries typically confirm order scale and specification up front — a trade or retail collection quantity, a workspace or coworking fit-out brief, or a hospitality or café project size. We prepare lab-dips and a sample for sign-off, produce with staged QC, and prepare documentation for import to Sweden, including discussion of OEKO-TEX® Standard 100 and AZO-free requirements for qualifying larger or specification-led orders, with scope and supporting documentation confirmed for the selected construction.',
     shipping: 'Sea freight is coordinated to the Port of Gothenburg, Scandinavia\'s largest container port and Sweden\'s primary gateway for containerised imports, with onward rail and road distribution across the country; air freight is available for time-sensitive sample approvals.',
     leadTime: 'Production and shipping timelines are confirmed per order at enquiry stage, factoring in order scale and Sweden\'s inland distribution from Gothenburg.',
     popularStyles: ['Trade and retail-scale Scandinavian-palette collections', 'Flatweave and dhurrie rugs for retail programmes', 'Custom rugs for workspace and coworking interiors', 'Understated rugs for hotels and cafés', 'Custom-size natural-fibre rugs'],
@@ -1070,7 +1070,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in Ireland — hospitality groups, interior designers and contract projects across a market with a strong hotel sector and appreciation for natural wool interiors.',
     overview: 'Ireland combines an active hospitality and tourism sector with residential design that favours warm wool and traditional-to-contemporary style. We make contract carpets for Irish hotels and bespoke wool rugs for designers, developed to specification.',
     sections: [
-      { h2: 'Hospitality & Contract Supply', body: 'Ireland\'s hotels and hospitality venues need durable, design-led carpets. We manufacture contract carpets produced to project specifications; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Hospitality & Contract Supply', body: 'Ireland\'s hotels and hospitality venues need durable, design-led carpets. We manufacture contract carpets produced to project specifications; any required fire classification must be verified against test documentation for the exact proposed construction before specification.' },
       { h2: 'Wool Rugs for Irish Interiors', body: 'For Irish designers and residential projects we craft warm wool and wool-blend rugs, traditional or contemporary, customised to colour and size.' },
     ],
     applications: [
@@ -1165,7 +1165,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'New Zealand interiors lean heavily on natural materials, wool and understated contemporary style, backed by an active residential construction and hospitality sector. We make wool and natural-fibre rugs, bespoke designer pieces and contract carpets, to custom size.',
     sections: [
       { h2: 'Natural Fibres & Wool', body: 'We make wool, jute and sisal rugs in relaxed, contemporary designs suited to New Zealand\'s natural interior aesthetic, all customisable to size and shade.' },
-      { h2: 'Builders & Hospitality', body: 'For NZ builders and hospitality we coordinate bespoke and custom contract carpet supply; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Builders & Hospitality', body: 'For NZ builders and hospitality we coordinate bespoke and custom contract carpet supply; any required fire classification must be verified against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Interior Designers', desc: 'Bespoke wool and natural-fibre rugs for NZ homes.' },
@@ -1219,7 +1219,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Singapore concentrates world-class hospitality, prestige residential towers and sophisticated commercial interiors into a compact, high-specification market. We make custom carpets and bespoke rugs to exact architect specifications — luxury pieces and contract carpets — with disciplined in-house quality control.',
     sections: [
       { h2: 'Luxury Hospitality & Residential Projects', body: 'Singapore\'s luxury hotels and residential towers call for refined, specification-exact carpets. We develop custom pieces to an architect\'s drawing, colour and dimension, with quality control at each stage.' },
-      { h2: 'Commercial & Contract Interiors', body: 'For Singapore commercial and hospitality interiors we manufacture contract carpets produced to project specifications; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Commercial & Contract Interiors', body: 'For Singapore commercial and hospitality interiors we manufacture contract carpets produced to project specifications; any required fire classification must be verified against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Luxury Hospitality', desc: 'Custom carpets for Singapore hotels and resorts.' },
@@ -1437,7 +1437,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Kuwait combines strong mosque-carpet demand with luxury residential diwaniyas, a growing hospitality sector and commercial development. We make custom mosque (saff) carpets, opulent villa and majlis rugs, hospitality carpets and custom commercial supply, to exact requirements.',
     sections: [
       { h2: 'Mosque & Majlis Carpets', body: 'We manufacture custom mosque carpets with precise saff prayer-row layouts, and opulent majlis and diwaniya rugs for Kuwaiti residences, developed to exact colour, motif and dimension.' },
-      { h2: 'Hospitality & Commercial Supply', body: 'For Kuwait\'s hotels and commercial projects we make custom carpets; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Hospitality & Commercial Supply', body: 'For Kuwait\'s hotels and commercial projects we make custom carpets; any required fire classification must be verified against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Mosques & Prayer Halls', desc: 'Custom saff prayer carpets for Kuwait.' },
@@ -1491,7 +1491,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Oman\'s commercial activity is spread across Muscat and the southern coastal city of Salalah, home to a distinct resort and heritage-tourism sector. We make custom mosque (saff) carpets, custom resort and hotel carpet, heritage-style villa rugs, and rugs for covered terrace applications, subject to material suitability for terraces and courtyards — developed to exact requirements.',
     sections: [
       { h2: 'Mosque & Prayer Carpets', body: 'We manufacture custom mosque carpets with precise prayer-row (saff) layouts, durable comfortable pile and dignified design, to the exact dimensions and orientation of Oman\'s prayer halls, including the larger-format halls found in Muscat\'s major mosques.' },
-      { h2: 'Resort & Heritage-Style Hospitality', body: 'Oman\'s hospitality sector spans Muscat business hotels and Salalah\'s resort properties, both of which favour heritage-sensitive interior schemes. We supply custom contract carpet for resort and hotel guestrooms and public areas, heritage-style rugs for villas and residences that reference traditional Omani motifs and craft character, and rugs for covered terrace applications, subject to material suitability for the terraces and courtyards common to resort and villa design in Oman\'s climate; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Resort & Heritage-Style Hospitality', body: 'Oman\'s hospitality sector spans Muscat business hotels and Salalah\'s resort properties, both of which favour heritage-sensitive interior schemes. We supply custom contract carpet for resort and hotel guestrooms and public areas, heritage-style rugs for villas and residences that reference traditional Omani motifs and craft character, and rugs for covered terrace applications, subject to material suitability for the terraces and courtyards common to resort and villa design in Oman\'s climate; any required fire classification must be verified against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Mosques & Prayer Halls', desc: 'Custom saff prayer carpets for Oman, including larger-format Muscat mosque halls.' },
@@ -1546,7 +1546,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in South Africa — hospitality groups, safari lodges, interior designers and commercial projects across a market with a distinctive design sensibility and a strong tourism sector.',
     overview: 'South Africa blends a vibrant hospitality and lodge sector with a design market that draws on natural materials, texture and bold, characterful interiors. We make contract carpets for hotels and lodges, bespoke wool and natural-fibre rugs for designers, and custom supply for commercial projects.',
     sections: [
-      { h2: 'Hospitality & Lodge Interiors', body: 'South Africa\'s hotels and safari lodges need durable, characterful carpets. We manufacture contract carpets produced to project specifications and bespoke rugs to specification; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Hospitality & Lodge Interiors', body: 'South Africa\'s hotels and safari lodges need durable, characterful carpets. We manufacture contract carpets produced to project specifications and bespoke rugs to specification; any required fire classification must be verified against test documentation for the exact proposed construction before specification.' },
       { h2: 'Designer & Commercial Supply', body: 'For South African designers and commercial projects we develop wool and natural-fibre rugs in textured, characterful designs, tailored to the project specification.' },
     ],
     applications: [
