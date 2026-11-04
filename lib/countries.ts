@@ -165,25 +165,25 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in Germany — serving designers, contract projects and retail buyers in one of Europe\'s most quality- and sustainability-conscious markets.',
     overview: 'German buyers demand verifiable quality, material safety and reliable, precise supply. As a manufacturer we meet these expectations with product-specific material information and any available test documentation, consistent quality control and dependable documentation and logistics — for clean contemporary designs and natural fibres that suit German interiors.',
     sections: [
-      { h2: 'Quality & Material Safety', body: 'We can share available fibre, dyeing and material information for the selected product. Any certification or chemical-safety claim must be verified against current documentation for that exact construction.' },
+      { h2: 'Quality & Material Safety', body: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. The applicable product scope, testing and supporting documentation are confirmed against the buyer's specification before order confirmation.' },
       { h2: 'Precision & Reliability', body: 'German trade and contract buyers value consistency and on-time supply. Our in-house QC and disciplined logistics support the precision this market expects; dye-lot and delivery planning are confirmed per order.' },
     ],
     applications: [
       { title: 'Designers & Architects', desc: 'Clean contemporary and natural-fibre rugs for German schemes.' },
       { title: 'Contract Projects', desc: 'Quality-managed contract carpets for offices and hospitality.' },
-      { title: 'Retail & Trade', desc: 'collections with material details confirmed per product for German rug retail.' },
+      { title: 'Retail & Trade', desc: 'rug collections with product-specific material details available on request.' },
       { title: 'Sustainable Interiors', desc: 'Natural jute and sisal for eco-conscious projects.' },
     ],
     whyPoints: [
-      { title: 'Product Information', desc: 'Material and test documentation can be reviewed for the selected product.' },
+      { title: 'Specified Material Standards', desc: 'OEKO-TEX® Standard 100 and AZO-free requirements can be discussed for qualifying orders, subject to product scope and documentation.' },
       { title: 'Precision Supply', desc: 'Consistent QC and disciplined, documented delivery.' },
-      { title: 'Material Options', desc: 'Natural-fibre options, with product-specific material information confirmed for each enquiry.' },
+      { title: 'Compliance-Led Enquiries', desc: 'Material and production requirements can be reviewed against the buyer’s specification.' },
     ],
     faqs: [
-      { q: 'Can you provide material or test documentation for German buyers?', a: 'We can discuss fibre, dyeing and material information for the selected product. Any certification or restricted-substance documentation must be confirmed against current, product-specific records; no certification is implied by this page.' },
+      { q: 'Can you support OEKO-TEX® Standard 100 and AZO-free requirements?', a: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. Product scope, testing, availability and supporting documents are confirmed against the buyer’s specification before order confirmation.' },
       { q: 'Do you export carpets to Germany?', a: 'Yes. We manufacture in Bhadohi for designers, contract projects and retail buyers in Germany, with full documentation and coordinated freight.' },
       { q: 'Can you guarantee consistent quality for German trade buyers?', a: 'Yes. In-house multi-stage QC supports batch-consistent quality across orders; dye-lot planning is confirmed per order.' },
-      { q: 'Do you offer sustainable natural-fibre rugs?', a: 'Yes — jute, sisal and seagrass rugs with dye information confirmed per product dyes suit Germany\'s sustainability focus.' },
+      { q: 'Do you offer natural-fibre rugs?', a: 'Yes. Jute, sisal and other natural-fibre options can be discussed, with suitability confirmed for the intended use.' },
       { q: 'What payment and shipping terms apply?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile and arrangement; our team will share the terms applicable to your enquiry. We coordinate sea freight to your preferred German port.' },
       { q: 'What carpet styles are most requested by German buyers?', a: 'Clean, contemporary wool rugs and natural-fibre jute and sisal collections lead demand, reflecting Germany\'s preference for functional design and verifiable material safety.' },
       { q: 'What is your minimum order quantity for German buyers?', a: 'Minimum order quantities depend on construction, size and customisation. Share your project brief and our team will confirm the MOQ that applies.' },
@@ -381,7 +381,7 @@ export const COUNTRIES: SeoLanding[] = [
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in the Netherlands — supplying Dutch designers, trade buyers and contract projects in a market known for clean design and strong sustainability values.',
     overview: 'Dutch buyers favour clean, functional design and sustainable materials, and the Netherlands is a key European trade and logistics hub. As a manufacturer we supply wool and natural-fibre rugs with product details confirmed per item and contract carpets, with freight coordinated through Dutch ports.',
     sections: [
-      { h2: 'Sustainable & Clean Design', body: 'We supply wool and natural-fibre rugs, with fibre and dye information confirmed for the selected product in the clean, functional designs Dutch interiors favour, all customisable.' },
+      { h2: 'Sustainable & Clean Design', body: 'We supply wool and natural-fibre rugs in clean, functional designs suited to Dutch interiors. For qualifying larger or specification-led orders, OEKO-TEX® Standard 100 and AZO-free production requirements can also be discussed, with product scope and documentation confirmed before order confirmation.' },
       { h2: 'European Trade Hub', body: 'The Netherlands is a major logistics gateway. We coordinate freight to Dutch ports for onward European distribution, with full documentation.' },
     ],
     applications: [
@@ -397,7 +397,7 @@ export const COUNTRIES: SeoLanding[] = [
     ],
     faqs: [
       { q: 'Do you export carpets to the Netherlands?', a: 'Yes. We manufacture in Bhadohi for designers, trade buyers and contract projects in the Netherlands, with full documentation and coordinated freight.' },
-      { q: 'Can you provide material and sustainability information for Dutch buyers?', a: 'We offer natural-fibre options such as jute and sisal. Fibre origin, treatments and any sustainability or certification claim should be checked against current documentation for the specific product.' },
+      { q: 'Can you support OEKO-TEX® Standard 100 and AZO-free requirements?', a: 'For qualifying larger or specification-led orders, we can discuss production to OEKO-TEX® Standard 100 and AZO-free requirements. Product scope, testing, availability and supporting documents are confirmed against the buyer’s specification before order confirmation.' },
       { q: 'Can you supply for onward European distribution?', a: 'Yes. We coordinate bulk supply to Dutch ports for onward European distribution.' },
       { q: 'What payment terms apply?', a: 'Payment and commercial terms are agreed per order based on value, buyer profile and arrangement; our team will share the terms applicable to your enquiry.' },
       { q: 'How is shipping arranged?', a: 'We pack for international transit and coordinate sea freight to your preferred Dutch port and terms.' },
@@ -705,8 +705,8 @@ export const COUNTRIES: SeoLanding[] = [
     seoDescription: 'Indian carpet manufacturer for Sweden — trade and retail-scale wool and natural-fibre rugs from Bhadohi for Stockholm and workspace interiors. Request a catalogue.',
     seoKeywords: ['carpet manufacturer for Sweden', 'wholesale rug supplier Sweden', 'trade rugs Stockholm', 'workspace carpet supplier Sweden', 'natural fibre rugs Sweden'],
     h1: 'Carpet & Rug Manufacturer in India for Sweden\'s Trade, Retail & Workspace Market',
-    intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi, India, for buyers and projects in Sweden — trade and retail buyers, workspace and coworking interiors, and hospitality and café projects, in a market that combines large-scale retail sourcing with a strong expectation of verifiable, transparent material information.',
-    overview: 'Sweden\'s rug and carpet demand spans trade and retail-scale sourcing centred on Stockholm\'s design and retail sector, alongside a growing workspace and coworking interiors market and hospitality and café projects. We develop wool, wool-blend and natural-fibre rugs in muted Scandinavian colourways and custom sizes and constructions, and work transparently on fibre origin and dyeing information rather than asserting certifications we do not hold.',
+    intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi, India, for buyers and projects in Sweden — trade and retail buyers, workspace and coworking interiors, and hospitality and café projects, in a market that values clear product specifications and transparent material information.',
+    overview: 'Sweden\'s rug and carpet demand spans trade and retail-scale sourcing centred on Stockholm\'s design and retail sector, alongside a growing workspace and coworking interiors market and hospitality and café projects. We develop wool, wool-blend and natural-fibre rugs in muted Scandinavian colourways and custom sizes and constructions, and can discuss OEKO-TEX® Standard 100 and AZO-free production requirements for qualifying larger or specification-led orders, with product scope and supporting documentation confirmed before order confirmation.',
     sections: [
       { h2: 'Trade, Retail & Stockholm\'s Design Sector', body: 'Sweden\'s rug and carpet demand is led by trade and retail buyers sourcing collections at scale, concentrated around Stockholm\'s design and retail sector. We develop Scandinavian-palette wool and natural-fibre rugs — flatweaves, dhurries and low-pile hand tufted constructions — sized and priced for repeat trade ordering, made to a buyer\'s specification.' },
       { h2: 'Workspace, Coworking & Hospitality Interiors', body: 'Beyond retail-scale sourcing, we supply understated custom rugs and carpets for Swedish workspace, coworking, hospitality and café interiors, developed to exact size and shade for a specific fit-out.' },
@@ -725,7 +725,7 @@ export const COUNTRIES: SeoLanding[] = [
     faqs: [
       { q: 'Can you supply rugs for buyers and projects in Sweden?', a: 'Yes. We manufacture handmade wool and natural-fibre rugs in Bhadohi for Swedish trade, retail and workspace buyers, and can advise on export documentation and logistics relevant to your enquiry.' },
       { q: 'Can you supply at the volumes trade and retail buyers need?', a: 'Yes. We develop collections for repeat trade and retail ordering, with consistent dye-lot and construction matching maintained across order runs.' },
-      { q: 'Can you provide material and sourcing information?', a: 'We share verifiable information on fibre sourcing and dyeing and can align to a standard you specify. We do not claim certifications we do not hold.' },
+      { q: 'Can you provide material and sourcing information?', a: 'For qualifying larger or specification-led orders, we can discuss OEKO-TEX® Standard 100 and AZO-free production requirements. Product scope, testing and supporting documentation are confirmed against the buyer’s specification.' },
       { q: 'Do you make custom-size rugs?', a: 'Yes. All pieces are manufactured to your requested sizes and constructions to suit specific rooms and projects.' },
       { q: 'Can you supply rugs and carpets for workspace or coworking interiors?', a: 'Yes. We manufacture custom rugs and carpets for workspace and coworking fit-outs, developed to exact size and shade for the interior.' },
       { q: 'Do you support Swedish hospitality and café projects?', a: 'Yes. We manufacture understated, durable custom rugs and carpets for Swedish hotels and cafés, to specification.' },
@@ -763,7 +763,7 @@ export const COUNTRIES: SeoLanding[] = [
     seoKeywords: ['carpet manufacturer for Denmark', 'Copenhagen design studio rugs', 'bespoke rugs Danish designers', 'restaurant hospitality rugs Denmark', 'design retail rugs Denmark'],
     h1: 'Carpet & Rug Manufacturer in India for Copenhagen\'s Design Studios & Danish Design Heritage',
     intro: 'Tapis Global International manufactures handmade carpets and rugs in Bhadohi for buyers and projects in Denmark — Copenhagen design studios and architects, restaurant and boutique hospitality, and design-led retail, in the home of Danish design, where form, function and material honesty lead every brief.',
-    overview: 'Denmark\'s design-led demand is concentrated around Copenhagen\'s studios and architecture practices, drawing on a design heritage that prizes proportion, tactility and quiet sophistication. We partner with Danish studios on bespoke wool, wool-viscose and natural-fibre rugs — developing exact colours, textures and sizes for restaurant, boutique-hospitality and residential interiors, and for curated design-led retail collections — sharing transparent material provenance rather than asserting certifications we do not hold.',
+    overview: 'Denmark\'s design-led demand is concentrated around Copenhagen\'s studios and architecture practices, drawing on a design heritage that prizes proportion, tactility and quiet sophistication. We partner with Danish studios on bespoke wool, wool-viscose and natural-fibre rugs — developing exact colours, textures and sizes for restaurant, boutique-hospitality and residential interiors, and for curated design-led retail collections — and can discuss OEKO-TEX® Standard 100 and AZO-free production requirements for qualifying larger or specification-led orders, with scope and documentation confirmed against the buyer’s specification.',
     sections: [
       { h2: 'Bespoke Development for Copenhagen Studios', body: 'Copenhagen\'s design studios and architects work to precise briefs rooted in Danish design heritage. We develop custom rugs — hand knotted, hand tufted and flatweave — matching exact shade, pile and dimension, with samples approved before production.' },
       { h2: 'Restaurant, Boutique Hospitality & Design Retail', body: 'Beyond studio-led residential work, we supply understated custom rugs and carpets for Danish restaurants and boutique hotels, and develop curated, design-led collections for Danish retail, each realised faithfully to a designer\'s or retailer\'s specification.' },
@@ -793,7 +793,7 @@ export const COUNTRIES: SeoLanding[] = [
     relatedIndustries: ['restaurant-carpets', 'retail-carpets', 'hotel-lobby-carpets'],
     relatedSolutions: ['designer-rugs', 'custom-carpets'],
     relatedCountries: ['sweden', 'finland', 'norway'],
-    importProcess: 'Danish enquiries typically confirm exact colour, texture and dimension with a Copenhagen studio or architect before any sample is cut, or a collection brief for design-led retail. We prepare lab-dips and a sample for sign-off, produce with staged QC, and prepare documentation for import to Denmark, sharing verifiable material provenance rather than asserting certifications we do not hold.',
+    importProcess: 'Danish enquiries typically confirm exact colour, texture and dimension with a Copenhagen studio or architect before any sample is cut, or a collection brief for design-led retail. We prepare lab-dips and a sample for sign-off, produce with staged QC, and prepare documentation for import to Denmark, with product-specific material information and any agreed OEKO-TEX® Standard 100 or AZO-free requirements confirmed before order confirmation.',
     shipping: 'Sea freight is coordinated to the Port of Aarhus, Denmark\'s largest commercial port and primary container gateway, with onward distribution to Copenhagen and nationally; air freight is available for time-sensitive sample approvals for Copenhagen studios.',
     leadTime: 'Production and shipping timelines are confirmed per order at enquiry stage, factoring in Denmark\'s inland distribution from Aarhus to Copenhagen and other regions.',
     popularStyles: ['Bespoke rugs realised to Copenhagen studio briefs', 'Flatweave and hand-tufted pieces in restrained palettes', 'Understated rugs for restaurants and boutique hotels', 'Curated collections for design-led retail', 'Natural-fibre rugs with transparent provenance'],
@@ -1381,7 +1381,7 @@ export const COUNTRIES: SeoLanding[] = [
     overview: 'Bahrain concentrates almost all of its commercial activity into Manama, a regional financial-services hub with a corresponding cluster of business-oriented hotels. We make custom mosque (saff) carpets, custom contract carpet for business hotels, modular carpet-tile programmes for office fit-outs, and bespoke villa rugs — developed to exact requirements.',
     sections: [
       { h2: 'Mosque & Prayer Carpets', body: 'We manufacture custom mosque carpets with precise prayer-row (saff) layouts, durable comfortable pile and dignified design, made to the exact dimensions and orientation of Bahrain\'s prayer halls.' },
-      { h2: 'Manama\'s Business & Financial District', body: 'Bahrain\'s commercial activity concentrates in Manama, home to a regional financial-services sector and a matching concentration of business-oriented hotels. We supply custom contract carpet for business-hotel guestrooms and public areas, wall-to-wall and modular carpet-tile programmes for financial-district office fit-outs, and bespoke rugs for Bahraini villas and residences — developed to the specification and dye-lot consistency multi-floor commercial projects require; any required fire classification must be verified against test documentation for the exact proposed construction against test documentation for the exact proposed construction before specification.' },
+      { h2: 'Manama\'s Business & Financial District', body: 'Bahrain\'s commercial activity concentrates in Manama, home to a regional financial-services sector and a matching concentration of business-oriented hotels. We supply custom contract carpet for business-hotel guestrooms and public areas, wall-to-wall and modular carpet-tile programmes for financial-district office fit-outs, and bespoke rugs for Bahraini villas and residences — developed to the specification and dye-lot consistency multi-floor commercial projects require; any required fire classification must be verified against test documentation for the exact proposed construction before specification.' },
     ],
     applications: [
       { title: 'Mosques & Prayer Halls', desc: 'Custom saff prayer carpets for Bahrain.' },
