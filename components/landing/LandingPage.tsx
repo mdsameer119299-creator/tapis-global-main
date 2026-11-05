@@ -10,6 +10,7 @@ import { Reveal, Eyebrow } from '@/components/ui'
 import { BLUR_PLACEHOLDER } from '@/components/ui/OptimizedImage'
 import OptimizedImage from '@/components/ui/OptimizedImage'
 import CategoryTrustSignals from '@/components/products/CategoryTrustSignals'
+import CountryDesignGuideSection from '@/components/landing/CountryDesignGuideSection'
 
 const BASE_PATH: Record<SeoLanding['kind'], string> = {
   industry:  '/industries',
@@ -178,6 +179,10 @@ export default function LandingPage({ page }: { page: SeoLanding }) {
           ))}
         </div>
       </section>
+
+      {page.kind === 'country' && page.designGuide && (
+        <CountryDesignGuideSection guide={page.designGuide} country={page.label} />
+      )}
 
       {/* ── Cities in this state (usa-state pages only) ── */}
       {childCities.length > 0 && (
