@@ -1,6 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// lib/seo.ts  — Single source of truth for all SEO metadata
-// Edit this file to update titles, descriptions, OG images, keywords etc.
+// lib/seo.ts — Single source of truth for SEO metadata and keyword research.
+// Keyword arrays are used for editorial planning and metadata only; Google does
+// not use the meta-keywords tag as a ranking signal.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const SEO_BASE_URL = 'https://www.tapisglobalinternational.com'  // Production domain
@@ -11,7 +12,7 @@ export const OG_IMAGE = {
   url:    `${SEO_BASE_URL}/images/tgi-banner-1.webp`,
   width:  1200,
   height: 630,
-  alt:    'Tapis Global International — Premium Carpet & Flooring Solutions from Bhadohi, India',
+  alt:    'Tapis Global International — Handmade Carpets and Rugs from Bhadohi, India',
   type:   'image/webp' as const,
 }
 
@@ -62,8 +63,9 @@ export const BRAND = {
   geo: { lat: 25.3928, lng: 82.5661 },
 }
 
-// ─── PRIMARY KEYWORDS (research-based, high-intent) ──────────────────────────
-// Tier 1: High commercial intent — manufacturer & supplier searches
+// ─── KEYWORD RESEARCH GROUPS ─────────────────────────────────────────────────
+// These groups guide page targeting and content briefs. Avoid placing every
+// keyword on every page: each URL should own one clear search intent.
 export const KEYWORDS_PRIMARY = [
   'carpet manufacturer India',
   'rug manufacturer India',
@@ -79,7 +81,6 @@ export const KEYWORDS_PRIMARY = [
   'luxury carpet manufacturer Bhadohi',
 ]
 
-// Tier 2: Product-specific
 export const KEYWORDS_PRODUCT = [
   'hand tufted carpets',
   'hand knotted rugs',
@@ -97,114 +98,138 @@ export const KEYWORDS_PRODUCT = [
   'carpet manufacturer for interior designers',
 ]
 
-// Tier 3: Brand / location
 export const KEYWORDS_BRAND = [
   'Tapis Global International',
   'carpet manufacturer Bhadohi',
   'Bhadohi carpet supplier',
   'UP carpet manufacturer',
-  'Indian handloom carpet manufacturer',
-  'ISO certified carpet manufacturer India',
+  'Indian handmade carpet manufacturer',
   'carpet manufacturer for hospitality projects',
 ]
 
-// All keywords combined
+export const KEYWORDS_INDIA = [
+  'carpet manufacturer Delhi NCR',
+  'wholesale carpet supplier Mumbai',
+  'carpet supplier Bengaluru',
+  'hotel carpet supplier Hyderabad',
+  'custom rugs Chennai',
+  'carpet manufacturer Jaipur',
+  'carpet supplier Ahmedabad',
+  'carpet manufacturer Kolkata',
+  'carpet wholesaler Pune',
+  'carpet manufacturer Lucknow',
+  'carpet supplier Gurugram',
+  'carpet manufacturer Bhadohi',
+]
+
+export const KEYWORDS_INTERNATIONAL = [
+  'India carpet exporter',
+  'Indian rug manufacturer wholesale',
+  'handmade rugs supplier for importers',
+  'private label rug manufacturer India',
+  'hotel carpet manufacturer for international projects',
+  'custom area rug manufacturer India',
+  'contract carpet supplier',
+]
+
 export const KEYWORDS_ALL = [
   ...KEYWORDS_PRIMARY,
   ...KEYWORDS_PRODUCT,
   ...KEYWORDS_BRAND,
+  ...KEYWORDS_INDIA,
+  ...KEYWORDS_INTERNATIONAL,
 ]
 
 // ─── PAGE-LEVEL METADATA ─────────────────────────────────────────────────────
-// Each page gets its own optimised title + description
+// Each page gets a unique title and description aligned to its primary intent.
 export const PAGE_META = {
 
   home: {
-    title:       'Carpet Manufacturer India | Handmade Carpets & Rugs — Tapis Global International',
-    description: 'Tapis Global International — handmade carpet and rug manufacturer from Bhadohi, India. Supplying hand tufted carpets, hand knotted rugs, jute rugs, wall-to-wall carpets and custom flooring to architects, hotels, developers and interior designers across India and international markets.',
+    title:       'Carpet Manufacturer in India | Tapis Global',
+    description: 'Tapis Global manufactures handmade carpets and rugs in Bhadohi, India for wholesale buyers, hotels, architects, interior designers and international projects.',
     keywords:    [
-      'Carpet Manufacturer India',
-      'Rug Manufacturer India',
-      'Carpet Supplier India',
-      'Handmade Carpet Manufacturer',
-      'Bhadohi Carpet Manufacturer',
-      'Hand Tufted Carpets',
-      'Hand Knotted Rugs',
-      'Jute Rugs',
-      'Wall to Wall Carpets',
-      'Custom Rugs',
-      'Hotel Carpet Supplier',
-      ...KEYWORDS_PRIMARY.slice(0, 4),
+      'carpet manufacturer India',
+      'handmade carpet manufacturer India',
+      'rug manufacturer India',
+      'carpet exporter India',
+      'Bhadohi carpet manufacturer',
+      'wholesale carpet supplier India',
+      'hand tufted carpet manufacturer',
+      'hand knotted rug manufacturer',
+      'hotel carpet supplier India',
+      'custom rug manufacturer India',
     ],
     canonical:   SEO_BASE_URL,
   },
 
   products: {
-    title:       `Carpet & Rug Manufacturer India | Product Collections — Tapis Global International`,
-    description: `Explore carpet and rug collections from Tapis Global International — hand tufted carpets, hand knotted rugs, jute & sisal rugs, wall-to-wall carpets, flat weaves, shaggy rugs, leather carpets, poufs and coco coir. Manufacturer, supplier and exporter from Bhadohi, India.`,
+    title:       'Handmade Carpets & Rugs | Product Collections | Tapis Global',
+    description: 'Explore hand-tufted carpets, hand-knotted rugs, wool and jute rugs, flatweaves and commercial flooring from Tapis Global, a manufacturer in Bhadohi, India.',
     keywords:    [
-      'Carpet Manufacturer India',
-      'Rug Manufacturer India',
-      'Carpet Supplier India',
-      'Bhadohi Carpet Manufacturer',
+      'handmade carpet collections',
+      'hand tufted carpet manufacturer',
+      'hand knotted rugs wholesale',
+      'wool carpet manufacturer India',
+      'jute rug manufacturer India',
+      'commercial carpet supplier',
       ...KEYWORDS_PRODUCT,
     ],
     canonical:   `${SEO_BASE_URL}/products`,
   },
 
   about: {
-    title:       `About Tapis Global International | Premium Carpet & Flooring Solutions`,
-    description: `A third-generation, family-owned carpet manufacturer continuing a legacy since 1965, Tapis Global crafts premium handmade carpets in Bhadohi — serving architects, hospitality projects, commercial interiors, pan India supply and international markets with quality-managed manufacturing.`,
+    title:       `About Tapis Global International | Carpet Manufacturer`,
+    description: `Learn about Tapis Global International, a carpet and rug manufacturer based in Bhadohi, Uttar Pradesh, with a corporate office in New Delhi, India.`,
     keywords:    KEYWORDS_BRAND,
     canonical:   `${SEO_BASE_URL}/about`,
   },
 
   contact: {
-    title:       `Contact Tapis Global | Project Enquiries & Custom Carpet Solutions`,
-    description: `Contact Tapis Global — corporate office New Delhi, manufacturing Bhadohi. Call +91 84482 91631 or email sales@tapisglobalinternational.com for projects, samples and enquiries.`,
+    title:       `Contact Tapis Global | Carpet & Rug Enquiries`,
+    description: `Contact Tapis Global for wholesale carpets, custom rugs, hospitality projects and export enquiries. Call +91 84482 91631 or email sales@tapisglobalinternational.com.`,
     keywords:    [...KEYWORDS_PRIMARY, 'carpet project enquiry', 'custom rug supplier India'],
     canonical:   `${SEO_BASE_URL}/contact`,
   },
 
   gallery: {
-    title:       `Carpet & Rug Gallery | Handmade Collections by Tapis Global International`,
-    description: `Browse our gallery of handmade carpets, rugs and floor coverings. View hand tufted, hand knotted, kilim, jute and custom hospitality carpet installations from our Bhadohi factory.`,
-    keywords:    [...KEYWORDS_PRODUCT, 'carpet gallery India', 'handmade rug photos'],
+    title:       `Carpet & Rug Gallery | Tapis Global International`,
+    description: `Explore handmade carpet and rug designs, including hand-tufted, hand-knotted, kilim, jute and hospitality flooring collections from Tapis Global, Bhadohi, India.`,
+    keywords:    [...KEYWORDS_PRODUCT, 'carpet gallery India', 'handmade rug designs'],
     canonical:   `${SEO_BASE_URL}/gallery`,
   },
 
   samples: {
-    title:       `Carpet Sample Swatches | 1600+ Curated Shades — Tapis Global International`,
-    description: `Browse 1600+ curated carpet colours across wool, silk, viscose, cotton and jute collections. Request colour cards and trade samples from Tapis Global International, Bhadohi, India.`,
-    keywords:    [...KEYWORDS_PRODUCT, 'carpet sample swatches', 'rug colour samples wholesale', 'wool carpet samples India', 'free carpet samples trade'],
+    title:       `Carpet Sample Swatches | Tapis Global International`,
+    description: `Explore carpet colour and material options and enquire about trade samples from Tapis Global International, a carpet manufacturer in Bhadohi, India.`,
+    keywords:    [...KEYWORDS_PRODUCT, 'carpet sample swatches', 'rug colour samples wholesale', 'wool carpet samples India'],
     canonical:   `${SEO_BASE_URL}/design-studio`,
   },
 
   designStudio: {
-    title:       `Design Studio | 1600+ Colours & Custom Carpet Development — Tapis Global`,
-    description: `Explore the Tapis Global Design Studio — 1600+ curated yarn colours, custom shade matching, premium materials and full design development for architects, hotels and luxury projects. Bhadohi, India.`,
-    keywords:    [...KEYWORDS_PRODUCT, 'carpet design studio India', 'custom rug colour matching', 'yarn colour library', 'architect carpet samples', 'Pantone carpet matching'],
+    title:       `Carpet Design Studio | Custom Colours & Rugs | Tapis Global`,
+    description: `Explore carpet colour options, shade matching, materials and design development for architects, hotels and interior projects with Tapis Global, India.`,
+    keywords:    [...KEYWORDS_PRODUCT, 'carpet design studio India', 'custom rug colour matching', 'yarn colour library', 'architect carpet samples'],
     canonical:   `${SEO_BASE_URL}/design-studio`,
   },
 
   custom: {
-    title:       `Custom Carpet Design | Bespoke Rugs for Architects & Luxury Projects — Tapis Global`,
-    description: `Design custom carpets with Tapis Global. Bespoke size, colour, texture and material for hotels, offices, villas and designer interiors. Pan India execution and export quality from Bhadohi.`,
+    title:       `Custom Carpet Manufacturer | Bespoke Rugs | Tapis Global`,
+    description: `Develop custom carpets and bespoke rugs by size, colour, texture and material for hotels, offices, villas and design projects. Manufactured in Bhadohi, India.`,
     keywords:    [...KEYWORDS_PRODUCT, 'custom carpet manufacturer', 'bespoke rug design India', 'architect custom carpet', 'hotel custom carpet'],
     canonical:   `${SEO_BASE_URL}/custom`,
   },
 
   catalogue: {
-    title:       `Request Luxury Carpet Catalogue | Tapis Global International — Bhadohi, India`,
-    description: `Request our premium digital carpet catalogue — collections for architects, hospitality projects, luxury interiors and international buyers. Delivered to your inbox within 24 hours.`,
-    keywords:    [...KEYWORDS_PRODUCT, 'carpet catalogue download', 'luxury carpet lookbook', 'hospitality carpet catalogue India'],
+    title:       `Carpet Manufacturer Catalogue | Tapis Global International`,
+    description: `Request the Tapis Global carpet and rug catalogue for wholesale sourcing, architects, hospitality projects, luxury interiors and international buyers.`,
+    keywords:    [...KEYWORDS_PRODUCT, 'carpet catalogue', 'wholesale rug catalogue', 'hospitality carpet catalogue India'],
     canonical:   `${SEO_BASE_URL}/catalogue`,
   },
 }
 
 // ─── DEFAULT TITLE TEMPLATE ───────────────────────────────────────────────────
-// Used for sub-pages. %s is replaced with the page title.
-export const TITLE_TEMPLATE = `%s | Tapis Global International — Handmade Carpet Manufacturer, Bhadohi`
+// Keep the template concise; page-specific titles should carry the key intent.
+export const TITLE_TEMPLATE = `%s | Tapis Global`
 
 // ─── TWITTER CARD CONFIG ──────────────────────────────────────────────────────
 export const TWITTER_META = {
