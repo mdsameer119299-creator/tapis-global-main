@@ -44,6 +44,18 @@ export function isSeoDbConfigured(): boolean {
   return !!process.env.SEO_DATABASE_URL
 }
 
+/** Removes libpq-style ssl* parameters so they cannot override the explicit `ssl` option below
+ * (pg 8.x treats sslmode=require as verify-full, which fails against Supabase's certificate chain). Exported for tests. */
+export function stripSslParams(url: string): string {
+  try {
+    const u = new URL(url)
+    for (const k of Array.from(u.searchParams.keys())) if (/^ssl/i.test(k) || k === 'uselibpqcompat') u.searchParams.delete(k)
+    return u.toString()
+  } catch {
+    return url
+  }
+}
+
 const g = globalThis as unknown as { __seoPool?: Pool }
 
 export function getSeoPool(): Pool {
@@ -51,11 +63,12 @@ export function getSeoPool(): Pool {
   const url = assertSafeSeoDbUrl(process.env.SEO_DATABASE_URL)
   const local = /@(localhost|127\.0\.0\.1|\[::1\])[:/]/.test(url)
   g.__seoPool = new Pool({
-    connectionString: url,
+    connectionString: stripSslParams(url),
     max: 3,
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 8_000,
-    statement_timeout: 20_000,
+    // Client-side timeout. A statement_timeout *startup parameter* is rejected by some poolers, so it is not used.
+    query_timeout: 25_000,
     ssl: local ? undefined : { rejectUnauthorized: false }, // Supabase poolers present a Supabase-issued chain
   })
   g.__seoPool.on('error', () => undefined) // idle-client errors must not crash the server

@@ -45,6 +45,13 @@ await t('assertSafeSeoDbUrl blocks unsafe targets without leaking the URL', () =
   delete process.env.SEO_DATABASE_EXPECTED_REF
 })
 
+await t('stripSslParams removes ssl overrides but keeps other parameters and encoded passwords', () => {
+  const out = db.stripSslParams('postgresql://postgres.abc:p%40ss%3Aw%2Frd@aws-0-ap-south-1.pooler.supabase.com:5432/postgres?sslmode=require&sslrootcert=x&application_name=seo')
+  assert.ok(!/ssl/i.test(out.replace('supabase', '')), out)
+  assert.ok(out.includes('p%40ss%3Aw%2Frd') && out.includes('application_name=seo'))
+  assert.equal(db.stripSslParams('not a url'), 'not a url')
+})
+
 // ---------------------------------------------------------------- schema security
 await t('every seo_* table has RLS enabled and no grants to PUBLIC/anon/authenticated', async () => {
   const tables = await sql(`SELECT c.relname, c.relrowsecurity FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relkind='r' AND c.relname LIKE 'seo\\_%'`)
