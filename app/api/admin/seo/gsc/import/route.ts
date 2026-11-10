@@ -2,7 +2,7 @@ import { cookies, headers } from 'next/headers'
 import { NextResponse } from 'next/server'
 import { SEO_SESSION_COOKIE, verifySeoSession } from '@/lib/seo-command/auth-session'
 import { originMatchesHost } from '@/lib/seo-command/auth'
-import { getSeoPool, isSeoDbConfigured } from '@/lib/seo-command/db'
+import { ImportDbNotConfiguredError, getImportPool, isImportDbConfigured } from '@/lib/seo-command/import-db'
 import { gscOAuthConfig } from '@/lib/seo-command/gsc-oauth'
 import { refreshAccessToken } from '@/lib/seo-command/gsc-google'
 import { readRefreshTokenReadOnly } from '@/lib/seo-command/gsc-connectivity'
@@ -16,7 +16,7 @@ export const dynamic = 'force-dynamic'
 export const maxDuration = 60
 
 /** One-time Search Console 90-day import (2026-08-11..2026-11-08, sc-domain:tapisglobalinternational.com). Admin-only, same-origin, Preview-only, explicitly enabled.
- *  One request = one step (Vercel Hobby 60 s limit). Writes only the four approved tables (see lib/seo-command/gsc-import.ts). Responses carry counts and fixed codes only:
+ *  One request = one step (Vercel Hobby 60 s limit). Writes only the four approved tables (see lib/seo-command/gsc-import.ts), through its own restricted database login (SEO_IMPORT_DATABASE_URL, no fallback; lib/seo-command/import-db.ts). Responses carry counts and fixed codes only:
  *  never query text, URLs, tokens, credentials or database error text.
  *  Body: {action:'start',confirm} | {action:'daily'|'finish'|'status'|'resume', runId} | {action:'window', runId, index:1..13}.
  *  There is deliberately NO rollback action: rollback is a manual administrator SQL procedure (db/seo/admin_rollback_import_run.sql).
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
   // Preview-only, and only when explicitly enabled; the database must be the approved SEO development project.
   if (process.env.VERCEL_ENV !== 'preview') return fail('The import is available only in the Preview environment.', 403)
   if (process.env.SEO_GSC_IMPORT_ENABLED !== 'true') return fail('The import is not enabled for this environment.', 403)
-  if ((process.env.SEO_DATABASE_EXPECTED_REF ?? '').toLowerCase() !== IMPORT_EXPECTED_DB_REF || !(process.env.SEO_DATABASE_URL ?? '').toLowerCase().includes(IMPORT_EXPECTED_DB_REF)) return fail('The SEO database is not the approved development project.', 403)
+  if ((process.env.SEO_DATABASE_EXPECTED_REF ?? '').toLowerCase() !== IMPORT_EXPECTED_DB_REF || !(process.env.SEO_IMPORT_DATABASE_URL ?? '').toLowerCase().includes(IMPORT_EXPECTED_DB_REF)) return fail('The SEO database is not the approved development project.', 403)
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null
   const action = typeof body?.action === 'string' ? body.action : ''
   const runId = typeof body?.runId === 'string' && UUID.test(body.runId) ? body.runId : ''
@@ -43,9 +43,10 @@ export async function POST(req: Request) {
   if (action === 'window' && !(Number.isInteger(index) && index >= 1 && index <= IMPORT_WINDOWS.length)) return fail('Invalid window index', 400)
   const cfg = gscOAuthConfig()
   if (!cfg || cfg.property !== IMPORT_PROPERTY) return fail('Search Console connection is not configured for this environment.', 503)
-  if (!isSeoDbConfigured()) return fail('SEO database is not configured', 503)
-
-  const pool = getSeoPool()
+  // The importer uses ONLY its own restricted login (SEO_IMPORT_DATABASE_URL). No fallback to SEO_DATABASE_URL or DATABASE_URL. Messages are fixed and never contain the URL.
+  if (!isImportDbConfigured()) return fail('The import database login is not configured.', 503)
+  let pool
+  try { pool = getImportPool() } catch (e) { return fail(e instanceof ImportDbNotConfiguredError ? 'The import database login is not configured.' : 'The import database login failed the safety check.', 503) }
   const actor = session.email
   try {
     if (action === 'start') return NextResponse.json({ ok: true, ...(await startImport(pool, IMPORT_BASELINE, actor)) }, noStore)

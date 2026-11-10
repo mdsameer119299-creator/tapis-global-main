@@ -87,7 +87,7 @@ CREATE POLICY seo_rollback_audit_insert ON public.seo_audit_log FOR INSERT TO se
 
 COMMIT;
 
--- 6. SEPARATE LIVE ROLE CHANGE (own approval; NOT part of the transaction above). Only seo_importer is ever granted to an application login:
---      GRANT seo_importer TO <application login> WITH INHERIT FALSE, SET TRUE;
---    seo_import_rollback must have NO members after this migration (verify_0005.sql checks this) and is never granted to the application login.
+-- 6. SEPARATE LIVE ROLE CHANGE (own approval; NOT part of the transaction above). The importer connects with its OWN dedicated login, created by the manual administrator script
+--    db/seo/admin_create_import_login.sql (login seo_import_app, member of seo_importer ONLY, WITH INHERIT FALSE, SET TRUE; no password in the file). Nothing is granted to the existing
+--    SEO application login or to `postgres`. seo_import_rollback must have NO members after this migration (verify_0005.sql checks this) and is never granted to any application login.
 --    INHERIT FALSE: the login holds no privileges unless the app explicitly runs SET LOCAL ROLE seo_importer inside a transaction.

@@ -1,6 +1,6 @@
 // One-time Search Console import: STATIC guarantees (always run) + the eight safety tests, role/RLS permission matrix (run against a SCRATCH Postgres only).
 // Scratch part env: SEO_SCRATCH_PG_URL=postgres://postgres@localhost:55432/postgres (admin, creates/drops throwaway databases), SEO_SCRATCH_TEMPLATE=<db with 0001-0005 applied>,
-// SEO_SCRATCH_LOGIN=<non-superuser APPLICATION login: member of seo_importer ONLY, WITH INHERIT FALSE, SET TRUE>, SEO_SCRATCH_BYPASS_LOGIN=<login with BYPASSRLS>,
+// SEO_SCRATCH_LOGIN=seo_import_app (the pinned dedicated login, created by db/seo/admin_create_import_login.sql: member of seo_importer ONLY, WITH INHERIT FALSE, SET TRUE), SEO_SCRATCH_BYPASS_LOGIN=<login with BYPASSRLS>,
 // SEO_SCRATCH_ADMIN_LOGIN=<non-superuser administrator holding ADMIN OPTION (not SET) on seo_import_rollback, like the role that ran 0005>.
 // Never point these at a real database: the harness refuses anything that is not localhost.
 import assert from 'node:assert/strict'
@@ -34,8 +34,10 @@ s('importer never touches oauth / sites / sitemap / ga4 / recommendations writes
   assert.equal((code.match(/ON CONFLICT/g) ?? []).length, 2); assert.equal((code.match(/ON CONFLICT[^`]*DO NOTHING/g) ?? []).length, 2)
 })
 s('the application can never hold a deletion-capable role: no DELETE, no rollback role, no rollback action, no seo_worker in app code', () => {
-  assert.ok(!/DELETE FROM/i.test(code)); assert.ok(!/seo_import_rollback|ROLLBACK_ROLE|rollbackImport/.test(code + route.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')))
-  assert.ok(!/seo_worker/.test(code)); assert.equal(I.IMPORTER_ROLE, 'seo_importer'); assert.equal(I.rollbackImport, undefined)
+  assert.ok(!/DELETE FROM/i.test(code)); // the only mention allowed is the login guard, which PROVES the login is NOT a member of these roles
+  const noGuard = code.replace(/async function assertImportLogin[\s\S]*?\n}\n/, '')
+  assert.ok(!/seo_import_rollback|ROLLBACK_ROLE|rollbackImport/.test(noGuard + route.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')))
+  assert.ok(!/seo_worker/.test(noGuard)); assert.equal(I.IMPORTER_ROLE, 'seo_importer'); assert.equal(I.rollbackImport, undefined)
   assert.ok(!/'rollback'/.test(route.replace(/\/\*[\s\S]*?\*\//g, '')) )
   assert.equal((code.match(/SET LOCAL ROLE/g) ?? []).length, 1)
 })
@@ -73,6 +75,68 @@ s('migration 0005 is additive, creates exactly two NOLOGIN roles, grants DELETE 
   for (const l of sql5.split('\n').filter((l) => /^GRANT/.test(l) && /DELETE/.test(l))) assert.ok(/seo_import_rollback/.test(l) && !/seo_importer\b[^_]/.test(l.replace('seo_import_rollback', '')), l)
   assert.ok(!/seo_(oauth_states|sitemap_status|ga4|recommendations|keywords|competitors|crawl|technical|agent|approval|integrations)/.test(sql5.split('\n').filter((l) => /^GRANT/.test(l)).join('\n')))
   assert.ok(!/DROP|TRUNCATE|DELETE FROM|UPDATE public|INSERT INTO/.test(sql5.replace(/--.*$/gm, '')))
+})
+
+// ---- dedicated importer login: connection code ----
+const ID = jiti('../lib/seo-command/import-db.ts')
+const stripC = (x) => x.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '').replace(/\s\/\/ .*$/gm, '')
+const dbCode = stripC(read('lib/seo-command/import-db.ts')), routeCode = stripC(route)
+s('importer connection code: exactly one Pool, built ONLY from SEO_IMPORT_DATABASE_URL; no fallback to getSeoPool/seoQuery/withSeoTx/SEO_DATABASE_URL/DATABASE_URL', () => {
+  assert.equal((dbCode.match(/new Pool\(/g) ?? []).length, 1)
+  assert.ok(/assertSafeImportDbUrl\(env\.SEO_IMPORT_DATABASE_URL,/.test(dbCode) && /connectionString: stripSslParams\(url\)/.test(dbCode))
+  // SEO_DATABASE_URL / DATABASE_URL appear only as comparison inputs passed to the validator, never as a connection string
+  for (const m of dbCode.matchAll(/env\.(SEO_DATABASE_URL|DATABASE_URL)/g)) assert.ok(new RegExp(`(seoUrl|mainUrl): env\\.${m[1]}`).test(dbCode))
+  assert.ok(!/\|\|\s*env\.|\?\?\s*env\.SEO_DATABASE_URL|\?\?\s*env\.DATABASE_URL/.test(dbCode.replace(/env\.SEO_DATABASE_EXPECTED_REF \?\? ''/, '')))
+  for (const [n, c] of [['gsc-import.ts', code], ['route.ts', routeCode], ['import-db.ts', dbCode]]) assert.ok(!/getSeoPool|seoQuery|withSeoTx|process\.env\.SEO_DATABASE_URL|process\.env\.DATABASE_URL|\bDATABASE_URL\b(?!\w)/.test(c.replace(/SEO_IMPORT_DATABASE_URL|SEO_DATABASE_URL/g, (m) => (n === 'import-db.ts' && m === 'SEO_DATABASE_URL' ? '' : m))) || n === 'import-db.ts', `${n} must not use the general database pool`)
+  assert.ok(!/from '\.\/db'|from '@\/lib\/seo-command\/db'/.test(code + routeCode)); assert.ok(/getImportPool\(\)/.test(routeCode) && /isImportDbConfigured\(\)/.test(routeCode))
+  assert.ok(!/process\.env\.SEO_DATABASE_URL|isSeoDbConfigured/.test(routeCode))
+  assert.ok(!/DELETE|rollback/i.test(dbCode.replace(/seo_import_rollback|IMPORT_LOGIN_ROLE/g, '')))
+})
+s('login guard: every transaction first proves the session login is exactly seo_import_app (no superuser/BYPASSRLS/CREATEROLE/CREATEDB/REPLICATION; importer member; not rollback/worker/postgres) before SET LOCAL ROLE', () => {
+  const i = code.indexOf('async function importTx'), tx = code.slice(i, i + 700)
+  assert.ok(tx.indexOf('assertImportLogin(c)') > 0 && tx.indexOf('assertImportLogin(c)') < tx.indexOf('SET LOCAL ROLE') && tx.indexOf('BEGIN') < tx.indexOf('assertImportLogin(c)'))
+  const g = code.slice(code.indexOf('async function assertImportLogin'), code.indexOf('// ---------- transactions') > 0 ? code.indexOf('export async function importTx') : undefined)
+  for (const k of ['rolsuper', 'rolbypassrls', 'rolcreaterole', 'rolcreatedb', 'rolreplication', "'seo_importer'", "'seo_import_rollback'", "'seo_worker'", "'postgres'", 'IMPORT_LOGIN_ROLE']) assert.ok(g.includes(k), k)
+  assert.equal((code.match(/SET LOCAL ROLE/g) ?? []).length, 1)
+})
+s('assertSafeImportDbUrl: accepts only the dedicated login on the approved project; rejects unsafe URLs without echoing them', () => {
+  const REF = 'xxmrziaefhxmaewrvbqk', ok = (u, o = {}) => ID.assertSafeImportDbUrl(u, { expectedRef: REF, ...o })
+  const good = `postgresql://seo_import_app.${REF}:S3cret%21pw@aws-0-ap-south-1.pooler.supabase.com:6543/postgres`
+  assert.equal(ok(good, { seoUrl: `postgresql://postgres.${REF}:Other@aws-0-ap-south-1.pooler.supabase.com:6543/postgres`, mainUrl: 'postgresql://u:p@h.example:5432/db' }), good)
+  assert.equal(ok(`postgresql://seo_import_app:pw@db.${REF}.supabase.co:5432/postgres`).length > 0, true) // direct form
+  const bad = [
+    [undefined, 'ImportDbNotConfiguredError'], ['', 'ImportDbNotConfiguredError'],
+    ['mysql://x', 'ImportDbUnsafeError'], ['postgres://', 'ImportDbUnsafeError'], ['not a url', 'ImportDbUnsafeError'],
+    [`postgresql://postgres.${REF}:pw@h.supabase.com:6543/postgres`, 'ImportDbUnsafeError'], [`postgresql://seo_worker.${REF}:pw@h.supabase.com:6543/postgres`, 'ImportDbUnsafeError'],
+    [`postgresql://seo_importer.${REF}:pw@h.supabase.com:6543/postgres`, 'ImportDbUnsafeError'], [`postgresql://seo_import_rollback.${REF}:pw@h.supabase.com:6543/postgres`, 'ImportDbUnsafeError'],
+    [`postgresql://seo_import_app.otherref:pw@h.supabase.com:6543/${REF}`, 'ImportDbUnsafeError'], [`postgresql://seo_import_app.${REF}.extra:pw@h.supabase.com:6543/postgres`, 'ImportDbUnsafeError'],
+    [`postgresql://seo_import_app_x.${REF}:pw@h.supabase.com:6543/postgres`, 'ImportDbUnsafeError'],
+    ['postgresql://seo_import_app.zzzzzzzzzzzzzzzzzzzz:pw@h.supabase.com:6543/postgres', 'ImportDbUnsafeError'], // wrong project
+    [`postgresql://seo_import_app.qgltrhszzqtgmaaglbfz:pw@h.supabase.com:6543/${REF}`, 'ImportDbUnsafeError'], // CraftTrack ref present
+  ]
+  for (const [u, name] of bad) { let err; try { ok(u) } catch (e) { err = e } assert.ok(err && err.name === name, String(u)); if (u) assert.ok(!err.message.includes('pw') && !err.message.includes('pooler') && !err.message.includes(u), 'message must not echo the URL') }
+  assert.throws(() => ok(good, { seoUrl: good }), (e) => e.name === 'ImportDbUnsafeError') // same as SEO url
+  assert.throws(() => ok(good, { mainUrl: good }), (e) => e.name === 'ImportDbUnsafeError')
+  assert.throws(() => ok(good, { seoUrl: `postgresql://postgres.${REF}:S3cret%21pw@h:6543/postgres` }), (e) => e.name === 'ImportDbUnsafeError') // reused password
+  assert.throws(() => ID.assertSafeImportDbUrl(good, { expectedRef: '' }), (e) => e.name === 'ImportDbUnsafeError') // no expected ref configured
+})
+s('NO FALLBACK: without SEO_IMPORT_DATABASE_URL the importer pool is refused even when SEO_DATABASE_URL and DATABASE_URL are set; unsafe values create no pool', () => {
+  const REF = 'xxmrziaefhxmaewrvbqk'; ID.__setImportPoolForTests(undefined)
+  const env = { SEO_DATABASE_URL: `postgresql://postgres.${REF}:pw1@h.supabase.com:6543/postgres`, DATABASE_URL: 'postgresql://u:pw2@main.example:5432/db', SEO_DATABASE_EXPECTED_REF: REF }
+  assert.throws(() => ID.getImportPool(env), (e) => e.name === 'ImportDbNotConfiguredError')
+  assert.throws(() => ID.getImportPool({ ...env, SEO_IMPORT_DATABASE_URL: env.SEO_DATABASE_URL }), (e) => e.name === 'ImportDbUnsafeError')
+  assert.throws(() => ID.getImportPool({ ...env, SEO_IMPORT_DATABASE_URL: env.DATABASE_URL }), (e) => e.name === 'ImportDbUnsafeError')
+  assert.equal(globalThis.__seoImportPool, undefined) // nothing was created or cached by the refused calls
+  const p = ID.getImportPool({ ...env, SEO_IMPORT_DATABASE_URL: `postgresql://seo_import_app.${REF}:pw3@h.supabase.com:6543/postgres` }); assert.ok(p && p.options.max === 2); p.end().catch(() => {}); ID.__setImportPoolForTests(undefined)
+  const prior = process.env.SEO_IMPORT_DATABASE_URL; delete process.env.SEO_IMPORT_DATABASE_URL; assert.equal(ID.isImportDbConfigured(), false); if (prior !== undefined) process.env.SEO_IMPORT_DATABASE_URL = prior
+})
+s('administrator login scripts: no password in any file, login is NOLOGIN-free restricted (NOINHERIT, NOBYPASSRLS, no CREATEROLE), member of seo_importer only, nothing granted to postgres/seo_worker/rollback', () => {
+  const c = stripC(read('db/seo/admin_create_import_login.sql')).replace(/^\s*--.*$/gm, ''), d = read('db/seo/down_import_login.sql').replace(/--.*$/gm, '')
+  assert.ok(!/PASSWORD|ENCRYPTED/i.test(c) && !/PASSWORD/i.test(d)); assert.ok(/CREATE ROLE seo_import_app LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION NOBYPASSRLS NOINHERIT/.test(c))
+  const grants = [...c.matchAll(/GRANT\s+(\S+)\s+TO\s+(\S+)(\s+WITH[^;]*)?;/g)]; assert.deepEqual(grants.map((g) => [g[1], g[2]]), [['seo_importer', 'seo_import_app']]); assert.match(grants[0][3], /INHERIT FALSE, SET TRUE/)
+  assert.ok(!/seo_import_rollback\s+TO|seo_worker\s+TO|postgres\s+TO|GRANT\s+[^;]*ON\s+/i.test(c)); assert.ok(!/DELETE|DROP TABLE|TRUNCATE|UPDATE\s+\w|INSERT INTO/i.test(c + d))
+  for (const f of ['package.json', 'vercel.json', 'next.config.js', 'next.config.mjs']) if (existsSync(path.join(ROOT, f))) assert.ok(!/admin_create_import_login|down_import_login/.test(read(f)), f)
+  assert.ok(!/admin_create_import_login|down_import_login/.test(code + routeCode + dbCode))
 })
 
 // ===================== SCRATCH DATABASE tests =====================
@@ -541,6 +605,89 @@ await t('PERM RLS is enforced after SET LOCAL ROLE even for a BYPASSRLS login (o
       await o.query('BEGIN'); await o.query('SET LOCAL ROLE seo_importer'); const n = (await o.query(`SELECT count(*)::int n FROM seo_sites`)).rows[0].n; await o.query('ROLLBACK'); assert.equal(n, 0)
     } finally { await o.end() }
   } finally { await e.done() }
+})
+
+// ===================== DEDICATED LOGIN isolation (scratch) =====================
+const adminPoolFor = (e, user) => new pg.Pool({ ...HOST, user, password: 'x', database: e.name, max: 2 })
+await t('LOGIN guard: every transaction refuses any login other than the exact restricted login, and nothing is written', async () => {
+  const e = await fresh(); try {
+    for (const user of [BYPASS, ADMIN_LOGIN, aurl.username]) { // other login names: BYPASSRLS login, CREATEROLE admin, superuser
+      const pool = adminPoolFor(e, user)
+      try {
+        await assert.rejects(P.start(pool), (x) => x.code === 'LOGIN_UNSAFE', user)
+        await assert.rejects(I.importTx(pool, async () => 1, { readOnly: true }), (x) => x.code === 'LOGIN_UNSAFE', user)
+      } finally { await pool.end() }
+    }
+    const n = await one(e.admin, `SELECT (SELECT count(*) FROM seo_gsc_sync_runs)::int runs,(SELECT count(*) FROM seo_audit_log)::int audit,(SELECT count(*) FROM seo_search_daily)::int d,(SELECT count(*) FROM seo_search_performance)::int p`)
+    assert.deepEqual(n, { runs: 0, audit: 0, d: 0, p: 0 })
+    assert.equal(await I.importTx(e.pool, async (c) => (await c.query('SELECT 1 AS x')).rows[0].x, { readOnly: true }), 1) // the real login passes
+  } finally { await e.done() }
+})
+await t('LOGIN guard: each forbidden attribute or membership added to the exact login is refused (superuser, BYPASSRLS, CREATEROLE, CREATEDB, REPLICATION, rollback member incl. ADMIN-only, seo_worker, postgres, missing seo_importer); restored => accepted', async () => {
+  const e = await fresh(); try {
+    const muts = [
+      ['SUPERUSER', 'ALTER ROLE seo_import_app SUPERUSER', 'ALTER ROLE seo_import_app NOSUPERUSER'], ['BYPASSRLS', 'ALTER ROLE seo_import_app BYPASSRLS', 'ALTER ROLE seo_import_app NOBYPASSRLS'],
+      ['CREATEROLE', 'ALTER ROLE seo_import_app CREATEROLE', 'ALTER ROLE seo_import_app NOCREATEROLE'], ['CREATEDB', 'ALTER ROLE seo_import_app CREATEDB', 'ALTER ROLE seo_import_app NOCREATEDB'],
+      ['REPLICATION', 'ALTER ROLE seo_import_app REPLICATION', 'ALTER ROLE seo_import_app NOREPLICATION'],
+      ['member of rollback (SET)', 'GRANT seo_import_rollback TO seo_import_app WITH INHERIT FALSE, SET TRUE', 'REVOKE seo_import_rollback FROM seo_import_app'],
+      ['member of rollback (ADMIN OPTION only)', 'GRANT seo_import_rollback TO seo_import_app WITH ADMIN TRUE, INHERIT FALSE, SET FALSE', 'REVOKE seo_import_rollback FROM seo_import_app'],
+      ['member of seo_worker', 'GRANT seo_worker TO seo_import_app WITH INHERIT FALSE, SET TRUE', 'REVOKE seo_worker FROM seo_import_app'],
+      ['member of postgres', 'GRANT postgres TO seo_import_app WITH INHERIT FALSE, SET TRUE', 'REVOKE postgres FROM seo_import_app'],
+      ['not a member of seo_importer', `REVOKE seo_importer FROM seo_import_app GRANTED BY ${ADMIN_LOGIN}`, `GRANT seo_importer TO seo_import_app WITH INHERIT FALSE, SET TRUE GRANTED BY ${ADMIN_LOGIN}`], // the membership was granted by the administrator login
+    ]
+    const ping = () => I.importTx(e.pool, async (c) => (await c.query('SELECT 1 AS x')).rows[0].x, { readOnly: true })
+    assert.equal(await ping(), 1)
+    for (const [name, up, down] of muts) {
+      await root.query(up)
+      try { await assert.rejects(ping(), (x) => x.code === 'LOGIN_UNSAFE', name) } finally { await root.query(down) }
+      assert.equal(await ping(), 1, 'restored: ' + name)
+    }
+    const m = await q(root, `SELECT r.rolname role_granted, m.set_option so, m.inherit_option io, m.admin_option ao FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.roleid JOIN pg_roles u ON u.oid=m.member WHERE u.rolname='seo_import_app'`)
+    assert.deepEqual(m, [{ role_granted: 'seo_importer', so: true, io: false, ao: false }])
+  } finally { await e.done() }
+})
+await t('LOGIN isolation: the dedicated login has no privileges of its own, cannot assume rollback/worker/postgres, cannot grant/alter roles, cannot run the administrator rollback SQL; SET LOCAL ROLE does not leak', async () => {
+  const e = await fresh(); try {
+    const { run } = await happy(e); const before = await one(e.admin, `SELECT (SELECT count(*) FROM seo_search_daily)::int d,(SELECT count(*) FROM seo_search_performance)::int p`)
+    const c = await e.pool.connect(); try {
+      assert.deepEqual((await c.query(`SELECT current_user::text cu, session_user::text su, r.rolsuper, r.rolbypassrls, r.rolcreaterole FROM pg_roles r WHERE r.rolname=session_user`)).rows[0], { cu: 'seo_import_app', su: 'seo_import_app', rolsuper: false, rolbypassrls: false, rolcreaterole: false })
+      for (const sql of ['SELECT count(*) FROM seo_sites', 'SELECT count(*) FROM seo_search_daily', `INSERT INTO seo_audit_log (id,"actorType",actor,action,"entityType","entityId") VALUES ('z','ADMIN','x','gsc.import.started','x','x')`, 'DELETE FROM seo_search_performance', 'SELECT refresh FROM seo_oauth_connections']) { await c.query('BEGIN'); await assert.rejects(c.query(sql), (x) => x.code === '42501' || x.code === '42703', sql); await c.query('ROLLBACK') } // INHERIT FALSE: no direct access
+      for (const sql of ['SET ROLE seo_import_rollback', 'SET ROLE seo_worker', 'SET ROLE postgres', 'SET SESSION AUTHORIZATION postgres', 'GRANT seo_import_rollback TO seo_import_app', 'GRANT seo_worker TO seo_import_app', `CREATE ROLE evil LOGIN`, 'ALTER ROLE seo_import_app BYPASSRLS', 'ALTER ROLE seo_import_app SUPERUSER', 'GRANT seo_importer TO seo_import_app WITH ADMIN TRUE', 'DROP POLICY seo_importer_site_read ON seo_sites', 'GRANT ALL ON seo_search_daily TO seo_import_app', 'ALTER TABLE seo_search_daily DISABLE ROW LEVEL SECURITY']) {
+        await c.query('BEGIN'); await assert.rejects(c.query(sql), (x) => ['42501', '0LP01', '42P01'].includes(x.code) || /permission denied|must be owner|must have admin/i.test(x.message), sql); await c.query('ROLLBACK')
+      }
+      for (const sql of ['SET LOCAL ROLE seo_importer']) { await c.query('BEGIN'); await c.query(sql); for (const bad of ['SET LOCAL ROLE seo_import_rollback', 'SET LOCAL ROLE seo_worker', 'RESET SESSION AUTHORIZATION; SET LOCAL ROLE postgres']) await c.query('SAVEPOINT s').then(() => assert.rejects(c.query(bad), (x) => x.code === '42501' || x.code === '25P02' || /permission denied/i.test(x.message))).then(() => c.query('ROLLBACK TO s')); await c.query('ROLLBACK') }
+    } finally { c.release() }
+    // after a committed import step the session is back on the login (SET LOCAL did not leak into the pooled connection)
+    const c2 = await e.pool.connect(); try { await I.importTx(e.pool, async (x) => (await x.query('SELECT 1')).rows[0]); assert.equal((await c2.query('SELECT current_user::text cu')).rows[0].cu, 'seo_import_app') } finally { c2.release() }
+    // the login cannot run the administrator rollback procedure: its GRANT of the rollback role fails; nothing is deleted
+    const ac = new pg.Client({ ...HOST, user: LOGIN, password: 'x', database: e.name }); await ac.connect()
+    try { await assert.rejects(ac.query(ROLLBACK_SQL.replace('00000000-0000-0000-0000-000000000000', run.runId)), (x) => x.code === '42501' || /permission|admin option|must have/i.test(x.message)); await ac.query('ROLLBACK').catch(() => {}) } finally { await ac.end() }
+    assert.deepEqual(await one(e.admin, `SELECT (SELECT count(*) FROM seo_search_daily)::int d,(SELECT count(*) FROM seo_search_performance)::int p`), before)
+    assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
+    const mem = await q(e.admin, `SELECT r.rolname role_granted, m.set_option so, m.inherit_option io, m.admin_option ao FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.roleid JOIN pg_roles u ON u.oid=m.member WHERE u.rolname=$1`, [LOGIN])
+    assert.deepEqual(mem, [{ role_granted: 'seo_importer', so: true, io: false, ao: false }])
+  } finally { await e.done() }
+})
+await t('LOGIN creation/removal scripts (admin_create_import_login.sql / down_import_login.sql) run as a non-superuser administrator: guards, post-conditions, repeatable, leaves login exactly as designed', async () => {
+  const CREATE = readFileSync(path.join(ROOT, 'db/seo/admin_create_import_login.sql'), 'utf8'), DOWN = readFileSync(path.join(ROOT, 'db/seo/down_import_login.sql'), 'utf8')
+  assert.equal(LOGIN, 'seo_import_app')
+  const run = async (sql) => { const c = new pg.Client({ ...HOST, user: ADMIN_LOGIN, password: 'x', database: 'postgres' }); await c.connect(); try { await c.query(sql); return { ok: true } } catch (x) { await c.query('ROLLBACK').catch(() => {}); return { ok: false, error: x.message } } finally { await c.end() } }
+  const state = () => one(root, `SELECT (SELECT count(*) FROM pg_roles WHERE rolname='seo_import_app')::int exists,(SELECT count(*) FROM pg_auth_members m WHERE m.member='seo_import_app'::regrole)::int memberships`).catch(() => ({ exists: 0, memberships: 0 }))
+  try {
+    { const d = await run(DOWN); assert.ok(d.ok, d.error) } assert.equal((await state()).exists, 0)                         // removal works, leaves nothing
+    assert.ok((await run(DOWN)).ok)                                                                   // and is repeatable
+    const r1 = await run(CREATE); assert.ok(r1.ok, r1.error)
+    const a = await one(root, `SELECT rolcanlogin, rolsuper, rolbypassrls, rolcreaterole, rolcreatedb, rolreplication, rolinherit, rolconnlimit, rolconfig FROM pg_roles WHERE rolname='seo_import_app'`)
+    assert.deepEqual({ ...a, rolconfig: a.rolconfig.slice().sort() }, { rolcanlogin: true, rolsuper: false, rolbypassrls: false, rolcreaterole: false, rolcreatedb: false, rolreplication: false, rolinherit: false, rolconnlimit: 3, rolconfig: ['idle_in_transaction_session_timeout=30s', 'statement_timeout=25s'] })
+    assert.deepEqual(await q(root, `SELECT r.rolname role_granted, m.set_option so, m.inherit_option io, m.admin_option ao FROM pg_auth_members m JOIN pg_roles r ON r.oid=m.roleid WHERE m.member='seo_import_app'::regrole`), [{ role_granted: 'seo_importer', so: true, io: false, ao: false }])
+    assert.equal((await one(root, `SELECT rolpassword IS NULL AS nopw FROM pg_authid WHERE rolname='seo_import_app'`)).nopw, true) // the script sets no password
+    const r2 = await run(CREATE); assert.ok(!r2.ok && /already exists/.test(r2.error)); assert.deepEqual(await state(), { exists: 1, memberships: 1 })  // re-run aborts, nothing changes
+    assert.ok(!(await run(CREATE.replace(/GRANT seo_importer TO seo_import_app[^;]*;/, 'GRANT seo_importer TO seo_import_app WITH INHERIT TRUE, SET TRUE;').replace('CREATE ROLE seo_import_app', 'DROP ROLE seo_import_app; CREATE ROLE seo_import_app'))).ok) // a mutated script (wrong membership) trips the post-condition and rolls back
+    assert.equal((await state()).exists, 1)
+  } finally {
+    if (!(await state()).exists) assert.ok((await run(CREATE)).ok)
+    await root.query(`ALTER ROLE seo_import_app CONNECTION LIMIT -1`) // scratch only: the concurrency tests open more than the live limit of 3 sessions
+  }
 })
 for (const d of dbs) await root.query(`DROP DATABASE IF EXISTS ${d} WITH (FORCE)`).catch(() => {})
 await root.end()

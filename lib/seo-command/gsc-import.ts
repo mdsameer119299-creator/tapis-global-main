@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto'
 import type { Pool, PoolClient } from 'pg'
+import { IMPORT_LOGIN_ROLE } from './import-db'
 import { dailyFingerprint, fingerprintSql, isStorableText, perfFingerprint, performanceRowKey, type DailyRow, type PerfRow } from './gsc-fingerprint'
 
 /** One-time, insert-only 90-day Search Console history import. NOT a sync: it refuses to run unless the four target tables are empty.
@@ -47,7 +48,7 @@ export interface ImportRun { runId: string; siteId: string }
 export type ImportErrorCode =
   | 'BASELINE_NOT_CONFIGURED' | 'SITE_NOT_FOUND' | 'NOT_CONNECTED' | 'TABLES_NOT_EMPTY' | 'RUN_IN_PROGRESS' | 'RUN_NOT_FOUND' | 'RUN_NOT_RUNNING' | 'RUN_NOT_PARTIAL'
   | 'GOOGLE_HTTP_ERROR' | 'WINDOW_TRUNCATED' | 'WINDOW_COUNT_MISMATCH' | 'WINDOW_DATA_CHANGED' | 'OUT_OF_RANGE_ROW' | 'DUPLICATE_KEYS' | 'BAD_ROW'
-  | 'CONFLICT_IDENTICAL' | 'CONFLICT_DIFFERENT' | 'SUBSET_VIOLATION' | 'DB_ERROR' | 'INCOMPLETE' | 'INVALID_STEP'
+  | 'CONFLICT_IDENTICAL' | 'CONFLICT_DIFFERENT' | 'SUBSET_VIOLATION' | 'DB_ERROR' | 'INCOMPLETE' | 'INVALID_STEP' | 'LOGIN_UNSAFE'
 export class ImportError extends Error {
   code: ImportErrorCode
   diag: { window?: number; stable?: boolean; observed?: number; expected?: number; pg?: string }
@@ -58,15 +59,27 @@ export class ImportError extends Error {
 const MSG: Record<string, string> = {
   GOOGLE_HTTP_ERROR: 'Search Console returned an error', WINDOW_COUNT_MISMATCH: 'A window row count differs from the approved baseline', WINDOW_DATA_CHANGED: 'A window differs from the approved baseline',
   WINDOW_TRUNCATED: 'A window response was incomplete', OUT_OF_RANGE_ROW: 'A row was outside the approved range', DUPLICATE_KEYS: 'Duplicate keys in a response', BAD_ROW: 'A row had an invalid value',
-  CONFLICT_IDENTICAL: 'Rows already exist (identical)', CONFLICT_DIFFERENT: 'Rows already exist (different values)', SUBSET_VIOLATION: 'Detail exceeds daily totals', DB_ERROR: 'Database error', INCOMPLETE: 'Expected data is incomplete',
+  CONFLICT_IDENTICAL: 'Rows already exist (identical)', CONFLICT_DIFFERENT: 'Rows already exist (different values)', SUBSET_VIOLATION: 'Detail exceeds daily totals', DB_ERROR: 'Database error', LOGIN_UNSAFE: 'The import database login is not the approved restricted login', INCOMPLETE: 'Expected data is incomplete',
 }
 
 // ---------- transactions ----------
+/** Proves, inside the transaction and before anything else, that the session login is exactly the approved restricted login: not a superuser, no BYPASSRLS/CREATEROLE/CREATEDB/REPLICATION,
+ *  a member of seo_importer, and NOT a member (in any form, including ADMIN OPTION) of seo_import_rollback, seo_worker or postgres. Reads only pg_roles; fails closed. */
+async function assertImportLogin(c: PoolClient): Promise<void> {
+  const r = (await c.query(
+    `SELECT session_user::text AS su, r.rolsuper, r.rolbypassrls, r.rolcreaterole, r.rolcreatedb, r.rolreplication,
+            pg_has_role(session_user,'seo_importer','MEMBER') AS imp, pg_has_role(session_user,'seo_import_rollback','MEMBER') AS rb,
+            pg_has_role(session_user,'seo_worker','MEMBER') AS wk, pg_has_role(session_user,'postgres','MEMBER') AS pgm
+       FROM pg_roles r WHERE r.rolname = session_user`)).rows[0]
+  const ok = r && r.su === IMPORT_LOGIN_ROLE && !r.rolsuper && !r.rolbypassrls && !r.rolcreaterole && !r.rolcreatedb && !r.rolreplication && r.imp === true && !r.rb && !r.wk && !r.pgm
+  if (!ok) throw new ImportError('LOGIN_UNSAFE')
+}
 type TxOpts = { readOnly?: boolean }
 export async function importTx<T>(pool: Pool, fn: (c: PoolClient) => Promise<T>, o: TxOpts = {}): Promise<T> {
   const c = await pool.connect()
   try {
     await c.query(o.readOnly ? 'BEGIN READ ONLY' : 'BEGIN')
+    await assertImportLogin(c) // refuses any connection that is not the dedicated restricted login, before any role switch or statement on data
     await c.query(`SET LOCAL ROLE ${IMPORTER_ROLE}`) // a constant, never user input; the only role the application may switch into
     await c.query(`SELECT pg_advisory_xact_lock(hashtext('gsc-import:'||$1))`, [IMPORT_SITE_DOMAIN])
     const out = await fn(c)
