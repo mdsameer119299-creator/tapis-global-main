@@ -27,14 +27,28 @@ export interface GscOAuthConfig {
   property: string
 }
 
-/** Returns null unless every required Preview variable is present. Never throws, never logs values. */
+/** Reads a GSC_* configuration value with leading/trailing whitespace (tabs, spaces, newlines) removed. Values pasted
+ *  into a dashboard often carry an invisible tab or newline; it must never reach Google or the database. Only the GSC_*
+ *  values read in this file go through here: no other configuration is touched. An all-whitespace value counts as unset. */
+export function gscEnv(env: Env, name: string): string | undefined {
+  const v = env[name]?.trim()
+  return v ? v : undefined
+}
+
+/** A Search Console property: a domain property (sc-domain:example.com) or a URL-prefix property (https://example.com/). */
+export function isValidGscProperty(p: string): boolean {
+  return /^sc-domain:[a-z0-9]([a-z0-9.-]*[a-z0-9])?$/i.test(p) || /^https?:\/\/[^\s/]+(\/\S*)?$/i.test(p)
+}
+
+/** Returns null unless every required Preview variable is present and valid. Never throws, never logs values. */
 export function gscOAuthConfig(env: Env = process.env): GscOAuthConfig | null {
-  const clientId = env.GSC_OAUTH_CLIENT_ID
-  const clientSecret = env.GSC_OAUTH_CLIENT_SECRET
-  const redirectUri = env.GSC_OAUTH_REDIRECT_URI
-  const property = env.GSC_SITE_URL
+  const clientId = gscEnv(env, 'GSC_OAUTH_CLIENT_ID')
+  const clientSecret = gscEnv(env, 'GSC_OAUTH_CLIENT_SECRET')
+  const redirectUri = gscEnv(env, 'GSC_OAUTH_REDIRECT_URI')
+  const property = gscEnv(env, 'GSC_SITE_URL')
   if (!clientId || !clientSecret || !redirectUri || !property || !gscEncryptionKey(env)) return null
   if (!redirectUri.startsWith('https://') || !redirectUri.endsWith(GSC_CALLBACK_PATH)) return null
+  if (!isValidGscProperty(property)) return null
   return { clientId, clientSecret, redirectUri, property }
 }
 
@@ -166,13 +180,14 @@ export interface SealedSecret {
  *  Each key must be 32 random bytes, base64 or hex. New secrets are always sealed with the current key and stamped
  *  with its version. A stored secret is opened with the key whose version it carries: a key is never guessed or
  *  silently substituted. */
-function parseKey(raw: string | undefined): Buffer | null {
+function parseKey(rawIn: string | undefined): Buffer | null {
+  const raw = rawIn?.trim()
   if (!raw) return null
   const b = /^[0-9a-fA-F]{64}$/.test(raw) ? Buffer.from(raw, 'hex') : Buffer.from(raw, 'base64')
   return b.length === 32 ? b : null
 }
 function version(raw: string | undefined, dflt: number): number {
-  const n = Number(raw)
+  const n = Number(raw?.trim())
   return Number.isInteger(n) && n > 0 ? n : dflt
 }
 export function currentKeyVersion(env: Env = process.env): number {

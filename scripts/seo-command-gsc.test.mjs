@@ -132,4 +132,36 @@ await t('callback: a valid cookie+state passes the gate; without a configured SE
   assert.match(await r.text(), /SEO database is not configured/)
 })
 
+// ── whitespace in pasted configuration values ───────────────────────────────
+const P = 'sc-domain:tapisglobalinternational.com'
+await t('config: leading TAB, leading spaces, trailing whitespace and newlines are trimmed from every GSC value', () => {
+  for (const wrap of [(v) => '\t' + v, (v) => '   ' + v, (v) => v + '  ', (v) => v + '\n', (v) => '\t ' + v + ' \r\n']) {
+    const c = g.gscOAuthConfig({ ...env, GSC_OAUTH_CLIENT_ID: wrap('id'), GSC_OAUTH_CLIENT_SECRET: wrap('sec'), GSC_OAUTH_REDIRECT_URI: wrap(REDIRECT), GSC_SITE_URL: wrap(P), GSC_TOKEN_ENCRYPTION_KEY: wrap(KEY) })
+    assert.deepEqual(c, { clientId: 'id', clientSecret: 'sec', redirectUri: REDIRECT, property: P }, JSON.stringify(wrap('x')))
+  }
+})
+
+await t('config: the exact production symptom (leading tab on GSC_SITE_URL) yields a clean property', () => {
+  assert.equal(g.gscOAuthConfig({ ...env, GSC_SITE_URL: '\t' + P }).property, P)
+})
+
+await t('config: whitespace-only counts as unset; interior whitespace or junk is rejected, not repaired', () => {
+  for (const k of ['GSC_OAUTH_CLIENT_ID', 'GSC_OAUTH_CLIENT_SECRET', 'GSC_OAUTH_REDIRECT_URI', 'GSC_SITE_URL', 'GSC_TOKEN_ENCRYPTION_KEY']) assert.equal(g.gscOAuthConfig({ ...env, [k]: ' \t\n' }), null, k)
+  for (const bad of ['sc-domain: tapis.com', 'sc-domain:tapis .com', 'tapisglobalinternational.com', 'sc-domain:', 'ftp://x.com/', 'https://']) assert.equal(g.gscOAuthConfig({ ...env, GSC_SITE_URL: bad }), null, bad)
+  assert.equal(g.gscOAuthConfig({ ...env, GSC_SITE_URL: ' https://www.tapisglobalinternational.com/ ' }).property, 'https://www.tapisglobalinternational.com/', 'URL-prefix property also accepted')
+})
+
+await t('config: trimming never changes the encryption key or version, and does not touch other variables', () => {
+  const plain = g.sealSecret('tok', env)
+  const padded = { ...env, GSC_TOKEN_ENCRYPTION_KEY: '\t' + KEY + '\n', GSC_TOKEN_KEY_VERSION: ' 1 ' }
+  assert.equal(g.openSecret(plain, padded), 'tok', 'same key bytes with or without padding')
+  assert.equal(g.currentKeyVersion(padded), 1)
+  assert.equal(g.openSecret(g.sealSecret('tok2', padded), env), 'tok2')
+  const before = { ...env, SEO_SESSION_SECRET: SECRET }
+  g.gscOAuthConfig(before)
+  assert.equal(before.SEO_SESSION_SECRET, SECRET, 'input env object is not mutated')
+  assert.equal(g.gscEnv({ A: '  x ' }, 'A'), 'x')
+  assert.equal(g.gscEnv({}, 'A'), undefined)
+})
+
 console.log(`\n${n} gsc oauth tests passed`)
