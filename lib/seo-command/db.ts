@@ -52,7 +52,9 @@ export function describeSeoDbUrl(url: string | undefined = process.env.SEO_DATAB
     const hostKind = /\.pooler\.supabase\.com$/i.test(u.hostname) ? 'pooler' : /^db\..+\.supabase\.co$/i.test(u.hostname) ? 'direct' : 'other'
     const pw = u.password
     const hints = [`len=${pw.length}`, /^\[.*\]$/.test(decodeURIComponent(pw)) ? 'wrapped in [ ] (placeholder brackets)' : '', /[\s"']/.test(decodeURIComponent(pw)) ? 'contains space/quote' : ''].filter(Boolean).join(', ')
-    return `host=${u.hostname} (${hostKind}) port=${u.port || '5432'} db=${u.pathname.replace('/', '')} user=${userForm} password: ${hints}`
+    const raw = url.trim()
+    const struct = `rawLen=${raw.length}, '@' count=${(raw.match(/@/g) || []).length}, explicit port=${u.port ? 'yes' : 'NO'}, has db path=${u.pathname.length > 1 ? 'yes' : 'NO'}, contains 'pooler.supabase.com'=${/pooler\.supabase\.com/i.test(raw)}, leading/trailing space or quote=${/^["'\s]|["'\s]$/.test(url)}, scheme=${u.protocol}`
+    return `host=${u.hostname} (${hostKind}) port=${u.port || '(none)'} db=${u.pathname.replace('/', '') || '(none)'} user=${userForm} password: ${hints}; ${struct}`
   } catch {
     return 'SEO_DATABASE_URL is not a parseable URL'
   }
