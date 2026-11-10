@@ -29,7 +29,7 @@ export default async function SeoOverviewPage() {
                 <Stat label="Health score" value={ov.latest.healthScore ?? '–'} sub={ov.scoreDelta === null ? 'No previous crawl to compare' : `${ov.scoreDelta >= 0 ? '+' : ''}${ov.scoreDelta} since previous crawl`} />
                 <Stat label="Pages crawled" value={ov.latest.pagesFetched} sub={ov.latest.truncated ? 'Crawl limit reached: partial coverage' : 'Full coverage'} />
                 <Stat label="Indexable (derived)" value={ov.pages?.indexable ?? '–'} sub={`${ov.pages?.noindex ?? 0} noindex. From on-page signals, not Google's index.`} />
-                <Stat label="Open issues" value={Object.entries(ov.issueCounts).filter(([s]) => s !== 'INFO').reduce((a, [, n]) => a + n, 0)} sub={`${ov.issueCounts.CRITICAL ?? 0} critical · ${ov.issueCounts.HIGH ?? 0} high`} />
+                <Stat label="Open issues" value={Object.entries(ov.issueCounts).filter(([s]) => s !== 'INFO').reduce((a, [, n]) => a + n, 0)} sub={`${ov.issueCounts.CRITICAL ?? 0} critical · ${ov.issueCounts.HIGH ?? 0} high · across ${ov.issuePages} pages`} />
               </div>
 
               <div className="grid gap-6 md:grid-cols-2">

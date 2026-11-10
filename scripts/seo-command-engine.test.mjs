@@ -164,5 +164,30 @@ await t('crawler survives unreachable host', async () => {
   assert.ok(out.issues.some((i) => i.code === 'FETCH_ERROR'))
 })
 
+await t('orphans are not reported from a partial (truncated) crawl', () => {
+  const pages = [page('https://a.com/orph', { inSitemap: true, linkedFrom: [] })]
+  assert.ok(detectIssues(pages).some((i) => i.code === 'ORPHAN_PAGE'))
+  assert.ok(!detectIssues(pages, { partial: true }).some((i) => i.code === 'ORPHAN_PAGE'))
+})
+
+await t('crawl page limit is configurable, clamped, and defaults to 120', () => {
+  const { crawlMaxPages } = jiti('../lib/seo-command/config.ts')
+  assert.equal(crawlMaxPages({}), 120)
+  assert.equal(crawlMaxPages({ SEO_CRAWL_MAX_PAGES: 'abc' }), 120)
+  assert.equal(crawlMaxPages({ SEO_CRAWL_MAX_PAGES: '400' }), 400)
+  assert.equal(crawlMaxPages({ SEO_CRAWL_MAX_PAGES: '5' }), 20)
+  assert.equal(crawlMaxPages({ SEO_CRAWL_MAX_PAGES: '99999' }), 1000)
+})
+
+await t('DB error messages shown to admins never contain connection details', () => {
+  const { safeDbErrorMessage } = jiti('../lib/seo-command/db.ts')
+  const secret = 'postgresql://postgres.abc:SuperSecret@host.example.com:5432/postgres'
+  for (const msg of ['password authentication failed for user "postgres.abc"', 'Invalid URL', 'Connection terminated due to connection timeout', 'getaddrinfo ENOTFOUND host.example.com', 'SEO_DATABASE_URL does not match SEO_DATABASE_EXPECTED_REF', 'weird ' + secret]) {
+    const out = safeDbErrorMessage(new Error(msg))
+    assert.ok(out.length > 20)
+    assert.ok(!/SuperSecret|host\.example\.com|postgres\.abc|postgresql:\/\//.test(out), 'leak in: ' + out)
+  }
+})
+
 server.close()
 console.log(`\n${n} tests passed`)

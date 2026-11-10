@@ -27,7 +27,7 @@ export async function getOverview(siteId: string) {
   const done = runs.filter((r) => r.status === 'SUCCEEDED' || r.status === 'PARTIAL')
   const latest = done[0] ?? null
   const previous = done[1] ?? null
-  const [issueCounts, topCodes, statusDist, integrations, pending, pageStats, ghost] = await Promise.all([
+  const [issueCounts, topCodes, statusDist, integrations, pending, pageStats, issuePages] = await Promise.all([
     seoQuery<{ severity: string; n: string }>(`SELECT severity::text, count(*)::text n FROM seo_technical_issues WHERE "siteId"=$1 AND status='OPEN' GROUP BY severity`, [siteId]),
     seoQuery<{ code: string; severity: string; n: string }>(`SELECT code, min(severity::text) severity, count(*)::text n FROM seo_technical_issues WHERE "siteId"=$1 AND status='OPEN' AND severity <> 'INFO' GROUP BY code ORDER BY min(CASE severity WHEN 'CRITICAL' THEN 0 WHEN 'HIGH' THEN 1 WHEN 'MEDIUM' THEN 2 ELSE 3 END), count(*) DESC LIMIT 8`, [siteId]),
     latest ? seoQuery<{ bucket: string; n: string }>(`SELECT CASE WHEN "statusCode" IS NULL THEN 'no response' WHEN "statusCode" < 300 THEN '2xx' WHEN "statusCode" < 400 THEN '3xx' WHEN "statusCode" < 500 THEN '4xx' ELSE '5xx' END bucket, count(*)::text n FROM seo_crawl_pages WHERE "crawlRunId"=$1 GROUP BY 1`, [latest.id]) : Promise.resolve([]),
@@ -39,9 +39,8 @@ export async function getOverview(siteId: string) {
               count(*) FILTER (WHERE COALESCE("robotsMeta",'') ~* 'noindex')::text noindex,
               '0' sitemap_missing
        FROM seo_crawl_pages WHERE "crawlRunId"=$1`, [latest.id]) : Promise.resolve([]),
-    Promise.resolve(null),
+    seoQuery<{ n: string }>(`SELECT count(DISTINCT url)::text n FROM seo_technical_issues WHERE "siteId"=$1 AND status='OPEN' AND severity <> 'INFO' AND url IS NOT NULL`, [siteId]),
   ])
-  void ghost
   const provider = (p: string) => integrations.find((i) => i.provider === p)
   const conn = (p: string) => {
     const i = provider(p)
@@ -54,6 +53,7 @@ export async function getOverview(siteId: string) {
     issueCounts: Object.fromEntries(issueCounts.map((r) => [r.severity, Number(r.n)])) as Record<string, number>,
     topCodes: topCodes.map((r) => ({ code: r.code, severity: r.severity, count: Number(r.n) })),
     statusDist: statusDist.map((r) => ({ bucket: r.bucket, count: Number(r.n) })),
+    issuePages: Number(issuePages[0]?.n ?? 0),
     pendingRecommendations: Number(pending[0]?.n ?? 0),
     pages: pageStats[0] ? { total: Number(pageStats[0].total), indexable: Number(pageStats[0].indexable), noindex: Number(pageStats[0].noindex) } : null,
     connections: { GSC: conn('GSC'), GA4: conn('GA4') },

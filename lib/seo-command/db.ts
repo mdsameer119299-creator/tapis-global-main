@@ -40,26 +40,16 @@ export function assertSafeSeoDbUrl(seoUrl: string | undefined, mainUrl: string |
   return seoUrl
 }
 
-/** Value-free description of how SEO_DATABASE_URL is shaped, for diagnosing connection failures.
- * Never returns the password or the URL itself; only host/port/database, the user *form*, and password shape hints. */
-export function describeSeoDbUrl(url: string | undefined = process.env.SEO_DATABASE_URL): string {
-  if (!url) return 'SEO_DATABASE_URL missing'
-  try {
-    const u = new URL(url)
-    const user = decodeURIComponent(u.username)
-    const ref = (process.env.SEO_DATABASE_EXPECTED_REF || '').toLowerCase()
-    const userForm = user === 'postgres' ? 'postgres (no project suffix)' : ref && user.toLowerCase() === `postgres.${ref}` ? 'postgres.<expected ref>' : user.startsWith('postgres.') ? 'postgres.<other ref>' : 'other'
-    const hostKind = /\.pooler\.supabase\.com$/i.test(u.hostname) ? 'pooler' : /^db\..+\.supabase\.co$/i.test(u.hostname) ? 'direct' : 'other'
-    const pw = u.password
-    const hints = [`len=${pw.length}`, /^\[.*\]$/.test(decodeURIComponent(pw)) ? 'wrapped in [ ] (placeholder brackets)' : '', /[\s"']/.test(decodeURIComponent(pw)) ? 'contains space/quote' : ''].filter(Boolean).join(', ')
-    const raw = url.trim()
-    const struct = `rawLen=${raw.length}, '@' count=${(raw.match(/@/g) || []).length}, explicit port=${u.port ? 'yes' : 'NO'}, has db path=${u.pathname.length > 1 ? 'yes' : 'NO'}, contains 'pooler.supabase.com'=${/pooler\.supabase\.com/i.test(raw)}, leading/trailing space or quote=${/^["'\s]|["'\s]$/.test(url)}, scheme=${u.protocol}`
-    return `host=${u.hostname} (${hostKind}) port=${u.port || '(none)'} db=${u.pathname.replace('/', '') || '(none)'} user=${userForm} password: ${hints}; ${struct}`
-  } catch {
-    const raw = (url || '').trim()
-    const c = (re: RegExp) => (raw.match(re) || []).length
-    return `SEO_DATABASE_URL is not a parseable URL (rawLen=${raw.length}, scheme ok=${/^postgres(ql)?:\/\//i.test(raw)}, '@'=${c(/@/g)}, ':'=${c(/:/g)}, '/'=${c(/\//g)}, '%'=${c(/%/g)}, '#'=${c(/#/g)}, '?'=${c(/\?/g)}, '['=${c(/\[/g)}, ']'=${c(/\]/g)}, spaces=${c(/\s/g)}, quotes=${c(/["']/g)}, pooler host present=${/pooler\.supabase\.com/i.test(raw)}, ends with /postgres=${/\/postgres$/.test(raw)})`
-  }
+/** Maps a connection/query error to an admin-safe message. Never includes connection details, hostnames, usernames or any part of the URL. */
+export function safeDbErrorMessage(e: unknown): string {
+  const m = e instanceof Error ? e.message : ''
+  if (/password authentication failed|authentication failed/i.test(m)) return 'The SEO database rejected the credentials. Check the password in SEO_DATABASE_URL.'
+  if (/Invalid URL|not a postgres:\/\//i.test(m)) return 'SEO_DATABASE_URL is not a valid connection string. If the password has special characters, URL-encode them.'
+  if (/does not match SEO_DATABASE_EXPECTED_REF|not allowed for SEO data|must not point at the same database/i.test(m)) return 'SEO_DATABASE_URL failed the project safety check (expected project reference).'
+  if (/timeout|timed out|ETIMEDOUT/i.test(m)) return 'The SEO database did not respond in time. Check that the project is active and the pooler host and port are correct.'
+  if (/ENOTFOUND|EAI_AGAIN|ECONNREFUSED|getaddrinfo/i.test(m)) return 'The SEO database host could not be reached. Check the host in SEO_DATABASE_URL.'
+  if (/relation .* does not exist/i.test(m)) return 'The SEO database schema is missing or out of date. Apply the SEO migrations.'
+  return 'The SEO database could not be reached. Check the SEO_DATABASE_URL setting and database status.'
 }
 
 export function isSeoDbConfigured(): boolean {

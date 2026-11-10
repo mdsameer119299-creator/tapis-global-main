@@ -219,7 +219,7 @@ export async function crawlSite(opts: CrawlOptions): Promise<CrawlOutput> {
   const blockedInSitemap: Issue[] = pages
     .filter((p) => p.disallowedByRobots && p.inSitemap)
     .map((p) => ({ code: 'SITEMAP_URL_BLOCKED_BY_ROBOTS', severity: 'HIGH' as Severity, url: p.url, detail: {}, dataQuality: 'VERIFIED' as const, fingerprint: `SITEMAP_URL_BLOCKED_BY_ROBOTS|${p.url}` }))
-  const issues = [...crawlIssues, ...blockedInSitemap, ...detectIssues(fetched)]
+  const issues = [...crawlIssues, ...blockedInSitemap, ...detectIssues(fetched, { partial: truncated })]
   const { score, breakdown } = healthScore(issues, fetched.length)
   return { startedAt, finishedAt: new Date(), origin, robots: { status: robotsRes.status, found: robotsRes.status === 200, sitemaps: parsedRobots.sitemaps }, sitemapUrls, pages, issues, score, severityCounts: breakdown, truncated }
 }

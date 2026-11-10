@@ -27,7 +27,8 @@ function stripSlash(u: string): string {
 }
 
 /** Pure function: derives every page-level issue from crawl results. Crawl-level (robots/sitemap) issues are added by the caller. */
-export function detectIssues(pages: PageResult[]): Issue[] {
+/** `partial`: the crawl stopped at its page limit, so inbound-link counts are incomplete and orphans cannot be judged. */
+export function detectIssues(pages: PageResult[], opts: { partial?: boolean } = {}): Issue[] {
   const out: Issue[] = []
   const titles = new Map<string, string[]>()
   const descs = new Map<string, string[]>()
@@ -120,8 +121,8 @@ export function detectIssues(pages: PageResult[]): Issue[] {
   group(descs, 'DUPLICATE_META_DESCRIPTION', 'LOW', 'VERIFIED')
   group(hashes, 'DUPLICATE_CONTENT', 'MEDIUM', 'DERIVED')
 
-  // Orphans: crawlable sitemap pages that no crawled page links to.
-  for (const p of pages) {
+  // Orphans: crawlable sitemap pages that no crawled page links to. Only meaningful when every linking page was crawled.
+  for (const p of opts.partial ? [] : pages) {
     if (p.inSitemap && p.statusCode === 200 && p.linkedFrom.length === 0) out.push(mk('ORPHAN_PAGE', 'MEDIUM', p.url, {}, 'DERIVED'))
   }
   return out
