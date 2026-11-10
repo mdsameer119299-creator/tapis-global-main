@@ -39,7 +39,8 @@ GRANT USAGE ON SCHEMA public TO seo_importer, seo_import_rollback;
 
 -- 2. Rollback authorisation: a row here authorises rollback of ONE run, and ONLY inside the transaction that inserted it.
 --    Only the table owner / administrator can insert (seo_import_rollback has SELECT only). The rollback policies below accept a run id only if it appears in a row
---    whose xmin equals the CURRENT top-level transaction id, so a row left behind by an earlier transaction authorises nothing, and the rollback role cannot create,
+--    whose xmin equals the CURRENT top-level transaction id AND whose authorisedAt equals this transaction's start time (a second, independent binding: even a reused 32-bit xid after
+--    wraparound could not match an old row's timestamp), so a row left behind by an earlier transaction authorises nothing, and the rollback role cannot create,
 --    change or delete a row (no INSERT / UPDATE / DELETE privilege) and therefore cannot change the target.
 CREATE TABLE public.seo_import_rollback_authorisation (
   "id"           TEXT        NOT NULL DEFAULT gen_random_uuid()::text,
@@ -57,7 +58,7 @@ BEGIN
 END $$;
 GRANT SELECT ON public.seo_import_rollback_authorisation TO seo_import_rollback;
 CREATE POLICY seo_rollback_auth_select ON public.seo_import_rollback_authorisation FOR SELECT TO seo_import_rollback
-  USING (xmin::text = (pg_current_xact_id()::xid)::text);
+  USING (xmin::text = (pg_current_xact_id()::xid)::text AND "authorisedAt" = transaction_timestamp());
 
 -- 3. Site + connection: exactly one site and one GSC connection, read-only, only the columns the import reads.
 GRANT SELECT ("id","domain") ON public.seo_sites TO seo_importer, seo_import_rollback;

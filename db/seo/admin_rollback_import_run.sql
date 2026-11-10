@@ -5,7 +5,7 @@
 --   * seo_import_rollback has NO usable members at rest, so the application login cannot switch into it.
 --   * Step 1 (administrator, trusted) records the target run in seo_import_rollback_authorisation. Only the administrator can write that table.
 --   * Step 2 runs as seo_import_rollback. Its RLS policies let it SEE, DELETE and CANCEL only rows of a run that has an authorisation row created by THIS transaction
---     (xmin = current transaction id). The role has no INSERT/UPDATE/DELETE on the authorisation table, so it cannot change the target; a run id it types, a GUC it sets,
+--     (xmin = current transaction id AND authorisedAt = transaction start time). The role has no INSERT/UPDATE/DELETE on the authorisation table, so it cannot change the target; a run id it types, a GUC it sets,
 --     or an old authorisation row from an earlier transaction authorises nothing. The role block does not even take the id as input: it reads the single authorised row.
 --     Even a mistake or a hostile statement inside step 2 therefore cannot touch another run's rows or cancel another run: PostgreSQL filters them out.
 --   * Step 3 (administrator) re-checks from outside the restricted role that nothing else changed (counts + hashes of all other rows) and that no usable member remains.
@@ -77,7 +77,7 @@ REVOKE seo_import_rollback FROM CURRENT_USER;
 DO $verify$
 DECLARE v_run text; before_s text := current_setting('seo.rollback_before', true);
 BEGIN
-  SELECT "runId" INTO STRICT v_run FROM seo_import_rollback_authorisation WHERE xmin::text = (pg_current_xact_id()::xid)::text;
+  SELECT "runId" INTO STRICT v_run FROM seo_import_rollback_authorisation WHERE xmin::text = (pg_current_xact_id()::xid)::text AND "authorisedAt" = transaction_timestamp();
   IF before_s IS NULL OR before_s = '' OR pg_temp.rb_snapshot(v_run) IS DISTINCT FROM before_s THEN RAISE EXCEPTION 'rollback aborted: rows outside the authorised run would change'; END IF;
   IF EXISTS (SELECT 1 FROM seo_search_daily WHERE "syncRunId" = v_run) OR EXISTS (SELECT 1 FROM seo_search_performance WHERE "syncRunId" = v_run) THEN RAISE EXCEPTION 'rollback aborted: rows remain'; END IF;
   IF (SELECT status::text FROM seo_gsc_sync_runs WHERE id = v_run) IS DISTINCT FROM 'CANCELLED' THEN RAISE EXCEPTION 'rollback aborted: run is not CANCELLED'; END IF;
