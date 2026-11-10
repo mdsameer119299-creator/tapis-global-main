@@ -3,7 +3,7 @@ import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
 import { timingSafeEqual } from 'crypto'
 import { SEO_SESSION_COOKIE, verifySeoSession, type SeoSession } from './auth-session'
-import { isSeoDbConfigured, SeoDbNotConfiguredError } from './db'
+import { describeSeoDbUrl, isSeoDbConfigured, SeoDbNotConfiguredError } from './db'
 import { getOrCreateSiteId } from './store'
 
 export const SEO_LOGIN_PATH = '/admin/seo/login'
@@ -25,8 +25,10 @@ export async function loadSeo<T>(fn: (siteId: string) => Promise<T>): Promise<Pa
     return { state: 'ok', data: await fn(siteId) }
   } catch (e) {
     if (e instanceof SeoDbNotConfiguredError) return { state: 'not_configured' }
-    console.error('[seo-command] load failed:', e instanceof Error ? e.message : 'unknown')
-    return { state: 'error', message: 'The SEO database could not be reached. Check the SEO_DATABASE_URL setting and database status.' }
+    const reason = e instanceof Error ? e.message : 'unknown'
+    console.error('[seo-command] load failed:', reason)
+    // Authenticated admins only. Error text from pg/pooler can name a user but never a password; the URL is described by shape only.
+    return { state: 'error', message: `The SEO database could not be reached. Check the SEO_DATABASE_URL setting and database status. Cause: ${reason}. Connection shape: ${describeSeoDbUrl()}.` }
   }
 }
 

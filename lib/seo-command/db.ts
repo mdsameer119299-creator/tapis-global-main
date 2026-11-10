@@ -40,6 +40,24 @@ export function assertSafeSeoDbUrl(seoUrl: string | undefined, mainUrl: string |
   return seoUrl
 }
 
+/** Value-free description of how SEO_DATABASE_URL is shaped, for diagnosing connection failures.
+ * Never returns the password or the URL itself; only host/port/database, the user *form*, and password shape hints. */
+export function describeSeoDbUrl(url: string | undefined = process.env.SEO_DATABASE_URL): string {
+  if (!url) return 'SEO_DATABASE_URL missing'
+  try {
+    const u = new URL(url)
+    const user = decodeURIComponent(u.username)
+    const ref = (process.env.SEO_DATABASE_EXPECTED_REF || '').toLowerCase()
+    const userForm = user === 'postgres' ? 'postgres (no project suffix)' : ref && user.toLowerCase() === `postgres.${ref}` ? 'postgres.<expected ref>' : user.startsWith('postgres.') ? 'postgres.<other ref>' : 'other'
+    const hostKind = /\.pooler\.supabase\.com$/i.test(u.hostname) ? 'pooler' : /^db\..+\.supabase\.co$/i.test(u.hostname) ? 'direct' : 'other'
+    const pw = u.password
+    const hints = [`len=${pw.length}`, /^\[.*\]$/.test(decodeURIComponent(pw)) ? 'wrapped in [ ] (placeholder brackets)' : '', /[\s"']/.test(decodeURIComponent(pw)) ? 'contains space/quote' : ''].filter(Boolean).join(', ')
+    return `host=${u.hostname} (${hostKind}) port=${u.port || '5432'} db=${u.pathname.replace('/', '')} user=${userForm} password: ${hints}`
+  } catch {
+    return 'SEO_DATABASE_URL is not a parseable URL'
+  }
+}
+
 export function isSeoDbConfigured(): boolean {
   return !!process.env.SEO_DATABASE_URL
 }
