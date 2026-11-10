@@ -14,8 +14,8 @@ import { Reveal, Eyebrow } from '@/components/ui'
 import { BLUR_PLACEHOLDER } from '@/components/ui/OptimizedImage'
 
 export const metadata: Metadata = buildMetadata({
-  title:       'Carpet & Rug Guides | Manufacturing, Comparison, Buying & Export — Tapis Global',
-  description: 'Expert carpet and rug guides from Tapis Global — how carpets and rugs are manufactured, hand tufted vs hand knotted, jute vs sisal, kilim vs dhurrie, hotel/mosque/office buying guides, and how to import from India.',
+  title:       'Carpet & Rug Guides | TAPIS GLOBAL INTERNATIONAL',
+  description: 'Carpet and rug guides from TAPIS GLOBAL INTERNATIONAL: manufacturing, hand-tufted vs hand-knotted, jute vs sisal, hotel and mosque buying, importing from India.',
   keywords:    ['carpet guides', 'rug guides', 'carpet buying guide', 'how carpets are made', 'carpet comparison guides', 'import carpets from India'],
   canonical:   `${SEO_BASE_URL}/guides`,
 })

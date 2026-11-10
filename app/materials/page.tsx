@@ -6,8 +6,8 @@ import { getAllMaterialsForHub } from '@/lib/materials-content'
 import ReferenceHub from '@/components/reference/ReferenceHub'
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Carpet & Rug Materials Guide | Fibres Explained — Tapis Global',
-  description: 'A complete guide to carpet and rug materials — wool, viscose, silk, jute, sisal, leather and more. Advantages, care and typical applications for each fibre. Manufactured in Bhadohi, India.',
+  title: 'Carpet & Rug Materials Guide | TAPIS GLOBAL INTERNATIONAL',
+  description: 'A guide to carpet and rug materials: wool, viscose, silk, jute, sisal, leather and more. Advantages, care and uses. TAPIS GLOBAL INTERNATIONAL, Bhadohi, India.',
   keywords: ['carpet materials guide', 'rug fibre guide', 'wool vs viscose', 'natural fibre rugs', 'carpet material types'],
   canonical: `${SEO_BASE_URL}/materials`,
 })

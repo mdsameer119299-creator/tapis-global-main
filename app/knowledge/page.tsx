@@ -7,7 +7,7 @@ import { KNOWLEDGE_CATEGORIES } from '@/lib/knowledge/registry'
 import { getPublishedArticles, getArticlesByCategory } from '@/lib/knowledge/content'
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Carpet & Rug Knowledge Centre | Materials, Manufacturing & Buying Guides — TAPIS GLOBAL',
+  title: 'Carpet & Rug Knowledge Centre | TAPIS GLOBAL INTERNATIONAL',
   description: 'The TAPIS GLOBAL Knowledge Centre — guides on carpet and rug materials, manufacturing, buying, care, carpet history and custom sourcing from Bhadohi, India.',
   keywords: ['carpet knowledge', 'rug materials guide', 'carpet manufacturing', 'custom rug buying guide'],
   canonical: `${SEO_BASE_URL}/knowledge`,
