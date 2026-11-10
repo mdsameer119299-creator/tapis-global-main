@@ -37,3 +37,23 @@ Crawler (robots.txt + sitemap discovery, BFS crawl, redirect chains, status code
 
 ## Tests
 `npm run test:seo-command` runs engine, static-security and DB tests. DB tests need `SEO_TEST_DATABASE_URL` pointing at a throwaway **local** Postgres with both migrations applied (they refuse non-local hosts and are skipped when unset).
+
+## Daily report (9 sections)
+
+`lib/seo-command/daily-report.ts` builds one report per Asia/Kolkata calendar date from **stored data only**: executive summary, Search Console, GA4, technical SEO, indexing/sitemap, keywords, competitors, AI findings, system health. Each section carries source, period, as-of date and a status (`OK`, `STALE`, `PARTIAL`, `UNAVAILABLE`). Missing data is labelled missing, never shown as zero. Findings come from the rule-based analyst (`analyst.ts`); each has evidence, impact, priority, confidence, suggested fix and an approval flag. The analyst cannot publish or change the site.
+
+- Manual: `/admin/seo/reports` → "Generate daily report now", or `POST /api/admin/seo/reports/daily` (`{force}` regenerates today's report; manual runs do not email unless `{deliver:true}`).
+- Scheduled endpoint: `GET /api/seo/cron/daily` with `Authorization: Bearer $CRON_SECRET`.
+- Duplicate protection: one report per IST date; an advisory lock makes overlapping runs return `BUSY`.
+
+## Scheduling status: NOT ACTIVE
+
+08:00 IST = 02:30 UTC (`30 2 * * *`, no DST). `.github/workflows/seo-daily-report.yml` is prepared but **GitHub only runs `schedule` triggers from the default branch**, and Vercel Cron runs on Production only; both are currently out of bounds. Only manual `workflow_dispatch` works from the feature branch. Scheduling must not be described as active until a real scheduled run has been observed. Options needing your decision: (a) put the workflow on `main` (workflow file only, no site change), or (b) an external scheduler calling the protected Preview endpoint.
+
+Secrets the workflow needs (GitHub → Settings → Secrets and variables → Actions): `SEO_PREVIEW_BASE_URL` (the Preview https URL), `SEO_CRON_SECRET` (same value as Preview `CRON_SECRET`), `VERCEL_AUTOMATION_BYPASS_SECRET` (Vercel "Protection Bypass for Automation"). Preview also needs `CRON_SECRET`.
+
+## Email delivery status: NOT CONFIGURED
+
+Delivery uses the existing `nodemailer`/`SMTP_*` setup but **never** reuses the website enquiry recipient. Set `SEO_REPORT_RECIPIENT` (an address you confirm) plus `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` (and optionally `SMTP_PORT`, `SMTP_SECURE`) in Preview. Without them the report is still generated and its delivery status is `NOT_CONFIGURED`. A report already `SENT` is not sent twice. The recipient is never logged or stored.
+
+GA4 setup: see `docs/seo-ga4-setup.md`.

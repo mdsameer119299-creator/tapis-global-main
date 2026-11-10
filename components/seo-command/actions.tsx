@@ -178,3 +178,15 @@ export function GscDisconnectButton() {
     </div>
   )
 }
+
+export function DailyReportButton({ hasToday }: { hasToday: boolean }) {
+  const { busy, msg, run } = useAction()
+  return (
+    <div>
+      <button className={btn} disabled={busy} onClick={() => run(() => call('POST', '/api/admin/seo/reports/daily', { force: hasToday }), (j) => `Report ${String(j.result?.report?.outcome ?? '').toLowerCase()} (${j.result?.report?.status ?? 'unknown status'}). Email is not sent from this button.`)}>
+        {busy ? 'Generating…' : hasToday ? 'Regenerate today’s report' : 'Generate daily report now'}
+      </button>
+      <Msg m={msg} />
+    </div>
+  )
+}

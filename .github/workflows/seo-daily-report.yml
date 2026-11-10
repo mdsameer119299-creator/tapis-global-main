@@ -1,0 +1,53 @@
+name: SEO daily report (08:00 IST)
+
+# 08:00 Asia/Kolkata = 02:30 UTC every day (IST is UTC+05:30 and has no daylight saving, so the UTC time never shifts).
+# NOTE: GitHub only runs `schedule` triggers for the workflow file on the repository's DEFAULT branch. Until this file is on the default branch
+# only the manual `workflow_dispatch` run works. It calls the PREVIEW deployment (never Production) of the SEO branch.
+on:
+  schedule:
+    - cron: '30 2 * * *'
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  issues: write   # only used to open a failure issue
+
+concurrency:
+  group: seo-daily-report
+  cancel-in-progress: false
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      BASE_URL: ${{ secrets.SEO_PREVIEW_BASE_URL }}            # stable Preview URL of the SEO branch, e.g. https://tapis-global-main-git-feat-seo-command-centre-preview-<team>.vercel.app
+      CRON_SECRET: ${{ secrets.SEO_CRON_SECRET }}               # must equal the CRON_SECRET Preview variable
+      BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}    # Vercel "Protection Bypass for Automation" secret (Preview is behind Deployment Protection)
+    steps:
+      - name: Check configuration (names only, never values)
+        run: |
+          missing=""
+          for v in BASE_URL CRON_SECRET BYPASS; do [ -n "${!v}" ] || missing="$missing $v"; done
+          if [ -n "$missing" ]; then echo "::error::Missing repository secrets (map names):$missing"; exit 1; fi
+          case "$BASE_URL" in https://*) ;; *) echo "::error::SEO_PREVIEW_BASE_URL must start with https://"; exit 1;; esac
+          case "$BASE_URL" in https://www.tapisglobalinternational.com*|https://tapisglobalinternational.com*) echo "::error::Refusing to call the production domain"; exit 1;; esac
+      - name: Crawl (read-only, public pages only)
+        run: |
+          curl -sS --fail-with-body --retry 3 --retry-all-errors --retry-delay 30 --max-time 120 \
+            -H "Authorization: Bearer ${CRON_SECRET}" -H "x-vercel-protection-bypass: ${BYPASS}" \
+            "${BASE_URL%/}/api/seo/cron" -o crawl.json || { echo "crawl step failed (HTTP error or timeout); continuing so the report still runs"; echo "CRAWL_FAILED=1" >> "$GITHUB_ENV"; }
+          [ -f crawl.json ] && head -c 400 crawl.json || true
+      - name: Generate and deliver the daily report
+        run: |
+          curl -sS --fail-with-body --retry 3 --retry-all-errors --retry-delay 30 --max-time 120 \
+            -H "Authorization: Bearer ${CRON_SECRET}" -H "x-vercel-protection-bypass: ${BYPASS}" \
+            "${BASE_URL%/}/api/seo/cron/daily" -o daily.json
+          head -c 800 daily.json
+      - name: Open an issue if the run failed
+        if: failure()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --repo "$GITHUB_REPOSITORY" --title "SEO daily report failed $(date -u +%F)" \
+            --body "The scheduled SEO daily report job failed. Open the run: $GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" || true
