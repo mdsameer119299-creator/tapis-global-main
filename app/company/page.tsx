@@ -11,8 +11,8 @@ import { COMPANY_PAGES } from '@/lib/seo-landing'
 import LandingHub from '@/components/landing/LandingHub'
 
 export const metadata: Metadata = buildMetadata({
-  title:       'Company | Factory, Process, Quality & Heritage — Tapis Global International',
-  description: 'Tapis Global International — a third-generation, family-owned carpet manufacturer in Bhadohi continuing a legacy since 1965. Explore our factory, manufacturing process, quality control, certifications, sustainability, custom & OEM capability and production capacity.',
+  title:       'Carpet Manufacturer in Bhadohi, India | TAPIS GLOBAL INTERNATIONAL',
+  description: 'Carpet manufacturer in Bhadohi, India: TAPIS GLOBAL INTERNATIONAL, third-generation and family-owned since 1965. Factory, quality, custom and OEM capability.',
   keywords:    ['carpet manufacturer Bhadohi', 'carpet factory India', 'family carpet manufacturer', 'carpet manufacturing process', 'carpet certifications', 'production capacity'],
   canonical:   `${SEO_BASE_URL}/company`,
 })

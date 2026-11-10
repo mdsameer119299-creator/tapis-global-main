@@ -7,7 +7,7 @@ import { TARA_GLOSSARY } from '@/lib/tara/knowledge/glossary'
 import PageHero from '@/components/layout/PageHero'
 
 const TITLE = 'Carpet & Rug Glossary | Terminology Explained — Tapis Global'
-const DESCRIPTION = 'A glossary of carpet and rug terminology — warp, weft, pile, knot density, GSM, backing, lab-dip and more, explained simply. From Tapis Global International, Bhadohi.'
+const DESCRIPTION = 'Carpet and rug glossary: warp, weft, pile, knot density, GSM, backing, lab-dip and more, explained simply. From TAPIS GLOBAL INTERNATIONAL, Bhadohi, India.'
 const CANONICAL = `${SEO_BASE_URL}/glossary`
 
 export const metadata: Metadata = buildMetadata({

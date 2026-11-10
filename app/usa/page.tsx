@@ -12,8 +12,8 @@ import { USA_HUB_INTRO } from '@/lib/usa-states'
 import LandingHub from '@/components/landing/LandingHub'
 
 export const metadata: Metadata = buildMetadata({
-  title:       'Carpet Manufacturer for the USA | All 50 States — Tapis Global',
-  description: 'Tapis Global International is a made-to-order carpet and rug manufacturer in Bhadohi, India, producing for commercial buyers and projects across all 50 US states — hotels, interior designers, builders, luxury homes, corporate offices and wholesale trade. Not a ready-stock retailer.',
+  title:       'Carpet Manufacturer for the USA | TAPIS GLOBAL INTERNATIONAL',
+  description: 'TAPIS GLOBAL INTERNATIONAL, a carpet manufacturer in Bhadohi, India, supplies commercial buyers across all 50 US states: hotels, designers, builders, wholesale.',
   keywords:    ['carpet manufacturer USA', 'rug manufacturer United States', 'wholesale carpet supplier USA', 'hotel carpet manufacturer USA', 'commercial carpet supplier USA', 'custom rug manufacturer United States'],
   canonical:   `${SEO_BASE_URL}/usa`,
   ogLocale:    'en_US',

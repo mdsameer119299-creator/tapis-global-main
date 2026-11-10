@@ -6,8 +6,8 @@ import { getAllConstructionsForHub } from '@/lib/constructions-content'
 import ReferenceHub from '@/components/reference/ReferenceHub'
 
 export const metadata: Metadata = buildMetadata({
-  title: 'Carpet & Rug Construction Guide | Weaving Methods — Tapis Global',
-  description: 'A complete guide to carpet and rug constructions — hand-knotted, hand-tufted, flatweave, kilim, dhurrie and more. Method, traffic suitability and care for each. Manufactured in Bhadohi, India.',
+  title: 'Carpet & Rug Constructions | TAPIS GLOBAL INTERNATIONAL',
+  description: 'A guide to carpet and rug constructions: hand-knotted, hand-tufted, flatweave, kilim and dhurrie. Method, suitability and care. TAPIS GLOBAL INTERNATIONAL.',
   keywords: ['carpet construction guide', 'rug weaving methods', 'hand knotted vs hand tufted', 'flatweave carpet guide', 'carpet construction types'],
   canonical: `${SEO_BASE_URL}/constructions`,
 })
