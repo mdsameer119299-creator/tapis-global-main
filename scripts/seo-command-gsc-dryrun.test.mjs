@@ -162,4 +162,36 @@ await t('static: independently removable: no other module imports the dry-run fi
   assert.deepEqual(hits, ['app/api/admin/seo/gsc/dry-run/route.ts'])
 })
 
+// ---- full-row fingerprints (hashes only) ----
+const fpm = jiti('../lib/seo-command/gsc-fingerprint.ts')
+const toPerf = (r) => ({ date: r.keys[0], page: r.keys[1], query: r.keys[2], country: r.keys[3], device: r.keys[4], clicks: r.clicks, impressions: r.impressions, ctr: r.ctr, position: r.position })
+await t('fingerprint: a window returns a row-level set hash equal to an independent computation, plus per-date hashes, and NO query text or URL', async () => {
+  const rows = [0, 1, 2, 3, 4].map((i) => ({ ...row(i, i < 3 ? '2026-08-11' : '2026-08-12'), keys: ['2026-08-1' + (i < 3 ? 1 : 2), SECRET_PAGE + '/ü/' + i, SECRET_QUERY + ' 日本 😀 ' + i, 'ind', 'MOBILE'] }))
+  const fk = fake({ detail: () => rows }); const r = await run({ step: 'window', index: 1 }, fk)
+  assert.equal(r.ok, true); assert.equal(r.fingerprint.version, 'sha256-v1'); assert.equal(r.fingerprint.rows, 5); assert.equal(r.fingerprint.unstorableRows, 0)
+  assert.equal(r.fingerprint.set, fpm.perfFingerprint(rows.map(toPerf)))
+  assert.deepEqual(Object.keys(r.fingerprint.byDate), ['2026-08-11', '2026-08-12'])
+  const out = JSON.stringify(r); for (const bad of [SECRET_QUERY, SECRET_PAGE, '日本', 'tapisglobalinternational.com/private']) assert.ok(!out.includes(bad), bad)
+  const fpOnly = JSON.stringify(r.fingerprint).replace(/"(version|rows|set|byDate|unstorableRows)":/g, '').replace('sha256-v1', '')
+  assert.match(fpOnly, /^[{}\[\]":,0-9a-f-]*$/) // nothing but digits and hex
+})
+await t('fingerprint: any change to any one field of any one row changes the window hash', async () => {
+  const base = [0, 1, 2].map((i) => row(i)); const h = async (rows) => (await run({ step: 'window', index: 1 }, fake({ detail: () => rows }))).fingerprint.set
+  const ref = await h(base)
+  for (const mut of [(r) => ({ ...r, clicks: r.clicks + 1 }), (r) => ({ ...r, impressions: r.impressions + 1 }), (r) => ({ ...r, ctr: r.ctr + 1e-9 }), (r) => ({ ...r, position: r.position + 1e-9 }), (r) => ({ ...r, keys: [r.keys[0], r.keys[1] + 'x', r.keys[2], r.keys[3], r.keys[4]] }), (r) => ({ ...r, keys: [r.keys[0], r.keys[1], r.keys[2] + 'x', r.keys[3], r.keys[4]] }), (r) => ({ ...r, keys: [r.keys[0], r.keys[1], r.keys[2], 'usa', r.keys[4]] }), (r) => ({ ...r, keys: [r.keys[0], r.keys[1], r.keys[2], r.keys[3], 'DESKTOP'] })])
+    assert.notEqual(await h([mut(base[0]), base[1], base[2]]), ref)
+  assert.equal(await h([base[2], base[0], base[1]]), ref) // order independent
+})
+await t('fingerprint: daily step returns a row-level hash; partial (startRow > 0) windows return none; unstorable text is counted, never echoed', async () => {
+  const daily = [{ keys: ['2026-11-08'], clicks: 3, impressions: 131, ctr: 0.0229, position: 20.9 }, { keys: ['2026-11-07'], clicks: 1, impressions: 90, ctr: 0.011, position: 18.2 }]
+  const d = await run({ step: 'daily' }, fake({ daily })); assert.equal(d.fingerprint.rows, 2); assert.equal(d.fingerprint.set, fpm.dailyFingerprint(daily.map((x) => ({ date: x.keys[0], clicks: x.clicks, impressions: x.impressions, ctr: x.ctr, position: x.position }))))
+  const p = await run({ step: 'window', index: 1, startRow: 5 }, fake({ detail: () => [row(1)] })); assert.equal(p.fingerprint, null)
+  const bad = [row(1), { ...row(2), keys: ['2026-08-11', 'p', 'has\u0000nul', 'ind', 'MOBILE'] }]
+  const u = await run({ step: 'window', index: 1 }, fake({ detail: () => bad })); assert.equal(u.fingerprint.unstorableRows, 1); assert.ok(!JSON.stringify(u).includes('has'))
+})
+await t('fingerprint: route logs nothing but an error name; results are returned only to the admin caller', async () => {
+  const rt = readFileSync(path.join(ROOT, 'app/api/admin/seo/gsc/dry-run/route.ts'), 'utf8')
+  assert.deepEqual([...rt.matchAll(/console\.(\w+)\(([^)]*)\)/g)].map((m) => m[0]), ["console.error('[seo-command] gsc dry-run failed:', e instanceof Error ? e.name : 'unknown')"])
+})
+
 console.log(`\n${n} tests passed`)

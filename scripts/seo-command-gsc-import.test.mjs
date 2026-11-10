@@ -1,6 +1,7 @@
 // One-time Search Console import: STATIC guarantees (always run) + the eight safety tests, role/RLS permission matrix (run against a SCRATCH Postgres only).
 // Scratch part env: SEO_SCRATCH_PG_URL=postgres://postgres@localhost:55432/postgres (admin, creates/drops throwaway databases), SEO_SCRATCH_TEMPLATE=<db with 0001-0005 applied>,
-// SEO_SCRATCH_LOGIN=<non-superuser login that is a member of seo_importer + seo_import_rollback WITH INHERIT FALSE, SET TRUE>, SEO_SCRATCH_BYPASS_LOGIN=<login with BYPASSRLS>.
+// SEO_SCRATCH_LOGIN=<non-superuser APPLICATION login: member of seo_importer ONLY, WITH INHERIT FALSE, SET TRUE>, SEO_SCRATCH_BYPASS_LOGIN=<login with BYPASSRLS>,
+// SEO_SCRATCH_ADMIN_LOGIN=<non-superuser administrator holding ADMIN OPTION (not SET) on seo_import_rollback, like the role that ran 0005>.
 // Never point these at a real database: the harness refuses anything that is not localhost.
 import assert from 'node:assert/strict'
 import { createRequire } from 'node:module'
@@ -23,20 +24,29 @@ const src = read('lib/seo-command/gsc-import.ts'), code = read('lib/seo-command/
 s('write allowlist: every INSERT/UPDATE/DELETE in the importer targets one of the four approved tables', () => {
   const targets = new Set()
   for (const m of code.matchAll(/(INSERT INTO|UPDATE|DELETE FROM)\s+([a-z_]+)/g)) targets.add(m[1].split(' ')[0] + ' ' + m[2])
-  const allowed = new Set(['INSERT seo_search_daily', 'INSERT seo_search_performance', 'INSERT seo_gsc_sync_runs', 'INSERT seo_audit_log', 'UPDATE seo_gsc_sync_runs', 'DELETE seo_search_performance', 'DELETE seo_search_daily'])
+  const allowed = new Set(['INSERT seo_search_daily', 'INSERT seo_search_performance', 'INSERT seo_gsc_sync_runs', 'INSERT seo_audit_log', 'UPDATE seo_gsc_sync_runs'])
   for (const t of targets) assert.ok(allowed.has(t), `unexpected write target: ${t}`)
-  assert.ok(targets.size >= 6)
+  assert.equal(targets.size, 5) // 4 INSERT targets + UPDATE of seo_gsc_sync_runs; nothing else
 })
 s('importer never touches oauth / sites / sitemap / ga4 / recommendations writes, never UPSERTs and never uses DO UPDATE', () => {
   assert.ok(!/(INSERT INTO|UPDATE|DELETE FROM)\s+seo_(sites|oauth_|sitemap_status|ga4|recommendations|keywords|crawl)/.test(code))
   assert.ok(!/ON CONFLICT[^)]*\)\s*DO UPDATE/i.test(code)); assert.ok(!/\bTRUNCATE\b|\bDROP\b|\bALTER\b|\bGRANT\b/i.test(code))
   assert.equal((code.match(/ON CONFLICT/g) ?? []).length, 2); assert.equal((code.match(/ON CONFLICT[^`]*DO NOTHING/g) ?? []).length, 2)
 })
-s('every step runs as a least-privilege role (never postgres/seo_worker) and DELETE exists only under the rollback role', () => {
-  assert.ok(!/seo_worker/.test(code))
-  const del = code.split('\n').filter((l) => /DELETE FROM/.test(l)); assert.equal(del.length, 2)
-  const fnStart = src.indexOf('export async function rollbackImport'); assert.ok(src.indexOf('DELETE FROM') > fnStart); assert.ok(src.indexOf('role: ROLLBACK_ROLE') > fnStart)
-  assert.equal(I.IMPORTER_ROLE, 'seo_importer'); assert.equal(I.ROLLBACK_ROLE, 'seo_import_rollback')
+s('the application can never hold a deletion-capable role: no DELETE, no rollback role, no rollback action, no seo_worker in app code', () => {
+  assert.ok(!/DELETE FROM/i.test(code)); assert.ok(!/seo_import_rollback|ROLLBACK_ROLE|rollbackImport/.test(code + route.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')))
+  assert.ok(!/seo_worker/.test(code)); assert.equal(I.IMPORTER_ROLE, 'seo_importer'); assert.equal(I.rollbackImport, undefined)
+  assert.ok(!/'rollback'/.test(route.replace(/\/\*[\s\S]*?\*\//g, '')) )
+  assert.equal((code.match(/SET LOCAL ROLE/g) ?? []).length, 1)
+})
+s('admin rollback script: manual only, deletes only run-scoped rows from the two search tables, grants+revokes inside one transaction, nothing in the repo or deploy references it', () => {
+  const a = read('db/seo/admin_rollback_import_run.sql'), ac = a.replace(/--.*$/gm, '')
+  assert.ok(/^BEGIN;/m.test(ac) && /COMMIT;\s*$/.test(ac.trim())); assert.ok(/GRANT seo_import_rollback TO CURRENT_USER/.test(ac) && /REVOKE seo_import_rollback FROM CURRENT_USER/.test(ac))
+  assert.ok(ac.indexOf('REVOKE seo_import_rollback') > ac.indexOf('RESET ROLE') && ac.indexOf('RESET ROLE') > ac.indexOf('DELETE FROM'))
+  const dels = [...ac.matchAll(/DELETE FROM\s+(\w+)\s+WHERE\s+"syncRunId" = v_run/g)].map((m) => m[1]); assert.deepEqual(dels.sort(), ['seo_search_daily', 'seo_search_performance']); assert.equal((ac.match(/DELETE FROM/g) ?? []).length, 2)
+  assert.ok(/pg_advisory_xact_lock/.test(ac) && /FOR UPDATE/.test(ac) && /other runs would change/.test(ac) && /still has a usable member/.test(ac))
+  for (const f of ['package.json', 'vercel.json', 'next.config.js', 'next.config.mjs']) if (existsSync(path.join(ROOT, f))) assert.ok(!/admin_rollback_import_run/.test(read(f)), f)
+  assert.ok(!/admin_rollback_import_run/.test(code + route.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')))
 })
 s('approved scope constants: property, 90-day inclusive range, 13 windows summing to 4,515 detail + 90 daily = 4,605', () => {
   assert.equal(I.IMPORT_PROPERTY, 'sc-domain:tapisglobalinternational.com'); assert.equal(I.IMPORT_RANGE_START, '2026-08-11'); assert.equal(I.IMPORT_RANGE_END, '2026-11-08')
@@ -57,7 +67,8 @@ await sa('baseline is fail-closed: window hashes absent => BASELINE_NOT_CONFIGUR
   assert.match(B.daily, /^[0-9a-f]{64}$/); assert.ok(Object.keys(B.windows).length === 0 || Object.keys(B.windows).length === 13)
   if (Object.keys(B.windows).length === 0) await assert.rejects(I.startImport({ connect: () => { throw new Error('must not touch the database') } }, B, 'x'), (e) => e.code === 'BASELINE_NOT_CONFIGURED')
 })
-s('migration 0005 is additive, creates exactly two NOLOGIN roles, grants DELETE only to the rollback role, nothing on out-of-scope tables', () => {
+s('migration 0005 is additive, creates exactly two NOLOGIN roles, grants DELETE only to the rollback role, never grants that role to anyone, nothing on out-of-scope tables', () => {
+  assert.ok(!/GRANT\s+seo_import_rollback\s+TO/i.test(sql5.replace(/--.*$/gm, '')) && !/GRANT\s+seo_importer\s+TO/i.test(sql5.replace(/--.*$/gm, '')))
   assert.equal((sql5.match(/CREATE ROLE/g) ?? []).length, 2); assert.ok(/NOLOGIN NOINHERIT NOSUPERUSER[^;]*NOBYPASSRLS/.test(sql5))
   for (const l of sql5.split('\n').filter((l) => /^GRANT/.test(l) && /DELETE/.test(l))) assert.ok(/seo_import_rollback/.test(l) && !/seo_importer\b[^_]/.test(l.replace('seo_import_rollback', '')), l)
   assert.ok(!/seo_(oauth_states|sitemap_status|ga4|recommendations|keywords|competitors|crawl|technical|agent|approval|integrations)/.test(sql5.split('\n').filter((l) => /^GRANT/.test(l)).join('\n')))
@@ -71,8 +82,8 @@ if (!/@(localhost|127\.0\.0\.1)[:/]/.test(ADMIN) || /supabase|pooler|xxmrziaefhx
 const { default: pg } = { default: require('pg') }
 const aurl = new URL(ADMIN)
 const HOST = { host: aurl.hostname, port: Number(aurl.port || 5432) }
-const TEMPLATE = process.env.SEO_SCRATCH_TEMPLATE, LOGIN = process.env.SEO_SCRATCH_LOGIN, BYPASS = process.env.SEO_SCRATCH_BYPASS_LOGIN
-if (!TEMPLATE || !LOGIN || !BYPASS) throw new Error('SEO_SCRATCH_TEMPLATE / SEO_SCRATCH_LOGIN / SEO_SCRATCH_BYPASS_LOGIN are required')
+const TEMPLATE = process.env.SEO_SCRATCH_TEMPLATE, LOGIN = process.env.SEO_SCRATCH_LOGIN, BYPASS = process.env.SEO_SCRATCH_BYPASS_LOGIN, ADMIN_LOGIN = process.env.SEO_SCRATCH_ADMIN_LOGIN
+if (!TEMPLATE || !LOGIN || !BYPASS || !ADMIN_LOGIN) throw new Error('SEO_SCRATCH_TEMPLATE / SEO_SCRATCH_LOGIN / SEO_SCRATCH_BYPASS_LOGIN / SEO_SCRATCH_ADMIN_LOGIN are required')
 
 const { IMPORT_WINDOWS: WINDOWS, WINDOW_COUNTS, TOTAL, IMPORT_RANGE_START: RANGE_START, IMPORT_RANGE_END: RANGE_END, IMPORT_PROPERTY: PROPERTY, IMPORT_SITE_DOMAIN: SITE_DOMAIN } = { ...I, TOTAL: I.TOTAL_ROWS }
 const SITE = SITE_DOMAIN
@@ -95,7 +106,7 @@ const P = {
   SITE_DOMAIN, PROPERTY, RANGE_START, RANGE_END, WINDOWS, makeDataset, fakeGoogle,
   start: (pool) => I.startImport(pool, CUR, 'admin'), stepDaily: (pool, run, g, b) => I.importDaily(pool, run, g, b), stepWindow: (pool, run, g, b, w) => I.importWindow(pool, run, g, b, w),
   runAll: (pool, run, g, b) => I.runImport(pool, run, g, b), finish: (pool, run, b) => I.finishImport(pool, run, b), failRun: I.failImport, progress: I.importProgress, resume: (pool, id) => I.resumeImport(pool, id, 'admin'),
-  status: I.importStatus, rollback: (pool, id, o) => I.rollbackImport(pool, id, 'admin', o),
+  status: I.importStatus
 }
 
 const root = new pg.Client({ connectionString: ADMIN }); await root.connect()
@@ -108,8 +119,8 @@ async function fresh() {
   const admin = new pg.Client({ ...HOST, user: 'postgres', database: name }); await admin.connect()
   await admin.query(`INSERT INTO seo_sites (id,domain,"baseUrl","updatedAt") VALUES ('site1',$1,'https://www.tapisglobalinternational.com',now())`, [P.SITE_DOMAIN])
   await admin.query(`INSERT INTO seo_oauth_connections (id,"siteId",provider,state,"propertyUrl","refreshTokenCipher","refreshTokenIv","refreshTokenTag","updatedAt") VALUES ('oc1','site1','GSC','CONNECTED',$1,'\\x00','\\x00','\\x00',now())`, [P.PROPERTY])
-  const pool = new pg.Pool({ ...HOST, user: LOGIN, password: 'x', database: name, max: 6 })
-  return { name, admin, pool, async done() { await pool.end(); await admin.end(); await root.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`) } }
+  const adminPool = new pg.Pool({ ...HOST, user: aurl.username, database: name, max: 2 }); const pool = new pg.Pool({ ...HOST, user: LOGIN, password: 'x', database: name, max: 6 })
+  return { name, admin, pool, adminPool, async done() { await pool.end(); await adminPool.end(); await admin.end(); await root.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`) } }
 }
 const q = async (a, sql, p = []) => (await a.query(sql, p)).rows
 const one = async (a, sql, p = []) => (await a.query(sql, p)).rows[0]
@@ -161,8 +172,21 @@ await t('T0 happy path: 90 + 4515 rows, SUCCEEDED, counters 4605/4605, fingerpri
   } finally { await e.done() }
 })
 
-// ===== T1 two-run rollback isolation =====
-await t('T1 two-run rollback isolation (+ wrong predicate aborts, FK restrict, double rollback refused)', async () => {
+
+const ROLLBACK_SQL = readFileSync(path.join(ROOT, 'db/seo/admin_rollback_import_run.sql'), 'utf8')
+/** Runs db/seo/admin_rollback_import_run.sql exactly as an administrator would (non-superuser admin login, simple-query protocol), with the run id substituted. */
+async function adminRollback(e, runId, mutate = (x) => x) {
+  const c = new pg.Client({ ...HOST, user: ADMIN_LOGIN, password: 'x', database: e.name }); await c.connect()
+  const notices = []; c.on('notice', (m) => notices.push(m.message))
+  try { await c.query(mutate(ROLLBACK_SQL.replace('00000000-0000-0000-0000-000000000000', runId).replace("v_run    text := '" + runId, "v_run    text := '" + runId))); return { ok: true, notices } }
+  catch (x) { await c.query('ROLLBACK').catch(() => {}); return { ok: false, error: x.message, notices } }
+  finally { await c.end() }
+}
+// usable members: anyone able to SET ROLE or inherit it. The administrator's bare ADMIN OPTION row (no SET, no INHERIT) is expected and cannot use the role.
+const membersOf = async (e, role) => (await one(e.admin, `SELECT count(*)::int n FROM pg_auth_members WHERE roleid=$1::regrole AND (set_option OR inherit_option)`, [role])).n
+
+// ===== T1 two-run rollback isolation (administrator SQL procedure) =====
+await t('T1 two-run rollback isolation via the admin SQL procedure (+ over-broad delete aborts, no membership left behind, FK restrict, double rollback refused)', async () => {
   const e = await fresh(); try {
     const { run } = await happy(e)
     // fixtures: run B (different dates) and legacy rows with NULL syncRunId, same site
@@ -173,20 +197,41 @@ await t('T1 two-run rollback isolation (+ wrong predicate aborts, FK restrict, d
     for (let i = 1; i <= 10; i++) await e.admin.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey") VALUES ($1,'site1','2026-06-01','p','qn'||$2::text,'ind','MOBILE',0,1,0,1,'rkN'||$2::text)`, ['n-p' + i, i])
     const snap = () => one(e.admin, `SELECT (SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_daily t WHERE "syncRunId" IS DISTINCT FROM $1) d,(SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_performance t WHERE "syncRunId" IS DISTINCT FROM $1) p,(SELECT md5(to_jsonb(s)::text) FROM seo_gsc_sync_runs s WHERE id='runB') rb`, [run.runId])
     const before = await snap()
-    // wrong (too broad) predicate must be caught in-transaction and delete nothing
-    await assert.rejects(P.rollback(e.pool, run.runId, { predicate: `"syncRunId" IS NOT NULL` }), (x) => x.code === 'ROLLBACK_TOUCHED_OTHER_ROWS')
+    // an over-broad delete (mutated script) must be caught in-transaction: nothing deleted AND no membership granted
+    const bad = await adminRollback(e, run.runId, (x) => x.replace(/DELETE FROM seo_search_performance WHERE "syncRunId" = v_run/, 'DELETE FROM seo_search_performance WHERE "syncRunId" IS NOT NULL'))
+    assert.equal(bad.ok, false); assert.match(bad.error, /other runs would change/); assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
     assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily`)).n, 90 + 5 + 7); assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n, 4515 + 30)
-    const out = await P.rollback(e.pool, run.runId)
-    assert.deepEqual(out, { deletedDaily: 90, deletedPerformance: 4515 })
+    const out = await adminRollback(e, run.runId); assert.equal(out.ok, true, out.error); assert.ok(out.notices.some((m) => /90 daily rows and 4515 detail rows deleted/.test(m)))
+    assert.equal(await membersOf(e, 'seo_import_rollback'), 0) // temporary membership is gone after COMMIT
     assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"=$1`, [run.runId])).n, 0)
     assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE "syncRunId"=$1`, [run.runId])).n, 0)
     assert.deepEqual(await snap(), before) // run B rows, NULL rows and run B's row untouched byte-for-byte
     const rA = await one(e.admin, `SELECT status,"errorCode" FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.deepEqual(rA, { status: 'CANCELLED', errorCode: 'ROLLED_BACK' })
     assert.equal((await one(e.admin, `SELECT status FROM seo_gsc_sync_runs WHERE id='runB'`)).status, 'SUCCEEDED')
-    await assert.rejects(P.rollback(e.pool, run.runId), (x) => x.code === 'ALREADY_ROLLED_BACK')
+    const again = await adminRollback(e, run.runId); assert.equal(again.ok, false); assert.match(again.error, /already CANCELLED/); assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
     assert.equal((await q(e.admin, `SELECT 1 FROM seo_audit_log WHERE action='gsc.import.rolled_back' AND "entityId"=$1`, [run.runId])).length, 1)
     await assert.rejects(e.admin.query(`DELETE FROM seo_gsc_sync_runs WHERE id='runB'`), (x) => x.code === '23503') // FK RESTRICT while data points at it
     await invariants(e.admin, run.runId, { expectNullRows: 17 })
+  } finally { await e.done() }
+})
+
+await t('T1b admin rollback guards: placeholder/invalid/unknown run id, a run of another site, and a failure after the grant all leave no membership and no change', async () => {
+  const e = await fresh(); try {
+    const { run } = await happy(e)
+    const fixed = await one(e.admin, `SELECT (SELECT count(*)::int FROM seo_search_performance) p,(SELECT count(*)::int FROM seo_search_daily) d,(SELECT status FROM seo_gsc_sync_runs WHERE id=$1) st`, [run.runId])
+    for (const [label, id, rx] of [['placeholder', '00000000-0000-0000-0000-000000000000', /edit the run id/], ['invalid', 'not-a-uuid', /edit the run id/], ['unknown', '11111111-1111-1111-1111-111111111111', /run not found/]]) {
+      const r = await adminRollback(e, id, (x) => x.replace("'00000000-0000-0000-0000-000000000000'; ", `'${id}'; `)); assert.equal(r.ok, false, label); assert.match(r.error, rx, label); assert.equal(await membersOf(e, 'seo_import_rollback'), 0, label)
+    }
+    await e.admin.query(`INSERT INTO seo_sites (id,domain,"baseUrl","updatedAt") VALUES ('site2','other.test','https://other.test',now())`)
+    await e.admin.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('22222222-2222-2222-2222-222222222222','site2','SEARCH_ANALYTICS','MANUAL','SUCCEEDED')`)
+    const o = await adminRollback(e, '22222222-2222-2222-2222-222222222222'); assert.equal(o.ok, false); assert.match(o.error, /another site/)
+    const f = await adminRollback(e, run.runId, (x) => x.replace("RAISE NOTICE 'rolled back", "RAISE EXCEPTION 'injected failure after delete'; RAISE NOTICE 'rolled back")); assert.equal(f.ok, false); assert.match(f.error, /injected failure/)
+    assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
+    assert.deepEqual(await one(e.admin, `SELECT (SELECT count(*)::int FROM seo_search_performance) p,(SELECT count(*)::int FROM seo_search_daily) d,(SELECT status FROM seo_gsc_sync_runs WHERE id=$1) st`, [run.runId]), fixed) // all-or-nothing
+    // an ordinary application login (no ADMIN OPTION) cannot run the procedure at all: the GRANT fails and nothing happens
+    const c = new pg.Client({ ...HOST, user: LOGIN, password: 'x', database: e.name }); await c.connect()
+    try { await assert.rejects(c.query(ROLLBACK_SQL.replace('00000000-0000-0000-0000-000000000000', run.runId)), (x) => x.code === '42501'); await c.query('ROLLBACK').catch(() => {}) } finally { await c.end() }
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n, 4515)
   } finally { await e.done() }
 })
 
@@ -282,8 +327,8 @@ await t('T4 concurrency: racing starts, racing identical window steps, lock bloc
     await holder.query('COMMIT'); holder.release(); assert.equal((await pending).inserted, 385)
     // rollback vs step queued behind a holder: end state must be consistent whichever runs first
     const h2 = await e.pool.connect(); await h2.query('BEGIN'); await h2.query(`SELECT pg_advisory_xact_lock(hashtext('gsc-import:'||$1))`, [P.SITE_DOMAIN])
-    const s = P.stepWindow(e.pool, run, g, ds.baseline, WINDOWS[2]).then((x) => x, (x) => x); await new Promise((r) => setTimeout(r, 300)); const rb = P.rollback(e.pool, run.runId)
-    await new Promise((r) => setTimeout(r, 300)); await h2.query('COMMIT'); h2.release(); await Promise.all([s, rb])
+    const s = P.stepWindow(e.pool, run, g, ds.baseline, WINDOWS[2]).then((x) => x, (x) => x); await new Promise((r) => setTimeout(r, 300)); const rb = adminRollback(e, run.runId)
+    await new Promise((r) => setTimeout(r, 300)); await h2.query('COMMIT'); h2.release(); const [sres, rres] = await Promise.all([s, rb]); assert.equal(rres.ok, true, rres.error)
     const r = await one(e.admin, `SELECT status FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.equal(r.status, 'CANCELLED')
     assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n + (await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily`)).n, 0)
     await invariants(e.admin, run.runId)
@@ -381,8 +426,8 @@ await t('T8 invariant checker is not vacuous: detects tampering', async () => {
 
 // ===== role / RLS permission matrix =====
 
-const probeAs = async (e, role, probes) => {
-  const c = await e.pool.connect(); const out = {}
+const probeAs = async (e, role, probes, viaAdmin = false) => {
+  const c = viaAdmin ? await e.adminPool.connect() : await e.pool.connect(); const out = {}
   try { await c.query('BEGIN'); await c.query(`SET LOCAL ROLE ${role}`)
     out.identity = (await c.query(`SELECT session_user su, current_user cu, (SELECT rolbypassrls FROM pg_roles WHERE rolname=current_user) bypass, (SELECT rolsuper FROM pg_roles WHERE rolname=current_user) su2`)).rows[0]
     for (const [label, sql] of probes) { await c.query('SAVEPOINT s'); try { const r = await c.query(sql); out[label] = 'allowed' + (r.rows[0]?.n !== undefined ? ` n=${r.rows[0].n}` : r.rowCount ? ` rows=${r.rowCount}` : ''); } catch (x) { out[label] = 'denied ' + x.code } await c.query('ROLLBACK TO s') }
@@ -449,7 +494,7 @@ await t('PERM seo_importer: reads site+GSC connection, the 4-table writes work, 
     for (const [k] of common) assert.ok(/^denied/.test(out[k]) || /n=0$/.test(out[k]), `${k}: ${out[k]}`)
   } finally { await e.done() }
 })
-await t('PERM seo_import_rollback: only DELETE on the two search tables + CANCEL a run + rolled_back audit; nothing else', async () => {
+await t('PERM seo_import_rollback (privileges of the role itself, probed by an administrator): only DELETE on the two search tables + CANCEL a run + rolled_back audit; nothing else', async () => {
   const e = await fresh(); try {
     await e.admin.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('seed','site1','SEARCH_ANALYTICS','MANUAL','SUCCEEDED')`)
     await e.admin.query(`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ('d1','site1','2026-08-11',1,1,1,1,'seed')`)
@@ -466,21 +511,26 @@ await t('PERM seo_import_rollback: only DELETE on the two search tables + CANCEL
       ['INSERT sync run', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('rq','site1','SEARCH_ANALYTICS','MANUAL','RUNNING')`],
       ['SELECT oauth connections', `SELECT count(*)::int n FROM seo_oauth_connections`],
       ...common,
-    ])
+    ], true)
     console.log('   PERM seo_import_rollback', JSON.stringify(out))
-    assert.deepEqual(out.identity, { su: LOGIN, cu: 'seo_import_rollback', bypass: false, su2: false })
+    assert.deepEqual(out.identity, { su: aurl.username, cu: 'seo_import_rollback', bypass: false, su2: false })
     for (const k of ['DELETE seo_search_performance', 'DELETE seo_search_daily', 'UPDATE sync run to CANCELLED', 'INSERT audit gsc.import.rolled_back']) assert.match(out[k], /^allowed/, k)
     for (const k of ['UPDATE sync run to RUNNING (resurrect)', 'UPDATE sync run to SUCCEEDED', 'INSERT audit gsc.import.started', 'INSERT seo_search_daily', 'INSERT sync run', 'SELECT oauth connections']) assert.match(out[k], /^denied/, k)
     for (const [k] of common) if (!/DELETE seo_audit_log|UPDATE seo_audit_log|DELETE seo_gsc_sync_runs|UPDATE seo_gsc_sync_runs|UPDATE seo_search|INSERT daily|INSERT audit|INSERT sync run|INSERT seo_sites|UPDATE seo_sites|DELETE seo_sites|SELECT seo_oauth_states|oauth|sitemap|ga4|keywords|recommendations|crawl/.test(k)) throw new Error('unclassified ' + k); else assert.ok(/^denied/.test(out[k]) || /n=0$/.test(out[k]), `${k}: ${out[k]}`)
   } finally { await e.done() }
 })
-await t('PERM neither importer role can SET ROLE to seo_worker / postgres, and the live-like login cannot inherit privileges without SET ROLE', async () => {
+await t('PERM application login: holds seo_importer only; cannot SET ROLE to seo_import_rollback / seo_worker / postgres, cannot GRANT itself anything; rollback role has no members at rest', async () => {
   const e = await fresh(); try {
     const c = await e.pool.connect(); try {
-      const plain = await c.query(`SELECT has_table_privilege(current_user,'seo_search_daily','INSERT') a, has_table_privilege(current_user,'seo_sites','SELECT') b`); assert.deepEqual(plain.rows[0], { a: false, b: false }) // INHERIT FALSE: nothing without SET ROLE
-      for (const r of ['seo_worker', 'postgres']) { await c.query('BEGIN'); await assert.rejects(c.query(`SET LOCAL ROLE ${r}`), (x) => x.code === '42501'); await c.query('ROLLBACK') }
-      await c.query('BEGIN'); await c.query('SET LOCAL ROLE seo_importer'); await c.query('SET LOCAL ROLE seo_import_rollback'); await c.query('ROLLBACK') // PG checks the SESSION user: hopping between the two roles granted to the same login is allowed (documented, not a gap)
+      const plain = await c.query(`SELECT has_table_privilege(current_user,'seo_search_daily','INSERT') a, has_table_privilege(current_user,'seo_sites','SELECT') b, has_table_privilege(current_user,'seo_search_daily','DELETE') d`); assert.deepEqual(plain.rows[0], { a: false, b: false, d: false }) // INHERIT FALSE: nothing without SET ROLE
+      for (const r of ['seo_import_rollback', 'seo_worker', 'postgres']) { await c.query('BEGIN'); await assert.rejects(c.query(`SET LOCAL ROLE ${r}`), (x) => x.code === '42501', r); await c.query('ROLLBACK') }
+      await c.query('BEGIN'); await c.query('SET LOCAL ROLE seo_importer'); await assert.rejects(c.query('SET LOCAL ROLE seo_import_rollback'), (x) => x.code === '42501'); await c.query('ROLLBACK') // no hopping from the one role it holds
+      for (const g of ['GRANT seo_import_rollback TO CURRENT_USER', `GRANT seo_import_rollback TO ${BYPASS}`]) { await c.query('BEGIN'); await assert.rejects(c.query(g), (x) => x.code === '42501', g); await c.query('ROLLBACK') }
     } finally { c.release() }
+    assert.equal(await membersOf(e, 'seo_import_rollback'), 0) // nobody can use it at rest; the only row is the administrator's bare ADMIN OPTION
+    const m = await one(e.admin, `SELECT m.rolname member, a.admin_option ao, a.set_option so, a.inherit_option io FROM pg_auth_members a JOIN pg_roles m ON m.oid=a.member WHERE a.roleid='seo_import_rollback'::regrole`)
+    assert.deepEqual(m, { member: ADMIN_LOGIN, ao: true, so: false, io: false })
+    const im = await q(e.admin, `SELECT m.rolname member FROM pg_auth_members a JOIN pg_roles m ON m.oid=a.member WHERE a.roleid='seo_importer'::regrole ORDER BY 1`); assert.ok(im.some((x) => x.member === LOGIN))
   } finally { await e.done() }
 })
 await t('PERM RLS is enforced after SET LOCAL ROLE even for a BYPASSRLS login (owner_like): removing the site policy hides the site from seo_importer', async () => {

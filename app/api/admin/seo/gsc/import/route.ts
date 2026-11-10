@@ -9,7 +9,7 @@ import { readRefreshTokenReadOnly } from '@/lib/seo-command/gsc-connectivity'
 import { IMPORT_BASELINE } from '@/lib/seo-command/gsc-import-baseline'
 import {
   IMPORT_CONFIRM_PHRASE, IMPORT_EXPECTED_DB_REF, IMPORT_PROPERTY, IMPORT_SITE_DOMAIN, IMPORT_WINDOWS, ImportError, createGscSource, failImport, finishImport, importDaily, importStatus, importTx, importWindow,
-  resumeImport, rollbackImport, startImport, type ImportRun,
+  resumeImport, startImport, type ImportRun,
 } from '@/lib/seo-command/gsc-import'
 
 export const dynamic = 'force-dynamic'
@@ -18,7 +18,8 @@ export const maxDuration = 60
 /** One-time Search Console 90-day import (2026-08-11..2026-11-08, sc-domain:tapisglobalinternational.com). Admin-only, same-origin, Preview-only, explicitly enabled.
  *  One request = one step (Vercel Hobby 60 s limit). Writes only the four approved tables (see lib/seo-command/gsc-import.ts). Responses carry counts and fixed codes only:
  *  never query text, URLs, tokens, credentials or database error text.
- *  Body: {action:'start',confirm} | {action:'daily'|'finish'|'status'|'resume'|'rollback', runId, confirm?} | {action:'window', runId, index:1..13}.
+ *  Body: {action:'start',confirm} | {action:'daily'|'finish'|'status'|'resume', runId} | {action:'window', runId, index:1..13}.
+ *  There is deliberately NO rollback action: rollback is a manual administrator SQL procedure (db/seo/admin_rollback_import_run.sql).
  *  No cron, no background job: nothing here runs unless an admin calls it. */
 const noStore = { headers: { 'cache-control': 'no-store' } }
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
@@ -35,9 +36,9 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null
   const action = typeof body?.action === 'string' ? body.action : ''
   const runId = typeof body?.runId === 'string' && UUID.test(body.runId) ? body.runId : ''
-  if (!['start', 'daily', 'window', 'finish', 'status', 'resume', 'rollback'].includes(action)) return fail('Invalid action', 400)
+  if (!['start', 'daily', 'window', 'finish', 'status', 'resume'].includes(action)) return fail('Invalid action', 400)
   if (action !== 'start' && !runId) return fail('Invalid runId', 400)
-  if ((action === 'start' || action === 'rollback') && body?.confirm !== IMPORT_CONFIRM_PHRASE) return fail('Confirmation phrase missing or incorrect.', 400)
+  if (action === 'start' && body?.confirm !== IMPORT_CONFIRM_PHRASE) return fail('Confirmation phrase missing or incorrect.', 400)
   const index = Number(body?.index)
   if (action === 'window' && !(Number.isInteger(index) && index >= 1 && index <= IMPORT_WINDOWS.length)) return fail('Invalid window index', 400)
   const cfg = gscOAuthConfig()
@@ -50,7 +51,6 @@ export async function POST(req: Request) {
     if (action === 'start') return NextResponse.json({ ok: true, ...(await startImport(pool, IMPORT_BASELINE, actor)) }, noStore)
     if (action === 'status') return NextResponse.json({ ok: true, ...(await importStatus(pool, runId)) }, noStore)
     if (action === 'resume') return NextResponse.json({ ok: true, ...(await resumeImport(pool, runId, actor)) }, noStore)
-    if (action === 'rollback') return NextResponse.json({ ok: true, ...(await rollbackImport(pool, runId, actor)) }, noStore)
 
     const st = await importStatus(pool, runId)
     const run: ImportRun = await importTx(pool, async (c) => ({ runId, siteId: (await c.query(`SELECT "siteId" FROM seo_gsc_sync_runs WHERE id=$1`, [runId])).rows[0].siteId as string }), { readOnly: true })

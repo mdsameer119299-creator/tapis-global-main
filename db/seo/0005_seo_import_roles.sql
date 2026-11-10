@@ -2,8 +2,10 @@
 -- PROPOSED, NOT APPLIED. Additive: creates 2 NOLOGIN roles, grants and RLS policies for them. It changes nothing for
 -- seo_worker, postgres, anon, authenticated or any existing policy, table, column or row. No data is read or written.
 --
---   seo_importer         import steps (start / daily / windows / finish / resume).  NO delete anywhere.
+--   seo_importer         import steps (start / daily / windows / finish / resume).  NO delete anywhere.  The only role the application may ever hold.
 --   seo_import_rollback  rollback of ONE run by syncRunId only.  The ONLY role with DELETE, and only on the two search tables.
+--                        It is NEVER granted to the application login. It is used only by the manual administrator procedure
+--                        db/seo/admin_rollback_import_run.sql, which grants it inside one transaction and revokes it before COMMIT.
 --
 -- Neither role has any privilege on seo_oauth_states, seo_sitemap_status, seo_ga4_*, seo_recommendations, seo_keywords,
 -- seo_crawl_*, seo_technical_issues, seo_agent_runs, seo_approval_requests or any other table. No INSERT/UPDATE/DELETE on seo_sites or
@@ -85,7 +87,7 @@ CREATE POLICY seo_rollback_audit_insert ON public.seo_audit_log FOR INSERT TO se
 
 COMMIT;
 
--- 6. SEPARATE LIVE ROLE CHANGE (own approval; not part of the transaction above; run only after review, as the connection role the app uses):
---    GRANT seo_importer        TO postgres WITH INHERIT FALSE, SET TRUE;
---    GRANT seo_import_rollback TO postgres WITH INHERIT FALSE, SET TRUE;
---    INHERIT FALSE keeps postgres from silently acquiring these privileges; the app must `SET LOCAL ROLE` explicitly per transaction.
+-- 6. SEPARATE LIVE ROLE CHANGE (own approval; NOT part of the transaction above). Only seo_importer is ever granted to an application login:
+--      GRANT seo_importer TO <application login> WITH INHERIT FALSE, SET TRUE;
+--    seo_import_rollback must have NO members after this migration (verify_0005.sql checks this) and is never granted to the application login.
+--    INHERIT FALSE: the login holds no privileges unless the app explicitly runs SET LOCAL ROLE seo_importer inside a transaction.

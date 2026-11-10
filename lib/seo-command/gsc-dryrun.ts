@@ -1,6 +1,7 @@
 import { refreshAccessToken } from './gsc-google'
 import type { GscOAuthConfig } from './gsc-oauth'
 import type { CallOutcome } from './gsc-connectivity'
+import { FINGERPRINT_VERSION, dailyFingerprint, isStorableText, perfFingerprint, perfFingerprintByDate, type PerfRow } from './gsc-fingerprint'
 
 /** TEMPORARY, READ-ONLY 90-day Search Console dry-run. Delete this file, its route
  *  (app/api/admin/seo/gsc/dry-run/route.ts) and its test to remove it; nothing else depends on it.
@@ -84,6 +85,8 @@ export interface DailyReport {
   firstDate: string | null; lastDate: string | null; daysWithData: number; expectedDays: number; missingDates: string[]
   totals: { clicks: number; impressions: number }
   responseAggregationType: string | null
+  /** Row-level set hash of the daily rows (hashes only; see gsc-fingerprint.ts). */
+  fingerprint: { version: string; rows: number; set: string }
   daily: { date: string; clicks: number; impressions: number; ctr: number; position: number }[]
 }
 
@@ -97,6 +100,9 @@ export interface WindowReport {
   distinctDates: number; maxRowsOnOneDate: number; distinctPages: number; distinctQueries: number; duplicateKeys: number
   detailTotals: { clicks: number; impressions: number }
   responseAggregationType: string | null
+  /** Row-level fingerprint of EVERY detail row of the window (date,page,query,country,device,clicks,impressions,ctr,position). Hashes only: no query text or URL
+   *  is returned. null unless the whole window arrived in this one call (complete and startRow 0). unstorableRows counts rows a Postgres TEXT column could not hold. */
+  fingerprint: { version: string; rows: number; set: string; byDate: Record<string, string>; unstorableRows: number } | null
   note: string
 }
 
@@ -132,7 +138,8 @@ export async function runDryRunStep(a: { refreshToken: string; cfg: Pick<GscOAut
       firstDate: dates[0] ?? null, lastDate: dates[dates.length - 1] ?? null, daysWithData: have.size, expectedDays: expectedDates().length,
       missingDates: expectedDates().filter((d) => !have.has(d)),
       totals: { clicks: daily.reduce((s, d) => s + d.clicks, 0), impressions: daily.reduce((s, d) => s + d.impressions, 0) },
-      responseAggregationType: r.data?.responseAggregationType ?? null, daily,
+      responseAggregationType: r.data?.responseAggregationType ?? null,
+      fingerprint: { version: FINGERPRINT_VERSION, rows: daily.length, set: dailyFingerprint(daily) }, daily,
     }
   }
 
@@ -157,6 +164,9 @@ export async function runDryRunStep(a: { refreshToken: string; cfg: Pick<GscOAut
   const pages: { startRow: number; rows: number }[] = []
   const perDate = new Map<string, number>()
   const pageSet = new Set<string>(); const querySet = new Set<string>(); const keySet = new Set<string>()
+  const fpRows: PerfRow[] = []
+  let unstorable = 0
+  const firstStartRow = startRow
   let rowsReturned = 0, dup = 0, clicks = 0, imps = 0, hitLimit = false, complete = false, agg: string | null = null, requests = 0
   while (pages.length < MAX_PAGES_PER_CALL) {
     const r = await post<SaResp>(f, at, sa(site), { startDate: w.startDate, endDate: w.endDate, dimensions: [...DETAIL_DIMENSIONS], type: 'web', dataState: 'final', rowLimit: ROW_LIMIT, startRow })
@@ -172,6 +182,9 @@ export async function runDryRunStep(a: { refreshToken: string; cfg: Pick<GscOAut
       perDate.set(k[0] ?? '', (perDate.get(k[0] ?? '') ?? 0) + 1)
       pageSet.add(k[1] ?? ''); querySet.add(k[2] ?? '')
       clicks += n(row.clicks); imps += n(row.impressions)
+      const pr: PerfRow = { date: String(k[0] ?? ''), page: String(k[1] ?? ''), query: String(k[2] ?? ''), country: String(k[3] ?? ''), device: String(k[4] ?? ''), clicks: n(row.clicks), impressions: n(row.impressions), ctr: n(row.ctr), position: n(row.position) }
+      if (!isStorableText(pr.page) || !isStorableText(pr.query) || !isStorableText(pr.country) || !isStorableText(pr.device)) unstorable++
+      fpRows.push(pr)
     }
     rowsReturned += rows.length
     if (rows.length >= ROW_LIMIT) hitLimit = true
@@ -183,6 +196,7 @@ export async function runDryRunStep(a: { refreshToken: string; cfg: Pick<GscOAut
     complete, nextStartRow: complete ? null : startRow, hitRowLimitOnAnyPage: hitLimit,
     distinctDates: perDate.size, maxRowsOnOneDate: Math.max(0, ...Array.from(perDate.values())), distinctPages: pageSet.size, distinctQueries: querySet.size, duplicateKeys: dup,
     detailTotals: { clicks, impressions: imps }, responseAggregationType: agg,
+    fingerprint: complete && firstStartRow === 0 ? { version: FINGERPRINT_VERSION, rows: fpRows.length, set: perfFingerprint(fpRows), byDate: perfFingerprintByDate(fpRows), unstorableRows: unstorable } : null,
     note: 'Search Console returns top rows only and omits anonymised queries; "complete" means the API returned no further rows for this window, not that every impression is represented.',
   }
 }

@@ -6,7 +6,8 @@ import { dailyFingerprint, fingerprintSql, isStorableText, perfFingerprint, perf
  *
  *  Write allowlist (everything else is impossible by construction AND by database grants; see db/seo/0005_seo_import_roles.sql):
  *    seo_search_daily (INSERT)  seo_search_performance (INSERT)  seo_gsc_sync_runs (INSERT + UPDATE own run)  seo_audit_log (INSERT)
- *  Rollback (separate role) may DELETE only rows carrying the run's syncRunId from the two search tables, and flip its run to CANCELLED.
+ *  There is NO delete and NO rollback in application code: the application can never hold a deletion-capable role. Rollback is a manual administrator
+ *  procedure (db/seo/admin_rollback_import_run.sql) that needs explicit approval.
  *
  *  Every step is ONE transaction: SET LOCAL ROLE -> per-site advisory lock -> work -> counters + status + audit, all committed or none.
  *  Nothing is ever overwritten: rows are inserted with ON CONFLICT DO NOTHING and any pre-existing conflicting row aborts the step. */
@@ -18,7 +19,6 @@ export const IMPORT_RANGE_END = '2026-11-08' // inclusive; latest day with final
 export const IMPORT_EXPECTED_DB_REF = 'xxmrziaefhxmaewrvbqk' // tapis-global-seo-dev
 export const IMPORT_CONFIRM_PHRASE = 'IMPORT-90D-2026-08-11-TO-2026-11-08-INTO-tapis-global-seo-dev'
 export const IMPORTER_ROLE = 'seo_importer'
-export const ROLLBACK_ROLE = 'seo_import_rollback'
 /** Approved row counts per window (verified live in the E1 extraction, identical to the accepted dry-run). */
 export const WINDOW_COUNTS = [331, 385, 378, 347, 324, 361, 315, 343, 297, 381, 390, 370, 293]
 export const DAILY_COUNT = 90
@@ -47,7 +47,7 @@ export interface ImportRun { runId: string; siteId: string }
 export type ImportErrorCode =
   | 'BASELINE_NOT_CONFIGURED' | 'SITE_NOT_FOUND' | 'NOT_CONNECTED' | 'TABLES_NOT_EMPTY' | 'RUN_IN_PROGRESS' | 'RUN_NOT_FOUND' | 'RUN_NOT_RUNNING' | 'RUN_NOT_PARTIAL'
   | 'GOOGLE_HTTP_ERROR' | 'WINDOW_TRUNCATED' | 'WINDOW_COUNT_MISMATCH' | 'WINDOW_DATA_CHANGED' | 'OUT_OF_RANGE_ROW' | 'DUPLICATE_KEYS' | 'BAD_ROW'
-  | 'CONFLICT_IDENTICAL' | 'CONFLICT_DIFFERENT' | 'SUBSET_VIOLATION' | 'DB_ERROR' | 'INCOMPLETE' | 'ALREADY_ROLLED_BACK' | 'ROLLBACK_TOUCHED_OTHER_ROWS' | 'INVALID_STEP'
+  | 'CONFLICT_IDENTICAL' | 'CONFLICT_DIFFERENT' | 'SUBSET_VIOLATION' | 'DB_ERROR' | 'INCOMPLETE' | 'INVALID_STEP'
 export class ImportError extends Error {
   code: ImportErrorCode
   diag: { window?: number; stable?: boolean; observed?: number; expected?: number; pg?: string }
@@ -62,14 +62,12 @@ const MSG: Record<string, string> = {
 }
 
 // ---------- transactions ----------
-type TxOpts = { role?: string; readOnly?: boolean }
+type TxOpts = { readOnly?: boolean }
 export async function importTx<T>(pool: Pool, fn: (c: PoolClient) => Promise<T>, o: TxOpts = {}): Promise<T> {
-  const role = o.role ?? IMPORTER_ROLE
-  if (role !== IMPORTER_ROLE && role !== ROLLBACK_ROLE) throw new ImportError('INVALID_STEP')
   const c = await pool.connect()
   try {
     await c.query(o.readOnly ? 'BEGIN READ ONLY' : 'BEGIN')
-    await c.query(`SET LOCAL ROLE ${role}`) // role is one of two constants above, never user input
+    await c.query(`SET LOCAL ROLE ${IMPORTER_ROLE}`) // a constant, never user input; the only role the application may switch into
     await c.query(`SELECT pg_advisory_xact_lock(hashtext('gsc-import:'||$1))`, [IMPORT_SITE_DOMAIN])
     const out = await fn(c)
     await c.query('COMMIT')
@@ -279,27 +277,6 @@ export async function importStatus(pool: Pool, runId: string) {
     const windows = await windowsDone(c, runId).catch(() => [] as number[])
     return { runId, status: r.status as string, errorCode: r.errorCode as string | null, rowsFetched: r.rowsFetched as number, rowsWritten: r.rowsWritten as number, completedWindows: windows, finished: !!r.finishedAt }
   }, { readOnly: true })
-}
-
-/** Rollback of exactly one run, by syncRunId. Deletes only that run's rows and proves in the same transaction that every other row is byte-identical. */
-export async function rollbackImport(pool: Pool, runId: string, actor: string, opts: { predicate?: string } = {}): Promise<{ deletedDaily: number; deletedPerformance: number }> {
-  const predicate = opts.predicate ?? `"syncRunId" = $1` // override exists only so tests can prove an over-broad delete is caught
-  return importTx(pool, async (c) => {
-    const r = await lockRun(c, runId)
-    if (r.status === 'CANCELLED') throw new ImportError('ALREADY_ROLLED_BACK')
-    const others = async () => (await c.query(
-      `SELECT (SELECT count(*)::int FROM seo_search_daily WHERE "syncRunId" IS DISTINCT FROM $1)||'/'||(SELECT count(*)::int FROM seo_search_performance WHERE "syncRunId" IS DISTINCT FROM $1)||'/'||
-              (SELECT md5(coalesce(string_agg(to_jsonb(t)::text,'|' ORDER BY id),'')) FROM seo_search_daily t WHERE "syncRunId" IS DISTINCT FROM $1)||'/'||
-              (SELECT md5(coalesce(string_agg(to_jsonb(t)::text,'|' ORDER BY id),'')) FROM seo_search_performance t WHERE "syncRunId" IS DISTINCT FROM $1) AS s`, [runId])).rows[0].s as string
-    const before = await others()
-    const params = predicate.includes('$1') ? [runId] : []
-    const dp = await c.query(`DELETE FROM seo_search_performance WHERE ${predicate}`, params)
-    const dd = await c.query(`DELETE FROM seo_search_daily WHERE ${predicate}`, params)
-    if ((await others()) !== before) throw new ImportError('ROLLBACK_TOUCHED_OTHER_ROWS')
-    await c.query(`UPDATE seo_gsc_sync_runs SET status='CANCELLED',"errorCode"='ROLLED_BACK',"finishedAt"=CURRENT_TIMESTAMP WHERE id=$1`, [runId])
-    await audit(c, r.siteId, 'ADMIN', actor, 'gsc.import.rolled_back', runId, { deletedDaily: dd.rowCount, deletedPerformance: dp.rowCount })
-    return { deletedDaily: dd.rowCount ?? 0, deletedPerformance: dp.rowCount ?? 0 }
-  }, { role: ROLLBACK_ROLE })
 }
 
 /** Convenience driver (tests / local use): runs every outstanding step, then finishes. The HTTP route calls the steps one at a time instead. */
