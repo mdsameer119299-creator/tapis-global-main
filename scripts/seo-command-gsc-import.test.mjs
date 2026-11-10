@@ -629,6 +629,43 @@ await t('PERM authorisation table: service_role / anon / authenticated / PUBLIC 
     }
   } finally { await e.done() }
 })
+await t('VERIFY 5a: the authorisation-table ACL check passes on the real result of 0005 and FAILS on every deliberate mutation (unexpected role, PUBLIC, column privilege, grant option, service_role TRUNCATE, MAINTAIN, extra rollback privilege, missing SELECT, non-owner table owner, NULL-ACL owner-only)', async () => {
+  const vsql = read('db/seo/verify_0005.sql')
+  assert.ok(/coalesce\(c\.relacl, acldefault\('r', c\.relowner\)\)/.test(vsql) && /aclexplode\(t\.acl\)/.test(vsql) && /attacl/.test(vsql) && /is_grantable/.test(vsql))
+  const e = await fresh(); const T = 'public.seo_import_rollback_authorisation'; let madeServiceRole = false
+  try {
+    // the scratch harness login ADMIN_LOGIN holds ALL on every table (it emulates the live administrator, which is the OWNER there): drop it on this table so the ACL is the live one
+    await e.admin.query(`REVOKE ALL ON ${T} FROM ${ADMIN_LOGIN}`)
+    if (!(await e.admin.query(`SELECT 1 FROM pg_roles WHERE rolname='service_role'`)).rowCount) { await e.admin.query(`CREATE ROLE service_role NOLOGIN`); madeServiceRole = true }
+    const verify = async () => {
+      const res = await e.admin.query(vsql); const rows = res.filter((r) => r.fields?.some((f) => f.name === 'result')).flatMap((r) => r.rows)
+      const overall = rows.find((r) => r.check.startsWith('AUTHORISATION_TABLE_ACL_OVERALL')); assert.ok(overall); return { overall: overall.result, fails: rows.filter((r) => r.result === 'FAIL').map((r) => r.check), rows }
+    }
+    const info = async () => (await e.admin.query(vsql)).filter((r) => r.rows?.[0]?.check === 'INFO unexpected_authorisation_acl').flatMap((r) => r.rows)[0].detail
+    const base = await verify(); assert.equal(base.overall, 'PASS', JSON.stringify(base.fails)); assert.equal(base.fails.length, 0); assert.equal(await info(), 'none')
+    const mutate = async (label, doSql, undoSql, expectInfo) => {
+      await e.admin.query(doSql); const r = await verify(); assert.equal(r.overall, 'FAIL', `${label}: verification must FAIL`); assert.ok(r.fails.length >= 2, `${label}: ${JSON.stringify(r.fails)}`)
+      if (expectInfo) assert.ok((await info()).includes(expectInfo), `${label}: INFO row lists it (${await info()})`)
+      await e.admin.query(undoSql); assert.equal((await verify()).overall, 'PASS', `${label}: back to PASS after undo`)
+    }
+    await mutate('unexpected role with SELECT', `GRANT SELECT ON ${T} TO seo_app_test`, `REVOKE ALL ON ${T} FROM seo_app_test`, 'seo_app_test SELECT')
+    await mutate('PUBLIC privilege', `GRANT SELECT ON ${T} TO PUBLIC`, `REVOKE ALL ON ${T} FROM PUBLIC`, 'PUBLIC SELECT')
+    await mutate('column-level privilege', `GRANT SELECT ("runId") ON ${T} TO seo_app_test`, `REVOKE ALL (\"runId\") ON ${T} FROM seo_app_test`, 'column runId')
+    await mutate('grant option on the rollback role', `GRANT SELECT ON ${T} TO seo_import_rollback WITH GRANT OPTION`, `REVOKE ALL ON ${T} FROM seo_import_rollback; GRANT SELECT ON ${T} TO seo_import_rollback`, 'seo_import_rollback SELECT WITH GRANT OPTION')
+    await mutate('service_role TRUNCATE', `GRANT TRUNCATE ON ${T} TO service_role`, `REVOKE ALL ON ${T} FROM service_role`, 'service_role TRUNCATE')
+    await mutate('service_role full default-ACL set', `GRANT TRUNCATE, REFERENCES, TRIGGER ON ${T} TO service_role`, `REVOKE ALL ON ${T} FROM service_role`, 'service_role REFERENCES')
+    if ((await one(e.admin, `SHOW server_version_num`)).server_version_num >= 170000) await mutate('MAINTAIN (PostgreSQL 17)', `GRANT MAINTAIN ON ${T} TO anon`, `REVOKE ALL ON ${T} FROM anon`, 'anon MAINTAIN')
+    await mutate('seo_import_rollback with an extra privilege', `GRANT UPDATE ON ${T} TO seo_import_rollback`, `REVOKE UPDATE ON ${T} FROM seo_import_rollback`, 'seo_import_rollback UPDATE')
+    await mutate('seo_importer with any privilege', `GRANT SELECT ON ${T} TO seo_importer`, `REVOKE ALL ON ${T} FROM seo_importer`, 'seo_importer SELECT')
+    // missing SELECT for the rollback role: fails (the rollback role must be able to read its authorisation)
+    await e.admin.query(`REVOKE ALL ON ${T} FROM seo_import_rollback`); const m = await verify(); assert.equal(m.overall, 'FAIL'); assert.ok(m.fails.some((f) => f.startsWith('seo_import_rollback_privileges_on_authorisation'))); await e.admin.query(`GRANT SELECT ON ${T} TO seo_import_rollback`)
+    // a table whose owner is not the project administrator (not the owner of seo_sites) fails
+    await e.admin.query(`ALTER TABLE ${T} OWNER TO seo_app_test`); const o = await verify(); assert.equal(o.overall, 'FAIL'); assert.ok(o.fails.some((f) => f.startsWith('authorisation_table_owner'))); await e.admin.query(`ALTER TABLE ${T} OWNER TO postgres`)
+    // NULL ACL (owner-only default): the rollback role then has no SELECT, so it must FAIL, with no unexpected entries and no SQL error
+    await e.admin.query(`REVOKE ALL ON ${T} FROM seo_import_rollback`); await e.admin.query(`UPDATE pg_class SET relacl = NULL WHERE oid = '${T}'::regclass`).catch(() => null)
+    assert.equal((await verify()).overall, 'FAIL')
+  } finally { if (madeServiceRole) { await e.admin.query(`REVOKE ALL ON ${T} FROM service_role`).catch(() => null); await e.admin.query(`DROP OWNED BY service_role`).catch(() => null); await e.admin.query(`DROP ROLE IF EXISTS service_role`).catch(() => null) } await e.done() }
+})
 await t('PERM RLS is enforced after SET LOCAL ROLE even for a BYPASSRLS login (owner_like): removing the site policy hides the site from seo_importer', async () => {
   const e = await fresh(); try {
     await e.admin.query(`GRANT seo_importer TO ${BYPASS} WITH INHERIT FALSE, SET TRUE`)
