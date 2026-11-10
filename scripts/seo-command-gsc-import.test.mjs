@@ -41,12 +41,17 @@ s('the application can never hold a deletion-capable role: no DELETE, no rollbac
   assert.ok(!/'rollback'/.test(route.replace(/\/\*[\s\S]*?\*\//g, '')) )
   assert.equal((code.match(/SET LOCAL ROLE/g) ?? []).length, 1)
 })
-s('admin rollback script: manual only, deletes only run-scoped rows from the two search tables, grants+revokes inside one transaction, nothing in the repo or deploy references it', () => {
+s('admin rollback script: manual only; run id edited in ONE place; role block takes its target from the transaction-local authorisation row; deletes only run-scoped rows from the two search tables; grants+revokes inside one transaction; independent verification; nothing in the repo or deploy references it', () => {
   const a = read('db/seo/admin_rollback_import_run.sql'), ac = a.replace(/--.*$/gm, '')
   assert.ok(/^BEGIN;/m.test(ac) && /COMMIT;\s*$/.test(ac.trim())); assert.ok(/GRANT seo_import_rollback TO CURRENT_USER/.test(ac) && /REVOKE seo_import_rollback FROM CURRENT_USER/.test(ac))
-  assert.ok(ac.indexOf('REVOKE seo_import_rollback') > ac.indexOf('RESET ROLE') && ac.indexOf('RESET ROLE') > ac.indexOf('DELETE FROM'))
+  const ix = (x) => ac.indexOf(x)
+  assert.ok(ix('INSERT INTO seo_import_rollback_authorisation') > 0 && ix('INSERT INTO seo_import_rollback_authorisation') < ix('GRANT seo_import_rollback') && ix('GRANT seo_import_rollback') < ix('SET LOCAL ROLE seo_import_rollback'))
+  assert.ok(ix('SET LOCAL ROLE') < ix('DELETE FROM') && ix('DELETE FROM') < ix('RESET ROLE') && ix('RESET ROLE') < ix('REVOKE seo_import_rollback') && ix('REVOKE seo_import_rollback') < ix('$verify$'))
   const dels = [...ac.matchAll(/DELETE FROM\s+(\w+)\s+WHERE\s+"syncRunId" = v_run/g)].map((m) => m[1]); assert.deepEqual(dels.sort(), ['seo_search_daily', 'seo_search_performance']); assert.equal((ac.match(/DELETE FROM/g) ?? []).length, 2)
-  assert.ok(/pg_advisory_xact_lock/.test(ac) && /FOR UPDATE/.test(ac) && /other runs would change/.test(ac) && /still has a usable member/.test(ac))
+  const roleBlock = ac.slice(ix('$rollback$'), ac.indexOf('$rollback$', ix('$rollback$') + 10))
+  assert.ok(/SELECT "runId" INTO STRICT v_run FROM seo_import_rollback_authorisation/.test(roleBlock) && !/v_run\s+text\s*:=/.test(roleBlock) && !/current_setting|set_config/.test(roleBlock)) // the restricted role never takes the id from input or a GUC
+  assert.equal((a.match(/<<< EDIT/g) ?? []).length, 1) // one edit point
+  assert.ok(/pg_advisory_xact_lock/.test(ac) && /FOR UPDATE/.test(ac) && /outside the authorised run would change/.test(ac) && /still has a usable member/.test(ac) && /xmin::text = \(pg_current_xact_id\(\)::xid\)::text/.test(ac))
   for (const f of ['package.json', 'vercel.json', 'next.config.js', 'next.config.mjs']) if (existsSync(path.join(ROOT, f))) assert.ok(!/admin_rollback_import_run/.test(read(f)), f)
   assert.ok(!/admin_rollback_import_run/.test(code + route.replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '')))
 })
@@ -194,7 +199,7 @@ const PROPERTY_RE = /sc-domain:[a-z.]+/g
 let baseSec = null; let invariantChecks = 0
 
 /** T8 invariants: run status vs counters vs live rows, success only when complete, security unchanged, other tables untouched. */
-async function invariants(admin, runId, { expectNullRows = 0 } = {}) {
+async function invariants(admin, runId, { expectNullRows = 0, sites = 1 } = {}) {
   invariantChecks++
   const v = []
   const r = await one(admin, `SELECT * FROM seo_gsc_sync_runs WHERE id=$1`, [runId])
@@ -208,7 +213,7 @@ async function invariants(admin, runId, { expectNullRows = 0 } = {}) {
   if (r.status === 'CANCELLED' && (dn + pn) !== 0) v.push('CANCELLED but rows remain')
   const nulls = (await one(admin, `SELECT (SELECT count(*) FROM seo_search_daily WHERE "syncRunId" IS NULL)::int+(SELECT count(*) FROM seo_search_performance WHERE "syncRunId" IS NULL)::int n`)).n
   if (nulls !== expectNullRows) v.push(`NULL syncRunId rows ${nulls}`)
-  const o = await otherTables(admin); if (o.sites !== 1 || o.oauth !== 1 || o.sitemap !== 0 || o.ga4 !== 0 || o.states !== 0) v.push('other tables changed ' + JSON.stringify(o))
+  const o = await otherTables(admin); if (o.sites !== sites || o.oauth !== 1 || o.sitemap !== 0 || o.ga4 !== 0 || o.states !== 0) v.push('other tables changed ' + JSON.stringify(o))
   if ((await secSnap(admin)) !== baseSec) v.push('security snapshot changed')
   const fin = await q(admin, `SELECT metadata->>'status' s FROM seo_audit_log WHERE "entityId"=$1 AND action='gsc.import.finished' ORDER BY at DESC, ctid DESC LIMIT 1`, [runId])
   if (fin[0] && r.status !== 'RUNNING' && !['CANCELLED'].includes(r.status) && fin[0].s !== r.status) v.push(`audit status ${fin[0].s} != run ${r.status}`)
@@ -259,13 +264,23 @@ await t('T1 two-run rollback isolation via the admin SQL procedure (+ over-broad
     for (let i = 1; i <= 20; i++) await e.admin.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey","syncRunId") VALUES ($1,'site1','2026-07-01','p','qb'||$2::text,'ind','MOBILE',0,1,0,1,'rkB'||$2::text,'runB')`, ['b-p' + i, i])
     for (let i = 1; i <= 7; i++) await e.admin.query(`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position) VALUES ($1,'site1',$2,1,10,0.1,5)`, ['n-d' + i, `2026-06-0${i}`])
     for (let i = 1; i <= 10; i++) await e.admin.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey") VALUES ($1,'site1','2026-06-01','p','qn'||$2::text,'ind','MOBILE',0,1,0,1,'rkN'||$2::text)`, ['n-p' + i, i])
+    // more fixtures: a run of ANOTHER site with rows, and a row of the authorised run itself dated OUTSIDE the approved range (corrupt/legacy) which the rollback must also remove
+    await e.admin.query(`INSERT INTO seo_sites (id,domain,"baseUrl","updatedAt") VALUES ('site2','other.test','https://other.test',now())`)
+    await e.admin.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('runC','site2','SEARCH_ANALYTICS','MANUAL','SUCCEEDED','2026-08-11','2026-11-08')`)
+    for (let i = 1; i <= 3; i++) await e.admin.query(`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ($1,'site2',$2,1,10,0.1,5,'runC')`, ['c-d' + i, `2026-08-1${i}`])
+    for (let i = 1; i <= 2; i++) await e.admin.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey","syncRunId") VALUES ($1,'site2','2026-08-11','p','qc'||$2::text,'ind','MOBILE',0,1,0,1,'rkC'||$2::text,'runC')`, ['c-p' + i, i])
+    await e.admin.query(`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ('a-oor','site1','2026-01-01',1,10,0.1,5,$1)`, [run.runId])
     const snap = () => one(e.admin, `SELECT (SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_daily t WHERE "syncRunId" IS DISTINCT FROM $1) d,(SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_performance t WHERE "syncRunId" IS DISTINCT FROM $1) p,(SELECT md5(to_jsonb(s)::text) FROM seo_gsc_sync_runs s WHERE id='runB') rb`, [run.runId])
     const before = await snap()
-    // an over-broad delete (mutated script) must be caught in-transaction: nothing deleted AND no membership granted
-    const bad = await adminRollback(e, run.runId, (x) => x.replace(/DELETE FROM seo_search_performance WHERE "syncRunId" = v_run/, 'DELETE FROM seo_search_performance WHERE "syncRunId" IS NOT NULL'))
-    assert.equal(bad.ok, false); assert.match(bad.error, /other runs would change/); assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
-    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily`)).n, 90 + 5 + 7); assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n, 4515 + 30)
-    const out = await adminRollback(e, run.runId); assert.equal(out.ok, true, out.error); assert.ok(out.notices.some((m) => /90 daily rows and 4515 detail rows deleted/.test(m)))
+    // (1) a script that tries to delete ANOTHER run's rows inside the role block: nothing of run B is deleted and the script aborts (target rows remain), committing nothing
+    const other = await adminRollback(e, run.runId, (x) => x.replace(/DELETE FROM seo_search_performance WHERE "syncRunId" = v_run/, `DELETE FROM seo_search_performance WHERE "syncRunId" = 'runB'`).replace(/DELETE FROM seo_search_daily       WHERE "syncRunId" = v_run/, `DELETE FROM seo_search_daily WHERE "syncRunId" = 'runB'`))
+    assert.equal(other.ok, false); assert.match(other.error, /rows remain/); assert.deepEqual(await snap(), before); assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"='runB'`)).n, 5)
+    // (2) authorisation step removed / snapshot tampered: fails closed, nothing committed
+    const noauth = await adminRollback(e, run.runId, (x) => x.replace(/INSERT INTO seo_import_rollback_authorisation \("runId"\) VALUES \(v_run\);/, 'NULL;')); assert.equal(noauth.ok, false); assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
+    const tamper = await adminRollback(e, run.runId, (x) => x.replace(/SELECT "runId" INTO STRICT v_run FROM seo_import_rollback_authorisation;/, `SELECT "runId" INTO STRICT v_run FROM seo_import_rollback_authorisation; PERFORM set_config('seo.rollback_before','tampered',true);`)); assert.equal(tamper.ok, false); assert.match(tamper.error, /outside the authorised run/)
+    assert.deepEqual(await snap(), before); assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"=$1`, [run.runId])).n, 91)
+    const out = await adminRollback(e, run.runId); assert.equal(out.ok, true, out.error); assert.ok(out.notices.some((m) => /91 daily rows and 4515 detail rows deleted/.test(m)), out.notices.join('|')) // 90 + the out-of-range row that carried this run's id
     assert.equal(await membersOf(e, 'seo_import_rollback'), 0) // temporary membership is gone after COMMIT
     assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"=$1`, [run.runId])).n, 0)
     assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE "syncRunId"=$1`, [run.runId])).n, 0)
@@ -275,7 +290,7 @@ await t('T1 two-run rollback isolation via the admin SQL procedure (+ over-broad
     const again = await adminRollback(e, run.runId); assert.equal(again.ok, false); assert.match(again.error, /already CANCELLED/); assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
     assert.equal((await q(e.admin, `SELECT 1 FROM seo_audit_log WHERE action='gsc.import.rolled_back' AND "entityId"=$1`, [run.runId])).length, 1)
     await assert.rejects(e.admin.query(`DELETE FROM seo_gsc_sync_runs WHERE id='runB'`), (x) => x.code === '23503') // FK RESTRICT while data points at it
-    await invariants(e.admin, run.runId, { expectNullRows: 17 })
+    await invariants(e.admin, run.runId, { expectNullRows: 17, sites: 2 })
   } finally { await e.done() }
 })
 
@@ -490,9 +505,9 @@ await t('T8 invariant checker is not vacuous: detects tampering', async () => {
 
 // ===== role / RLS permission matrix =====
 
-const probeAs = async (e, role, probes, viaAdmin = false) => {
+const probeAs = async (e, role, probes, viaAdmin = false, pre = []) => {
   const c = viaAdmin ? await e.adminPool.connect() : await e.pool.connect(); const out = {}
-  try { await c.query('BEGIN'); await c.query(`SET LOCAL ROLE ${role}`)
+  try { await c.query('BEGIN'); for (const x of pre) await c.query(x); await c.query(`SET LOCAL ROLE ${role}`)
     out.identity = (await c.query(`SELECT session_user su, current_user cu, (SELECT rolbypassrls FROM pg_roles WHERE rolname=current_user) bypass, (SELECT rolsuper FROM pg_roles WHERE rolname=current_user) su2`)).rows[0]
     for (const [label, sql] of probes) { await c.query('SAVEPOINT s'); try { const r = await c.query(sql); out[label] = 'allowed' + (r.rows[0]?.n !== undefined ? ` n=${r.rows[0].n}` : r.rowCount ? ` rows=${r.rowCount}` : ''); } catch (x) { out[label] = 'denied ' + x.code } await c.query('ROLLBACK TO s') }
   } finally { await c.query('ROLLBACK').catch(() => {}); c.release() }
@@ -528,7 +543,7 @@ await t('PERM seo_importer: reads site+GSC connection, the 4-table writes work, 
   const e = await fresh(); try {
     await e.admin.query(`INSERT INTO seo_sites (id,domain,"baseUrl","updatedAt") VALUES ('other','other.test','https://other.test',now())`)
     await e.admin.query(`INSERT INTO seo_oauth_connections (id,"siteId",provider,state,"propertyUrl","updatedAt") VALUES ('oc2','other','GSC','CONNECTED','sc-domain:other.test',now())`)
-    await e.admin.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('seed','site1','SEARCH_ANALYTICS','MANUAL','RUNNING')`)
+    await e.admin.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('seed','site1','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-08-11','2026-11-08')`)
     const out = await probeAs(e, 'seo_importer', [
       ['SELECT seo_sites (only the approved site)', `SELECT count(*)::int n FROM seo_sites`],
       ['SELECT seo_sites other.test', `SELECT count(*)::int n FROM seo_sites WHERE domain='other.test'`],
@@ -536,7 +551,7 @@ await t('PERM seo_importer: reads site+GSC connection, the 4-table writes work, 
       ['SELECT oauth GSC connections (only approved property)', `SELECT count(*)::int n FROM seo_oauth_connections WHERE provider='GSC'`],
       ['SELECT oauth cipher column', `SELECT "refreshTokenCipher" FROM seo_oauth_connections`],
       ['SELECT oauth accessToken-like other col (scopes)', `SELECT scopes FROM seo_oauth_connections`],
-      ['INSERT sync run (valid)', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rv','site1','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-08-11','2026-11-08')`],
+      ['INSERT second active run (one-active-run index)', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rv','site1','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-08-11','2026-11-08')`],
       ['UPDATE sync run bookkeeping', `UPDATE seo_gsc_sync_runs SET "rowsWritten"=1 WHERE id='seed'`],
       ['UPDATE sync run to SUCCEEDED', `UPDATE seo_gsc_sync_runs SET status='SUCCEEDED' WHERE id='seed'`],
       ['UPDATE sync run to CANCELLED', `UPDATE seo_gsc_sync_runs SET status='CANCELLED' WHERE id='seed'`],
@@ -552,9 +567,9 @@ await t('PERM seo_importer: reads site+GSC connection, the 4-table writes work, 
     ])
     globalThis.__permImporter = out; console.log('   PERM seo_importer', JSON.stringify(out))
     assert.deepEqual(out.identity, { su: LOGIN, cu: 'seo_importer', bypass: false, su2: false })
-    for (const k of ['INSERT sync run (valid)', 'UPDATE sync run bookkeeping', 'UPDATE sync run to SUCCEEDED', 'INSERT audit gsc.import.started', 'INSERT seo_search_daily (with run)', 'INSERT seo_search_performance (with run)', 'SELECT oauth cipher column', 'SELECT seo_sites baseUrl column'.replace('baseUrl column', 'baseUrl column')]) { if (k === 'SELECT seo_sites baseUrl column') continue; assert.match(out[k], /^allowed/, k) }
+    for (const k of ['UPDATE sync run bookkeeping', 'UPDATE sync run to SUCCEEDED', 'INSERT audit gsc.import.started', 'INSERT seo_search_daily (with run)', 'INSERT seo_search_performance (with run)', 'SELECT oauth cipher column', 'SELECT seo_sites baseUrl column'.replace('baseUrl column', 'baseUrl column')]) { if (k === 'SELECT seo_sites baseUrl column') continue; assert.match(out[k], /^allowed/, k) }
     assert.equal(out['SELECT seo_sites (only the approved site)'], 'allowed n=1'); assert.equal(out['SELECT seo_sites other.test'], 'allowed n=0'); assert.equal(out['SELECT oauth GSC connections (only approved property)'], 'allowed n=1')
-    for (const k of ['SELECT seo_sites baseUrl column', 'SELECT oauth accessToken-like other col (scopes)', 'UPDATE sync run to CANCELLED', 'INSERT audit gsc.import.rolled_back', 'DELETE seo_search_performance', 'DELETE seo_search_daily', 'INSERT seo_search_daily other site']) assert.match(out[k], /^denied/, k)
+    for (const k of ['INSERT second active run (one-active-run index)', 'SELECT seo_sites baseUrl column', 'SELECT oauth accessToken-like other col (scopes)', 'UPDATE sync run to CANCELLED', 'INSERT audit gsc.import.rolled_back', 'DELETE seo_search_performance', 'DELETE seo_search_daily', 'INSERT seo_search_daily other site']) assert.match(out[k], /^denied/, k)
     for (const [k] of common) assert.ok(/^denied/.test(out[k]) || /n=0$/.test(out[k]), `${k}: ${out[k]}`)
   } finally { await e.done() }
 })
@@ -574,12 +589,17 @@ await t('PERM seo_import_rollback (privileges of the role itself, probed by an a
       ['INSERT seo_search_daily', `INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ('d9','site1','2026-08-12',1,1,1,1,'seed')`],
       ['INSERT sync run', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('rq','site1','SEARCH_ANALYTICS','MANUAL','RUNNING')`],
       ['SELECT oauth connections', `SELECT count(*)::int n FROM seo_oauth_connections`],
+      ['INSERT authorisation (self-authorise)', `INSERT INTO seo_import_rollback_authorisation ("runId") VALUES ('seed')`],
+      ['UPDATE authorisation (retarget)', `UPDATE seo_import_rollback_authorisation SET "runId"='other'`],
+      ['DELETE authorisation', `DELETE FROM seo_import_rollback_authorisation`],
+      ['SELECT authorisation (own transaction row only)', `SELECT count(*)::int n FROM seo_import_rollback_authorisation`],
       ...common,
-    ], true)
+    ], true, [`INSERT INTO seo_import_rollback_authorisation ("runId") VALUES ('seed')`])
     console.log('   PERM seo_import_rollback', JSON.stringify(out))
     assert.deepEqual(out.identity, { su: aurl.username, cu: 'seo_import_rollback', bypass: false, su2: false })
     for (const k of ['DELETE seo_search_performance', 'DELETE seo_search_daily', 'UPDATE sync run to CANCELLED', 'INSERT audit gsc.import.rolled_back']) assert.match(out[k], /^allowed/, k)
-    for (const k of ['UPDATE sync run to RUNNING (resurrect)', 'UPDATE sync run to SUCCEEDED', 'INSERT audit gsc.import.started', 'INSERT seo_search_daily', 'INSERT sync run', 'SELECT oauth connections']) assert.match(out[k], /^denied/, k)
+    for (const k of ['UPDATE sync run to RUNNING (resurrect)', 'UPDATE sync run to SUCCEEDED', 'INSERT audit gsc.import.started', 'INSERT seo_search_daily', 'INSERT sync run', 'SELECT oauth connections', 'INSERT authorisation (self-authorise)', 'UPDATE authorisation (retarget)', 'DELETE authorisation']) assert.match(out[k], /^denied/, k)
+    assert.equal(out['SELECT authorisation (own transaction row only)'], 'allowed n=1')
     for (const [k] of common) if (!/DELETE seo_audit_log|UPDATE seo_audit_log|DELETE seo_gsc_sync_runs|UPDATE seo_gsc_sync_runs|UPDATE seo_search|INSERT daily|INSERT audit|INSERT sync run|INSERT seo_sites|UPDATE seo_sites|DELETE seo_sites|SELECT seo_oauth_states|oauth|sitemap|ga4|keywords|recommendations|crawl/.test(k)) throw new Error('unclassified ' + k); else assert.ok(/^denied/.test(out[k]) || /n=0$/.test(out[k]), `${k}: ${out[k]}`)
   } finally { await e.done() }
 })
@@ -607,6 +627,159 @@ await t('PERM RLS is enforced after SET LOCAL ROLE even for a BYPASSRLS login (o
   } finally { await e.done() }
 })
 
+// ===================== REVISED RLS SCOPE: multi-run fixture (scratch) =====================
+// Fixture: THE approved run rA (RUNNING, site1, approved range); rB (site1, other range, SUCCEEDED); rCancelled / rFailed (site1, approved range, not active); rCron (site1, SCHEDULE trigger);
+// rOther (another site, approved range, RUNNING). Rows: in-range rows of rA, an OUT-OF-RANGE row tagged rA, rows of rB (all outside the approved range), other-site rows, legacy rows with NULL run.
+async function seedScope(e) {
+  const a = e.admin
+  await a.query(`INSERT INTO seo_sites (id,domain,"baseUrl","updatedAt") VALUES ('other','other.test','https://other.test',now())`)
+  const run = (id, site, status, start, end, trig = 'MANUAL') => a.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ($1,$2,'SEARCH_ANALYTICS',$3::"SeoTrigger",$4::"SeoRunStatus",$5,$6)`, [id, site, trig, status, start, end])
+  await run('rA', 'site1', 'RUNNING', '2026-08-11', '2026-11-08'); await run('rB', 'site1', 'SUCCEEDED', '2026-07-01', '2026-07-05'); await run('rCancelled', 'site1', 'CANCELLED', '2026-08-11', '2026-11-08')
+  await run('rFailed', 'site1', 'FAILED', '2026-08-11', '2026-11-08'); await run('rCron', 'site1', 'RUNNING', '2026-08-11', '2026-11-08', 'SCHEDULE'); await run('rOther', 'other', 'RUNNING', '2026-08-11', '2026-11-08')
+  const d = (id, site, date, r) => a.query(`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ($1,$2,$3,1,10,0.1,5,$4)`, [id, site, date, r])
+  const pf = (id, site, date, r) => a.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey","syncRunId") VALUES ($1,$2,$3,'p',$1,'ind','MOBILE',0,1,0,1,$1,$4)`, [id, site, date, r])
+  for (const [i, dt] of [['a1', '2026-08-12'], ['a2', '2026-08-13'], ['a3', '2026-08-14'], ['a-oor', '2026-01-01']]) await d(i, 'site1', dt, 'rA') // (siteId,date) is unique: 08-11 and 11-08 stay free for the boundary probes
+  for (const [i, dt] of [['ap1', '2026-08-11'], ['ap2', '2026-08-12'], ['ap-oor', '2026-02-02']]) await pf(i, 'site1', dt, 'rA')
+  for (const [i, dt] of [['b1', '2026-07-01'], ['b2', '2026-07-02']]) await d(i, 'site1', dt, 'rB'); await pf('bp1', 'site1', '2026-07-01', 'rB')
+  for (const [i, dt] of [['o1', '2026-08-11'], ['o2', '2026-08-12']]) await d(i, 'other', dt, 'rOther'); await pf('op1', 'other', '2026-08-11', 'rOther')
+  for (const [i, dt] of [['n1', '2026-06-01'], ['n2', '2026-06-02']]) await d(i, 'site1', dt, null); await pf('np1', 'site1', '2026-06-01', null)
+}
+const insD = (id, site, date, r) => [`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ('${id}','${site}','${date}',1,1,1,1,${r === null ? 'NULL' : `'${r}'`})`]
+const insP = (id, site, date, r) => [`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey","syncRunId") VALUES ('${id}','${site}','${date}','p','q','ind','MOBILE',0,1,0,1,'${id}',${r === null ? 'NULL' : `'${r}'`})`]
+/** Runs probes in savepoints inside one transaction on client c (already BEGUN, role set). expect: 'ok' (>=1 row/ok), 'zero' (statement ran, 0 rows), 'denied' (error), or a number (row count). Returns violation strings. */
+async function runProbes(c, probes) {
+  const v = []
+  for (const [label, sql, expect] of probes) {
+    await c.query('SAVEPOINT pr'); let got
+    try { const r = await c.query(sql); got = r.rows[0]?.n !== undefined ? Number(r.rows[0].n) : r.rowCount } catch (x) { got = 'denied' }
+    await c.query('ROLLBACK TO pr')
+    const good = expect === 'ok' ? typeof got === 'number' && got >= 1 : expect === 'zero' ? got === 0 : expect === 'denied' ? got === 'denied' : got === expect
+    if (!good) v.push(`${label}: expected ${expect}, got ${got}`)
+  }
+  return v
+}
+const cnt = async (e, sql, p = []) => (await one(e.admin, sql, p)).n
+/** Importer scope violations on a seeded scratch DB (empty list = every restriction held). */
+async function importerScopeViolations(e) {
+  const c = await e.pool.connect(); let v = []
+  try {
+    await c.query('BEGIN'); await c.query('SET LOCAL ROLE seo_importer')
+    const site1Daily = await cnt(e, `SELECT count(*)::int n FROM seo_search_daily WHERE "siteId"='site1'`), site1Perf = await cnt(e, `SELECT count(*)::int n FROM seo_search_performance WHERE "siteId"='site1'`)
+    v = await runProbes(c, [
+      ['daily valid (approved site, in range, approved RUNNING run)', insD('t0', 'site1', '2026-08-15', 'rA')[0], 'ok'],
+      ['daily first day of range', insD('t1', 'site1', '2026-08-11', 'rA')[0], 'ok'], ['daily last day of range', insD('t1b', 'site1', '2026-11-08', 'rA')[0], 'ok'],
+      ['daily day BEFORE range (2026-08-10)', insD('t2', 'site1', '2026-08-10', 'rA')[0], 'denied'], ['daily day AFTER range (2026-11-09)', insD('t3', 'site1', '2026-11-09', 'rA')[0], 'denied'], ['daily far outside range', insD('t4', 'site1', '2026-01-01', 'rA')[0], 'denied'],
+      ['daily attached to run rB (other range)', insD('t5', 'site1', '2026-08-14', 'rB')[0], 'denied'], ['daily attached to CANCELLED run', insD('t6', 'site1', '2026-08-14', 'rCancelled')[0], 'denied'],
+      ['daily attached to FAILED run', insD('t7', 'site1', '2026-08-14', 'rFailed')[0], 'denied'], ['daily attached to SCHEDULE-trigger run', insD('t8', 'site1', '2026-08-14', 'rCron')[0], 'denied'],
+      ['daily site1 row attached to ANOTHER SITE\'s run', insD('t9', 'site1', '2026-08-14', 'rOther')[0], 'denied'], ['daily other-site row attached to the other site\'s run', insD('t10', 'other', '2026-08-14', 'rOther')[0], 'denied'],
+      ['daily other-site row attached to rA', insD('t11', 'other', '2026-08-14', 'rA')[0], 'denied'], ['daily with nonexistent run', insD('t12', 'site1', '2026-08-14', 'nope')[0], 'denied'], ['daily with NULL run', insD('t13', 'site1', '2026-08-14', null)[0], 'denied'],
+      ['perf valid', insP('u1', 'site1', '2026-08-14', 'rA')[0], 'ok'], ['perf day BEFORE range', insP('u2', 'site1', '2026-08-10', 'rA')[0], 'denied'], ['perf day AFTER range', insP('u3', 'site1', '2026-11-09', 'rA')[0], 'denied'],
+      ['perf attached to rB', insP('u4', 'site1', '2026-08-14', 'rB')[0], 'denied'], ['perf attached to CANCELLED run', insP('u5', 'site1', '2026-08-14', 'rCancelled')[0], 'denied'],
+      ['perf site1 row attached to another site\'s run', insP('u6', 'site1', '2026-08-14', 'rOther')[0], 'denied'], ['perf with NULL run', insP('u7', 'site1', '2026-08-14', null)[0], 'denied'], ['perf with nonexistent run', insP('u8', 'site1', '2026-08-14', 'nope')[0], 'denied'],
+      ['UPDATE a search row', `UPDATE seo_search_daily SET clicks=99`, 'denied'], ['DELETE search daily (no WHERE)', `DELETE FROM seo_search_daily`, 'denied'], ['DELETE search performance (no WHERE)', `DELETE FROM seo_search_performance`, 'denied'],
+      ['DELETE rows of run rA', `DELETE FROM seo_search_daily WHERE "syncRunId"='rA'`, 'denied'], ['TRUNCATE', `TRUNCATE seo_search_daily`, 'denied'],
+      ['run update: bookkeeping of THE approved run', `UPDATE seo_gsc_sync_runs SET "rowsWritten"=1 WHERE id='rA'`, 'ok'],
+      ['run update: other-range run rB', `UPDATE seo_gsc_sync_runs SET "rowsWritten"=1 WHERE id='rB'`, 'zero'], ['run update: other site\'s run', `UPDATE seo_gsc_sync_runs SET "rowsWritten"=1 WHERE id='rOther'`, 'zero'],
+      ['run update: CANCELLED run', `UPDATE seo_gsc_sync_runs SET "rowsWritten"=1 WHERE id='rCancelled'`, 'zero'], ['run update: SCHEDULE-trigger run', `UPDATE seo_gsc_sync_runs SET "rowsWritten"=1 WHERE id='rCron'`, 'zero'],
+      ['run update: cancel the approved run', `UPDATE seo_gsc_sync_runs SET status='CANCELLED' WHERE id='rA'`, 'denied'], ['run update: change range columns', `UPDATE seo_gsc_sync_runs SET "rangeStart"='2020-01-01' WHERE id='rA'`, 'denied'],
+      ['run insert: second active approved run (unique index)', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rNew','site1','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-08-11','2026-11-08')`, 'denied'],
+      ['run insert: other range', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rNew','site1','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-07-01','2026-11-08')`, 'denied'],
+      ['run insert: SCHEDULE trigger', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rNew','site1','SEARCH_ANALYTICS','SCHEDULE','RUNNING','2026-08-11','2026-11-08')`, 'denied'],
+      ['run insert: status SUCCEEDED', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rNew','site1','SEARCH_ANALYTICS','MANUAL','SUCCEEDED','2026-08-11','2026-11-08')`, 'denied'],
+      ['run insert: other site', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rNew','other','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-08-11','2026-11-08')`, 'denied'],
+      ['select: search daily = ONLY the approved site (incl. legacy NULL and out-of-range rows, needed by the empty-table guard)', `SELECT count(*)::int n FROM seo_search_daily`, site1Daily],
+      ['select: search performance = ONLY the approved site', `SELECT count(*)::int n FROM seo_search_performance`, site1Perf],
+      ['select: other site\'s rows invisible', `SELECT count(*)::int n FROM seo_search_daily WHERE "siteId"='other'`, 0], ['select: other site\'s run invisible', `SELECT count(*)::int n FROM seo_gsc_sync_runs WHERE id='rOther'`, 0],
+      ['select: approved site\'s runs visible (resume / status)', `SELECT count(*)::int n FROM seo_gsc_sync_runs WHERE "siteId"='site1'`, 5],
+      ['authorisation table', `SELECT count(*)::int n FROM seo_import_rollback_authorisation`, 'denied'],
+    ])
+    await c.query('ROLLBACK')
+  } finally { await c.query('ROLLBACK').catch(() => {}); c.release() }
+  return v
+}
+/** Rollback-role violations on a seeded scratch DB (empty list = the role could only ever touch the one authorised run). */
+async function rollbackScopeViolations(e) {
+  const v = []; const ids = { daily: await cnt(e, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"='rA'`), perf: await cnt(e, `SELECT count(*)::int n FROM seo_search_performance WHERE "syncRunId"='rA'`) }
+  const others = () => one(e.admin, `SELECT (SELECT md5(coalesce(string_agg(to_jsonb(t)::text,'|' ORDER BY id),'')) FROM seo_search_daily t WHERE "syncRunId" IS DISTINCT FROM 'rA') d,(SELECT md5(coalesce(string_agg(to_jsonb(t)::text,'|' ORDER BY id),'')) FROM seo_search_performance t WHERE "syncRunId" IS DISTINCT FROM 'rA') p,(SELECT md5(coalesce(string_agg(to_jsonb(t)::text,'|' ORDER BY id),'')) FROM seo_gsc_sync_runs t WHERE id<>'rA') r`)
+  const beforeOthers = await others(); const tx = async (pre, probes, finish = 'ROLLBACK') => { const c = await e.adminPool.connect(); try { await c.query('BEGIN'); for (const x of pre) await c.query(x); await c.query('SET LOCAL ROLE seo_import_rollback'); const out = await runProbes(c, probes); await c.query(finish); return out } finally { await c.query('ROLLBACK').catch(() => {}); c.release() } }
+  const AUDIT = (id) => `INSERT INTO seo_audit_log (id,"actorType",actor,action,"entityType","entityId") VALUES (gen_random_uuid()::text,'ADMIN','x','gsc.import.rolled_back','seo_gsc_sync_runs','${id}')`
+  const NOAUTH = [['no authorisation: DELETE daily (no WHERE)', `DELETE FROM seo_search_daily`, 'zero'], ['no authorisation: DELETE performance (no WHERE)', `DELETE FROM seo_search_performance`, 'zero'],
+    ['no authorisation: cancel every run', `UPDATE seo_gsc_sync_runs SET status='CANCELLED'`, 'zero'], ['no authorisation: sees no run', `SELECT count(*)::int n FROM seo_gsc_sync_runs`, 0], ['no authorisation: sees no search rows', `SELECT count(*)::int n FROM seo_search_daily`, 0],
+    ['no authorisation: audit rolled_back for rA', AUDIT('rA'), 'denied'], ['self-authorise (INSERT)', `INSERT INTO seo_import_rollback_authorisation ("runId") VALUES ('rA')`, 'denied']]
+  v.push(...await tx([], NOAUTH))
+  // a STALE authorisation committed by an earlier transaction authorises nothing
+  await e.admin.query(`INSERT INTO seo_import_rollback_authorisation ("runId") VALUES ('rB')`)
+  v.push(...(await tx([], NOAUTH)).map((x) => 'stale committed authorisation (rB) still active: ' + x))
+  v.push(...await tx([], [['stale authorisation row invisible', `SELECT count(*)::int n FROM seo_import_rollback_authorisation`, 0], ['stale authorisation: delete rB rows', `DELETE FROM seo_search_daily WHERE "syncRunId"='rB'`, 'zero'], ['stale authorisation: cancel rB', `UPDATE seo_gsc_sync_runs SET status='CANCELLED' WHERE id='rB'`, 'zero']]))
+  // authorise rA in THIS transaction (a stale rB row also exists): the role can reach ONLY rA
+  const auth = [`INSERT INTO seo_import_rollback_authorisation ("runId") VALUES ('rA')`]
+  v.push(...await tx(auth, [
+    ['authorised: exactly one authorisation visible', `SELECT count(*)::int n FROM seo_import_rollback_authorisation`, 1], ['authorised: sees only rA daily rows', `SELECT count(*)::int n FROM seo_search_daily`, ids.daily], ['authorised: sees only rA performance rows', `SELECT count(*)::int n FROM seo_search_performance`, ids.perf],
+    ['authorised: sees only rA run', `SELECT count(*)::int n FROM seo_gsc_sync_runs`, 1],
+    ['DELETE daily with NO WHERE removes exactly rA rows (incl. its out-of-range row)', `DELETE FROM seo_search_daily`, ids.daily], ['DELETE performance with NO WHERE removes exactly rA rows', `DELETE FROM seo_search_performance`, ids.perf],
+    ['DELETE of rB rows by explicit id', `DELETE FROM seo_search_daily WHERE "syncRunId"='rB'`, 'zero'], ['DELETE of other-site rows', `DELETE FROM seo_search_daily WHERE "siteId"='other'`, 'zero'], ['DELETE of legacy NULL rows', `DELETE FROM seo_search_daily WHERE "syncRunId" IS NULL`, 'zero'],
+    ['cancel EVERY run (no WHERE) cancels exactly one (rA)', `UPDATE seo_gsc_sync_runs SET status='CANCELLED',"errorCode"='ROLLED_BACK',"finishedAt"=now()`, 1], ['cancel rB', `UPDATE seo_gsc_sync_runs SET status='CANCELLED' WHERE id='rB'`, 'zero'],
+    ['cancel rOther', `UPDATE seo_gsc_sync_runs SET status='CANCELLED' WHERE id='rOther'`, 'zero'], ['cancel rCancelled/rFailed/rCron', `UPDATE seo_gsc_sync_runs SET status='CANCELLED' WHERE id IN ('rCancelled','rFailed','rCron')`, 'zero'],
+    ['set rA to SUCCEEDED (resurrect)', `UPDATE seo_gsc_sync_runs SET status='SUCCEEDED' WHERE id='rA'`, 'denied'], ['change rA range / site', `UPDATE seo_gsc_sync_runs SET "siteId"='other' WHERE id='rA'`, 'denied'],
+    ['audit rolled_back for rA', AUDIT('rA'), 'ok'], ['audit rolled_back for rB', AUDIT('rB'), 'denied'], ['audit rolled_back for rOther', AUDIT('rOther'), 'denied'],
+    ['re-target: UPDATE authorisation', `UPDATE seo_import_rollback_authorisation SET "runId"='rB'`, 'denied'], ['add a second authorisation', `INSERT INTO seo_import_rollback_authorisation ("runId") VALUES ('rB')`, 'denied'], ['DELETE authorisation', `DELETE FROM seo_import_rollback_authorisation`, 'denied'],
+    ['TRUNCATE search table', `TRUNCATE seo_search_daily`, 'denied'], ['DELETE runs', `DELETE FROM seo_gsc_sync_runs`, 'denied'], ['INSERT search row', insD('z1', 'site1', '2026-08-14', 'rA')[0], 'denied'], ['sees no oauth rows', `SELECT count(*)::int n FROM seo_oauth_connections`, 'denied'],
+  ]))
+  // the same actions COMMITTED: only rA changes; everything else byte-identical
+  const c = await e.adminPool.connect()
+  try { await c.query('BEGIN'); await c.query(auth[0]); await c.query('SET LOCAL ROLE seo_import_rollback'); await c.query(`DELETE FROM seo_search_daily`); await c.query(`DELETE FROM seo_search_performance`); await c.query(`UPDATE seo_gsc_sync_runs SET status='CANCELLED',"errorCode"='ROLLED_BACK',"finishedAt"=now()`); await c.query('RESET ROLE'); await c.query('COMMIT') } finally { await c.query('ROLLBACK').catch(() => {}); c.release() }
+  const after = await others(); if (JSON.stringify(after) !== JSON.stringify(beforeOthers)) v.push('committed rollback changed rows outside rA')
+  if ((await cnt(e, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"='rA'`)) + (await cnt(e, `SELECT count(*)::int n FROM seo_search_performance WHERE "syncRunId"='rA'`)) !== 0) v.push('committed rollback left rA rows')
+  if ((await one(e.admin, `SELECT status FROM seo_gsc_sync_runs WHERE id='rA'`)).status !== 'CANCELLED') v.push('rA not cancelled')
+  return v
+}
+await t('IMPORTER SCOPE (RLS): approved site, approved date range, approved RUNNING run of the same site; no update/delete; SELECT narrowed to the approved site (multi-run fixture incl. out-of-range rows)', async () => {
+  const e = await fresh(); try { await seedScope(e); const before = await one(e.admin, `SELECT (SELECT count(*)::int FROM seo_search_daily) d,(SELECT count(*)::int FROM seo_search_performance) p,(SELECT count(*)::int FROM seo_gsc_sync_runs) r`)
+    const v = await importerScopeViolations(e); assert.deepEqual(v, [])
+    assert.deepEqual(await one(e.admin, `SELECT (SELECT count(*)::int FROM seo_search_daily) d,(SELECT count(*)::int FROM seo_search_performance) p,(SELECT count(*)::int FROM seo_gsc_sync_runs) r`), before) // probes left nothing behind
+  } finally { await e.done() }
+})
+await t('IMPORTER: the one valid run insert works on an empty database; a second one is refused by the one-active-run index; after CANCEL a new run may start', async () => {
+  const e = await fresh(); try {
+    const ins = (id) => I.importTx(e.pool, (c) => c.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ($1,'site1','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-08-11','2026-11-08')`, [id]))
+    await ins('v1'); await assert.rejects(ins('v2'), (x) => x.code === '23505')
+    await e.admin.query(`UPDATE seo_gsc_sync_runs SET status='CANCELLED' WHERE id='v1'`); await ins('v3')
+    assert.equal(await cnt(e, `SELECT count(*)::int n FROM seo_gsc_sync_runs WHERE status='RUNNING'`), 1)
+  } finally { await e.done() }
+})
+await t('ROLLBACK ROLE SCOPE (RLS): only the run authorised IN THIS TRANSACTION; stale/forged/retargeted authorisation, other runs, other site, legacy and out-of-range rows all untouched (multi-run fixture)', async () => {
+  const e = await fresh(); try { await seedScope(e); const v = await rollbackScopeViolations(e); assert.deepEqual(v, []) } finally { await e.done() }
+})
+await t('T9 admin rollback with a script mutated to delete everything: PostgreSQL confines the role, only the authorised run is removed, all other rows (other runs, other site, legacy, out-of-range) byte-identical', async () => {
+  const e = await fresh(); try {
+    await seedScope(e); await e.admin.query(`UPDATE seo_gsc_sync_runs SET status='SUCCEEDED' WHERE id='rA'`)
+    const RID = '5a5a5a5a-0000-4000-8000-00000000000a'; await e.admin.query(`UPDATE seo_gsc_sync_runs SET id=$1 WHERE id='rA'`, [RID]) // FK ON UPDATE CASCADE moves the rows with it
+    const snap = () => one(e.admin, `SELECT (SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_daily t WHERE "syncRunId" IS DISTINCT FROM $1) d,(SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_performance t WHERE "syncRunId" IS DISTINCT FROM $1) p,(SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_gsc_sync_runs t WHERE id<>$1) r`, [RID])
+    const before = await snap(); const dailyRun = await cnt(e, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"=$1`, [RID])
+    const bad = await adminRollback(e, RID, (x) => x.replace(/DELETE FROM seo_search_performance WHERE "syncRunId" = v_run/, 'DELETE FROM seo_search_performance WHERE true').replace(/DELETE FROM seo_search_daily       WHERE "syncRunId" = v_run/, 'DELETE FROM seo_search_daily WHERE true'))
+    assert.equal(bad.ok, true, bad.error); assert.ok(bad.notices.some((m) => new RegExp(`${dailyRun} daily rows and 3 detail rows deleted`).test(m)), bad.notices.join('|'))
+    assert.deepEqual(await snap(), before); assert.equal(await membersOf(e, 'seo_import_rollback'), 0)
+    assert.equal(await cnt(e, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId" IS NULL`), 2) // legacy rows
+    assert.equal(await cnt(e, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"='rB'`), 2) // other run's out-of-range rows
+  } finally { await e.done() }
+})
+await t('MUTATION CONTROLS: weakening any restriction makes the scope checks fail (the tests are not vacuous)', async () => {
+  const mut = async (name, sqls, which, expectRx) => {
+    const e = await fresh(); try { for (const x of sqls) await e.admin.query(x); await seedScope(e); const v = await (which === 'importer' ? importerScopeViolations(e) : rollbackScopeViolations(e)); assert.ok(v.length > 0 && v.some((x) => expectRx.test(x)), `${name}: checker did not detect (${JSON.stringify(v).slice(0, 300)})`) } finally { await e.done() }
+  }
+  const dp = (pol, tbl) => `DROP POLICY ${pol} ON ${tbl}`
+  await mut('rollback delete = syncRunId IS NOT NULL (old policy)', ['seo_search_daily', 'seo_search_performance'].flatMap((tb) => [dp('seo_rollback_delete', tb), `CREATE POLICY seo_rollback_delete ON ${tb} FOR DELETE TO seo_import_rollback USING ("syncRunId" IS NOT NULL)`]), 'rollback', /DELETE daily with NO WHERE|DELETE of rB rows|committed rollback changed/)
+  await mut('rollback run update = any SEARCH_ANALYTICS run (old policy)', [dp('seo_rollback_runs_update', 'seo_gsc_sync_runs'), dp('seo_rollback_runs_select', 'seo_gsc_sync_runs'), `CREATE POLICY seo_rollback_runs_select ON seo_gsc_sync_runs FOR SELECT TO seo_import_rollback USING (kind='SEARCH_ANALYTICS')`, `CREATE POLICY seo_rollback_runs_update ON seo_gsc_sync_runs FOR UPDATE TO seo_import_rollback USING (kind='SEARCH_ANALYTICS') WITH CHECK (kind='SEARCH_ANALYTICS' AND status='CANCELLED')`], 'rollback', /cancel EVERY run|cancel rB|cancel rOther|sees no run/)
+  await mut('authorisation visible across transactions (no xmin binding)', [dp('seo_rollback_auth_select', 'seo_import_rollback_authorisation'), `CREATE POLICY seo_rollback_auth_select ON seo_import_rollback_authorisation FOR SELECT TO seo_import_rollback USING (true)`], 'rollback', /stale/)
+  await mut('rollback role may INSERT authorisation', [`GRANT INSERT ON seo_import_rollback_authorisation TO seo_import_rollback`, `CREATE POLICY zz_ins ON seo_import_rollback_authorisation FOR INSERT TO seo_import_rollback WITH CHECK (true)`], 'rollback', /self-authorise|add a second authorisation/)
+  const oldIns = (tb) => [dp('seo_importer_insert', tb), `CREATE POLICY seo_importer_insert ON ${tb} FOR INSERT TO seo_importer WITH CHECK ("syncRunId" IS NOT NULL AND "siteId" IN (SELECT id FROM seo_sites WHERE domain='tapisglobalinternational.com'))`]
+  await mut('importer insert = old policy (no date / run checks)', ['seo_search_daily', 'seo_search_performance'].flatMap(oldIns), 'importer', /BEFORE range|AFTER range|attached to run rB|CANCELLED run|another site/)
+  const noDate = (tb) => [dp('seo_importer_insert', tb), `CREATE POLICY seo_importer_insert ON ${tb} FOR INSERT TO seo_importer WITH CHECK ("siteId" IN (SELECT id FROM seo_sites WHERE domain='tapisglobalinternational.com') AND EXISTS (SELECT 1 FROM seo_gsc_sync_runs r WHERE r.id=${tb}."syncRunId" AND r."siteId"=${tb}."siteId" AND r.kind='SEARCH_ANALYTICS' AND r.trigger='MANUAL' AND r.status='RUNNING' AND r."rangeStart"=DATE '2026-08-11' AND r."rangeEnd"=DATE '2026-11-08'))`]
+  await mut('importer insert without the date range check', ['seo_search_daily', 'seo_search_performance'].flatMap(noDate), 'importer', /BEFORE range|AFTER range|far outside/)
+  const noRunState = (tb) => [dp('seo_importer_insert', tb), `CREATE POLICY seo_importer_insert ON ${tb} FOR INSERT TO seo_importer WITH CHECK ("date" BETWEEN DATE '2026-08-11' AND DATE '2026-11-08' AND "siteId" IN (SELECT id FROM seo_sites WHERE domain='tapisglobalinternational.com') AND "syncRunId" IS NOT NULL)`]
+  await mut('importer insert without the run-association check', ['seo_search_daily', 'seo_search_performance'].flatMap(noRunState), 'importer', /attached to|nonexistent|another site/)
+  await mut('importer SELECT = USING (true) (old policy)', ['seo_search_daily', 'seo_search_performance'].flatMap((tb) => [dp('seo_importer_select', tb), `CREATE POLICY seo_importer_select ON ${tb} FOR SELECT TO seo_importer USING (true)`]), 'importer', /ONLY the approved site|invisible/)
+})
 // ===================== DEDICATED LOGIN isolation (scratch) =====================
 const adminPoolFor = (e, user) => new pg.Pool({ ...HOST, user, password: 'x', database: e.name, max: 2 })
 await t('LOGIN guard: every transaction refuses any login other than the exact restricted login, and nothing is written', async () => {
