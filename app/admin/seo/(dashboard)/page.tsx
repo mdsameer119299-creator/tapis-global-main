@@ -3,15 +3,19 @@ import { requireSeoPageSession, loadSeo } from '@/lib/seo-command/auth'
 import { getOverview, getTrend, getChanges } from '@/lib/seo-command/queries'
 import { Gate, Panel, Stat, ConnectionBadge, SeverityBadge, Sparkline, Empty, fmtDate, codeLabel } from '@/components/seo-command/ui'
 import { CrawlButton } from '@/components/seo-command/actions'
+import { GscPanel } from '@/components/seo-command/gsc-panel'
+import { getConnectionView } from '@/lib/seo-command/gsc-connection'
+import { gscOAuthConfig } from '@/lib/seo-command/gsc-oauth'
+import { seoQuery } from '@/lib/seo-command/db'
 
 export const dynamic = 'force-dynamic'
 
 export default async function SeoOverviewPage() {
   await requireSeoPageSession()
-  const result = await loadSeo(async (siteId) => ({ ov: await getOverview(siteId), trend: await getTrend(siteId, 30), changes: await getChanges(siteId) }))
+  const result = await loadSeo(async (siteId) => ({ ov: await getOverview(siteId), trend: await getTrend(siteId, 30), changes: await getChanges(siteId), gsc: await getConnectionView(seoQuery, siteId) }))
   return (
     <Gate result={result}>
-      {({ ov, trend, changes }) => (
+      {({ ov, trend, changes, gsc }) => (
         <>
           <div className="flex flex-wrap items-end justify-between gap-4">
             <div>
@@ -72,7 +76,7 @@ export default async function SeoOverviewPage() {
           )}
 
           <div className="grid gap-4 md:grid-cols-3">
-            <ConnectionBadge name="Google Search Console" status={ov.connections.GSC} />
+            <GscPanel view={gsc} configured={!!gscOAuthConfig()} nowMs={Date.now()} />
             <ConnectionBadge name="Google Analytics 4" status={ov.connections.GA4} />
             <Panel title="Recommendations">
               <p className="text-sm text-ink-s">{ov.pendingRecommendations} awaiting review.</p>

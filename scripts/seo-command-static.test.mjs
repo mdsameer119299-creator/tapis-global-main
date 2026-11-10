@@ -50,7 +50,7 @@ t('login/logout routes are same-origin protected and the only unguarded SEO API 
 })
 
 t('the Google OAuth callback is the one deliberate exception: GET only, flow-cookie checked before any DB or Google call', () => {
-  const s = read(path.join(ROOT, 'app/api/admin/seo/gsc/callback/route.ts'))
+  const s = read(path.join(ROOT, 'app/api/admin/seo/gsc/callback/route.ts')).replace(/^import .*$/gm, '') // import lines do not execute
   assert.deepEqual([...s.matchAll(/export (?:const|async function) (GET|POST|PUT|PATCH|DELETE)\b/g)].map((m) => m[1]), ['GET'])
   const verify = s.indexOf('verifyFlowCookie(')
   assert.ok(verify > 0)

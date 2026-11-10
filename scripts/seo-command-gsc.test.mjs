@@ -124,12 +124,12 @@ await t('callback: not configured => 503; Google error => 400; missing params =>
   assert.equal((await call(`?code=c&state=${state}`, other)).status, 400, 'cookie for a different attempt')
   assert.equal((await call(`?code=c&state=${state}`, 'garbage')).status, 400)
 })
-await t('callback: a valid cookie+state passes the gate but storage stays disabled until the migration is approved (503, no DB touched)', async () => {
+await t('callback: a valid cookie+state passes the gate; without a configured SEO database it fails closed (503, nothing contacted)', async () => {
   const state = g.newState(), c = await g.signFlowCookie(state, 'a@b.test', { env })
   const r = await call(`?code=c&state=${state}`, c)
   assert.equal(r.status, 503)
   assert.equal(r.headers.get('cache-control'), 'no-store')
-  assert.match(await r.text(), /not enabled yet/)
+  assert.match(await r.text(), /SEO database is not configured/)
 })
 
 console.log(`\n${n} gsc oauth tests passed`)

@@ -137,3 +137,44 @@ export function PageSpeedForm({ defaultUrl }: { defaultUrl: string }) {
     </form>
   )
 }
+
+export function GscConnectButton({ label }: { label: string }) {
+  const { busy, msg, run } = useAction()
+  return (
+    <div>
+      <button
+        className={btn}
+        disabled={busy}
+        onClick={() =>
+          run(async () => {
+            const r = await call('POST', '/api/admin/seo/gsc/connect')
+            if (r.ok && typeof r.json.authUrl === 'string' && r.json.authUrl.startsWith('https://accounts.google.com/')) window.location.assign(r.json.authUrl)
+            return r
+          }, () => 'Redirecting to Google…')
+        }
+      >
+        {busy ? 'Starting…' : label}
+      </button>
+      <Msg m={msg} />
+    </div>
+  )
+}
+
+export function GscDisconnectButton() {
+  const { busy, msg, run } = useAction()
+  return (
+    <div>
+      <button
+        className={btnSm}
+        disabled={busy}
+        onClick={() => {
+          if (!window.confirm('Disconnect Google Search Console? Access is revoked at Google and the stored token is deleted. Synced data is kept.')) return
+          run(() => call('POST', '/api/admin/seo/gsc/disconnect'), (j) => (j.revokedAtGoogle ? 'Disconnected and revoked at Google.' : 'Disconnected locally. Google could not confirm revocation: remove the app at myaccount.google.com/permissions.'))
+        }}
+      >
+        {busy ? 'Disconnecting…' : 'Disconnect'}
+      </button>
+      <Msg m={msg} />
+    </div>
+  )
+}
