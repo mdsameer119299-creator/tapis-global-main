@@ -20,7 +20,7 @@ const allSeo = [...apiFiles, ...pageFiles, ...libFiles, ...walk(path.join(ROOT, 
 t('there are routes and pages to check', () => { assert.ok(apiFiles.length >= 7); assert.ok(pageFiles.length >= 7) })
 
 t('every admin SEO API handler is wrapped in seoApi, mutating ones flagged', () => {
-  const PUBLIC_AUTH_ROUTES = ['auth/login/route.ts', 'auth/logout/route.ts']
+  const PUBLIC_AUTH_ROUTES = ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts']
   for (const f of apiFiles) {
     if (PUBLIC_AUTH_ROUTES.some((x) => f.endsWith(x))) continue
     const s = read(f)
@@ -46,7 +46,19 @@ t('every SEO page checks the SEO session itself (not only the layout); only the 
 t('login/logout routes are same-origin protected and the only unguarded SEO API routes', () => {
   for (const r of ['auth/login', 'auth/logout']) assert.match(read(path.join(ROOT, `app/api/admin/seo/${r}/route.ts`)), /originMatchesHost\(/)
   const open = apiFiles.filter((f) => !/seoApi\(/.test(read(f)))
-  assert.deepEqual(open.map((f) => path.relative(path.join(ROOT, 'app/api/admin/seo'), f)).sort(), ['auth/login/route.ts', 'auth/logout/route.ts'])
+  assert.deepEqual(open.map((f) => path.relative(path.join(ROOT, 'app/api/admin/seo'), f)).sort(), ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts'])
+})
+
+t('the Google OAuth callback is the one deliberate exception: GET only, flow-cookie checked before any DB or Google call', () => {
+  const s = read(path.join(ROOT, 'app/api/admin/seo/gsc/callback/route.ts'))
+  assert.deepEqual([...s.matchAll(/export (?:const|async function) (GET|POST|PUT|PATCH|DELETE)\b/g)].map((m) => m[1]), ['GET'])
+  const verify = s.indexOf('verifyFlowCookie(')
+  assert.ok(verify > 0)
+  for (const forbidden of ['seoQuery', 'withSeoTx', 'getSeoPool', 'fetch(', 'GSC_TOKEN_ENDPOINT']) {
+    const i = s.indexOf(forbidden)
+    assert.ok(i === -1 || i > verify, `${forbidden} must not run before the flow cookie is verified`)
+  }
+  assert.match(s, /maxAge: 0/, 'flow cookie is always cleared')
 })
 
 t('SEO authentication has NO dependency on CraftTrack code, cookies, secrets or login pages', () => {
