@@ -2,15 +2,16 @@ import { cookies, headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { NextResponse } from 'next/server'
 import { timingSafeEqual } from 'crypto'
-import { ADMIN_SESSION_COOKIE, verifyAdminSession, type AdminSessionPayload } from '@/lib/crafttrack/session'
+import { SEO_SESSION_COOKIE, verifySeoSession, type SeoSession } from './auth-session'
 import { isSeoDbConfigured, SeoDbNotConfiguredError } from './db'
 import { getOrCreateSiteId } from './store'
 
+export const SEO_LOGIN_PATH = '/admin/seo/login'
+
 /** Page guard. Layout guards alone are unreliable in the App Router (layouts do not re-run on client navigation), so every page calls this. */
-export async function requireSeoPageSession(): Promise<AdminSessionPayload> {
-  const token = cookies().get(ADMIN_SESSION_COOKIE)?.value
-  const session = token ? await verifyAdminSession(token) : null
-  if (!session) redirect('/admin/crafttrack/login')
+export async function requireSeoPageSession(): Promise<SeoSession> {
+  const session = await verifySeoSession(cookies().get(SEO_SESSION_COOKIE)?.value)
+  if (!session) redirect(SEO_LOGIN_PATH)
   return session
 }
 
@@ -30,8 +31,7 @@ export async function loadSeo<T>(fn: (siteId: string) => Promise<T>): Promise<Pa
 }
 
 /** Mutating requests must originate from this site (defence in depth on top of the session cookie). */
-export function isSameOrigin(): boolean {
-  const h = headers()
+export function originMatchesHost(h: { get(name: string): string | null }): boolean {
   const origin = h.get('origin')
   const host = h.get('x-forwarded-host') ?? h.get('host')
   if (!origin || !host) return false
@@ -42,16 +42,19 @@ export function isSameOrigin(): boolean {
   }
 }
 
+export function isSameOrigin(): boolean {
+  return originMatchesHost(headers())
+}
+
 interface Ctx {
-  session: AdminSessionPayload
+  session: SeoSession
   actor: string
   siteId: string
 }
 
 export function seoApi<A extends unknown[]>(opts: { mutating: boolean }, handler: (ctx: Ctx, ...args: A) => Promise<NextResponse | Response>) {
   return async (...args: A): Promise<NextResponse | Response> => {
-    const token = cookies().get(ADMIN_SESSION_COOKIE)?.value
-    const session = token ? await verifyAdminSession(token) : null
+    const session = await verifySeoSession(cookies().get(SEO_SESSION_COOKIE)?.value)
     if (!session) return NextResponse.json({ ok: false, error: 'Unauthorized' }, { status: 401 })
     if (opts.mutating && !isSameOrigin()) return NextResponse.json({ ok: false, error: 'Cross-origin request refused' }, { status: 403 })
     if (!isSeoDbConfigured()) return NextResponse.json({ ok: false, error: 'SEO database is not configured (SEO_DATABASE_URL)' }, { status: 503 })

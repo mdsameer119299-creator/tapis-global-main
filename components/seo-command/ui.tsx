@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import type { ReactNode } from 'react'
 import type { PageData } from '@/lib/seo-command/auth'
+import { LogoutButton } from './login-form'
 
 const SEV: Record<string, string> = {
   CRITICAL: 'bg-red-100 text-red-800 border-red-200',
@@ -107,6 +108,7 @@ export function Nav({ email }: { email: string }) {
             </Link>
           ))}
           <span className="text-2xs text-ink-m">{email}</span>
+          <LogoutButton />
         </nav>
       </div>
     </header>

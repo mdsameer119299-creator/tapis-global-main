@@ -20,7 +20,9 @@ const allSeo = [...apiFiles, ...pageFiles, ...libFiles, ...walk(path.join(ROOT, 
 t('there are routes and pages to check', () => { assert.ok(apiFiles.length >= 7); assert.ok(pageFiles.length >= 7) })
 
 t('every admin SEO API handler is wrapped in seoApi, mutating ones flagged', () => {
+  const PUBLIC_AUTH_ROUTES = ['auth/login/route.ts', 'auth/logout/route.ts']
   for (const f of apiFiles) {
+    if (PUBLIC_AUTH_ROUTES.some((x) => f.endsWith(x))) continue
     const s = read(f)
     for (const m of s.matchAll(/export (?:const|async function) (GET|POST|PUT|PATCH|DELETE)\b([^\n]*)/g)) {
       assert.match(m[0], /seoApi\(\{ mutating: (true|false) \}/, `${path.relative(ROOT, f)} ${m[1]} must use seoApi`)
@@ -30,9 +32,33 @@ t('every admin SEO API handler is wrapped in seoApi, mutating ones flagged', () 
   }
 })
 
-t('every SEO page checks the admin session itself (not only the layout)', () => {
-  for (const f of pageFiles) assert.match(read(f), /requireSeoPageSession\(\)/, path.relative(ROOT, f))
-  assert.match(read(path.join(ROOT, 'app/admin/seo/layout.tsx')), /requireSeoPageSession\(\)/)
+t('every SEO page checks the SEO session itself (not only the layout); only the login page is open', () => {
+  for (const f of pageFiles) {
+    if (f.endsWith('seo/login/page.tsx')) continue
+    assert.match(read(f), /requireSeoPageSession\(\)/, path.relative(ROOT, f))
+  }
+  assert.match(read(path.join(ROOT, 'app/admin/seo/(dashboard)/layout.tsx')), /requireSeoPageSession\(\)/)
+  assert.ok(!fs.existsSync(path.join(ROOT, 'app/admin/seo/layout.tsx')), 'a root layout guard would loop the login page')
+  const login = read(path.join(ROOT, 'app/admin/seo/login/page.tsx'))
+  assert.match(login, /robots: \{ index: false/)
+})
+
+t('login/logout routes are same-origin protected and the only unguarded SEO API routes', () => {
+  for (const r of ['auth/login', 'auth/logout']) assert.match(read(path.join(ROOT, `app/api/admin/seo/${r}/route.ts`)), /originMatchesHost\(/)
+  const open = apiFiles.filter((f) => !/seoApi\(/.test(read(f)))
+  assert.deepEqual(open.map((f) => path.relative(path.join(ROOT, 'app/api/admin/seo'), f)).sort(), ['auth/login/route.ts', 'auth/logout/route.ts'])
+})
+
+t('SEO authentication has NO dependency on CraftTrack code, cookies, secrets or login pages', () => {
+  for (const f of allSeo.filter((x) => /\.(ts|tsx)$/.test(x))) {
+    const s = read(f).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
+    assert.ok(!/crafttrack/i.test(s), `${path.relative(ROOT, f)} references CraftTrack`)
+    assert.ok(!/CRAFTTRACK_SESSION_SECRET/.test(s))
+  }
+  const a = read(path.join(ROOT, 'lib/seo-command/auth.ts'))
+  assert.match(a, /from '\.\/auth-session'/)
+  assert.match(a, /SEO_LOGIN_PATH = '\/admin\/seo\/login'/)
+  assert.ok(!/@\/lib\/(prisma|crafttrack)/.test(read(path.join(ROOT, 'lib/seo-command/auth-session.ts'))))
 })
 
 t('SEO code never touches DATABASE_URL, Prisma or the website database', () => {
@@ -50,7 +76,7 @@ t('SEO code does not write to the public website or other projects', () => {
   for (const f of allSeo) {
     const s = read(f).replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
     assert.ok(!/method:\s*['"](PUT|PATCH)['"]/.test(s.replace(/call\('DELETE'/g, '')), 'no website mutation calls')
-    assert.ok(!/crafttrack/i.test(s.replace(/@\/lib\/crafttrack\/session/g, '').replace(/\/admin\/crafttrack\/login/g, '').replace(/crafttrack_admin_session/g, '')), `${path.relative(ROOT, f)} references CraftTrack beyond session auth`)
+    assert.ok(!/crafttrack/i.test(s), `${path.relative(ROOT, f)} references CraftTrack`)
   }
 })
 
@@ -88,7 +114,7 @@ t('migrations: additive only, RLS enabled, nothing granted to anon/authenticated
 })
 
 t('no secrets or connection strings are committed in SEO files', () => {
-  for (const f of [...allSeo, ...walk(path.join(ROOT, 'db/seo')), ...fs.readdirSync(path.join(ROOT, 'scripts')).filter((x) => x.startsWith('seo-command')).map((x) => path.join(ROOT, 'scripts', x))]) {
+  for (const f of [...allSeo, ...walk(path.join(ROOT, 'db/seo')), ...fs.readdirSync(path.join(ROOT, 'scripts')).filter((x) => x.startsWith('seo-')).map((x) => path.join(ROOT, 'scripts', x))]) {
     const s = read(f)
     if (!f.endsWith('.test.mjs')) assert.ok(!/postgres(ql)?:\/\/[^\s'"`$]+:[^\s'"`@$]+@[a-z0-9.-]+\.(supabase\.(co|com)|pooler)/i.test(s), `${path.relative(ROOT, f)} contains a connection string`)
     assert.ok(!/eyJ[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}/.test(s), `${path.relative(ROOT, f)} contains a JWT`)
@@ -99,7 +125,7 @@ t('no secrets or connection strings are committed in SEO files', () => {
 t('no fabricated Google data: GSC/GA4 shown as pending, rank column only read from seo_keyword_ranks', () => {
   const ui = read(path.join(ROOT, 'components/seo-command/ui.tsx'))
   assert.match(ui, /Connection pending/)
-  const kw = read(path.join(ROOT, 'app/admin/seo/keywords/page.tsx'))
+  const kw = read(path.join(ROOT, 'app/admin/seo/(dashboard)/keywords/page.tsx'))
   assert.match(kw, /Connection pending/)
   const lib = libFiles.map(read).join('\n')
   assert.ok(!/Math\.random\(\)/.test(lib), 'no random data generation in library code')
@@ -108,7 +134,7 @@ t('no fabricated Google data: GSC/GA4 shown as pending, rank column only read fr
 })
 
 t('noindex on the admin area', () => {
-  assert.match(read(path.join(ROOT, 'app/admin/seo/layout.tsx')), /index: false/)
+  assert.match(read(path.join(ROOT, 'app/admin/seo/(dashboard)/layout.tsx')), /index: false/)
 })
 
 console.log(`\n${n} static tests passed`)
