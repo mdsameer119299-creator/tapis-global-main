@@ -81,12 +81,30 @@ export function buildAuthUrl(cfg: Pick<GscOAuthConfig, 'clientId' | 'redirectUri
 const FLOW_ISSUER = 'tapis-seo-command'
 const FLOW_AUDIENCE = 'seo-gsc-flow'
 
-/** Key derived from SEO_SESSION_SECRET with a purpose label, so a flow cookie can never be replayed as a session
- *  token (different key AND different audience), and vice versa. */
-function flowKey(env: Env): Uint8Array | null {
+/** Keys derived from SEO_SESSION_SECRET with a purpose label each, so a flow cookie can never be replayed as a
+ *  session token (different key AND audience), and the admin binding key is separate from the signing key. */
+function derive(env: Env, label: string): Buffer | null {
   const s = env.SEO_SESSION_SECRET
   if (!s || s.length < 32) return null
-  return new Uint8Array(createHmac('sha256', s).update('seo-gsc-flow-cookie-v1').digest())
+  return createHmac('sha256', s).update(label).digest()
+}
+function flowKey(env: Env): Uint8Array | null {
+  const k = derive(env, 'seo-gsc-flow-cookie-v1')
+  return k ? new Uint8Array(k) : null
+}
+
+/** Keyed binding of an OAuth attempt to the admin who started it. HMAC-SHA256 under a key derived from
+ *  SEO_SESSION_SECRET: a database leak alone cannot be used to confirm or forge which admin an attempt belongs to. */
+export function adminBinding(adminEmail: string, env: Env = process.env): string {
+  const k = derive(env, 'seo-gsc-admin-binding-v1')
+  if (!k) throw new Error('SEO_SESSION_SECRET is missing or shorter than 32 characters')
+  return createHmac('sha256', k).update(adminEmail.trim().toLowerCase()).digest('hex')
+}
+
+/** Constant-time equality for hex digests of equal length. */
+export function safeEqualHex(a: string, b: string): boolean {
+  const x = Buffer.from(a, 'hex'), y = Buffer.from(b, 'hex')
+  return x.length > 0 && x.length === y.length && timingSafeEqual(x, y)
 }
 
 export function flowCookieOptions(env: Env = process.env) {
@@ -103,7 +121,7 @@ export async function signFlowCookie(state: string, adminEmail: string, opts: { 
   const k = flowKey(opts.env ?? process.env)
   if (!k) throw new Error('SEO_SESSION_SECRET is missing or shorter than 32 characters')
   const iat = Math.floor((opts.now ?? new Date()).getTime() / 1000)
-  return new SignJWT({ type: 'gsc-flow', sh: hashState(state), ae: hashState(adminEmail.toLowerCase()) })
+  return new SignJWT({ type: 'gsc-flow', sh: hashState(state), ae: adminBinding(adminEmail, opts.env ?? process.env) })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuer(FLOW_ISSUER)
     .setAudience(FLOW_AUDIENCE)
@@ -134,7 +152,7 @@ export async function verifyFlowCookie(token: string | undefined | null, stateFr
   }
 }
 
-// ── Token encryption at rest: AES-256-GCM ───────────────────────────────────
+// ── Token encryption at rest: AES-256-GCM, versioned keys ───────────────────
 export interface SealedSecret {
   cipher: Buffer
   iv: Buffer
@@ -142,26 +160,47 @@ export interface SealedSecret {
   keyVersion: number
 }
 
-/** GSC_TOKEN_ENCRYPTION_KEY must be 32 random bytes, base64 or hex encoded. */
-export function gscEncryptionKey(env: Env = process.env): Buffer | null {
-  const raw = env.GSC_TOKEN_ENCRYPTION_KEY
+/** Key slots (see docs/seo-gsc-key-rotation.md):
+ *   current  = GSC_TOKEN_ENCRYPTION_KEY           version GSC_TOKEN_KEY_VERSION            (default 1)
+ *   previous = GSC_TOKEN_ENCRYPTION_KEY_PREVIOUS  version GSC_TOKEN_KEY_PREVIOUS_VERSION   (only during rotation)
+ *  Each key must be 32 random bytes, base64 or hex. New secrets are always sealed with the current key and stamped
+ *  with its version. A stored secret is opened with the key whose version it carries: a key is never guessed or
+ *  silently substituted. */
+function parseKey(raw: string | undefined): Buffer | null {
   if (!raw) return null
   const b = /^[0-9a-fA-F]{64}$/.test(raw) ? Buffer.from(raw, 'hex') : Buffer.from(raw, 'base64')
   return b.length === 32 ? b : null
 }
+function version(raw: string | undefined, dflt: number): number {
+  const n = Number(raw)
+  return Number.isInteger(n) && n > 0 ? n : dflt
+}
+export function currentKeyVersion(env: Env = process.env): number {
+  return version(env.GSC_TOKEN_KEY_VERSION, 1)
+}
+export function gscEncryptionKey(env: Env = process.env): Buffer | null {
+  return parseKey(env.GSC_TOKEN_ENCRYPTION_KEY)
+}
+export function keyForVersion(v: number, env: Env = process.env): Buffer | null {
+  if (v === currentKeyVersion(env)) return gscEncryptionKey(env)
+  const prevV = version(env.GSC_TOKEN_KEY_PREVIOUS_VERSION, 0)
+  if (prevV > 0 && v === prevV && prevV !== currentKeyVersion(env)) return parseKey(env.GSC_TOKEN_ENCRYPTION_KEY_PREVIOUS)
+  return null
+}
 
-export function sealSecret(plain: string, env: Env = process.env, keyVersion = 1): SealedSecret {
+export function sealSecret(plain: string, env: Env = process.env): SealedSecret {
   const key = gscEncryptionKey(env)
   if (!key) throw new Error('GSC_TOKEN_ENCRYPTION_KEY is missing or not 32 bytes')
   const iv = randomBytes(12) // fresh nonce for every write
   const c = createCipheriv('aes-256-gcm', key, iv)
   const cipher = Buffer.concat([c.update(plain, 'utf8'), c.final()])
-  return { cipher, iv, tag: c.getAuthTag(), keyVersion }
+  return { cipher, iv, tag: c.getAuthTag(), keyVersion: currentKeyVersion(env) }
 }
 
-/** Returns null on any failure (wrong key, tampering, truncation). Never throws, never reveals why. */
-export function openSecret(s: Pick<SealedSecret, 'cipher' | 'iv' | 'tag'>, env: Env = process.env): string | null {
-  const key = gscEncryptionKey(env)
+/** Returns null on any failure (no key for that version, wrong key, tampering, truncation). Never throws, never
+ *  reveals why. Callers must treat null as "cannot decrypt" (state ERROR / key problem), NOT as "token revoked". */
+export function openSecret(s: Pick<SealedSecret, 'cipher' | 'iv' | 'tag'> & { keyVersion?: number }, env: Env = process.env): string | null {
+  const key = keyForVersion(s.keyVersion ?? currentKeyVersion(env), env)
   if (!key || s.iv.length !== 12 || s.tag.length !== 16) return null
   try {
     const d = createDecipheriv('aes-256-gcm', key, s.iv)
@@ -172,9 +211,17 @@ export function openSecret(s: Pick<SealedSecret, 'cipher' | 'iv' | 'tag'>, env: 
   }
 }
 
-// ── Connection state / safe errors ──────────────────────────────────────────
-export type GscConnectionState = 'DISCONNECTED' | 'CONNECTED' | 'RECONNECT_REQUIRED' | 'ERROR'
+/** Re-encrypts a stored secret under the current key (rotation step). Fails closed: returns null if it cannot be opened. */
+export function resealSecret(s: Pick<SealedSecret, 'cipher' | 'iv' | 'tag' | 'keyVersion'>, env: Env = process.env): SealedSecret | null {
+  const plain = openSecret(s, env)
+  return plain === null ? null : sealSecret(plain, env)
+}
 
+// ── Connection state / safe errors ──────────────────────────────────────────
+export type GscConnectionState = 'DISCONNECTED' | 'CONNECTED' | 'RECONNECT_REQUIRED' | 'ERROR' | 'KEY_UNAVAILABLE'
+
+/** KEY_UNAVAILABLE = the stored token is intact but no configured key can open it (key replaced/lost). The row is never
+ *  overwritten or deleted automatically; see docs/seo-gsc-key-rotation.md. */
 /** Maps a Google token-endpoint error to a state transition. Only `error` codes are inspected, never tokens. */
 export function stateForTokenError(errorCode: string | undefined): { state: GscConnectionState; code: string } {
   if (errorCode === 'invalid_grant') return { state: 'RECONNECT_REQUIRED', code: 'invalid_grant' } // expired, revoked or 7-day Testing limit

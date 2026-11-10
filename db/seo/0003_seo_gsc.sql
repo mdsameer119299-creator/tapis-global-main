@@ -10,7 +10,7 @@ CREATE TABLE "seo_oauth_connections" (
   "id" TEXT NOT NULL,
   "siteId" TEXT NOT NULL,
   "provider" "SeoIntegrationProvider" NOT NULL,        -- 'GSC' only for now
-  "state" TEXT NOT NULL DEFAULT 'DISCONNECTED',        -- DISCONNECTED | CONNECTED | RECONNECT_REQUIRED | ERROR
+  "state" TEXT NOT NULL DEFAULT 'DISCONNECTED',        -- DISCONNECTED | CONNECTED | RECONNECT_REQUIRED | KEY_UNAVAILABLE | ERROR
   "accountEmail" TEXT,                                 -- Google account that granted consent (display only)
   "scope" TEXT,                                        -- granted scope string
   "propertyUrl" TEXT,                                  -- e.g. sc-domain:tapisglobalinternational.com
@@ -31,14 +31,17 @@ CREATE TABLE "seo_oauth_connections" (
 );
 
 -- Short-lived OAuth state/PKCE verifier to defend the callback against CSRF/replay.
+-- Consumed exactly once by an atomic UPDATE ... WHERE "usedAt" IS NULL AND "expiresAt" > timezone('utc', now()) RETURNING ...
+-- (see lib/seo-command/gsc-state.ts). Rows are kept (usedAt set) for audit; no application code deletes them.
 CREATE TABLE "seo_oauth_states" (
   "id" TEXT NOT NULL,
   "stateHash" TEXT NOT NULL,          -- SHA-256 of the random state; the raw value lives only in the browser redirect
-  "adminHash" TEXT NOT NULL,          -- SHA-256 of the admin email that started the flow (must match the flow cookie)
+  "adminHash" TEXT NOT NULL,          -- keyed HMAC-SHA256 of the admin email that started the flow (key derived from
+                                      -- SEO_SESSION_SECRET, never stored here); must match the flow cookie
   "codeVerifierCipher" BYTEA NOT NULL,
   "codeVerifierIv" BYTEA NOT NULL,
   "codeVerifierTag" BYTEA NOT NULL,
-  "expiresAt" TIMESTAMP(3) NOT NULL,  -- 10 minutes
+  "expiresAt" TIMESTAMP(3) NOT NULL,  -- UTC, DB clock: timezone('utc', now()) + 10 minutes. Compared with the DB clock only.
   "usedAt" TIMESTAMP(3),
   "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT "seo_oauth_states_pkey" PRIMARY KEY ("id")
@@ -114,12 +117,17 @@ GRANT SELECT ON public.seo_oauth_connections TO seo_worker;
 GRANT UPDATE ("state","lastRefreshAt","lastSuccessAt","lastErrorAt","lastErrorCode","updatedAt") ON public.seo_oauth_connections TO seo_worker;
 CREATE POLICY seo_worker_select ON public.seo_oauth_connections FOR SELECT TO seo_worker USING (true);
 CREATE POLICY seo_worker_update ON public.seo_oauth_connections FOR UPDATE TO seo_worker USING (true) WITH CHECK (true);
+-- Sitemap status and sync history: read, insert, update (upserts / run bookkeeping). NO delete: the worker
+-- cannot erase sync history. Rows are never removed by application code either; a sitemap that disappears from
+-- Search Console simply stops being refreshed (its fetchedAt shows how stale it is).
+GRANT SELECT, INSERT, UPDATE ON public.seo_sitemap_status, public.seo_gsc_sync_runs TO seo_worker;
 DO $$
 DECLARE t text;
 BEGIN
   FOREACH t IN ARRAY ARRAY['seo_sitemap_status','seo_gsc_sync_runs']
   LOOP
-    EXECUTE format('GRANT SELECT, INSERT, UPDATE, DELETE ON public.%I TO seo_worker', t);
-    EXECUTE format('CREATE POLICY seo_worker_all ON public.%I FOR ALL TO seo_worker USING (true) WITH CHECK (true)', t);
+    EXECUTE format('CREATE POLICY seo_worker_select ON public.%I FOR SELECT TO seo_worker USING (true)', t);
+    EXECUTE format('CREATE POLICY seo_worker_insert ON public.%I FOR INSERT TO seo_worker WITH CHECK (true)', t);
+    EXECUTE format('CREATE POLICY seo_worker_update ON public.%I FOR UPDATE TO seo_worker USING (true) WITH CHECK (true)', t);
   END LOOP;
 END $$;

@@ -53,7 +53,7 @@ await t('flow cookie verifies only with the matching state', async () => {
   const c = await g.signFlowCookie(state, 'Owner@Tapis.test', { env })
   const claims = await g.verifyFlowCookie(c, state, { env })
   assert.equal(claims.stateHash, g.hashState(state))
-  assert.equal(claims.adminHash, g.hashState('owner@tapis.test'))
+  assert.equal(claims.adminHash, g.adminBinding('owner@tapis.test', env))
   assert.equal(await g.verifyFlowCookie(c, g.newState(), { env }), null, 'state from another attempt')
   assert.equal(await g.verifyFlowCookie(c, null, { env }), null)
   assert.equal(await g.verifyFlowCookie(undefined, state, { env }), null)
