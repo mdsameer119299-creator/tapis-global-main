@@ -1,0 +1,498 @@
+// One-time Search Console import: STATIC guarantees (always run) + the eight safety tests, role/RLS permission matrix (run against a SCRATCH Postgres only).
+// Scratch part env: SEO_SCRATCH_PG_URL=postgres://postgres@localhost:55432/postgres (admin, creates/drops throwaway databases), SEO_SCRATCH_TEMPLATE=<db with 0001-0005 applied>,
+// SEO_SCRATCH_LOGIN=<non-superuser login that is a member of seo_importer + seo_import_rollback WITH INHERIT FALSE, SET TRUE>, SEO_SCRATCH_BYPASS_LOGIN=<login with BYPASSRLS>.
+// Never point these at a real database: the harness refuses anything that is not localhost.
+import assert from 'node:assert/strict'
+import { createRequire } from 'node:module'
+import { fileURLToPath } from 'node:url'
+import { readFileSync, existsSync, readdirSync } from 'node:fs'
+import path from 'node:path'
+
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
+const require = createRequire(import.meta.url)
+const jiti = require('jiti')(fileURLToPath(import.meta.url), { interopDefault: true, alias: { '@': ROOT } })
+const I = jiti('../lib/seo-command/gsc-import.ts')
+const FP = jiti('../lib/seo-command/gsc-fingerprint.ts')
+const read = (p) => readFileSync(path.join(ROOT, p), 'utf8')
+let statics = 0
+const s = (name, fn) => { fn(); statics++; console.log('ok -', name) }
+const sa = async (name, fn) => { await fn(); statics++; console.log('ok -', name) }
+
+// ===================== STATIC guarantees (no database) =====================
+const src = read('lib/seo-command/gsc-import.ts'), code = read('lib/seo-command/gsc-import.ts').replace(/\/\*[\s\S]*?\*\//g, '').replace(/^\s*\/\/.*$/gm, '').replace(/\s\/\/ .*$/gm, ''), route = read('app/api/admin/seo/gsc/import/route.ts'), sql5 = read('db/seo/0005_seo_import_roles.sql')
+s('write allowlist: every INSERT/UPDATE/DELETE in the importer targets one of the four approved tables', () => {
+  const targets = new Set()
+  for (const m of code.matchAll(/(INSERT INTO|UPDATE|DELETE FROM)\s+([a-z_]+)/g)) targets.add(m[1].split(' ')[0] + ' ' + m[2])
+  const allowed = new Set(['INSERT seo_search_daily', 'INSERT seo_search_performance', 'INSERT seo_gsc_sync_runs', 'INSERT seo_audit_log', 'UPDATE seo_gsc_sync_runs', 'DELETE seo_search_performance', 'DELETE seo_search_daily'])
+  for (const t of targets) assert.ok(allowed.has(t), `unexpected write target: ${t}`)
+  assert.ok(targets.size >= 6)
+})
+s('importer never touches oauth / sites / sitemap / ga4 / recommendations writes, never UPSERTs and never uses DO UPDATE', () => {
+  assert.ok(!/(INSERT INTO|UPDATE|DELETE FROM)\s+seo_(sites|oauth_|sitemap_status|ga4|recommendations|keywords|crawl)/.test(code))
+  assert.ok(!/ON CONFLICT[^)]*\)\s*DO UPDATE/i.test(code)); assert.ok(!/\bTRUNCATE\b|\bDROP\b|\bALTER\b|\bGRANT\b/i.test(code))
+  assert.equal((code.match(/ON CONFLICT/g) ?? []).length, 2); assert.equal((code.match(/ON CONFLICT[^`]*DO NOTHING/g) ?? []).length, 2)
+})
+s('every step runs as a least-privilege role (never postgres/seo_worker) and DELETE exists only under the rollback role', () => {
+  assert.ok(!/seo_worker/.test(code))
+  const del = code.split('\n').filter((l) => /DELETE FROM/.test(l)); assert.equal(del.length, 2)
+  const fnStart = src.indexOf('export async function rollbackImport'); assert.ok(src.indexOf('DELETE FROM') > fnStart); assert.ok(src.indexOf('role: ROLLBACK_ROLE') > fnStart)
+  assert.equal(I.IMPORTER_ROLE, 'seo_importer'); assert.equal(I.ROLLBACK_ROLE, 'seo_import_rollback')
+})
+s('approved scope constants: property, 90-day inclusive range, 13 windows summing to 4,515 detail + 90 daily = 4,605', () => {
+  assert.equal(I.IMPORT_PROPERTY, 'sc-domain:tapisglobalinternational.com'); assert.equal(I.IMPORT_RANGE_START, '2026-08-11'); assert.equal(I.IMPORT_RANGE_END, '2026-11-08')
+  assert.equal(I.IMPORT_WINDOWS.length, 13); assert.equal(I.IMPORT_WINDOWS[0].start, '2026-08-11'); assert.equal(I.IMPORT_WINDOWS[12].end, '2026-11-08'); assert.equal(I.IMPORT_WINDOWS.reduce((a, w) => a + w.days, 0), 90)
+  assert.equal(I.TOTAL_ROWS, 4605); assert.equal(I.WINDOW_COUNTS.reduce((a, b) => a + b, 0), 4515)
+})
+s('route is admin-only, same-origin, Preview-only, explicitly enabled, DB-ref pinned, confirm-phrase gated; returns counts/codes only', () => {
+  for (const needle of ['verifySeoSession', 'originMatchesHost', "VERCEL_ENV !== 'preview'", "SEO_GSC_IMPORT_ENABLED !== 'true'", 'IMPORT_EXPECTED_DB_REF', 'IMPORT_CONFIRM_PHRASE', 'cache-control']) assert.ok(route.includes(needle), needle)
+  assert.ok(!/console\.(log|error)\([^)]*(query|page|url|token|secret)/i.test(route)); assert.ok(!/process\.env\.DATABASE_URL/.test(route + src))
+  assert.ok(!/export const (GET|PUT|PATCH|DELETE)/.test(route)); for (const l of route.split('\n').filter((l) => /NextResponse\.json\(/.test(l))) assert.ok(!/refreshToken|accessToken|clientSecret|SEO_DATABASE_URL|\.message/.test(l), l)
+})
+s('no cron / scheduled execution of the importer; vercel.json has no crons', () => {
+  const v = existsSync(path.join(ROOT, 'vercel.json')) ? JSON.parse(read('vercel.json')) : {}; assert.ok(!v.crons || v.crons.length === 0)
+  assert.ok(!/setInterval|setTimeout\([^)]*import|node-cron/i.test(src + route))
+})
+await sa('baseline is fail-closed: window hashes absent => BASELINE_NOT_CONFIGURED (importer refuses to start)', async () => {
+  const B = jiti('../lib/seo-command/gsc-import-baseline.ts').IMPORT_BASELINE
+  assert.match(B.daily, /^[0-9a-f]{64}$/); assert.ok(Object.keys(B.windows).length === 0 || Object.keys(B.windows).length === 13)
+  if (Object.keys(B.windows).length === 0) await assert.rejects(I.startImport({ connect: () => { throw new Error('must not touch the database') } }, B, 'x'), (e) => e.code === 'BASELINE_NOT_CONFIGURED')
+})
+s('migration 0005 is additive, creates exactly two NOLOGIN roles, grants DELETE only to the rollback role, nothing on out-of-scope tables', () => {
+  assert.equal((sql5.match(/CREATE ROLE/g) ?? []).length, 2); assert.ok(/NOLOGIN NOINHERIT NOSUPERUSER[^;]*NOBYPASSRLS/.test(sql5))
+  for (const l of sql5.split('\n').filter((l) => /^GRANT/.test(l) && /DELETE/.test(l))) assert.ok(/seo_import_rollback/.test(l) && !/seo_importer\b[^_]/.test(l.replace('seo_import_rollback', '')), l)
+  assert.ok(!/seo_(oauth_states|sitemap_status|ga4|recommendations|keywords|competitors|crawl|technical|agent|approval|integrations)/.test(sql5.split('\n').filter((l) => /^GRANT/.test(l)).join('\n')))
+  assert.ok(!/DROP|TRUNCATE|DELETE FROM|UPDATE public|INSERT INTO/.test(sql5.replace(/--.*$/gm, '')))
+})
+
+// ===================== SCRATCH DATABASE tests =====================
+const ADMIN = process.env.SEO_SCRATCH_PG_URL
+if (!ADMIN) { console.log('SKIP - scratch-database tests (set SEO_SCRATCH_PG_URL, SEO_SCRATCH_TEMPLATE, SEO_SCRATCH_LOGIN, SEO_SCRATCH_BYPASS_LOGIN)'); console.log(`\n${statics} static checks passed`); process.exit(0) }
+if (!/@(localhost|127\.0\.0\.1)[:/]/.test(ADMIN) || /supabase|pooler|xxmrziaefhxmaewrvbqk|qgltrhszzqtgmaaglbfz/i.test(ADMIN)) throw new Error('SEO_SCRATCH_PG_URL must be a local scratch server')
+const { default: pg } = { default: require('pg') }
+const aurl = new URL(ADMIN)
+const HOST = { host: aurl.hostname, port: Number(aurl.port || 5432) }
+const TEMPLATE = process.env.SEO_SCRATCH_TEMPLATE, LOGIN = process.env.SEO_SCRATCH_LOGIN, BYPASS = process.env.SEO_SCRATCH_BYPASS_LOGIN
+if (!TEMPLATE || !LOGIN || !BYPASS) throw new Error('SEO_SCRATCH_TEMPLATE / SEO_SCRATCH_LOGIN / SEO_SCRATCH_BYPASS_LOGIN are required')
+
+const { IMPORT_WINDOWS: WINDOWS, WINDOW_COUNTS, TOTAL, IMPORT_RANGE_START: RANGE_START, IMPORT_RANGE_END: RANGE_END, IMPORT_PROPERTY: PROPERTY, IMPORT_SITE_DOMAIN: SITE_DOMAIN } = { ...I, TOTAL: I.TOTAL_ROWS }
+const SITE = SITE_DOMAIN
+const DAY = 86400000, ms = (d) => Date.parse(d + 'T00:00:00Z'), ymd = (t) => new Date(t).toISOString().slice(0, 10)
+const ALL_DATES = (() => { const o = []; for (let t = ms(RANGE_START); t <= ms(RANGE_END); t += DAY) o.push(ymd(t)); return o })()
+function makeDataset() {
+  const daily = ALL_DATES.map((date, i) => ({ date, clicks: 10, impressions: 500, ctr: 0.02, position: 15 + (i % 7) / 3 }))
+  const perf = {}
+  for (const w of WINDOWS) { const rows = []; for (let i = 0; i < w.expected; i++) { const clicks = i % 41 === 0 ? 1 : 0, impressions = 1 + (i % 6); rows.push({ date: ymd(ms(w.start) + (i % w.days) * DAY), page: `https://example.test/p/${i % 37}/ü`, query: `q${w.index}-${i} 日本 😀`, country: ['ind', 'usa', 'gbr'][i % 3], device: ['MOBILE', 'DESKTOP', 'TABLET'][i % 3], clicks, impressions, ctr: clicks / impressions, position: 1 + (i % 30) / 2 }) } perf[w.index] = rows }
+  return { daily, perf, baseline: { daily: FP.dailyFingerprint(daily), windows: Object.fromEntries(WINDOWS.map((w) => [w.index, FP.perfFingerprint(perf[w.index])])) } }
+}
+function fakeGoogle(ds, faults = {}) {
+  const log = []
+  return { log,
+    daily: async () => { log.push({ kind: 'daily', startDate: RANGE_START, endDate: RANGE_END, property: PROPERTY, dataState: 'final', type: 'web' }); const rows = ds.daily.map((x) => ({ ...x })); return faults.daily ? faults.daily(rows) : rows },
+    window: async (i) => { const w = WINDOWS[i - 1]; log.push({ kind: 'window', index: i, startDate: w.start, endDate: w.end, property: PROPERTY, dataState: 'final', type: 'web' }); const rows = ds.perf[i].map((x) => ({ ...x })); if (faults.window?.[i]) return faults.window[i](rows, w); return { rows, complete: true } } }
+}
+let CUR = null // baseline of the dataset under test
+const P = {
+  SITE_DOMAIN, PROPERTY, RANGE_START, RANGE_END, WINDOWS, makeDataset, fakeGoogle,
+  start: (pool) => I.startImport(pool, CUR, 'admin'), stepDaily: (pool, run, g, b) => I.importDaily(pool, run, g, b), stepWindow: (pool, run, g, b, w) => I.importWindow(pool, run, g, b, w),
+  runAll: (pool, run, g, b) => I.runImport(pool, run, g, b), finish: (pool, run, b) => I.finishImport(pool, run, b), failRun: I.failImport, progress: I.importProgress, resume: (pool, id) => I.resumeImport(pool, id, 'admin'),
+  status: I.importStatus, rollback: (pool, id, o) => I.rollbackImport(pool, id, 'admin', o),
+}
+
+const root = new pg.Client({ connectionString: ADMIN }); await root.connect()
+const results = []; let dbN = 0; const dbs = []
+const ds = P.makeDataset(); CUR = ds.baseline
+
+async function fresh() {
+  const name = `t_imp_${process.pid}_${++dbN}`; dbs.push(name)
+  await root.query(`CREATE DATABASE ${name} TEMPLATE ${TEMPLATE}`)
+  const admin = new pg.Client({ ...HOST, user: 'postgres', database: name }); await admin.connect()
+  await admin.query(`INSERT INTO seo_sites (id,domain,"baseUrl","updatedAt") VALUES ('site1',$1,'https://www.tapisglobalinternational.com',now())`, [P.SITE_DOMAIN])
+  await admin.query(`INSERT INTO seo_oauth_connections (id,"siteId",provider,state,"propertyUrl","refreshTokenCipher","refreshTokenIv","refreshTokenTag","updatedAt") VALUES ('oc1','site1','GSC','CONNECTED',$1,'\\x00','\\x00','\\x00',now())`, [P.PROPERTY])
+  const pool = new pg.Pool({ ...HOST, user: LOGIN, password: 'x', database: name, max: 6 })
+  return { name, admin, pool, async done() { await pool.end(); await admin.end(); await root.query(`DROP DATABASE IF EXISTS ${name} WITH (FORCE)`) } }
+}
+const q = async (a, sql, p = []) => (await a.query(sql, p)).rows
+const one = async (a, sql, p = []) => (await a.query(sql, p)).rows[0]
+const secSnap = (a) => one(a, `SELECT md5(coalesce((SELECT string_agg(tablename||policyname||cmd||roles::text||coalesce(qual,'')||coalesce(with_check,''),'|' ORDER BY tablename,policyname) FROM pg_policies WHERE schemaname='public'),'')||coalesce((SELECT string_agg(table_name||grantee||privilege_type,'|' ORDER BY table_name,grantee,privilege_type) FROM information_schema.role_table_grants WHERE table_schema='public'),'')||coalesce((SELECT string_agg(tablename||rowsecurity::text,'|' ORDER BY tablename) FROM pg_tables WHERE schemaname='public'),'')) s`).then((r) => r.s)
+const otherTables = (a) => one(a, `SELECT (SELECT count(*) FROM seo_sites)::int sites,(SELECT count(*) FROM seo_oauth_connections)::int oauth,(SELECT count(*) FROM seo_sitemap_status)::int sitemap,(SELECT count(*) FROM seo_ga4_landing_daily)::int ga4,(SELECT count(*) FROM seo_oauth_states)::int states`)
+const PROPERTY_RE = /sc-domain:[a-z.]+/g
+let baseSec = null; let invariantChecks = 0
+
+/** T8 invariants: run status vs counters vs live rows, success only when complete, security unchanged, other tables untouched. */
+async function invariants(admin, runId, { expectNullRows = 0 } = {}) {
+  invariantChecks++
+  const v = []
+  const r = await one(admin, `SELECT * FROM seo_gsc_sync_runs WHERE id=$1`, [runId])
+  const dn = (await one(admin, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"=$1`, [runId])).n
+  const pn = (await one(admin, `SELECT count(*)::int n FROM seo_search_performance WHERE "syncRunId"=$1`, [runId])).n
+  if (r.status !== 'CANCELLED' && r.rowsWritten !== dn + pn) v.push(`rowsWritten ${r.rowsWritten} != live ${dn + pn}`)
+  if (r.rowsWritten > r.rowsFetched) v.push('written>fetched')
+  if (r.status === 'SUCCEEDED') { if (dn !== 90 || pn !== 4515 || r.rowsFetched !== 4605 || r.rowsWritten !== 4605 || !r.finishedAt || r.errorCode) v.push('SUCCEEDED but incomplete') }
+  if (['PARTIAL', 'FAILED'].includes(r.status) && (!r.errorCode || !r.finishedAt)) v.push('PARTIAL/FAILED without errorCode/finishedAt')
+  if (r.status === 'RUNNING' && r.finishedAt) v.push('RUNNING with finishedAt')
+  if (r.status === 'CANCELLED' && (dn + pn) !== 0) v.push('CANCELLED but rows remain')
+  const nulls = (await one(admin, `SELECT (SELECT count(*) FROM seo_search_daily WHERE "syncRunId" IS NULL)::int+(SELECT count(*) FROM seo_search_performance WHERE "syncRunId" IS NULL)::int n`)).n
+  if (nulls !== expectNullRows) v.push(`NULL syncRunId rows ${nulls}`)
+  const o = await otherTables(admin); if (o.sites !== 1 || o.oauth !== 1 || o.sitemap !== 0 || o.ga4 !== 0 || o.states !== 0) v.push('other tables changed ' + JSON.stringify(o))
+  if ((await secSnap(admin)) !== baseSec) v.push('security snapshot changed')
+  const fin = await q(admin, `SELECT metadata->>'status' s FROM seo_audit_log WHERE "entityId"=$1 AND action='gsc.import.finished' ORDER BY at DESC, ctid DESC LIMIT 1`, [runId])
+  if (fin[0] && r.status !== 'RUNNING' && !['CANCELLED'].includes(r.status) && fin[0].s !== r.status) v.push(`audit status ${fin[0].s} != run ${r.status}`)
+  assert.deepEqual(v, [], 'invariant violations: ' + v.join('; '))
+}
+async function t(name, fn) { const t0 = Date.now(); try { await fn(); results.push({ name, ok: true, ms: Date.now() - t0 }); console.log('PASS', name) } catch (e) { results.push({ name, ok: false, err: String(e.message).slice(0, 600) }); console.log('FAIL', name, '\n   ', String(e.message).slice(0, 600)) } }
+const happy = async (env, google = P.fakeGoogle(ds)) => { const run = await P.start(env.pool); const res = await P.runAll(env.pool, run, google, ds.baseline); return { run, res, google } }
+const sumWin = (n) => WINDOW_COUNTS.slice(0, n).reduce((a, b) => a + b, 0)
+const auditRows = (a, runId) => q(a, `SELECT action,"actorType",actor,"entityType","entityId",metadata FROM seo_audit_log WHERE "entityId"=$1 ORDER BY at, ctid`, [runId])
+
+{ const e = await fresh(); baseSec = await secSnap(e.admin); await e.done() }
+
+// ===== sanity: baseline happy path =====
+await t('T0 happy path: 90 + 4515 rows, SUCCEEDED, counters 4605/4605, fingerprints match DB (SQL) ', async () => {
+  const e = await fresh(); try {
+    const { run, res, google } = await happy(e)
+    assert.equal(res.status, 'SUCCEEDED')
+    const r = await one(e.admin, `SELECT * FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId])
+    assert.equal(r.status, 'SUCCEEDED'); assert.equal(r.rowsFetched, 4605); assert.equal(r.rowsWritten, 4605)
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily`)).n, 90)
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n, 4515)
+    assert.equal(google.log.length, 14)
+    const a = await auditRows(e.admin, run.runId); assert.deepEqual(a.map((x) => x.action), ['gsc.import.started', 'gsc.import.finished'])
+    await invariants(e.admin, run.runId)
+  } finally { await e.done() }
+})
+
+// ===== T1 two-run rollback isolation =====
+await t('T1 two-run rollback isolation (+ wrong predicate aborts, FK restrict, double rollback refused)', async () => {
+  const e = await fresh(); try {
+    const { run } = await happy(e)
+    // fixtures: run B (different dates) and legacy rows with NULL syncRunId, same site
+    await e.admin.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd","rowsFetched","rowsWritten","finishedAt") VALUES ('runB','site1','SEARCH_ANALYTICS','MANUAL','SUCCEEDED','2026-07-01','2026-07-05',25,25,now())`)
+    for (let i = 1; i <= 5; i++) await e.admin.query(`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ($1,'site1',$2,1,10,0.1,5,'runB')`, ['b-d' + i, `2026-07-0${i}`])
+    for (let i = 1; i <= 20; i++) await e.admin.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey","syncRunId") VALUES ($1,'site1','2026-07-01','p','qb'||$2::text,'ind','MOBILE',0,1,0,1,'rkB'||$2::text,'runB')`, ['b-p' + i, i])
+    for (let i = 1; i <= 7; i++) await e.admin.query(`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position) VALUES ($1,'site1',$2,1,10,0.1,5)`, ['n-d' + i, `2026-06-0${i}`])
+    for (let i = 1; i <= 10; i++) await e.admin.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey") VALUES ($1,'site1','2026-06-01','p','qn'||$2::text,'ind','MOBILE',0,1,0,1,'rkN'||$2::text)`, ['n-p' + i, i])
+    const snap = () => one(e.admin, `SELECT (SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_daily t WHERE "syncRunId" IS DISTINCT FROM $1) d,(SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_performance t WHERE "syncRunId" IS DISTINCT FROM $1) p,(SELECT md5(to_jsonb(s)::text) FROM seo_gsc_sync_runs s WHERE id='runB') rb`, [run.runId])
+    const before = await snap()
+    // wrong (too broad) predicate must be caught in-transaction and delete nothing
+    await assert.rejects(P.rollback(e.pool, run.runId, { predicate: `"syncRunId" IS NOT NULL` }), (x) => x.code === 'ROLLBACK_TOUCHED_OTHER_ROWS')
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily`)).n, 90 + 5 + 7); assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n, 4515 + 30)
+    const out = await P.rollback(e.pool, run.runId)
+    assert.deepEqual(out, { deletedDaily: 90, deletedPerformance: 4515 })
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily WHERE "syncRunId"=$1`, [run.runId])).n, 0)
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE "syncRunId"=$1`, [run.runId])).n, 0)
+    assert.deepEqual(await snap(), before) // run B rows, NULL rows and run B's row untouched byte-for-byte
+    const rA = await one(e.admin, `SELECT status,"errorCode" FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.deepEqual(rA, { status: 'CANCELLED', errorCode: 'ROLLED_BACK' })
+    assert.equal((await one(e.admin, `SELECT status FROM seo_gsc_sync_runs WHERE id='runB'`)).status, 'SUCCEEDED')
+    await assert.rejects(P.rollback(e.pool, run.runId), (x) => x.code === 'ALREADY_ROLLED_BACK')
+    assert.equal((await q(e.admin, `SELECT 1 FROM seo_audit_log WHERE action='gsc.import.rolled_back' AND "entityId"=$1`, [run.runId])).length, 1)
+    await assert.rejects(e.admin.query(`DELETE FROM seo_gsc_sync_runs WHERE id='runB'`), (x) => x.code === '23503') // FK RESTRICT while data points at it
+    await invariants(e.admin, run.runId, { expectNullRows: 17 })
+  } finally { await e.done() }
+})
+
+// ===== T2 conflicts =====
+for (const kind of ['identical', 'different']) await t(`T2 conflict (${kind}): step rolls back, existing row untouched, run PARTIAL, nothing overwritten`, async () => {
+  const e = await fresh(); try {
+    const run = await P.start(e.pool); const g = P.fakeGoogle(ds)
+    await P.stepDaily(e.pool, run, g, ds.baseline)
+    const r0 = ds.perf[1][0]; const rk = FP.performanceRowKey(r0)
+    await e.admin.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey") VALUES ('fx','site1',$1,$2,$3,$4,$5,$6,$7,$8,$9,$10)`, [r0.date, r0.page, r0.query, r0.country, r0.device, kind === 'identical' ? r0.clicks : r0.clicks + 1, r0.impressions, r0.ctr, r0.position, rk])
+    const fx0 = await one(e.admin, `SELECT md5(to_jsonb(t)::text) m FROM seo_search_performance t WHERE id='fx'`)
+    const res = await P.runAll(e.pool, run, g, ds.baseline)
+    assert.equal(res.failed, true); assert.equal(res.code, kind === 'identical' ? 'CONFLICT_IDENTICAL' : 'CONFLICT_DIFFERENT'); assert.equal(res.status, 'PARTIAL')
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE "syncRunId"=$1`, [run.runId])).n, 0)
+    assert.deepEqual(await one(e.admin, `SELECT md5(to_jsonb(t)::text) m FROM seo_search_performance t WHERE id='fx'`), fx0)
+    const r = await one(e.admin, `SELECT "rowsFetched","rowsWritten",status,"errorCode" FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.equal(r.rowsWritten, 90); assert.equal(r.rowsFetched, 90)
+    const fin = (await auditRows(e.admin, run.runId)).at(-1); assert.equal(fin.metadata.status, 'PARTIAL'); assert.equal(fin.metadata.errorCode, res.code)
+    await invariants(e.admin, run.runId, { expectNullRows: 1 })
+  } finally { await e.done() }
+})
+await t('T2 second import refused (TABLES_NOT_EMPTY): zero new runs/audit rows, data byte-identical; duplicate keys in a batch rejected', async () => {
+  const e = await fresh(); try {
+    const { run } = await happy(e)
+    const snap = () => one(e.admin, `SELECT (SELECT count(*) FROM seo_gsc_sync_runs)::int runs,(SELECT count(*) FROM seo_audit_log)::int aud,(SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_performance t) p,(SELECT md5(string_agg(to_jsonb(t)::text,'|' ORDER BY id)) FROM seo_search_daily t) d`)
+    const b = await snap(); await assert.rejects(P.start(e.pool), (x) => x.code === 'TABLES_NOT_EMPTY'); assert.deepEqual(await snap(), b)
+    await invariants(e.admin, run.runId)
+    const e2 = await fresh(); try { const run2 = await P.start(e2.pool); const g = P.fakeGoogle(ds, { window: { 2: (rows) => ({ rows: [...rows.slice(0, -1), { ...rows[0] }], complete: true }) } })
+      const res = await P.runAll(e2.pool, run2, g, ds.baseline); assert.equal(res.code, 'DUPLICATE_KEYS'); assert.equal((await one(e2.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE date BETWEEN $1 AND $2 AND "syncRunId"=$3`, [WINDOWS[1].start, WINDOWS[1].end, run2.runId])).n, 0); await invariants(e2.admin, run2.runId)
+    } finally { await e2.done() }
+  } finally { await e.done() }
+})
+
+// ===== T3 partial failure and resume =====
+await t('T3 partial failure (503 on window 7) then resume: windows 1-6 not re-fetched, final SUCCEEDED, audit sequence', async () => {
+  const e = await fresh(); try {
+    const run = await P.start(e.pool); const bad = P.fakeGoogle(ds, { window: { 7: () => { const x = new Error('503'); x.status = 503; throw x } } })
+    const res = await P.runAll(e.pool, run, bad, ds.baseline)
+    assert.equal(res.failed, true); assert.equal(res.code, 'GOOGLE_HTTP_ERROR'); assert.equal(res.status, 'PARTIAL')
+    assert.equal(bad.log.filter((l) => l.index === 7).length, 3) // 3 attempts
+    const r = await one(e.admin, `SELECT * FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.equal(r.status, 'PARTIAL'); assert.equal(r.rowsWritten, 90 + sumWin(6)); assert.equal(r.rowsFetched, 90 + sumWin(6))
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n, sumWin(6))
+    await assert.rejects(P.finish(e.pool, run, ds.baseline), (x) => x.code === 'RUN_NOT_RUNNING') // never SUCCEEDED
+    const fin1 = (await auditRows(e.admin, run.runId)).at(-1); assert.deepEqual([fin1.metadata.status, fin1.metadata.completedWindows, fin1.metadata.failedWindow], ['PARTIAL', 6, 7])
+    await invariants(e.admin, run.runId)
+    const ok = P.fakeGoogle(ds); await P.resume(e.pool, run.runId)
+    const res2 = await P.runAll(e.pool, run, ok, ds.baseline); assert.equal(res2.status, 'SUCCEEDED')
+    assert.equal(ok.log.filter((l) => l.kind === 'daily').length, 0); assert.deepEqual(ok.log.map((l) => l.index), [7, 8, 9, 10, 11, 12, 13])
+    const r2 = await one(e.admin, `SELECT * FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.equal(r2.rowsWritten, 4605); assert.equal(r2.rowsFetched, 4605); assert.equal(r2.status, 'SUCCEEDED'); assert.equal(r2.errorCode, null)
+    assert.deepEqual((await auditRows(e.admin, run.runId)).map((x) => x.action + (x.metadata.status ? ':' + x.metadata.status : '')), ['gsc.import.started', 'gsc.import.finished:PARTIAL', 'gsc.import.resumed', 'gsc.import.finished:SUCCEEDED'])
+    await invariants(e.admin, run.runId)
+  } finally { await e.done() }
+})
+await t('T3 crash after window 4 (no fail path runs): RUNNING+stale, 2nd start refused, status shows 4 windows, resume completes', async () => {
+  const e = await fresh(); try {
+    const run = await P.start(e.pool); const g = P.fakeGoogle(ds, { window: { 5: () => { const x = new Error('crash'); x.crash = true; throw x } } })
+    await assert.rejects(P.runAll(e.pool, run, g, ds.baseline), (x) => x.crash)
+    const st = await P.status(e.pool, run.runId); assert.deepEqual([st.status, st.completedWindows], ['RUNNING', [1, 2, 3, 4]]); assert.equal(st.rowsWritten, 90 + sumWin(4))
+    assert.equal((await q(e.admin, `SELECT 1 FROM seo_audit_log WHERE action='gsc.import.finished'`)).length, 0)
+    await assert.rejects(P.start(e.pool), (x) => ['TABLES_NOT_EMPTY', 'RUN_IN_PROGRESS'].includes(x.code))
+    await invariants(e.admin, run.runId)
+    await assert.rejects(P.resume(e.pool, run.runId), (x) => x.code === 'RUN_NOT_PARTIAL') // explicit resume is for PARTIAL only; a RUNNING (crashed) run is simply continued, every step being idempotent
+    const ok = P.fakeGoogle(ds); const res = await P.runAll(e.pool, run, ok, ds.baseline); assert.equal(res.status, 'SUCCEEDED'); assert.deepEqual(ok.log.map((l) => l.index), [5, 6, 7, 8, 9, 10, 11, 12, 13])
+    await invariants(e.admin, run.runId)
+  } finally { await e.done() }
+})
+await t('T3 poisoned DB row in window 5: tx rolls back (0 rows from window 5), run PARTIAL DB_ERROR, windows 1-4 intact', async () => {
+  const e = await fresh(); try {
+    await e.admin.query(`CREATE FUNCTION poison() RETURNS trigger AS $$ BEGIN IF NEW.query LIKE 'q5-10 %' THEN RAISE EXCEPTION 'poison'; END IF; RETURN NEW; END $$ LANGUAGE plpgsql; CREATE TRIGGER poison_t BEFORE INSERT ON seo_search_performance FOR EACH ROW EXECUTE FUNCTION poison()`)
+    const { run, res } = await happy(e); assert.equal(res.code, 'DB_ERROR'); assert.equal(res.status, 'PARTIAL')
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE date BETWEEN $1 AND $2`, [WINDOWS[4].start, WINDOWS[4].end])).n, 0)
+    const r = await one(e.admin, `SELECT "rowsWritten" FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.equal(r.rowsWritten, 90 + sumWin(4))
+    await invariants(e.admin, run.runId)
+  } finally { await e.done() }
+})
+
+// ===== T4 concurrency =====
+await t('T4 concurrency: racing starts, racing identical window steps, lock blocking, rollback vs step', async () => {
+  const e = await fresh(); try {
+    const rs = await Promise.allSettled([P.start(e.pool), P.start(e.pool)])
+    assert.equal(rs.filter((x) => x.status === 'fulfilled').length, 1); assert.equal(rs.find((x) => x.status === 'rejected').reason.code, 'RUN_IN_PROGRESS')
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_gsc_sync_runs`)).n, 1); assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_audit_log WHERE action='gsc.import.started'`)).n, 1)
+    const run = rs.find((x) => x.status === 'fulfilled').value; const g = P.fakeGoogle(ds)
+    await P.stepDaily(e.pool, run, g, ds.baseline)
+    const two = await Promise.all([P.stepWindow(e.pool, run, g, ds.baseline, WINDOWS[0]), P.stepWindow(e.pool, run, g, ds.baseline, WINDOWS[0])])
+    assert.deepEqual(two.map((x) => x.inserted ?? 'already').sort(), [331, 'already'].sort())
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE date BETWEEN $1 AND $2`, [WINDOWS[0].start, WINDOWS[0].end])).n, 331)
+    // lock blocking: a competing holder makes the step wait (advisory wait observed), then it completes after release
+    const holder = await e.pool.connect(); await holder.query('BEGIN'); await holder.query(`SELECT pg_advisory_xact_lock(hashtext('gsc-import:'||$1))`, [P.SITE_DOMAIN])
+    const pending = P.stepWindow(e.pool, run, g, ds.baseline, WINDOWS[1]); let waited = false
+    for (let i = 0; i < 50 && !waited; i++) { await new Promise((r) => setTimeout(r, 100)); waited = (await one(e.admin, `SELECT count(*)::int n FROM pg_stat_activity WHERE datname=$1 AND wait_event='advisory'`, [e.name])).n >= 1 }
+    assert.equal(waited, true, 'step should wait on the advisory lock')
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE date BETWEEN $1 AND $2`, [WINDOWS[1].start, WINDOWS[1].end])).n, 0)
+    await holder.query('COMMIT'); holder.release(); assert.equal((await pending).inserted, 385)
+    // rollback vs step queued behind a holder: end state must be consistent whichever runs first
+    const h2 = await e.pool.connect(); await h2.query('BEGIN'); await h2.query(`SELECT pg_advisory_xact_lock(hashtext('gsc-import:'||$1))`, [P.SITE_DOMAIN])
+    const s = P.stepWindow(e.pool, run, g, ds.baseline, WINDOWS[2]).then((x) => x, (x) => x); await new Promise((r) => setTimeout(r, 300)); const rb = P.rollback(e.pool, run.runId)
+    await new Promise((r) => setTimeout(r, 300)); await h2.query('COMMIT'); h2.release(); await Promise.all([s, rb])
+    const r = await one(e.admin, `SELECT status FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.equal(r.status, 'CANCELLED')
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n + (await one(e.admin, `SELECT count(*)::int n FROM seo_search_daily`)).n, 0)
+    await invariants(e.admin, run.runId)
+  } finally { await e.done() }
+})
+
+// ===== T5 failed window validation =====
+const t5 = [
+  ['count-1 (stable)', (rows) => ({ rows: rows.slice(0, -1), complete: true }), 'WINDOW_COUNT_MISMATCH', true],
+  ['count+1', (rows) => ({ rows: [...rows, { ...rows[0], query: 'extra-row' }], complete: true }), 'WINDOW_COUNT_MISMATCH', true],
+  ['same count, changed clicks', (rows) => { rows[0].clicks += 1; return { rows, complete: true } }, 'WINDOW_DATA_CHANGED', true],
+  ['truncated (complete=false)', (rows) => ({ rows, complete: false }), 'WINDOW_TRUNCATED', true],
+  ['empty 200 response', () => ({ rows: [], complete: true }), 'WINDOW_COUNT_MISMATCH', true],
+]
+for (const [label, fn, code, stable] of t5) await t(`T5 failed window validation: ${label} -> ${code}, 0 rows from window 3, run PARTIAL`, async () => {
+  const e = await fresh(); try {
+    const g = P.fakeGoogle(ds, { window: { 3: fn } }); const { run, res } = await happy(e, g)
+    assert.equal(res.code, code); assert.equal(res.status, 'PARTIAL'); assert.equal(res.diag.stable, stable)
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE date BETWEEN $1 AND $2`, [WINDOWS[2].start, WINDOWS[2].end])).n, 0)
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance`)).n, sumWin(2)); assert.equal(g.log.filter((l) => l.index > 3).length, 0)
+    assert.notEqual((await one(e.admin, `SELECT status FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId])).status, 'SUCCEEDED')
+    await invariants(e.admin, run.runId)
+  } finally { await e.done() }
+})
+await t('T5 unstable response (different row count on every fetch) flagged stable=false', async () => {
+  const e = await fresh(); try { let n = 0; const g = P.fakeGoogle(ds, { window: { 3: (rows) => ({ rows: rows.slice(0, rows.length - 1 - (n++ % 3)), complete: true }) } }); const { run, res } = await happy(e, g)
+    assert.equal(res.code, 'WINDOW_COUNT_MISMATCH'); assert.equal(res.diag.stable, false); await invariants(e.admin, run.runId) } finally { await e.done() }
+})
+
+// ===== T6 out-of-range records =====
+const rngBad = [
+  ['window 1 row dated 2026-08-10', { window: { 1: (rows) => { rows[0].date = '2026-08-10'; return { rows, complete: true } } } }, 1],
+  ['window 13 row dated 2026-11-09', { window: { 13: (rows) => { rows[0].date = '2026-11-09'; return { rows, complete: true } } } }, 13],
+  ['malformed date 2026-13-40', { window: { 4: (rows) => { rows[0].date = '2026-13-40'; return { rows, complete: true } } } }, 4],
+  ['in range but outside its window', { window: { 2: (rows) => { rows[0].date = '2026-08-11'; return { rows, complete: true } } } }, 2],
+  ['daily extra date 2026-11-09', { daily: (rows) => { rows[89].date = '2026-11-09'; return rows } }, 0],
+]
+for (const [label, faults, idx] of rngBad) await t(`T6 out-of-range: ${label} rejected before insert`, async () => {
+  const e = await fresh(); try { const g = P.fakeGoogle(ds, faults); const { run, res } = await happy(e, g)
+    assert.equal(res.code, 'OUT_OF_RANGE_ROW'); assert.equal(res.status, idx === 0 ? 'FAILED' : 'PARTIAL')
+    assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE date NOT BETWEEN $1 AND $2`, [P.RANGE_START, P.RANGE_END])).n, 0)
+    if (idx > 0) assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_search_performance WHERE date BETWEEN $1 AND $2`, [WINDOWS[idx - 1].start, WINDOWS[idx - 1].end])).n, 0)
+    await invariants(e.admin, run.runId) } finally { await e.done() }
+})
+await t('T6 all Google requests stay inside the exact range, property and settings (14 calls)', async () => {
+  const e = await fresh(); try { const { run, google } = await happy(e)
+    assert.equal(google.log.length, 14); assert.ok(google.log.every((l) => l.startDate >= P.RANGE_START && l.endDate <= P.RANGE_END && l.property === P.PROPERTY && l.dataState === 'final' && l.type === 'web'))
+    assert.equal(Math.min(...google.log.map((l) => +l.startDate.replace(/-/g, ''))), 20260811); assert.equal(Math.max(...google.log.map((l) => +l.endDate.replace(/-/g, ''))), 20261108)
+    assert.equal((await one(e.admin, `SELECT (SELECT min(date) FROM seo_search_daily)::text mn,(SELECT max(date) FROM seo_search_daily)::text mx`)).mn, '2026-08-11'); await invariants(e.admin, run.runId) } finally { await e.done() }
+})
+
+// ===== T7 audit-log correctness =====
+await t('T7 audit correctness: actions, entity, actor types, whitelisted metadata, no query/URL text, append-only', async () => {
+  const e = await fresh(); try {
+    const { run } = await happy(e); const a = await auditRows(e.admin, run.runId)
+    assert.deepEqual(a.map((x) => [x.action, x.actorType, x.entityType, x.entityId]), [['gsc.import.started', 'ADMIN', 'seo_gsc_sync_runs', run.runId], ['gsc.import.finished', 'SYSTEM', 'seo_gsc_sync_runs', run.runId]])
+    const allowed = new Set(['property', 'rangeStart', 'rangeEnd', 'status', 'errorCode', 'completedWindows', 'failedWindow', 'rowsFetched', 'rowsWritten', 'from', 'deletedDaily', 'deletedPerformance'])
+    for (const x of a) { assert.ok(Object.keys(x.metadata).every((k) => allowed.has(k))); const s = JSON.stringify(x.metadata); assert.ok(!/example\.test|q1-|q5-|https?:\/\//.test(s.replace(PROPERTY_RE, ''))) }
+    const w = await e.pool.connect(); try { await w.query('BEGIN'); await w.query('SET LOCAL ROLE seo_importer')
+      await w.query('SAVEPOINT a'); await assert.rejects(w.query(`UPDATE seo_audit_log SET actor='x'`), (x) => x.code === '42501'); await w.query('ROLLBACK TO a')
+      await assert.rejects(w.query(`DELETE FROM seo_audit_log`), (x) => x.code === '42501') } finally { await w.query('ROLLBACK').catch(() => {}); w.release() }
+    await invariants(e.admin, run.runId)
+  } finally { await e.done() }
+})
+await t('T7 failed audit insert cannot leave a wrong status: finished-audit blocked -> run stays RUNNING, no SUCCEEDED, then finish succeeds after fix', async () => {
+  const e = await fresh(); try {
+    await e.admin.query(`CREATE FUNCTION block_fin() RETURNS trigger AS $$ BEGIN IF NEW.action='gsc.import.finished' THEN RAISE EXCEPTION 'audit blocked'; END IF; RETURN NEW; END $$ LANGUAGE plpgsql; CREATE TRIGGER block_fin_t BEFORE INSERT ON seo_audit_log FOR EACH ROW EXECUTE FUNCTION block_fin()`)
+    const { run, res } = await happy(e); assert.equal(res.stale, true); assert.equal(res.failed, true)
+    const r = await one(e.admin, `SELECT status,"finishedAt","errorCode","rowsWritten" FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.deepEqual([r.status, r.finishedAt, r.errorCode, r.rowsWritten], ['RUNNING', null, null, 4605])
+    assert.equal((await q(e.admin, `SELECT 1 FROM seo_audit_log WHERE action='gsc.import.finished'`)).length, 0)
+    await invariants(e.admin, run.runId)
+    await e.admin.query(`DROP TRIGGER block_fin_t ON seo_audit_log`)
+    assert.equal((await P.finish(e.pool, run, ds.baseline)).status, 'SUCCEEDED'); assert.equal((await auditRows(e.admin, run.runId)).at(-1).metadata.status, 'SUCCEEDED'); await invariants(e.admin, run.runId)
+  } finally { await e.done() }
+})
+await t('T7 failed audit insert at START: no run row, no data', async () => {
+  const e = await fresh(); try {
+    await e.admin.query(`CREATE FUNCTION block_st() RETURNS trigger AS $$ BEGIN IF NEW.action='gsc.import.started' THEN RAISE EXCEPTION 'audit blocked'; END IF; RETURN NEW; END $$ LANGUAGE plpgsql; CREATE TRIGGER block_st_t BEFORE INSERT ON seo_audit_log FOR EACH ROW EXECUTE FUNCTION block_st()`)
+    await assert.rejects(P.start(e.pool)); assert.equal((await one(e.admin, `SELECT count(*)::int n FROM seo_gsc_sync_runs`)).n, 0)
+  } finally { await e.done() }
+})
+
+// ===== T8 status / row-count consistency (never success if incomplete) =====
+await t('T8 never SUCCEEDED when incomplete: tampered counter, deleted row, altered row, missing window all end PARTIAL/INCOMPLETE', async () => {
+  const tamper = [['counter -1', (a, id) => a.query(`UPDATE seo_gsc_sync_runs SET "rowsWritten"="rowsWritten"-1 WHERE id=$1`, [id])], ['one detail row deleted', (a) => a.query(`DELETE FROM seo_search_performance WHERE id=(SELECT id FROM seo_search_performance LIMIT 1)`)], ['one detail value altered', (a) => a.query(`UPDATE seo_search_performance SET clicks=clicks+0, impressions=impressions+1 WHERE id=(SELECT id FROM seo_search_performance LIMIT 1)`)], ['one daily row altered', (a) => a.query(`UPDATE seo_search_daily SET clicks=clicks+1 WHERE id=(SELECT id FROM seo_search_daily LIMIT 1)`)]]
+  for (const [label, fn] of tamper) { const e = await fresh(); try {
+    const run = await P.start(e.pool); const g = P.fakeGoogle(ds); await P.stepDaily(e.pool, run, g, ds.baseline); for (const w of WINDOWS) await P.stepWindow(e.pool, run, g, ds.baseline, w)
+    await fn(e.admin, run.runId); const f = await P.finish(e.pool, run, ds.baseline); assert.equal(f.status, 'PARTIAL', label)
+    const r = await one(e.admin, `SELECT status,"errorCode" FROM seo_gsc_sync_runs WHERE id=$1`, [run.runId]); assert.deepEqual([r.status, r.errorCode], ['PARTIAL', 'INCOMPLETE'], label)
+  } finally { await e.done() } }
+})
+await t('T8 invariant checker is not vacuous: detects tampering', async () => {
+  const e = await fresh(); try { const { run } = await happy(e); await e.admin.query(`UPDATE seo_gsc_sync_runs SET "rowsWritten"=4604 WHERE id=$1`, [run.runId]); await assert.rejects(invariants(e.admin, run.runId), /invariant violations/) } finally { await e.done() }
+})
+
+// ===== role / RLS permission matrix =====
+
+const probeAs = async (e, role, probes) => {
+  const c = await e.pool.connect(); const out = {}
+  try { await c.query('BEGIN'); await c.query(`SET LOCAL ROLE ${role}`)
+    out.identity = (await c.query(`SELECT session_user su, current_user cu, (SELECT rolbypassrls FROM pg_roles WHERE rolname=current_user) bypass, (SELECT rolsuper FROM pg_roles WHERE rolname=current_user) su2`)).rows[0]
+    for (const [label, sql] of probes) { await c.query('SAVEPOINT s'); try { const r = await c.query(sql); out[label] = 'allowed' + (r.rows[0]?.n !== undefined ? ` n=${r.rows[0].n}` : r.rowCount ? ` rows=${r.rowCount}` : ''); } catch (x) { out[label] = 'denied ' + x.code } await c.query('ROLLBACK TO s') }
+  } finally { await c.query('ROLLBACK').catch(() => {}); c.release() }
+  return out
+}
+const common = [
+  ['INSERT seo_sites', `INSERT INTO seo_sites (id,domain,"baseUrl","updatedAt") VALUES ('x','x.test','https://x.test',now())`],
+  ['UPDATE seo_sites', `UPDATE seo_sites SET "baseUrl"='https://y.test'`],
+  ['DELETE seo_sites', `DELETE FROM seo_sites`],
+  ['SELECT seo_oauth_states', `SELECT count(*)::int n FROM seo_oauth_states`],
+  ['INSERT seo_oauth_connections', `INSERT INTO seo_oauth_connections (id,"siteId",provider,"updatedAt") VALUES ('o2','site1','GA4',now())`],
+  ['UPDATE seo_oauth_connections (any col)', `UPDATE seo_oauth_connections SET state='DISCONNECTED'`],
+  ['DELETE seo_oauth_connections', `DELETE FROM seo_oauth_connections`],
+  ['INSERT seo_sitemap_status', `INSERT INTO seo_sitemap_status (id,"siteId",path) VALUES ('sm','site1','/x')`],
+  ['SELECT seo_sitemap_status', `SELECT count(*)::int n FROM seo_sitemap_status`],
+  ['INSERT seo_ga4_landing_daily', `INSERT INTO seo_ga4_landing_daily (id,"siteId",date,"landingPage","channelGroup",country,device,sessions,"engagedSessions","keyEvents","rowKey") VALUES ('g','site1','2026-08-11','/','x','x','x',1,1,1,'k')`],
+  ['INSERT seo_keywords', `INSERT INTO seo_keywords (id,"siteId",keyword,"updatedAt") VALUES ('k','site1','kw',now())`],
+  ['SELECT seo_recommendations', `SELECT count(*)::int n FROM seo_recommendations`],
+  ['SELECT seo_crawl_runs', `SELECT count(*)::int n FROM seo_crawl_runs`],
+  ['UPDATE seo_audit_log', `UPDATE seo_audit_log SET actor='z'`],
+  ['DELETE seo_audit_log', `DELETE FROM seo_audit_log`],
+  ['DELETE seo_gsc_sync_runs', `DELETE FROM seo_gsc_sync_runs`],
+  ['UPDATE seo_gsc_sync_runs.kind', `UPDATE seo_gsc_sync_runs SET kind='SITEMAPS'`],
+  ['UPDATE seo_gsc_sync_runs.rangeEnd', `UPDATE seo_gsc_sync_runs SET "rangeEnd"='2026-11-09'`],
+  ['UPDATE seo_search_daily', `UPDATE seo_search_daily SET clicks=clicks+1`],
+  ['UPDATE seo_search_performance', `UPDATE seo_search_performance SET clicks=clicks+1`],
+  ['INSERT daily without syncRunId', `INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position) VALUES ('d0','site1','2026-08-11',1,1,1,1)`],
+  ['INSERT audit non-import action', `INSERT INTO seo_audit_log (id,"actorType",actor,action,"entityType") VALUES ('a0','SYSTEM','x','recommendation.approved','seo_recommendations')`],
+  ['INSERT sync run kind SITEMAPS', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('rz','site1','SITEMAPS','MANUAL','RUNNING')`],
+  ['INSERT sync run other range', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rz','site1','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-01-01','2026-01-31')`],
+]
+await t('PERM seo_importer: reads site+GSC connection, the 4-table writes work, EVERYTHING else is denied', async () => {
+  const e = await fresh(); try {
+    await e.admin.query(`INSERT INTO seo_sites (id,domain,"baseUrl","updatedAt") VALUES ('other','other.test','https://other.test',now())`)
+    await e.admin.query(`INSERT INTO seo_oauth_connections (id,"siteId",provider,state,"propertyUrl","updatedAt") VALUES ('oc2','other','GSC','CONNECTED','sc-domain:other.test',now())`)
+    await e.admin.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('seed','site1','SEARCH_ANALYTICS','MANUAL','RUNNING')`)
+    const out = await probeAs(e, 'seo_importer', [
+      ['SELECT seo_sites (only the approved site)', `SELECT count(*)::int n FROM seo_sites`],
+      ['SELECT seo_sites other.test', `SELECT count(*)::int n FROM seo_sites WHERE domain='other.test'`],
+      ['SELECT seo_sites baseUrl column', `SELECT "baseUrl" FROM seo_sites`],
+      ['SELECT oauth GSC connections (only approved property)', `SELECT count(*)::int n FROM seo_oauth_connections WHERE provider='GSC'`],
+      ['SELECT oauth cipher column', `SELECT "refreshTokenCipher" FROM seo_oauth_connections`],
+      ['SELECT oauth accessToken-like other col (scopes)', `SELECT scopes FROM seo_oauth_connections`],
+      ['INSERT sync run (valid)', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status,"rangeStart","rangeEnd") VALUES ('rv','site1','SEARCH_ANALYTICS','MANUAL','RUNNING','2026-08-11','2026-11-08')`],
+      ['UPDATE sync run bookkeeping', `UPDATE seo_gsc_sync_runs SET "rowsWritten"=1 WHERE id='seed'`],
+      ['UPDATE sync run to SUCCEEDED', `UPDATE seo_gsc_sync_runs SET status='SUCCEEDED' WHERE id='seed'`],
+      ['UPDATE sync run to CANCELLED', `UPDATE seo_gsc_sync_runs SET status='CANCELLED' WHERE id='seed'`],
+      ['INSERT audit gsc.import.started', `INSERT INTO seo_audit_log (id,"actorType",actor,action,"entityType","entityId") VALUES ('a1','ADMIN','x','gsc.import.started','seo_gsc_sync_runs','seed')`],
+      ['INSERT audit gsc.import.rolled_back', `INSERT INTO seo_audit_log (id,"actorType",actor,action,"entityType","entityId") VALUES ('a2','ADMIN','x','gsc.import.rolled_back','seo_gsc_sync_runs','seed')`],
+      ['SELECT audit (non-import row hidden)', `SELECT count(*)::int n FROM seo_audit_log`],
+      ['INSERT seo_search_daily (with run)', `INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ('d1','site1','2026-08-11',1,1,1,1,'seed')`],
+      ['INSERT seo_search_daily other site', `INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ('d2','other','2026-08-11',1,1,1,1,'seed')`],
+      ['INSERT seo_search_performance (with run)', `INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey","syncRunId") VALUES ('p1','site1','2026-08-11','p','q','ind','MOBILE',0,1,0,1,'rk','seed')`],
+      ['DELETE seo_search_performance', `DELETE FROM seo_search_performance`],
+      ['DELETE seo_search_daily', `DELETE FROM seo_search_daily`],
+      ...common,
+    ])
+    globalThis.__permImporter = out; console.log('   PERM seo_importer', JSON.stringify(out))
+    assert.deepEqual(out.identity, { su: LOGIN, cu: 'seo_importer', bypass: false, su2: false })
+    for (const k of ['INSERT sync run (valid)', 'UPDATE sync run bookkeeping', 'UPDATE sync run to SUCCEEDED', 'INSERT audit gsc.import.started', 'INSERT seo_search_daily (with run)', 'INSERT seo_search_performance (with run)', 'SELECT oauth cipher column', 'SELECT seo_sites baseUrl column'.replace('baseUrl column', 'baseUrl column')]) { if (k === 'SELECT seo_sites baseUrl column') continue; assert.match(out[k], /^allowed/, k) }
+    assert.equal(out['SELECT seo_sites (only the approved site)'], 'allowed n=1'); assert.equal(out['SELECT seo_sites other.test'], 'allowed n=0'); assert.equal(out['SELECT oauth GSC connections (only approved property)'], 'allowed n=1')
+    for (const k of ['SELECT seo_sites baseUrl column', 'SELECT oauth accessToken-like other col (scopes)', 'UPDATE sync run to CANCELLED', 'INSERT audit gsc.import.rolled_back', 'DELETE seo_search_performance', 'DELETE seo_search_daily', 'INSERT seo_search_daily other site']) assert.match(out[k], /^denied/, k)
+    for (const [k] of common) assert.ok(/^denied/.test(out[k]) || /n=0$/.test(out[k]), `${k}: ${out[k]}`)
+  } finally { await e.done() }
+})
+await t('PERM seo_import_rollback: only DELETE on the two search tables + CANCEL a run + rolled_back audit; nothing else', async () => {
+  const e = await fresh(); try {
+    await e.admin.query(`INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('seed','site1','SEARCH_ANALYTICS','MANUAL','SUCCEEDED')`)
+    await e.admin.query(`INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ('d1','site1','2026-08-11',1,1,1,1,'seed')`)
+    await e.admin.query(`INSERT INTO seo_search_performance (id,"siteId",date,page,query,country,device,clicks,impressions,ctr,position,"rowKey","syncRunId") VALUES ('p1','site1','2026-08-11','p','q','ind','MOBILE',0,1,0,1,'rk','seed')`)
+    const out = await probeAs(e, 'seo_import_rollback', [
+      ['DELETE seo_search_performance', `DELETE FROM seo_search_performance WHERE "syncRunId"='seed'`],
+      ['DELETE seo_search_daily', `DELETE FROM seo_search_daily WHERE "syncRunId"='seed'`],
+      ['UPDATE sync run to CANCELLED', `UPDATE seo_gsc_sync_runs SET status='CANCELLED',"errorCode"='ROLLED_BACK',"finishedAt"=now() WHERE id='seed'`],
+      ['UPDATE sync run to RUNNING (resurrect)', `UPDATE seo_gsc_sync_runs SET status='RUNNING' WHERE id='seed'`],
+      ['UPDATE sync run to SUCCEEDED', `UPDATE seo_gsc_sync_runs SET status='SUCCEEDED' WHERE id='seed'`],
+      ['INSERT audit gsc.import.rolled_back', `INSERT INTO seo_audit_log (id,"actorType",actor,action,"entityType","entityId") VALUES ('a1','ADMIN','x','gsc.import.rolled_back','seo_gsc_sync_runs','seed')`],
+      ['INSERT audit gsc.import.started', `INSERT INTO seo_audit_log (id,"actorType",actor,action,"entityType","entityId") VALUES ('a2','ADMIN','x','gsc.import.started','seo_gsc_sync_runs','seed')`],
+      ['INSERT seo_search_daily', `INSERT INTO seo_search_daily (id,"siteId",date,clicks,impressions,ctr,position,"syncRunId") VALUES ('d9','site1','2026-08-12',1,1,1,1,'seed')`],
+      ['INSERT sync run', `INSERT INTO seo_gsc_sync_runs (id,"siteId",kind,trigger,status) VALUES ('rq','site1','SEARCH_ANALYTICS','MANUAL','RUNNING')`],
+      ['SELECT oauth connections', `SELECT count(*)::int n FROM seo_oauth_connections`],
+      ...common,
+    ])
+    console.log('   PERM seo_import_rollback', JSON.stringify(out))
+    assert.deepEqual(out.identity, { su: LOGIN, cu: 'seo_import_rollback', bypass: false, su2: false })
+    for (const k of ['DELETE seo_search_performance', 'DELETE seo_search_daily', 'UPDATE sync run to CANCELLED', 'INSERT audit gsc.import.rolled_back']) assert.match(out[k], /^allowed/, k)
+    for (const k of ['UPDATE sync run to RUNNING (resurrect)', 'UPDATE sync run to SUCCEEDED', 'INSERT audit gsc.import.started', 'INSERT seo_search_daily', 'INSERT sync run', 'SELECT oauth connections']) assert.match(out[k], /^denied/, k)
+    for (const [k] of common) if (!/DELETE seo_audit_log|UPDATE seo_audit_log|DELETE seo_gsc_sync_runs|UPDATE seo_gsc_sync_runs|UPDATE seo_search|INSERT daily|INSERT audit|INSERT sync run|INSERT seo_sites|UPDATE seo_sites|DELETE seo_sites|SELECT seo_oauth_states|oauth|sitemap|ga4|keywords|recommendations|crawl/.test(k)) throw new Error('unclassified ' + k); else assert.ok(/^denied/.test(out[k]) || /n=0$/.test(out[k]), `${k}: ${out[k]}`)
+  } finally { await e.done() }
+})
+await t('PERM neither importer role can SET ROLE to seo_worker / postgres, and the live-like login cannot inherit privileges without SET ROLE', async () => {
+  const e = await fresh(); try {
+    const c = await e.pool.connect(); try {
+      const plain = await c.query(`SELECT has_table_privilege(current_user,'seo_search_daily','INSERT') a, has_table_privilege(current_user,'seo_sites','SELECT') b`); assert.deepEqual(plain.rows[0], { a: false, b: false }) // INHERIT FALSE: nothing without SET ROLE
+      for (const r of ['seo_worker', 'postgres']) { await c.query('BEGIN'); await assert.rejects(c.query(`SET LOCAL ROLE ${r}`), (x) => x.code === '42501'); await c.query('ROLLBACK') }
+      await c.query('BEGIN'); await c.query('SET LOCAL ROLE seo_importer'); await c.query('SET LOCAL ROLE seo_import_rollback'); await c.query('ROLLBACK') // PG checks the SESSION user: hopping between the two roles granted to the same login is allowed (documented, not a gap)
+    } finally { c.release() }
+  } finally { await e.done() }
+})
+await t('PERM RLS is enforced after SET LOCAL ROLE even for a BYPASSRLS login (owner_like): removing the site policy hides the site from seo_importer', async () => {
+  const e = await fresh(); try {
+    await e.admin.query(`GRANT seo_importer TO ${BYPASS} WITH INHERIT FALSE, SET TRUE`)
+    const o = new pg.Client({ ...HOST, user: BYPASS, password: 'x', database: e.name }); await o.connect()
+    try { assert.equal((await o.query(`SELECT count(*)::int n FROM seo_sites`)).rows[0].n, 1); await e.admin.query(`DROP POLICY seo_importer_site_read ON seo_sites`)
+      await o.query('BEGIN'); await o.query('SET LOCAL ROLE seo_importer'); const n = (await o.query(`SELECT count(*)::int n FROM seo_sites`)).rows[0].n; await o.query('ROLLBACK'); assert.equal(n, 0)
+    } finally { await o.end() }
+  } finally { await e.done() }
+})
+for (const d of dbs) await root.query(`DROP DATABASE IF EXISTS ${d} WITH (FORCE)`).catch(() => {})
+await root.end()
+console.log(`\nSUMMARY: ${statics} static + ${results.filter((r) => r.ok).length} scratch-db passed, ${results.filter((r) => !r.ok).length} failed, invariant checks run: ${invariantChecks}`)
+if (results.some((r) => !r.ok)) process.exit(1)
