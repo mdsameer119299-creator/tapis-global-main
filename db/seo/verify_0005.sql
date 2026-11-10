@@ -12,8 +12,16 @@ SELECT tablename, policyname, cmd, roles::text FROM pg_policies WHERE schemaname
 SELECT 'policies_for_the_two_roles (must be 20)' AS check, count(*) AS n FROM pg_policies WHERE schemaname='public' AND ('seo_importer' = ANY(roles) OR 'seo_import_rollback' = ANY(roles));
 -- 5. Authorisation table: RLS on, no access for PUBLIC / anon / authenticated / seo_worker / seo_importer.  Expect rls t; the only grantee row is seo_import_rollback SELECT (owner excluded).
 SELECT relname, relrowsecurity AS rls_enabled FROM pg_class WHERE oid = 'public.seo_import_rollback_authorisation'::regclass;
-SELECT 'authorisation_table_grantees_other_than_owner_and_rollback (must be 0)' AS check, count(*) AS n FROM information_schema.role_table_grants
- WHERE table_schema='public' AND table_name='seo_import_rollback_authorisation' AND grantee NOT IN ('seo_import_rollback', (SELECT pg_get_userbyid(relowner) FROM pg_class WHERE oid='public.seo_import_rollback_authorisation'::regclass));
+-- 5a. HARD check: the named roles (and PUBLIC, grantee oid 0) hold NO privilege at all on the authorisation table (aclexplode also covers TRUNCATE/REFERENCES/TRIGGER/MAINTAIN). Expect 0 for each row.
+SELECT 'authorisation_table_privileges_held_by_' || g.label || ' (must be 0)' AS check, count(a.*) AS n
+  FROM (VALUES ('PUBLIC',0::oid),('service_role',to_regrole('service_role')::oid),('anon',to_regrole('anon')::oid),('authenticated',to_regrole('authenticated')::oid),
+               ('seo_importer',to_regrole('seo_importer')::oid),('seo_worker',to_regrole('seo_worker')::oid)) AS g(label, oid)
+  LEFT JOIN LATERAL (SELECT x.* FROM pg_class c, aclexplode(coalesce(c.relacl, acldefault('r', c.relowner))) x
+                      WHERE c.oid='public.seo_import_rollback_authorisation'::regclass AND x.grantee = g.oid AND g.oid IS NOT NULL) a ON true
+ GROUP BY g.label ORDER BY 1;
+-- 5c. INFORMATIONAL only (never a failure): every grantee on the table other than the owner. Expect only seo_import_rollback SELECT. Unrelated Supabase default privileges on OTHER tables are not examined here.
+SELECT 'authorisation_table_other_grantees (info)' AS check, pg_get_userbyid(x.grantee) AS grantee, x.privilege_type
+  FROM pg_class c, aclexplode(c.relacl) x WHERE c.oid='public.seo_import_rollback_authorisation'::regclass AND x.grantee <> c.relowner ORDER BY 2,3;
 SELECT 'authorisation_rows_left_behind (informational; each is inert outside the transaction that created it)' AS check, count(*) AS n FROM public.seo_import_rollback_authorisation;
 -- 5b. The single-active-run index (the only change to an existing table).  Expect 1 row.
 SELECT indexname, indexdef FROM pg_indexes WHERE schemaname='public' AND indexname='seo_gsc_sync_runs_import_single_active_uq';

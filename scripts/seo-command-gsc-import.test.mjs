@@ -617,6 +617,18 @@ await t('PERM application login: holds seo_importer only; cannot SET ROLE to seo
     const im = await q(e.admin, `SELECT m.rolname member FROM pg_auth_members a JOIN pg_roles m ON m.oid=a.member WHERE a.roleid='seo_importer'::regrole ORDER BY 1`); assert.ok(im.some((x) => x.member === LOGIN))
   } finally { await e.done() }
 })
+await t('PERM authorisation table: service_role / anon / authenticated / PUBLIC / seo_importer / seo_worker hold NO privilege (also after Supabase-style default privileges); only seo_import_rollback SELECT', async () => {
+  assert.ok(/REVOKE ALL PRIVILEGES ON TABLE public\.seo_import_rollback_authorisation FROM service_role/.test(read('db/seo/0005_seo_import_roles.sql')))
+  const e = await fresh(); try {
+    const priv = async () => (await e.admin.query(`SELECT coalesce(pg_get_userbyid(x.grantee),'PUBLIC') g, x.privilege_type p FROM pg_class c, aclexplode(coalesce(c.relacl, acldefault('r', c.relowner))) x WHERE c.oid='public.seo_import_rollback_authorisation'::regclass AND x.grantee <> c.relowner AND x.grantee <> (SELECT oid FROM pg_roles WHERE rolname = $1) ORDER BY 1,2`, [ADMIN_LOGIN])).rows.map((r) => r.g + ':' + r.p)
+    assert.deepEqual(await priv(), ['seo_import_rollback:SELECT'])
+    // when a service_role exists on this server, prove the revoke is what removes a Supabase-style default grant (mutation: grant it back, the check must see it)
+    if ((await e.admin.query(`SELECT 1 FROM pg_roles WHERE rolname='service_role'`)).rowCount) {
+      await e.admin.query('GRANT TRUNCATE ON public.seo_import_rollback_authorisation TO service_role'); assert.ok((await priv()).includes('service_role:TRUNCATE'))
+      await e.admin.query('REVOKE ALL PRIVILEGES ON TABLE public.seo_import_rollback_authorisation FROM service_role'); assert.deepEqual(await priv(), ['seo_import_rollback:SELECT'])
+    }
+  } finally { await e.done() }
+})
 await t('PERM RLS is enforced after SET LOCAL ROLE even for a BYPASSRLS login (owner_like): removing the site policy hides the site from seo_importer', async () => {
   const e = await fresh(); try {
     await e.admin.query(`GRANT seo_importer TO ${BYPASS} WITH INHERIT FALSE, SET TRUE`)

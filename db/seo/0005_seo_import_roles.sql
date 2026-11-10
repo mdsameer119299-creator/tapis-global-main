@@ -55,6 +55,8 @@ DO $$
 BEGIN
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'anon')          THEN EXECUTE 'REVOKE ALL ON public.seo_import_rollback_authorisation FROM anon'; END IF;
   IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'authenticated') THEN EXECUTE 'REVOKE ALL ON public.seo_import_rollback_authorisation FROM authenticated'; END IF;
+  -- service_role: Supabase's default ACL for tables created by postgres in public grants it Dxtm (TRUNCATE, REFERENCES, TRIGGER, MAINTAIN) on this table too. Revoke explicitly.
+  IF EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'service_role')  THEN EXECUTE 'REVOKE ALL PRIVILEGES ON TABLE public.seo_import_rollback_authorisation FROM service_role'; END IF;
 END $$;
 GRANT SELECT ON public.seo_import_rollback_authorisation TO seo_import_rollback;
 CREATE POLICY seo_rollback_auth_select ON public.seo_import_rollback_authorisation FOR SELECT TO seo_import_rollback
