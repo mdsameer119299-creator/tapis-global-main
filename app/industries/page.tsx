@@ -11,8 +11,8 @@ import { INDUSTRIES } from '@/lib/seo-landing'
 import LandingHub from '@/components/landing/LandingHub'
 
 export const metadata: Metadata = buildMetadata({
-  title:       'Carpets by Industry | Hospitality, Commercial & Institutional — Tapis Global',
-  description: 'Industry-specific carpet manufacturing from Tapis Global International, Bhadohi — hotels, auditoriums, mosques, offices, schools, airports, villas, restaurants, hospitals and retail. Custom, fire-rated, bulk supply across India and internationally.',
+  title:       'Institutional & Hospitality Carpets | TAPIS GLOBAL INTERNATIONAL',
+  description: 'TAPIS GLOBAL INTERNATIONAL makes carpets for hotels, offices, schools, mosques, airports, hospitals, institutions and retail. Custom, fire-rated, bulk supply.',
   keywords:    ['carpet manufacturer by industry', 'hotel carpet manufacturer', 'commercial carpet supplier India', 'auditorium carpet manufacturer', 'office carpet supplier', 'institutional carpet manufacturer'],
   canonical:   `${SEO_BASE_URL}/industries`,
 })

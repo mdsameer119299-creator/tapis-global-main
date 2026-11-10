@@ -11,8 +11,8 @@ import { SOLUTIONS } from '@/lib/seo-landing'
 import LandingHub from '@/components/landing/LandingHub'
 
 export const metadata: Metadata = buildMetadata({
-  title:       'Carpet Solutions | Luxury, Designer, Custom, Wholesale & Export — Tapis Global',
-  description: 'Carpet and rug solutions from Tapis Global International, Bhadohi — luxury, designer, custom, modern, commercial, wholesale, contract and export. Manufacturer-direct supply for India and international B2B buyers.',
+  title:       'Wholesale & Custom Carpet Solutions | TAPIS GLOBAL INTERNATIONAL',
+  description: 'Wholesale carpets and rugs; custom, luxury, designer and contract solutions from TAPIS GLOBAL INTERNATIONAL. Manufacturer-direct for India and export buyers.',
   keywords:    ['luxury carpet manufacturer India', 'designer rug manufacturer', 'custom carpet manufacturer', 'wholesale carpet supplier India', 'commercial carpet manufacturer', 'carpet exporter India'],
   canonical:   `${SEO_BASE_URL}/solutions`,
 })

@@ -186,14 +186,14 @@ export const PAGE_META = {
 
   contact: {
     title:       `Contact Tapis Global | Carpet & Rug Enquiries`,
-    description: `Contact Tapis Global for wholesale carpets, custom rugs, hospitality projects and export enquiries. Call +91 84482 91631 or email sales@tapisglobalinternational.com.`,
+    description: `TAPIS GLOBAL INTERNATIONAL: wholesale carpets, custom rugs, hospitality and export enquiries. Call +91 84482 91631 or email sales@tapisglobalinternational.com.`,
     keywords:    [...KEYWORDS_PRIMARY, 'carpet project enquiry', 'custom rug supplier India'],
     canonical:   `${SEO_BASE_URL}/contact`,
   },
 
   gallery: {
     title:       `Carpet & Rug Gallery | Tapis Global International`,
-    description: `Explore handmade carpet and rug designs, including hand-tufted, hand-knotted, kilim, jute and hospitality flooring collections from Tapis Global, Bhadohi, India.`,
+    description: `Handmade carpet and rug designs from TAPIS GLOBAL INTERNATIONAL, Bhadohi, India: hand-tufted, hand-knotted, kilim, jute and hospitality flooring collections.`,
     keywords:    [...KEYWORDS_PRODUCT, 'carpet gallery India', 'handmade rug designs'],
     canonical:   `${SEO_BASE_URL}/gallery`,
   },

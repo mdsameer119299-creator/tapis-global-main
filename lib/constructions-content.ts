@@ -23,14 +23,14 @@ const META: Record<string, ConstructionPageMeta> = {
   'hand-knotted': {
     heroImage: '/images/knotted/knotted-01.webp',
     seoTitle: 'Hand-Knotted Rugs | Construction Guide — Tapis Global',
-    seoDescription: 'Hand-knotted rug construction explained — method, knot density, suitable materials, traffic suitability and care. Manufactured in Bhadohi, India by Tapis Global International.',
+    seoDescription: 'Hand-knotted rug construction explained: method, knot density, materials, traffic suitability and care. Made in Bhadohi, India by TAPIS GLOBAL INTERNATIONAL.',
     seoKeywords: ['hand knotted rug construction', 'hand knotted carpet method', 'knot density KPSI', 'hand knotted rug guide'],
     blurb: 'Woven knot-by-knot on a loom; the traditional, premium-tier construction method.',
   },
   'hand-tufted': {
     heroImage: '/images/handtufted/handtufted-photo-01.webp',
     seoTitle: 'Hand-Tufted Rugs | Construction Guide — Tapis Global',
-    seoDescription: 'Hand-tufted rug construction explained — method, suitable materials, traffic suitability, pile and care. Manufactured in Bhadohi, India by Tapis Global International.',
+    seoDescription: 'Hand-tufted rug construction explained: method, materials, traffic suitability, pile and care. Made in Bhadohi, India by TAPIS GLOBAL INTERNATIONAL.',
     seoKeywords: ['hand tufted rug construction', 'hand tufted carpet method', 'tufting process guide'],
     blurb: 'Tufted to a backing; flexible for custom designs, carving and mixed textures.',
   },
@@ -65,7 +65,7 @@ const META: Record<string, ConstructionPageMeta> = {
   'machine-made': {
     heroImage: '/images/wall-to-wall/w2w-02.webp',
     seoTitle: 'Machine-Made Carpets | Construction Guide — Tapis Global',
-    seoDescription: 'Machine-made carpet construction explained — method, suitable materials, traffic suitability and care. Manufactured in Bhadohi, India by Tapis Global International.',
+    seoDescription: 'Machine-made carpet construction explained: method, materials, traffic suitability and care. Made in Bhadohi, India by TAPIS GLOBAL INTERNATIONAL.',
     seoKeywords: ['machine made carpet construction', 'power loom carpet method', 'broadloom carpet guide'],
     blurb: 'Power-loom woven for consistent output and larger runs — broadloom and wall-to-wall.',
   },

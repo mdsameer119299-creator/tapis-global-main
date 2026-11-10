@@ -11,8 +11,8 @@ import { DHURRIES } from '@/lib/seo-landing'
 import LandingHub from '@/components/landing/LandingHub'
 
 export const metadata: Metadata = buildMetadata({
-  title:       'Dhurrie & Tat Patti Manufacturer India | School & Institutional Supply — Tapis Global',
-  description: 'Dhurrie and Tat Patti manufacturer in Bhadohi, India. Cotton, wool and jute dhurrie and floor-matting options for trade, school and institutional buyers. Discuss materials, sizes and bulk requirements.',
+  title:       'Dhurrie & Tat Patti Manufacturer India | TAPIS GLOBAL INTERNATIONAL',
+  description: 'Handmade cotton, wool and jute dhurries, plus Tat Patti, for trade, schools and institutions. Ask TAPIS GLOBAL INTERNATIONAL about sizes and bulk orders.',
   keywords:    ['dhurrie manufacturer India', 'tat patti manufacturer India', 'school tat patti supplier', 'dhurrie supplier India', 'bulk dhurrie supplier', 'dhurrie exporter India'],
   canonical:   `${SEO_BASE_URL}/dhurries`,
 })

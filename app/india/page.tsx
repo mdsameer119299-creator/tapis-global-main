@@ -12,8 +12,8 @@ import { INDIA_HUB_INTRO } from '@/lib/india'
 import LandingHub from '@/components/landing/LandingHub'
 
 export const metadata: Metadata = buildMetadata({
-  title:       'Carpet Manufacturer India | Custom Carpets & Rugs, Pan-India Supply — Tapis Global',
-  description: 'Tapis Global International manufactures custom carpets and rugs in Bhadohi, India, for commercial buyers and projects across the country — Delhi NCR, Mumbai, Bengaluru, Hyderabad, Chennai and more. Custom carpets for architects, hotels, developers and procurement. Not a ready-stock retailer.',
+  title:       'Carpet Manufacturer India | TAPIS GLOBAL INTERNATIONAL',
+  description: 'TAPIS GLOBAL INTERNATIONAL is a carpet manufacturer in India making custom carpets and rugs for hotels, architects and developers. Not a ready-stock retailer.',
   keywords:    ['carpet manufacturer India', 'rug manufacturer India', 'custom carpet manufacturer India', 'hotel carpet manufacturer India', 'commercial carpet supplier India', 'handmade rug manufacturer India', 'B2B carpet manufacturer India'],
   canonical:   `${SEO_BASE_URL}/india`,
 })
