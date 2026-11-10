@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from 'next/server'
-import { GSC_FLOW_COOKIE, GSC_CALLBACK_PATH, flowCookieOptions, gscOAuthConfig, verifyFlowCookie, callbackResultHtml } from '@/lib/seo-command/gsc-oauth'
+import { GSC_FLOW_COOKIE, flowCookieOptions, gscOAuthConfig, verifyFlowCookie, callbackResultHtml } from '@/lib/seo-command/gsc-oauth'
 
 export const dynamic = 'force-dynamic'
 
@@ -29,5 +29,3 @@ export async function GET(req: NextRequest) {
   // enabled until the database migration is reviewed and approved.
   return html(503, false, 'Connection storage is not enabled yet.')
 }
-
-export const GSC_CALLBACK_ROUTE_PATH = GSC_CALLBACK_PATH
