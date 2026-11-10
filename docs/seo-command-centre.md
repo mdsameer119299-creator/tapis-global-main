@@ -1,0 +1,30 @@
+# SEO Command Centre (Phase 1)
+
+Admin-only technical SEO engine and dashboard for tapisglobalinternational.com. Lives at `/admin/seo` (requires the existing admin session; `noindex`).
+
+## Data stores
+- **SEO database only**: Supabase project `tapis-global-seo-dev`, accessed with `pg` via `SEO_DATABASE_URL`.
+- `DATABASE_URL` (website / CraftTrack) is never read by SEO code. `lib/seo-command/db.ts` refuses a URL equal to `DATABASE_URL` and refuses known CraftTrack/legacy project refs.
+- Schema is managed by SQL migrations in `db/seo/` (not Prisma): `0001_seo_foundation.sql`, `0002_seo_tracking.sql`. `down.sql` is a manual rollback, never auto-run.
+- All `seo_*` tables: RLS on, nothing granted to `PUBLIC`/`anon`/`authenticated`; a `seo_worker` NOLOGIN role has narrow grants for future agents.
+
+## Environment variables
+| Variable | Where | Purpose |
+|---|---|---|
+| `SEO_DATABASE_URL` | Preview (required) | Supabase connection string for `tapis-global-seo-dev` |
+| `SEO_DATABASE_EXPECTED_REF` | optional | Extra guard: URL must contain this project ref |
+| `SEO_OWNER_EMAILS` | optional | Comma-separated admins allowed to approve HIGH_IMPACT recommendations (unset = nobody) |
+| `SEO_CRAWL_BASE_URL` | optional | Defaults to `https://www.tapisglobalinternational.com` |
+| `PSI_API_KEY` | optional | Google PageSpeed Insights key (works without, at low quota) |
+| `CRON_SECRET` | optional | Bearer secret (>= 16 chars) for `GET /api/seo/cron` |
+
+## What it does
+Crawler (robots.txt + sitemap discovery, BFS crawl, redirect chains, status codes, canonical/noindex/title/description/H1/alt checks, duplicate titles/descriptions/content, orphan pages), issue tracking with first/last seen and resolution, health score, recommendations with an approval workflow, keyword on-page coverage, competitor public-page snapshots, PageSpeed measurements, change history and reports.
+
+## What it does not do
+- It never modifies the public website. Approving a recommendation only records a decision.
+- Google Search Console / GA4 are **not connected**; the UI shows "Connection pending" and no rankings, clicks or traffic are estimated.
+- No cron is scheduled in `vercel.json` (Vercel crons run on production only). Scheduling is a separate approval.
+
+## Tests
+`npm run test:seo-command` runs engine, static-security and DB tests. DB tests need `SEO_TEST_DATABASE_URL` pointing at a throwaway **local** Postgres with both migrations applied (they refuse non-local hosts and are skipped when unset).
