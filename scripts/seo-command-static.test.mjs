@@ -20,7 +20,8 @@ const allSeo = [...apiFiles, ...pageFiles, ...libFiles, ...walk(path.join(ROOT, 
 t('there are routes and pages to check', () => { assert.ok(apiFiles.length >= 7); assert.ok(pageFiles.length >= 7) })
 
 t('every admin SEO API handler is wrapped in seoApi, mutating ones flagged', () => {
-  const PUBLIC_AUTH_ROUTES = ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts']
+  // connectivity-test guards itself (session + origin + READ ONLY tx; checked in the next test) because seoApi() upserts seo_sites
+  const PUBLIC_AUTH_ROUTES = ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts', 'gsc/connectivity-test/route.ts']
   for (const f of apiFiles) {
     if (PUBLIC_AUTH_ROUTES.some((x) => f.endsWith(x))) continue
     const s = read(f)
@@ -46,7 +47,12 @@ t('every SEO page checks the SEO session itself (not only the layout); only the 
 t('login/logout routes are same-origin protected and the only unguarded SEO API routes', () => {
   for (const r of ['auth/login', 'auth/logout']) assert.match(read(path.join(ROOT, `app/api/admin/seo/${r}/route.ts`)), /originMatchesHost\(/)
   const open = apiFiles.filter((f) => !/seoApi\(/.test(read(f)))
-  assert.deepEqual(open.map((f) => path.relative(path.join(ROOT, 'app/api/admin/seo'), f)).sort(), ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts'])
+  assert.deepEqual(open.map((f) => path.relative(path.join(ROOT, 'app/api/admin/seo'), f)).sort(), ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts', 'gsc/connectivity-test/route.ts'])
+  // the connectivity test is not wrapped in seoApi() on purpose (that wrapper writes seo_sites); it must still guard itself
+  const ct = read(path.join(ROOT, 'app/api/admin/seo/gsc/connectivity-test/route.ts'))
+  assert.match(ct, /verifySeoSession\(/); assert.match(ct, /originMatchesHost\(/); assert.match(ct, /SET TRANSACTION READ ONLY/)
+  assert.ok(ct.indexOf('verifySeoSession(') < ct.indexOf('withSeoTx('), 'session checked before any database access')
+  assert.deepEqual([...ct.matchAll(/export (?:const|async function) (GET|POST|PUT|PATCH|DELETE)\b/g)].map((m) => m[1]), ['POST'])
 })
 
 t('the Google OAuth callback is the one deliberate exception: GET only, flow-cookie checked before any DB or Google call', () => {

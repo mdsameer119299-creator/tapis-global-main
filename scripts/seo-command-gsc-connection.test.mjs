@@ -15,6 +15,7 @@ const g = jiti('../lib/seo-command/gsc-oauth.ts')
 const s = jiti('../lib/seo-command/gsc-state.ts')
 const goog = jiti('../lib/seo-command/gsc-google.ts')
 const conn = jiti('../lib/seo-command/gsc-connection.ts')
+const ct = jiti('../lib/seo-command/gsc-connectivity.ts')
 
 let n = 0
 const t = async (name, fn) => { await fn(); n++; console.log('ok -', name) }
@@ -99,12 +100,64 @@ await t('static: no Search Console / Analytics / PageSpeed API call exists in th
   for (const f of files.filter((x) => x.includes('/route.ts'))) assert.ok(!nonRoute.test(readFileSync(path.join(ROOT, f), 'utf8')), f + ' exports only route handlers')
 })
 
+await t('static: Google data APIs are called ONLY from gsc-connectivity.ts, which is read-only and limited to the 3 approved calls', () => {
+  const src = readFileSync(path.join(ROOT, 'lib/seo-command/gsc-connectivity.ts'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/.*$/gm, '')
+  assert.ok(!/INSERT|UPDATE|DELETE|DROP|ALTER|TRUNCATE/i.test(src.replace(/ownership|updated/gi, '')), 'no write SQL')
+  assert.ok(!/urlInspection|inspection|analyticsdata|analyticsadmin|pagespeedonline|searchAnalytics\/query`, \{ *method: 'GET'/i.test(src), 'no URL Inspection / GA4 / PageSpeed')
+  assert.deepEqual([...src.matchAll(/\$\{API\}(\/[^`'"]*)/g)].map((m) => m[1].replace(/\$\{site\}/, '{site}')), ['/sites', '/sites/{site}/searchAnalytics/query', '/sites/{site}/sitemaps'])
+  const route = readFileSync(path.join(ROOT, 'app/api/admin/seo/gsc/connectivity-test/route.ts'), 'utf8')
+  assert.ok(!/audit\(|storeConnection|recordTokenError|recordRevoked|INSERT|UPDATE |DELETE /i.test(route), 'route writes nothing')
+  for (const f of ['lib/seo-command/gsc-state.ts', 'lib/seo-command/gsc-connection.ts', 'lib/seo-command/gsc-google.ts']) assert.ok(!/googleapis\.com\/webmasters/.test(readFileSync(path.join(ROOT, f), 'utf8')), f)
+})
+
 await t('static: dashboard panel and client buttons never receive token material', () => {
   const panel = readFileSync(path.join(ROOT, 'components/seo-command/gsc-panel.tsx'), 'utf8')
   assert.ok(!/refreshToken|Cipher|clientSecret|ENCRYPTION_KEY/.test(panel))
   const view = readFileSync(path.join(ROOT, 'lib/seo-command/gsc-connection.ts'), 'utf8')
   const sel = view.slice(view.indexOf('export async function getConnectionView'), view.indexOf('export type AccessResult'))
   assert.ok(!/refreshToken/.test(sel), 'status query selects no token columns')
+})
+
+// ── connectivity test (fake Google) ─────────────────────────────────────────
+const route = (opts = {}) => async (url, init) => {
+  calls.push({ url: String(url), method: init.method, auth: init.headers.authorization, body: typeof init.body === 'string' ? JSON.parse(init.body) : null })
+  const u = String(url)
+  if (u === g.GSC_TOKEN_ENDPOINT) return { status: 200, json: async () => ({ access_token: 'ya29.SECRET-ACCESS', expires_in: 3600 }) }
+  if (u.endsWith('/sites')) return { status: 200, json: async () => ({ siteEntry: opts.sites ?? [{ siteUrl: 'sc-domain:example.com', permissionLevel: 'siteOwner' }, { siteUrl: 'https://other.example/', permissionLevel: 'siteFullUser' }] }) }
+  if (u.endsWith('/searchAnalytics/query')) return { status: opts.saStatus ?? 200, json: async () => opts.saStatus ? { error: { status: 'PERMISSION_DENIED', message: 'User does not have sufficient permission' } } : { rows: opts.rows ?? [{ keys: ['2026-11-07'], clicks: 3, impressions: 120, ctr: 0.025, position: 14.2 }] } }
+  if (u.endsWith('/sitemaps')) return { status: 200, json: async () => ({ sitemap: [{ path: 'https://www.example.com/sitemap.xml', lastSubmitted: '2026-10-01T00:00:00Z', isPending: false, isSitemapsIndex: false, type: 'sitemap', errors: '0', warnings: '1', contents: [{ type: 'web', submitted: '280', indexed: '0' }] }] }) }
+  return { status: 404, json: async () => ({}) }
+}
+let calls = []
+const NOW = new Date(Date.UTC(2026, 10, 10, 16, 0, 0))
+await t('connectivity: exactly the 3 approved calls; <=10 rows; date window; token never in the report', async () => {
+  calls = []
+  const r = await ct.runConnectivityTest({ refreshToken: RT, cfg: { ...cfg, property: 'sc-domain:example.com' }, fetchImpl: route(), now: NOW })
+  assert.deepEqual(calls.map((c) => c.method + ' ' + c.url.replace('https://www.googleapis.com/webmasters/v3', '')), ['POST https://oauth2.googleapis.com/token', 'GET /sites', 'POST /sites/sc-domain%3Aexample.com/searchAnalytics/query', 'GET /sites/sc-domain%3Aexample.com/sitemaps'])
+  assert.deepEqual(calls[2].body, { startDate: '2026-11-05', endDate: '2026-11-07', dimensions: ['date'], rowLimit: 10, dataState: 'final' })
+  assert.ok(calls.slice(1).every((c) => c.auth === 'Bearer ya29.SECRET-ACCESS'))
+  assert.equal(r.sites.propertyAccessible, true); assert.equal(r.sites.permissionLevel, 'siteOwner'); assert.equal(r.sites.propertiesVisibleToAccount, 2)
+  assert.deepEqual(r.searchAnalytics.rows, [{ date: '2026-11-07', clicks: 3, impressions: 120, ctr: 0.025, position: 14.2 }])
+  assert.equal(r.sitemaps.sitemaps[0].warnings, 1); assert.equal(r.sitemaps.sitemaps[0].contents[0].submitted, 280)
+  const dump = JSON.stringify(r)
+  assert.ok(!dump.includes('ya29') && !dump.includes(RT) && !dump.includes('CLIENT-SECRET') && !dump.includes('other.example'), 'no tokens, no secrets, no other properties')
+})
+
+await t('connectivity: more than 10 rows are capped; property missing from the list is reported; Google errors are surfaced, not hidden', async () => {
+  const many = Array.from({ length: 25 }, (_, i) => ({ keys: ['2026-11-0' + (i % 9)], clicks: i, impressions: i, ctr: 0, position: 1 }))
+  const r1 = await ct.runConnectivityTest({ refreshToken: RT, cfg: { ...cfg, property: 'sc-domain:example.com' }, fetchImpl: route({ rows: many }), now: NOW })
+  assert.equal(r1.searchAnalytics.rows.length, 10)
+  const r2 = await ct.runConnectivityTest({ refreshToken: RT, cfg: { ...cfg, property: 'sc-domain:example.com' }, fetchImpl: route({ sites: [{ siteUrl: 'https://other.example/', permissionLevel: 'siteOwner' }] }), now: NOW })
+  assert.equal(r2.sites.propertyAccessible, false); assert.equal(r2.sites.permissionLevel, null)
+  const r3 = await ct.runConnectivityTest({ refreshToken: RT, cfg: { ...cfg, property: 'sc-domain:example.com' }, fetchImpl: route({ saStatus: 403 }), now: NOW })
+  assert.equal(r3.searchAnalytics.ok, false); assert.equal(r3.searchAnalytics.httpStatus, 403); assert.equal(r3.searchAnalytics.googleStatus, 'PERMISSION_DENIED')
+})
+
+await t('connectivity: refresh failure stops before any Search Console call', async () => {
+  calls = []
+  const f = async (url, init) => { calls.push(String(url)); return { status: 400, json: async () => ({ error: 'invalid_grant' }) } }
+  const r = await ct.runConnectivityTest({ refreshToken: RT, cfg: { ...cfg, property: 'sc-domain:example.com' }, fetchImpl: f, now: NOW })
+  assert.deepEqual(r.token, { ok: false, error: 'invalid_grant' }); assert.equal(r.sites, undefined); assert.equal(calls.length, 1)
 })
 
 // ── integration (scratch DB) ────────────────────────────────────────────────
@@ -141,6 +194,24 @@ await t('db: full flow: start -> consume -> exchange (fake) -> encrypted store; 
   assert.equal(g.openSecret({ cipher: row.refreshTokenCipher, iv: row.refreshTokenIv, tag: row.refreshTokenTag, keyVersion: row.keyVersion }, env), RT)
   const v = await view()
   assert.equal(v.state, 'CONNECTED'); assert.ok(v.grantedAtEpoch > 0); assert.ok(!JSON.stringify(v).includes(RT))
+})
+
+await t('db: connectivity read is SELECT-only: no row changes (xmin), works in a READ ONLY transaction, never flags state', async () => {
+  const x0 = (await q(`SELECT xmin::text x FROM seo_oauth_connections`))[0].x
+  const c = await pool.connect()
+  try {
+    await c.query('BEGIN'); await c.query('SET TRANSACTION READ ONLY')
+    const ro = (t, p) => c.query(t, p).then((r) => r.rows)
+    assert.deepEqual(await ct.readRefreshTokenReadOnly(ro, 'site1', cfg.property, env), { ok: true, refreshToken: RT })
+    assert.deepEqual(await ct.readRefreshTokenReadOnly(ro, 'site1', 'sc-domain:other.com', env), { ok: false, reason: 'property_mismatch' }, 'a different property is refused, not silently used')
+    await assert.rejects(c.query(`UPDATE seo_oauth_connections SET state='ERROR'`), /read-only transaction/, 'Postgres itself blocks writes')
+    await c.query('ROLLBACK')
+    // wrong key: read-only path reports key_unavailable but must NOT mark the row
+    const wrong = { ...env, GSC_TOKEN_ENCRYPTION_KEY: k() }
+    assert.deepEqual(await ct.readRefreshTokenReadOnly(q, 'site1', cfg.property, wrong), { ok: false, reason: 'key_unavailable' })
+  } finally { c.release() }
+  assert.equal((await q(`SELECT xmin::text x FROM seo_oauth_connections`))[0].x, x0, 'row untouched')
+  assert.equal((await view()).state, 'CONNECTED')
 })
 
 await t('db: access token refresh succeeds, records lastRefreshAt, stores no access token', async () => {
