@@ -32,7 +32,7 @@
     "db:migrate": "prisma migrate dev",
     "db:seed": "prisma db seed",
     "db:studio": "prisma studio",
-    "test:seo-command": "node scripts/seo-command-engine.test.mjs && node scripts/seo-command-static.test.mjs && node scripts/seo-command-auth.test.mjs && node scripts/seo-command-db.test.mjs && node scripts/seo-command-gsc.test.mjs && node scripts/seo-command-gsc-state.test.mjs && node scripts/seo-command-gsc-connection.test.mjs"
+    "test:seo-command": "node scripts/seo-command-engine.test.mjs && node scripts/seo-command-static.test.mjs && node scripts/seo-command-auth.test.mjs && node scripts/seo-command-db.test.mjs && node scripts/seo-command-gsc.test.mjs && node scripts/seo-command-gsc-state.test.mjs && node scripts/seo-command-gsc-connection.test.mjs && node scripts/seo-command-gsc-dryrun.test.mjs"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
