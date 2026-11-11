@@ -36,9 +36,14 @@ export function markdownToHtml(md: string): string {
   return `<div style="font-family:Arial,sans-serif;font-size:14px;color:#222;max-width:720px">${out.join('\n')}</div>`
 }
 
+/** The one place the SEO SMTP transport options are built, shared by sending and by the verify-only check (lib/seo-command/smtp-verify.ts). */
+export function smtpTransportOptions(cfg: { host: string; port: number; secure: boolean; user: string; pass: string }) {
+  return { host: cfg.host, port: cfg.port, secure: cfg.secure, auth: { user: cfg.user, pass: cfg.pass }, connectionTimeout: 15000, socketTimeout: 20000 }
+}
+
 export const smtpSend: Send = async (cfg, mail) => {
   const nodemailer = (await import('nodemailer')).default
-  const t = nodemailer.createTransport({ host: cfg.host, port: cfg.port, secure: cfg.secure, auth: { user: cfg.user, pass: cfg.pass }, connectionTimeout: 15000, socketTimeout: 20000 })
+  const t = nodemailer.createTransport(smtpTransportOptions(cfg))
   const r = await t.sendMail({ to: mail.to, from: mail.from, subject: mail.subject, text: mail.text, html: mail.html })
   return { messageId: r.messageId }
 }

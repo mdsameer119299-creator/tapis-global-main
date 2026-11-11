@@ -115,3 +115,7 @@ Report mail uses its own sender so it can never share the website contact-form a
 | `SEO_REPORT_RECIPIENT` | the confirmed recipient | no |
 
 Do not add any of these to Production and do not edit the existing `SMTP_*` variables.
+
+## Verify-only sender check (no email)
+
+`POST /api/admin/seo/smtp-verify` (SEO admin session + same-origin) connects to the dedicated sender, negotiates TLS and authenticates with `transporter.verify()`, then closes. It never sends a message, never touches the database and writes no report or delivery record. The response lists the non-secret connection settings (host, port, TLS mode, username), booleans for "password configured" and "sender is exactly the expected address", and a sanitised error code (for example `EAUTH` with SMTP code 535) on failure. Passwords, addresses, provider text and stack traces are never returned.
