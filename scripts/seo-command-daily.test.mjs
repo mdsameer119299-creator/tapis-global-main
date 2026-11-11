@@ -259,6 +259,31 @@ await t('pipeline: scheduled run generates once, records delivery separately (NO
     const m = await pipeline.runDailyPipeline({ ...base, q: e.q, withTx: e.withTx, env, trigger: 'MANUAL', deliver: false, now: new Date('2026-11-14T02:30:00Z'), send: async () => { throw new Error('manual runs do not email unless asked') } }); assert.equal(m.delivery.status, 'NOT_ATTEMPTED')
   } finally { await e.done() }
 })
+await t('pipeline: simultaneous calls and a scheduler retry that arrives mid-send produce exactly ONE email; a claim left by a crashed sender is retried only after it is stale', async () => {
+  const e = await fresh(); try {
+    const env = { SEO_REPORT_RECIPIENT: 'seo-recipient@example.test', SMTP_HOST: 'h', SMTP_USER: 'u', SMTP_PASS: 'p', SMTP_FROM: 'a@b.co' }; let sends = 0; const tos = []
+    const slow = async (cfg, m) => { sends++; tos.push(m.to); await new Promise((r) => setTimeout(r, 400)); return { messageId: 'm' } }
+    const base = { trigger: 'SCHEDULE', triggeredBy: 'test', q: e.q, withTx: e.withTx, siteId: 'site1', now: NOW, env, send: slow }
+    const rs = await Promise.all([pipeline.runDailyPipeline(base), pipeline.runDailyPipeline(base), pipeline.runDailyPipeline(base), pipeline.runDailyPipeline(base)])
+    assert.equal(sends, 1, rs.map((r) => r.delivery.status).join()); assert.deepEqual(tos, ['seo-recipient@example.test']); assert.equal(rs.filter((r) => r.delivery.status === 'SENT').length, 1)
+    assert.ok(rs.every((r) => ['SENT', 'SKIPPED_IN_PROGRESS', 'SKIPPED_ALREADY_SENT', 'NOT_ATTEMPTED'].includes(r.delivery.status)), rs.map((r) => r.delivery.status).join())
+    assert.equal((await e.q(`SELECT count(*)::int n FROM seo_reports`))[0].n, 1); assert.equal((await e.q(`SELECT data->'delivery'->>'status' s FROM seo_reports`))[0].s, 'SENT')
+    // a crashed sender: SENDING claim. fresh claim -> skipped; stale claim -> retried once
+    const e2 = await fresh(); try {
+      const b2 = { ...base, q: e2.q, withTx: e2.withTx, send: async () => { sends++; return {} } }; sends = 0
+      await pipeline.runDailyPipeline({ ...b2, env: {} }); await e2.q(`UPDATE seo_reports SET data = jsonb_set(data,'{delivery}',$1::jsonb)`, [JSON.stringify({ status: 'SENDING', attemptedAt: new Date().toISOString() })])
+      assert.equal((await pipeline.runDailyPipeline(b2)).delivery.status, 'SKIPPED_IN_PROGRESS'); assert.equal(sends, 0)
+      await e2.q(`UPDATE seo_reports SET data = jsonb_set(data,'{delivery}',$1::jsonb)`, [JSON.stringify({ status: 'SENDING', attemptedAt: new Date(Date.now() - 20 * 60000).toISOString() })])
+      assert.equal((await pipeline.runDailyPipeline(b2)).delivery.status, 'SENT'); assert.equal(sends, 1)
+    } finally { await e2.done() }
+    // a failed send is recorded as FAILED (never SENT) and a later call may retry it
+    const e3 = await fresh(); try {
+      const f = await pipeline.runDailyPipeline({ ...base, q: e3.q, withTx: e3.withTx, send: async () => { const x = new Error('x'); x.code = 'ETIMEDOUT'; throw x } }); assert.equal(f.delivery.status, 'FAILED')
+      assert.equal((await e3.q(`SELECT data->'delivery'->>'status' s FROM seo_reports`))[0].s, 'FAILED')
+      assert.equal((await pipeline.runDailyPipeline({ ...base, q: e3.q, withTx: e3.withTx, send: async () => ({ messageId: 'ok' }) })).delivery.status, 'SENT')
+    } finally { await e3.done() }
+  } finally { await e.done() }
+})
 await t('pipeline with GA4 configured: a GA4 sync failure is disclosed (status in the result and the report) and does not stop the report', async () => {
   const e = await fresh(); try {
     const g = fakeGoogle({ report: () => new Response(JSON.stringify({ error: { status: 'PERMISSION_DENIED' } }), { status: 403 }) })

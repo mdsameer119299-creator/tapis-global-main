@@ -48,7 +48,7 @@ Crawler (robots.txt + sitemap discovery, BFS crawl, redirect chains, status code
 
 ## Scheduling status: NOT ACTIVE
 
-08:00 IST = 02:30 UTC (`30 2 * * *`, no DST). `.github/workflows/seo-daily-report.yml` is prepared but **GitHub only runs `schedule` triggers from the default branch**, and Vercel Cron runs on Production only; both are currently out of bounds. Only manual `workflow_dispatch` works from the feature branch. Scheduling must not be described as active until a real scheduled run has been observed. Options needing your decision: (a) put the workflow on `main` (workflow file only, no site change), or (b) an external scheduler calling the protected Preview endpoint.
+08:00 IST = 02:30 UTC (`30 2 * * *`, no DST). `.github/workflows/seo-daily-report.yml` is prepared but **GitHub only runs `schedule` triggers from the default branch**, and Vercel Cron runs on Production only; both are currently out of bounds. Only manual `workflow_dispatch` works from the feature branch. Scheduling must not be described as active until a real scheduled run has been observed. Decision taken: an external scheduler calling the protected Preview endpoint (not yet configured). See `docs/seo-daily-report-scheduler.md` for the endpoint contract, Preview variables, scheduler setup and the validation checklist. Do not enable the GitHub workflow alongside it.
 
 Secrets the workflow needs (GitHub → Settings → Secrets and variables → Actions): `SEO_PREVIEW_BASE_URL` (the Preview https URL), `SEO_CRON_SECRET` (same value as Preview `CRON_SECRET`), `VERCEL_AUTOMATION_BYPASS_SECRET` (Vercel "Protection Bypass for Automation"). Preview also needs `CRON_SECRET`.
 

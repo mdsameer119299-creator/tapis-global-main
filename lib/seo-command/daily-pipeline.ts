@@ -7,6 +7,7 @@ import { deliverReport, type DeliveryResult, type Send } from './report-delivery
 /** The daily pipeline in the agreed order: verify integrations -> GA4 sync (if configured) -> generate report from stored data -> deliver -> record results.
  *  Each step's result is returned and the report records delivery separately from generation. A failing step never discards the others.
  *  The Search Console daily sync and the crawl are NOT run here: GSC ingestion is gated behind migration 0005 / import approval, and the crawl has its own endpoint (/api/seo/cron). */
+const DELIVERY_CLAIM_MINUTES = 15
 export const appQ: Q = (t, p) => seoQuery(t, p)
 export const appWithTx: WithTx = (fn) => withSeoTx((c) => fn((t, p) => c.query(t, p).then((r) => r.rows)))
 
@@ -25,8 +26,14 @@ export async function runDailyPipeline(a: { trigger: 'SCHEDULE' | 'MANUAL'; trig
   if (deliverable && a.deliver !== false) {
     const row = (await q(`SELECT title, "summaryMd", data->'delivery'->>'status' ds FROM seo_reports WHERE id=$1`, [report.reportId]))[0]
     if (row) {
-      delivery = await deliverReport({ title: row.title, summaryMd: row.summaryMd, previousDeliveryStatus: row.ds, force: a.force && report.outcome === 'REGENERATED' }, env, a.send)
-      if (delivery.status !== 'SKIPPED_ALREADY_SENT') await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1`, [report.reportId, JSON.stringify(delivery)])
+      // Atomic claim: only one caller may send. A concurrent call, or a scheduler retry after a client timeout, sees SENDING/SENT and does not email again.
+      // A claim older than DELIVERY_CLAIM_MINUTES is treated as abandoned (the sender crashed) and may be retried.
+      const claim = await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1 AND COALESCE(data->'delivery'->>'status','') <> 'SENT' AND (COALESCE(data->'delivery'->>'status','') <> 'SENDING' OR COALESCE((data->'delivery'->>'attemptedAt')::timestamptz, '-infinity') < now() - make_interval(mins => $3::int)) RETURNING id`, [report.reportId, JSON.stringify({ status: 'SENDING', attemptedAt: new Date().toISOString() }), DELIVERY_CLAIM_MINUTES])
+      if (claim.length === 0) {
+        const cur = (await q(`SELECT data->'delivery'->>'status' ds FROM seo_reports WHERE id=$1`, [report.reportId]))[0]?.ds
+        delivery = { status: cur === 'SENT' ? 'SKIPPED_ALREADY_SENT' : 'SKIPPED_IN_PROGRESS', attemptedAt: new Date().toISOString() }
+      } else delivery = await deliverReport({ title: row.title, summaryMd: row.summaryMd }, env, a.send)
+      if (delivery.status !== 'SKIPPED_ALREADY_SENT' && delivery.status !== 'SKIPPED_IN_PROGRESS') await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1`, [report.reportId, JSON.stringify(delivery)])
     }
   }
   return { reportDate, ga4, report, delivery }

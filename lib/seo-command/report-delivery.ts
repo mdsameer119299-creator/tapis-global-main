@@ -2,7 +2,7 @@
  *  but NEVER the enquiry recipient: the recipient must be set explicitly in SEO_REPORT_RECIPIENT. With no confirmed recipient or no SMTP config nothing is sent and the status is NOT_CONFIGURED.
  *  Generation and delivery are separate statuses. The recipient address is never logged or stored. */
 type Env = Record<string, string | undefined>
-export type DeliveryStatus = 'NOT_CONFIGURED' | 'SENT' | 'FAILED' | 'SKIPPED_ALREADY_SENT'
+export type DeliveryStatus = 'NOT_CONFIGURED' | 'SENT' | 'FAILED' | 'SKIPPED_ALREADY_SENT' | 'SKIPPED_IN_PROGRESS'
 export interface DeliveryResult { status: DeliveryStatus; missing?: string[]; code?: string; messageId?: string; attemptedAt: string }
 export interface Mail { to: string; from: string; subject: string; text: string; html: string }
 export type Send = (cfg: { host: string; port: number; secure: boolean; user: string; pass: string }, mail: Mail) => Promise<{ messageId?: string }>
