@@ -90,12 +90,20 @@ await t('analyst: every finding that would change the live site requires approva
 // ============================ delivery (pure) ============================
 await t('delivery: with no confirmed recipient or SMTP config NOTHING is sent and only variable NAMES are reported; the enquiry recipient is never used', async () => {
   let sent = 0; const send = async () => { sent++; return {} }
-  const r = await dv.deliverReport({ title: 'T', summaryMd: '# x' }, { ENQUIRY_NOTIFY_EMAIL: 'owner@example.com', SMTP_HOST: 'h' }, send)
+  const r = await dv.deliverReport({ title: 'T', summaryMd: '# x' }, { ENQUIRY_NOTIFY_EMAIL: 'owner@example.com', SEO_SMTP_HOST: 'h' }, send)
   assert.equal(r.status, 'NOT_CONFIGURED'); assert.equal(sent, 0); assert.ok(r.missing.includes('SEO_REPORT_RECIPIENT')); assert.ok(!JSON.stringify(r).includes('owner@example.com'))
-  assert.equal(dv.deliveryConfig({ SEO_REPORT_RECIPIENT: 'not-an-email', SMTP_HOST: 'h', SMTP_USER: 'u', SMTP_PASS: 'p', SMTP_FROM: 'a@b.co' }).ok, false)
+  assert.equal(dv.deliveryConfig({ SEO_REPORT_RECIPIENT: 'not-an-email', SEO_SMTP_HOST: 'h', SEO_SMTP_USER: 'u', SEO_SMTP_PASS: 'p', SEO_SMTP_FROM: 'a@b.co' }).ok, false)
+})
+await t('delivery: the website SMTP_* variables are NEVER used for report mail (dedicated SEO_SMTP_* only, no fallback)', async () => {
+  let sent = 0; const send = async () => { sent++; return {} }
+  const legacy = { SEO_REPORT_RECIPIENT: 'boss@example.com', SMTP_HOST: 'h', SMTP_USER: 'u', SMTP_PASS: 'p', SMTP_FROM: 'a@b.co', SMTP_PORT: '465', SMTP_SECURE: 'true', SMTP_FROM_NAME: 'Website' }
+  const r = await dv.deliverReport({ title: 'T', summaryMd: '# x' }, legacy, send); assert.equal(r.status, 'NOT_CONFIGURED'); assert.equal(sent, 0)
+  assert.deepEqual(r.missing, ['SEO_SMTP_HOST', 'SEO_SMTP_USER', 'SEO_SMTP_PASS', 'SEO_SMTP_FROM'])
+  const c = dv.deliveryConfig({ ...legacy, SEO_SMTP_HOST: 'smtp.resend.com', SEO_SMTP_USER: 'resend', SEO_SMTP_PASS: 'k', SEO_SMTP_FROM: 'seo@reports.example.test', SEO_SMTP_PORT: '465', SEO_SMTP_FROM_NAME: 'TAPIS SEO Reports' })
+  assert.equal(c.ok, true); assert.equal(c.smtp.host, 'smtp.resend.com'); assert.equal(c.smtp.user, 'resend'); assert.equal(c.smtp.secure, true); assert.equal(c.from, '"TAPIS SEO Reports" <seo@reports.example.test>'); assert.ok(!JSON.stringify(c).includes('Website'))
 })
 await t('delivery: SENT, retried once then FAILED with a safe code, and an already-SENT report is not re-sent; result never contains the recipient or password', async () => {
-  const env = { SEO_REPORT_RECIPIENT: 'boss@example.com', SMTP_HOST: 'smtp.example.com', SMTP_USER: 'u', SMTP_PASS: 'secret-pass', SMTP_FROM: 'seo@example.com' }
+  const env = { SEO_REPORT_RECIPIENT: 'boss@example.com', SEO_SMTP_HOST: 'smtp.example.com', SEO_SMTP_USER: 'u', SEO_SMTP_PASS: 'secret-pass', SEO_SMTP_FROM: 'seo@example.com' }
   let calls = 0; const ok = await dv.deliverReport({ title: 'T', summaryMd: '# a\n- b <script>' }, env, async (cfg, m) => { calls++; assert.equal(m.to, 'boss@example.com'); assert.ok(!m.html.includes('<script>')); return { messageId: 'm1' } })
   assert.equal(ok.status, 'SENT'); assert.equal(calls, 1)
   let n = 0; const bad = await dv.deliverReport({ title: 'T', summaryMd: 'x' }, env, async () => { n++; const e = new Error('boom secret-pass boss@example.com'); e.code = 'EAUTH'; throw e })
@@ -252,7 +260,7 @@ await t('pipeline: scheduled run generates once, records delivery separately (NO
     const base = { trigger: 'SCHEDULE', triggeredBy: 'test', q: e.q, withTx: e.withTx, siteId: 'site1', now: NOW }
     const a = await pipeline.runDailyPipeline({ ...base, env: {} }); assert.equal(a.report.outcome, 'CREATED'); assert.equal(a.delivery.status, 'NOT_CONFIGURED'); assert.equal(a.ga4.status, 'SKIPPED')
     assert.equal((await e.q(`SELECT data->'delivery'->>'status' s FROM seo_reports`))[0].s, 'NOT_CONFIGURED')
-    const env = { SEO_REPORT_RECIPIENT: 'boss@example.com', SMTP_HOST: 'h', SMTP_USER: 'u', SMTP_PASS: 'p', SMTP_FROM: 'a@b.co' }; let sends = 0
+    const env = { SEO_REPORT_RECIPIENT: 'boss@example.com', SEO_SMTP_HOST: 'h', SEO_SMTP_USER: 'u', SEO_SMTP_PASS: 'p', SEO_SMTP_FROM: 'a@b.co' }; let sends = 0
     const b = await pipeline.runDailyPipeline({ ...base, env, send: async () => { sends++; return { messageId: 'm' } } }); assert.equal(b.report.outcome, 'DUPLICATE'); assert.equal(b.delivery.status, 'SENT'); assert.equal(sends, 1)
     const c = await pipeline.runDailyPipeline({ ...base, env, send: async () => { sends++; return {} } }); assert.equal(c.delivery.status, 'SKIPPED_ALREADY_SENT'); assert.equal(sends, 1); assert.equal((await e.q(`SELECT count(*)::int n FROM seo_reports`))[0].n, 1)
     const e2 = await fresh(); try { const f = await pipeline.runDailyPipeline({ ...base, q: e2.q, withTx: e2.withTx, env, send: async () => { const x = new Error('down'); x.code = 'EAUTH'; throw x } }); assert.equal(f.report.outcome, 'CREATED'); assert.equal(f.delivery.status, 'FAILED'); assert.equal((await e2.q(`SELECT data->'delivery'->>'status' s, data->'delivery'->>'code' c FROM seo_reports`))[0].s, 'FAILED'); assert.equal((await e2.q(`SELECT status::text s FROM seo_agent_runs ORDER BY "createdAt" DESC LIMIT 1`))[0].s, 'PARTIAL') } finally { await e2.done() }
@@ -260,7 +268,7 @@ await t('pipeline: scheduled run generates once, records delivery separately (NO
   } finally { await e.done() }
 })
 // ---- delivery reliability: every state, every crash point (no real SMTP; the fake transport counts what the recipient would actually receive)
-const DENV = { SEO_REPORT_RECIPIENT: 'seo-recipient@example.test', SMTP_HOST: 'h', SMTP_USER: 'u', SMTP_PASS: 'p', SMTP_FROM: 'a@b.co' }
+const DENV = { SEO_REPORT_RECIPIENT: 'seo-recipient@example.test', SEO_SMTP_HOST: 'h', SEO_SMTP_USER: 'u', SEO_SMTP_PASS: 'p', SEO_SMTP_FROM: 'a@b.co' }
 const dstatus = async (e) => (await e.q(`SELECT data->'delivery'->>'status' s, data->'delivery'->>'code' c FROM seo_reports`))[0]
 const ageClaim = (e, min) => e.q(`UPDATE seo_reports SET data = jsonb_set(data,'{delivery,attemptedAt}', to_jsonb(to_char((now() - make_interval(mins => $1::int)) at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"')))`, [min])
 const pbase = (e, extra = {}) => ({ trigger: 'SCHEDULE', triggeredBy: 'test', q: e.q, withTx: e.withTx, siteId: 'site1', now: NOW, env: DENV, ...extra })
@@ -342,7 +350,7 @@ await t('the scheduled route (real handler) answers 502 / ok:false for UNKNOWN a
   assert.match(read('app/admin/seo/(dashboard)/reports/page.tsx'), /effectiveDeliveryStatus\(d\.delivery, d\.attemptedAt\)/)
   const e = await fresh(); const keep = { ...process.env }
   try {
-    for (const k of ['SEO_REPORT_RECIPIENT', 'SMTP_HOST', 'SMTP_USER', 'SMTP_PASS', 'SMTP_FROM', 'GA4_PROPERTY_ID', 'GA4_SERVICE_ACCOUNT_JSON', 'DATABASE_URL']) delete process.env[k] // no SMTP exists in this process: a real send is impossible
+    for (const k of ['SEO_REPORT_RECIPIENT', 'SEO_SMTP_HOST', 'SEO_SMTP_USER', 'SEO_SMTP_PASS', 'SEO_SMTP_FROM', 'GA4_PROPERTY_ID', 'GA4_SERVICE_ACCOUNT_JSON', 'DATABASE_URL']) delete process.env[k] // no SMTP exists in this process: a real send is impossible
     process.env.SEO_DATABASE_URL = `postgres://postgres@127.0.0.1:${au.port}/${e.name}`; process.env.CRON_SECRET = 'x'.repeat(40)
     const route = require('jiti')(fileURLToPath(import.meta.url), { interopDefault: true, alias: { '@': ROOT }, cache: false, requireCache: false })('../app/api/seo/cron/daily/route.ts'); const call = async (secret = process.env.CRON_SECRET) => { const r = await route.GET(new Request('http://t/api/seo/cron/daily', { headers: secret ? { authorization: `Bearer ${secret}` } : {} })); return { code: r.status, body: await r.json() } }
     assert.equal((await call(null)).code, 401); assert.equal((await call('y'.repeat(40))).code, 401)

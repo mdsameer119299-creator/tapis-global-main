@@ -54,6 +54,6 @@ Secrets the workflow needs (GitHub → Settings → Secrets and variables → Ac
 
 ## Email delivery status: NOT CONFIGURED
 
-Delivery uses the existing `nodemailer`/`SMTP_*` setup but **never** reuses the website enquiry recipient. Set `SEO_REPORT_RECIPIENT` (an address you confirm) plus `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` (and optionally `SMTP_PORT`, `SMTP_SECURE`) in Preview. Without them the report is still generated and its delivery status is `NOT_CONFIGURED`. A report already `SENT` is not sent twice. The recipient is never logged or stored.
+Delivery uses `nodemailer` with a **dedicated** sender (`SEO_SMTP_*`) and **never** reuses the website's `SMTP_*` account or the enquiry recipient. Set `SEO_REPORT_RECIPIENT` (an address you confirm) plus `SEO_SMTP_HOST`, `SEO_SMTP_USER`, `SEO_SMTP_PASS`, `SEO_SMTP_FROM` (and optionally `SEO_SMTP_PORT`, `SEO_SMTP_SECURE`, `SEO_SMTP_FROM_NAME`) in Preview; see docs/seo-daily-report-scheduler.md for the Resend setup. Without them the report is still generated and its delivery status is `NOT_CONFIGURED`. A report already `SENT` is not sent twice. The recipient is never logged or stored.
 
 GA4 setup: see `docs/seo-ga4-setup.md`.

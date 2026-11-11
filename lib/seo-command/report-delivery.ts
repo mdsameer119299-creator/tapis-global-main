@@ -1,8 +1,8 @@
 /** Delivery of a generated daily report by email.
  *  DELIVERY GUARANTEE: at-most-one automatic send attempt whose outcome is ambiguous. A message is only retried automatically when it was provably NOT delivered
  *  (connection never established, authentication/TLS/recipient rejected, or the server explicitly refused the message). Any ambiguous outcome (timeout, reset, process death after the
- *  send started, failure to record the result) becomes UNKNOWN and is never retried automatically; an operator decides. This is not exactly-once delivery. Reuses the project's existing SMTP configuration names (SMTP_HOST / SMTP_PORT / SMTP_SECURE / SMTP_USER / SMTP_PASS / SMTP_FROM / SMTP_FROM_NAME)
- *  but NEVER the enquiry recipient: the recipient must be set explicitly in SEO_REPORT_RECIPIENT. With no confirmed recipient or no SMTP config nothing is sent and the status is NOT_CONFIGURED.
+ *  send started, failure to record the result) becomes UNKNOWN and is never retried automatically; an operator decides. This is not exactly-once delivery. Uses a DEDICATED sender configuration (SEO_SMTP_HOST / SEO_SMTP_PORT / SEO_SMTP_SECURE / SEO_SMTP_USER / SEO_SMTP_PASS / SEO_SMTP_FROM / SEO_SMTP_FROM_NAME) with NO fallback to the website's SMTP_* variables,
+ *  so report mail can never go out through the website contact-form account. It also NEVER uses the enquiry recipient: the recipient must be set explicitly in SEO_REPORT_RECIPIENT. With no confirmed recipient or no SMTP config nothing is sent and the status is NOT_CONFIGURED.
  *  Generation and delivery are separate statuses. The recipient address is never logged or stored. */
 type Env = Record<string, string | undefined>
 export type DeliveryStatus = 'NOT_CONFIGURED' | 'SENT' | 'FAILED' | 'UNKNOWN' | 'SKIPPED_ALREADY_SENT' | 'SKIPPED_IN_PROGRESS'
@@ -14,11 +14,11 @@ const EMAIL = /^[^\s@,;<>]+@[^\s@,;<>]+\.[^\s@,;<>]+$/
 export function deliveryConfig(env: Env = process.env): { ok: true; to: string; from: string; smtp: { host: string; port: number; secure: boolean; user: string; pass: string } } | { ok: false; missing: string[] } {
   const missing: string[] = []
   const to = (env.SEO_REPORT_RECIPIENT ?? '').trim(); if (!EMAIL.test(to)) missing.push('SEO_REPORT_RECIPIENT')
-  const host = (env.SMTP_HOST ?? '').trim(), user = (env.SMTP_USER ?? '').trim(), pass = env.SMTP_PASS ?? ''; const from = (env.SMTP_FROM ?? '').trim()
-  if (!host) missing.push('SMTP_HOST'); if (!user) missing.push('SMTP_USER'); if (!pass) missing.push('SMTP_PASS'); if (!EMAIL.test(from)) missing.push('SMTP_FROM')
+  const host = (env.SEO_SMTP_HOST ?? '').trim(), user = (env.SEO_SMTP_USER ?? '').trim(), pass = env.SEO_SMTP_PASS ?? ''; const from = (env.SEO_SMTP_FROM ?? '').trim()
+  if (!host) missing.push('SEO_SMTP_HOST'); if (!user) missing.push('SEO_SMTP_USER'); if (!pass) missing.push('SEO_SMTP_PASS'); if (!EMAIL.test(from)) missing.push('SEO_SMTP_FROM')
   if (missing.length) return { ok: false, missing }
-  const port = Number(env.SMTP_PORT ?? 587)
-  return { ok: true, to, from: env.SMTP_FROM_NAME ? `"${env.SMTP_FROM_NAME.replace(/["\r\n]/g, '')}" <${from}>` : from, smtp: { host, port: Number.isInteger(port) ? port : 587, secure: env.SMTP_SECURE === 'true' || port === 465, user, pass } }
+  const port = Number(env.SEO_SMTP_PORT ?? 587)
+  return { ok: true, to, from: env.SEO_SMTP_FROM_NAME ? `"${env.SEO_SMTP_FROM_NAME.replace(/["\r\n]/g, '')}" <${from}>` : from, smtp: { host, port: Number.isInteger(port) ? port : 587, secure: env.SEO_SMTP_SECURE === 'true' || port === 465, user, pass } }
 }
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')

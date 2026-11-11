@@ -55,8 +55,10 @@ Vercel dashboard → project `tapis-global-main` → **Settings → Environment 
 |---|---|---|
 | `SEO_REPORT_RECIPIENT` | `<the recipient address you confirmed>` | no |
 | `CRON_SECRET` | a new random string of 32+ characters (generate it yourself, e.g. a password manager) | yes |
-| `SMTP_HOST`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM` | your mail provider's values; optional `SMTP_PORT`, `SMTP_SECURE`, `SMTP_FROM_NAME` | `SMTP_PASS` and `SMTP_USER` yes |
+| `SEO_SMTP_HOST`, `SEO_SMTP_USER`, `SEO_SMTP_PASS`, `SEO_SMTP_FROM` | a **dedicated** sender for SEO reports (see "Dedicated sender: Resend" below); optional `SEO_SMTP_PORT`, `SEO_SMTP_SECURE`, `SEO_SMTP_FROM_NAME` | `SEO_SMTP_PASS` and `SEO_SMTP_USER` yes |
 | `SEO_DATABASE_URL` | already present; confirm the Preview value points at the dev project `tapis-global-seo-dev`, not production data | yes |
+
+The website's `SMTP_*` variables are **never** read for report mail and there is no fallback to them: with only `SMTP_*` set, delivery is `NOT_CONFIGURED`.
 
 Never paste SMTP passwords or the cron secret into chat or into the repository. Do not add any of these to Production. The recipient is read only from `SEO_REPORT_RECIPIENT`, validated as a single address, and never logged or stored by the application.
 
@@ -90,3 +92,26 @@ Not selected, no account created, no job configured.
 8. GSC and GA4 sections show real numbers only if those sources are actually connected and fresh; otherwise `UNAVAILABLE`/`STALE` with a note. No section shows zero for missing data.
 9. Missing integrations are listed in section 9 of the report.
 10. Production deployment list unchanged, no Production env vars touched, public website unchanged, migration 0005 still unapplied.
+
+
+## Dedicated sender: Resend (recommended)
+
+Report mail uses its own sender so it can never share the website contact-form account or its reputation.
+
+1. Create a Resend account and add a **sending subdomain** you control, e.g. `reports.tapisglobalinternational.com` (a subdomain keeps the website's existing mail and DNS untouched; do not use the apex domain).
+2. Resend shows the exact DNS records for that subdomain (SPF TXT, DKIM TXT, and an MX for bounce handling). Add them at the DNS host (this domain's nameservers are at GoDaddy). Use only the values Resend displays. Wait for the domain to show **Verified**.
+3. Create an API key in Resend with **Sending access** limited to that domain. Copy it straight into Vercel; never paste it into chat or the repository.
+4. Preview-only variables (branch `feat/seo-command-centre-preview`):
+
+| Name | Value | Sensitive |
+|---|---|---|
+| `SEO_SMTP_HOST` | `smtp.resend.com` | no |
+| `SEO_SMTP_PORT` | `465` | no |
+| `SEO_SMTP_SECURE` | `true` | no |
+| `SEO_SMTP_USER` | `resend` | no |
+| `SEO_SMTP_PASS` | the Resend API key | **yes** |
+| `SEO_SMTP_FROM` | `seo-reports@<your verified sending subdomain>` | no |
+| `SEO_SMTP_FROM_NAME` | `TAPIS GLOBAL SEO Reports` | no |
+| `SEO_REPORT_RECIPIENT` | the confirmed recipient | no |
+
+Do not add any of these to Production and do not edit the existing `SMTP_*` variables.
