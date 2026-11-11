@@ -1,5 +1,6 @@
 import { Pool } from 'pg'
 import { stripSslParams } from './db'
+import { buildSeoTlsOptions, isLocalDbUrl } from './db-tls'
 
 /** The one-time Search Console import uses its OWN database login, taken ONLY from SEO_IMPORT_DATABASE_URL.
  *  - There is NO fallback: if the variable is missing or unsafe, the importer refuses. It never reads SEO_DATABASE_URL or DATABASE_URL to connect.
@@ -50,14 +51,14 @@ const g = globalThis as unknown as { __seoImportPool?: Pool }
 export function getImportPool(env: NodeJS.ProcessEnv = process.env): Pool {
   if (g.__seoImportPool) return g.__seoImportPool
   const url = assertSafeImportDbUrl(env.SEO_IMPORT_DATABASE_URL, { seoUrl: env.SEO_DATABASE_URL, mainUrl: env.DATABASE_URL, expectedRef: env.SEO_DATABASE_EXPECTED_REF ?? '' })
-  const local = /@(localhost|127\.0\.0\.1|\[::1\])[:/]/.test(url)
+  const local = isLocalDbUrl(url)
   g.__seoImportPool = new Pool({
     connectionString: stripSslParams(url),
     max: 2,
     idleTimeoutMillis: 10_000,
     connectionTimeoutMillis: 8_000,
     query_timeout: 25_000,
-    ssl: local ? undefined : { rejectUnauthorized: false }, // Supabase poolers present a Supabase-issued chain
+    ssl: buildSeoTlsOptions(local, env), // strict: verifies the chain against the pinned Supabase CA and the hostname; fails closed
   })
   g.__seoImportPool.on('error', () => undefined)
   return g.__seoImportPool

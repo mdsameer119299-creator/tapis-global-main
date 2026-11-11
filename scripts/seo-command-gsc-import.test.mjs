@@ -132,7 +132,11 @@ s('NO FALLBACK: without SEO_IMPORT_DATABASE_URL the importer pool is refused eve
   assert.throws(() => ID.getImportPool({ ...env, SEO_IMPORT_DATABASE_URL: env.SEO_DATABASE_URL }), (e) => e.name === 'ImportDbUnsafeError')
   assert.throws(() => ID.getImportPool({ ...env, SEO_IMPORT_DATABASE_URL: env.DATABASE_URL }), (e) => e.name === 'ImportDbUnsafeError')
   assert.equal(globalThis.__seoImportPool, undefined) // nothing was created or cached by the refused calls
-  const p = ID.getImportPool({ ...env, SEO_IMPORT_DATABASE_URL: `postgresql://seo_import_app.${REF}:pw3@h.supabase.com:6543/postgres` }); assert.ok(p && p.options.max === 2); p.end().catch(() => {}); ID.__setImportPoolForTests(undefined)
+  const okUrl = `postgresql://seo_import_app.${REF}:pw3@h.supabase.com:6543/postgres`
+  { const q0 = ID.getImportPool({ ...env, SEO_IMPORT_DATABASE_URL: okUrl }); assert.equal(q0.options.ssl.rejectUnauthorized, true); q0.end().catch(() => {}); ID.__setImportPoolForTests(undefined) } // shipped Supabase CA, verification on
+  const { execSync } = require('node:child_process'); const dir = require('node:fs').mkdtempSync('/tmp/impca-'); execSync('openssl req -x509 -newkey rsa:2048 -nodes -keyout k.pem -out c.pem -subj /CN=T -days 5 2>/dev/null', { cwd: dir })
+  const pem = readFileSync(dir + '/c.pem', 'utf8'); const fp = require('node:crypto').createHash('sha256').update(new (require('node:crypto').X509Certificate)(pem).raw).digest('hex')
+  const p = ID.getImportPool({ ...env, SEO_IMPORT_DATABASE_URL: okUrl, SEO_DB_CA_PEM: pem, SEO_DB_CA_SHA256: fp }); assert.ok(p && p.options.max === 2 && p.options.ssl.rejectUnauthorized === true); p.end().catch(() => {}); ID.__setImportPoolForTests(undefined)
   const prior = process.env.SEO_IMPORT_DATABASE_URL; delete process.env.SEO_IMPORT_DATABASE_URL; assert.equal(ID.isImportDbConfigured(), false); if (prior !== undefined) process.env.SEO_IMPORT_DATABASE_URL = prior
 })
 s('administrator login scripts: no password in any file, login is NOLOGIN-free restricted (NOINHERIT, NOBYPASSRLS, no CREATEROLE), member of seo_importer only, nothing granted to postgres/seo_worker/rollback', () => {

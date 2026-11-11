@@ -1,3 +1,4 @@
+import { buildSeoTlsOptions, isLocalDbUrl } from './db-tls'
 import { Pool, type PoolClient, type QueryResultRow } from 'pg'
 
 /** The SEO Command Centre talks ONLY to the SEO database via SEO_DATABASE_URL.
@@ -73,7 +74,7 @@ const g = globalThis as unknown as { __seoPool?: Pool }
 export function getSeoPool(): Pool {
   if (g.__seoPool) return g.__seoPool
   const url = assertSafeSeoDbUrl(process.env.SEO_DATABASE_URL)
-  const local = /@(localhost|127\.0\.0\.1|\[::1\])[:/]/.test(url)
+  const local = isLocalDbUrl(url)
   g.__seoPool = new Pool({
     connectionString: stripSslParams(url),
     max: 3,
@@ -81,7 +82,7 @@ export function getSeoPool(): Pool {
     connectionTimeoutMillis: 8_000,
     // Client-side timeout. A statement_timeout *startup parameter* is rejected by some poolers, so it is not used.
     query_timeout: 25_000,
-    ssl: local ? undefined : { rejectUnauthorized: false }, // Supabase poolers present a Supabase-issued chain
+    ssl: buildSeoTlsOptions(local), // strict: verifies the chain against the pinned Supabase CA and the hostname; fails closed
   })
   g.__seoPool.on('error', () => undefined) // idle-client errors must not crash the server
   return g.__seoPool
