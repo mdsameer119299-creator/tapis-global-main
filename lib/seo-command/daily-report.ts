@@ -1,3 +1,4 @@
+import { deliveryStaleMinutes } from './report-delivery'
 import { createHash, randomUUID } from 'node:crypto'
 import { analyseKeywords, type KeywordIntel } from './keyword-intel'
 import { buildFindings, type Finding } from './analyst'
@@ -235,7 +236,7 @@ export async function generateDailyReport(a: { withTx: WithTx; q: Q; siteId: str
       const data = await collectReportData(a.q, a.siteId, now); const findings = buildFindings(data); const md = renderReportMarkdown(data, findings); const status = reportOverallStatus(data)
       const payload = JSON.stringify({ ...data, findings, schema: 1, contentSha256: createHash('sha256').update(md.summaryMd).digest('hex'), delivery: { status: 'NOT_ATTEMPTED' } })
       const id = existing?.id ?? randomUUID()
-      if (existing) await q(`UPDATE seo_reports SET "title"=$2,"summaryMd"=$3,"data"=$4::jsonb,"runId"=$5 WHERE id=$1`, [id, md.title, md.summaryMd, payload, runId])
+      if (existing) await q(`UPDATE seo_reports SET "title"=$2,"summaryMd"=$3,"data"=jsonb_set($4::jsonb, '{delivery}', CASE WHEN data->'delivery'->>'status'='SENDING' AND COALESCE((data->'delivery'->>'attemptedAt')::timestamptz, '-infinity') > now() - make_interval(mins => $6::int) THEN data->'delivery' ELSE $4::jsonb->'delivery' END),"runId"=$5 WHERE id=$1`, [id, md.title, md.summaryMd, payload, runId, deliveryStaleMinutes()])
       else await q(`INSERT INTO seo_reports ("id","siteId","kind","periodStart","periodEnd","title","summaryMd","data","runId") VALUES ($1,$2,'DAILY',$3::date,$3::date,$4,$5,$6::jsonb,$7)`, [id, a.siteId, reportDate, md.title, md.summaryMd, payload, runId])
       await q(`UPDATE seo_agent_runs SET status=$2::"SeoRunStatus","finishedAt"=now(),"outputSummary"=$3::jsonb WHERE id=$1`, [runId, status, JSON.stringify({ reportId: id, sections: { gsc: data.gsc.status, ga4: data.ga4.status, technical: data.technical.status, sitemap: data.sitemap.status, keywords: data.keywords.status, competitors: data.competitors.status }, findings: findings.length })])
       return { outcome: existing ? 'REGENERATED' : 'CREATED', reportId: id, reportDate, status, findings: findings.length }

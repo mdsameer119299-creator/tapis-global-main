@@ -19,12 +19,30 @@ Responses (body never contains secrets, the recipient address, or SEO figures):
 | 200 | `ok:true`; `result` has `reportDate`, `ga4.status`, `report.outcome` (`CREATED`/`DUPLICATE`/`REGENERATED`) and `delivery.status` |
 | 401 | Missing or wrong bearer (`{"ok":false}`) |
 | 409 | `report.outcome = BUSY`: another run holds the lock. Safe to retry later |
+| 502 | The report exists, but `delivery.status` is `FAILED` or `UNKNOWN`. Do not treat as success; see section 1a |
 | 500 | Generation failed (`report.outcome = FAILED`) or unexpected error |
 | 503 | `SEO_DATABASE_URL` is not set in that environment |
 
-**HTTP 200 does not mean an email was sent.** Read `result.delivery.status`: `SENT`, `NOT_CONFIGURED` (variables missing), `FAILED` (safe code only), `SKIPPED_ALREADY_SENT`, `SKIPPED_IN_PROGRESS`.
+**HTTP 200 does not mean an email was sent.** Read `result.delivery.status`: `SENT`, `NOT_CONFIGURED` (variables missing), `SKIPPED_ALREADY_SENT`, `SKIPPED_IN_PROGRESS`. `FAILED` and `UNKNOWN` return 502.
 
-Idempotency: one report per Asia/Kolkata calendar date; an advisory lock refuses overlapping generation; the email send is claimed atomically (`SENDING`) so concurrent calls or retries cannot send twice. A claim abandoned for more than 15 minutes (crashed sender) may be retried once.
+Idempotency: one report per Asia/Kolkata calendar date; an advisory lock refuses overlapping generation.
+
+### 1a. Email delivery guarantee (read this before approving a Preview run)
+
+The system gives an **at-most-one-ambiguous-attempt** guarantee, not exactly-once. Email over SMTP cannot be exactly-once: if the connection dies after the server accepts a message, the sender cannot know. So the application never retries automatically when the outcome is unclear; it stops and records `UNKNOWN` for a person to check.
+
+| Status | Meaning | Automatic retry? |
+|---|---|---|
+| `NOT_ATTEMPTED` | Report created, delivery not tried | yes, on the next call |
+| `NOT_CONFIGURED` | Recipient or SMTP variables missing; nothing sent | yes, once configured |
+| `SENDING` | One caller has claimed delivery (a single conditional database update; only one caller can hold it) | no |
+| `SENT` | SMTP accepted the message and the result was recorded | no (terminal) |
+| `FAILED` | Provably **not** delivered (connection never opened, authentication/TLS/recipient rejected, or the server explicitly refused the message) | yes: once more in the same run, and again on a later call |
+| `UNKNOWN` | Outcome ambiguous: timeout, connection reset, 35 s send deadline, `SENDING` older than the stale limit (the process died or the database update failed), or an unclassified error | **no** (terminal until an operator acts) |
+
+Crash points: dying before the claim leaves `NOT_ATTEMPTED` (next call sends once). Dying after the claim but before or during the send leaves `SENDING`; after `SEO_DELIVERY_STALE_MINUTES` (default 15, allowed 5-1440) it reads `UNKNOWN` and nothing is resent. If SMTP accepts but the database update fails, the result is retried three times; if still failing the caller is told `SENT` with `recordFailed:true`, the row stays `SENDING` and later reads `UNKNOWN`. A forced regenerate during a live `SENDING` claim does not release it.
+
+Remaining limitation: an `UNKNOWN` day needs a human. Check the recipient mailbox for that day's report. If it did not arrive, resend deliberately with `POST /api/admin/seo/reports/daily` body `{"force":true,"deliver":true}` (regenerates the report and sends it; if the original did arrive this produces a duplicate by your choice). If it did arrive, do nothing: the next day's report is unaffected.
 
 ## 2. Preview environment variables (add in Vercel, Preview only)
 
@@ -51,7 +69,7 @@ Not selected, no account created, no job configured.
 - Schedule: every day at **08:00 `Asia/Kolkata`**. If the scheduler supports time zones choose `Asia/Kolkata`. Otherwise use UTC `30 2 * * *` (India has no daylight saving, so it never drifts).
 - Request: `GET https://<PREVIEW_HOST>/api/seo/cron/daily` with headers `Authorization: Bearer <CRON_SECRET>` and `x-vercel-protection-bypass: <bypass secret>`. Store both as the scheduler's secret/header fields, never in the URL.
 - `<PREVIEW_HOST>`: use the stable branch alias, which Vercel reports as `tapis-global-main-git-feat-seo-29ee74-sameers-projects-2cf742c9.vercel.app` (read from the deployment's alias list). Re-confirm it in Vercel → Deployments → the feature-branch deployment → Domains before use. Do not use a per-deployment `*-o92phc6wx-*` URL: it changes on every deploy. As of this writing the latest Preview is commit `63e4798`, which does **not** yet contain this endpoint.
-- Timeout: 60 s (matches `maxDuration`). Retries: at most 2, at least 60 s apart, only on network error, timeout, 409 or 5xx. Never retry 401/403. Retrying is safe: duplicates and double emails are prevented server-side.
+- Timeout: 60 s (matches `maxDuration`). Retries: at most 2, at least 60 s apart, only on network error, timeout, 409 or 5xx. Never retry 401/403. Retrying cannot create a second report or a second email for a delivery whose outcome is unclear (it is skipped or recorded `UNKNOWN`).
 - Failure alerting: enable the scheduler's "notify on non-2xx".
 - Execution history: the scheduler's run log (status code and response body). Application side: Vercel → project → Logs (filter path `/api/seo/cron/daily`) and `/admin/seo/reports` (report list with delivery status), or the `seo_agent_runs` table (agent `REPORTING`).
 - Disable immediately: pause or delete the job in the scheduler. Backstop: rotate/remove `CRON_SECRET` in Vercel (new deployment needed); the endpoint then answers 401.
@@ -67,7 +85,7 @@ Not selected, no account created, no job configured.
 3. Authorised request → 200 with `ok:true`, `report.outcome = CREATED`.
 4. Second identical call → `DUPLICATE`, still one `seo_reports` row for that IST date and one email.
 5. Two near-simultaneous calls → one `CREATED`/`DUPLICATE` path, no second email (`SKIPPED_IN_PROGRESS` or `SKIPPED_ALREADY_SENT`), or `BUSY` (409).
-6. `delivery.status` matches reality: `SENT` only if the message arrived; with SMTP deliberately unset it must read `NOT_CONFIGURED`, never `SENT`.
+6. `delivery.status` matches reality: `SENT` only if the message arrived; with SMTP deliberately unset it must read `NOT_CONFIGURED`, never `SENT`. A `502` with `UNKNOWN`/`FAILED` must be investigated, not retried by hand.
 7. The mail arrives at exactly the recipient you confirmed and nowhere else; the enquiry mailbox gets nothing.
 8. GSC and GA4 sections show real numbers only if those sources are actually connected and fresh; otherwise `UNAVAILABLE`/`STALE` with a note. No section shows zero for missing data.
 9. Missing integrations are listed in section 9 of the report.

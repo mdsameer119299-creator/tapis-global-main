@@ -14,6 +14,7 @@ export async function GET(req: Request) {
   try {
     const r = await runDailyPipeline({ trigger: 'SCHEDULE', triggeredBy: 'system:cron-daily' })
     const failed = r.report.outcome === 'FAILED'
-    return NextResponse.json({ ok: !failed && r.report.outcome !== 'BUSY', result: r }, { status: failed ? 500 : r.report.outcome === 'BUSY' ? 409 : 200 })
+    const deliveryProblem = r.delivery.status === 'FAILED' || r.delivery.status === 'UNKNOWN'
+    return NextResponse.json({ ok: !failed && !deliveryProblem && r.report.outcome !== 'BUSY', result: r }, { status: failed ? 500 : r.report.outcome === 'BUSY' ? 409 : deliveryProblem ? 502 : 200 })
   } catch { return NextResponse.json({ ok: false, error: 'failed' }, { status: 500 }) }
 }

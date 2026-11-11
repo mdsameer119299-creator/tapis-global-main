@@ -2,12 +2,11 @@ import { seoQuery, withSeoTx } from './db'
 import { getOrCreateSiteId } from './store'
 import { generateDailyReport, istDate, addDays, type Q, type WithTx, type GenerateResult } from './daily-report'
 import { syncGa4, readGa4Config, type Ga4Sync } from './ga4'
-import { deliverReport, type DeliveryResult, type Send } from './report-delivery'
+import { deliverReport, deliveryStaleMinutes, type DeliveryResult, type Send } from './report-delivery'
 
 /** The daily pipeline in the agreed order: verify integrations -> GA4 sync (if configured) -> generate report from stored data -> deliver -> record results.
  *  Each step's result is returned and the report records delivery separately from generation. A failing step never discards the others.
  *  The Search Console daily sync and the crawl are NOT run here: GSC ingestion is gated behind migration 0005 / import approval, and the crawl has its own endpoint (/api/seo/cron). */
-const DELIVERY_CLAIM_MINUTES = 15
 export const appQ: Q = (t, p) => seoQuery(t, p)
 export const appWithTx: WithTx = (fn) => withSeoTx((c) => fn((t, p) => c.query(t, p).then((r) => r.rows)))
 
@@ -26,15 +25,35 @@ export async function runDailyPipeline(a: { trigger: 'SCHEDULE' | 'MANUAL'; trig
   if (deliverable && a.deliver !== false) {
     const row = (await q(`SELECT title, "summaryMd", data->'delivery'->>'status' ds FROM seo_reports WHERE id=$1`, [report.reportId]))[0]
     if (row) {
-      // Atomic claim: only one caller may send. A concurrent call, or a scheduler retry after a client timeout, sees SENDING/SENT and does not email again.
-      // A claim older than DELIVERY_CLAIM_MINUTES is treated as abandoned (the sender crashed) and may be retried.
-      const claim = await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1 AND COALESCE(data->'delivery'->>'status','') <> 'SENT' AND (COALESCE(data->'delivery'->>'status','') <> 'SENDING' OR COALESCE((data->'delivery'->>'attemptedAt')::timestamptz, '-infinity') < now() - make_interval(mins => $3::int)) RETURNING id`, [report.reportId, JSON.stringify({ status: 'SENDING', attemptedAt: new Date().toISOString() }), DELIVERY_CLAIM_MINUTES])
-      if (claim.length === 0) {
-        const cur = (await q(`SELECT data->'delivery'->>'status' ds FROM seo_reports WHERE id=$1`, [report.reportId]))[0]?.ds
-        delivery = { status: cur === 'SENT' ? 'SKIPPED_ALREADY_SENT' : 'SKIPPED_IN_PROGRESS', attemptedAt: new Date().toISOString() }
-      } else delivery = await deliverReport({ title: row.title, summaryMd: row.summaryMd }, env, a.send)
-      if (delivery.status !== 'SKIPPED_ALREADY_SENT' && delivery.status !== 'SKIPPED_IN_PROGRESS') await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1`, [report.reportId, JSON.stringify(delivery)])
+      // Delivery state machine (stored in seo_reports.data.delivery.status):
+      //   NOT_ATTEMPTED | NOT_CONFIGURED | FAILED --claim--> SENDING --> SENT | FAILED | UNKNOWN | NOT_CONFIGURED
+      //   SENDING older than SEO_DELIVERY_STALE_MINUTES --> UNKNOWN (the sender may have died after SMTP accepted the message)
+      //   SENT and UNKNOWN are terminal for automatic runs; only a manual forced regenerate + deliver resets them.
+      // The claim is one conditional UPDATE, so only one caller can ever hold it.
+      const stale = deliveryStaleMinutes(env)
+      const claim = await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1 AND COALESCE(data->'delivery'->>'status','') NOT IN ('SENT','SENDING','UNKNOWN') RETURNING id`, [report.reportId, JSON.stringify({ status: 'SENDING', attemptedAt: new Date().toISOString() })])
+      if (claim.length === 0) delivery = await explainSkippedClaim(q, report.reportId!, stale)
+      else {
+        delivery = await deliverReport({ title: row.title, summaryMd: row.summaryMd }, env, a.send)
+        // Record the outcome with a few retries. If the database stays unreachable the row remains SENDING and later reads as UNKNOWN: it is never re-sent automatically.
+        let recorded = false
+        for (let i = 0; i < 3 && !recorded; i++) { try { await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1`, [report.reportId, JSON.stringify(delivery)]); recorded = true } catch { await new Promise((r) => setTimeout(r, 200 * (i + 1))) } }
+        if (!recorded) delivery = { ...delivery, recordFailed: true }
+      }
     }
   }
   return { reportDate, ga4, report, delivery }
+}
+
+/** The claim was refused: report why, and turn an abandoned SENDING claim into UNKNOWN (conditional, so concurrent callers agree). */
+async function explainSkippedClaim(q: Q, reportId: string, staleMinutes: number): Promise<DeliveryResult> {
+  const attemptedAt = new Date().toISOString()
+  const cur = (await q(`SELECT data->'delivery'->>'status' ds, (data->'delivery'->>'attemptedAt') at FROM seo_reports WHERE id=$1`, [reportId]))[0]
+  if (cur?.ds === 'SENT') return { status: 'SKIPPED_ALREADY_SENT', attemptedAt }
+  if (cur?.ds === 'UNKNOWN') return { status: 'UNKNOWN', code: 'REVIEW_REQUIRED', attemptedAt }
+  if (cur?.ds === 'SENDING') {
+    const flipped = await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1 AND data->'delivery'->>'status'='SENDING' AND COALESCE((data->'delivery'->>'attemptedAt')::timestamptz, '-infinity') < now() - make_interval(mins => $3::int) RETURNING id`, [reportId, JSON.stringify({ status: 'UNKNOWN', code: 'ABANDONED_CLAIM', attemptedAt }), staleMinutes])
+    return flipped.length ? { status: 'UNKNOWN', code: 'ABANDONED_CLAIM', attemptedAt } : { status: 'SKIPPED_IN_PROGRESS', attemptedAt }
+  }
+  return { status: 'SKIPPED_IN_PROGRESS', attemptedAt }
 }
