@@ -19,7 +19,7 @@ Responses (body never contains secrets, the recipient address, or SEO figures):
 | 200 | `ok:true`; `result` has `reportDate`, `ga4.status`, `report.outcome` (`CREATED`/`DUPLICATE`/`REGENERATED`) and `delivery.status` |
 | 401 | Missing or wrong bearer (`{"ok":false}`) |
 | 409 | `report.outcome = BUSY`: another run holds the lock. Safe to retry later |
-| 502 | The report exists, but `delivery.status` is `FAILED` or `UNKNOWN`. Do not treat as success; see section 1a |
+| 502 | The report exists, but `delivery.status` is `FAILED` or `UNKNOWN` (including `SMTP_ACCEPTED_NOT_RECORDED`), `ok:false`. Do not treat as success; see section 1a. The manual endpoint follows the same rule |
 | 500 | Generation failed (`report.outcome = FAILED`) or unexpected error |
 | 503 | `SEO_DATABASE_URL` is not set in that environment |
 
@@ -40,7 +40,7 @@ The system gives an **at-most-one-ambiguous-attempt** guarantee, not exactly-onc
 | `FAILED` | Provably **not** delivered (connection never opened, authentication/TLS/recipient rejected, or the server explicitly refused the message) | yes: once more in the same run, and again on a later call |
 | `UNKNOWN` | Outcome ambiguous: timeout, connection reset, 35 s send deadline, `SENDING` older than the stale limit (the process died or the database update failed), or an unclassified error | **no** (terminal until an operator acts) |
 
-Crash points: dying before the claim leaves `NOT_ATTEMPTED` (next call sends once). Dying after the claim but before or during the send leaves `SENDING`; after `SEO_DELIVERY_STALE_MINUTES` (default 15, allowed 5-1440) it reads `UNKNOWN` and nothing is resent. If SMTP accepts but the database update fails, the result is retried three times; if still failing the caller is told `SENT` with `recordFailed:true`, the row stays `SENDING` and later reads `UNKNOWN`. A forced regenerate during a live `SENDING` claim does not release it.
+Crash points: dying before the claim leaves `NOT_ATTEMPTED` (next call sends once). Dying after the claim but before or during the send leaves `SENDING`; after `SEO_DELIVERY_STALE_MINUTES` (default 15, allowed 5-1440) it is shown and stored as `UNKNOWN` and nothing is resent. If SMTP accepts the message but the result cannot be recorded (database error), the response is **`UNKNOWN` with code `SMTP_ACCEPTED_NOT_RECORDED`, HTTP 502, `ok:false`**, with the SMTP message id kept for diagnosis (code `RESULT_NOT_RECORDED` for a failure or timeout that could not be recorded). It is never reported as `SENT`. The stored row stays `SENDING` and reads `UNKNOWN` once stale, so the dashboard, the manual list and the API agree after the stale limit; during the first minutes the dashboard shows `SENDING` ("in progress, not confirmed"), never success. A forced regenerate during a live `SENDING` claim does not release it.
 
 Remaining limitation: an `UNKNOWN` day needs a human. Check the recipient mailbox for that day's report. If it did not arrive, resend deliberately with `POST /api/admin/seo/reports/daily` body `{"force":true,"deliver":true}` (regenerates the report and sends it; if the original did arrive this produces a duplicate by your choice). If it did arrive, do nothing: the next day's report is unaffected.
 

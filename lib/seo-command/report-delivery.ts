@@ -45,6 +45,15 @@ export const smtpSend: Send = async (cfg, mail) => {
 
 /** A claim that stays SENDING longer than this is shown as UNKNOWN (never retried automatically). Configurable with SEO_DELIVERY_STALE_MINUTES (5..1440, default 15; must exceed the 60 s function limit). */
 export function deliveryStaleMinutes(env: Env = process.env): number { const n = Number(env.SEO_DELIVERY_STALE_MINUTES); return Number.isInteger(n) && n >= 5 && n <= 1440 ? n : 15 }
+/** The status to DISPLAY for a stored delivery record: a SENDING claim older than the stale limit is shown as UNKNOWN (the same state the next scheduled call would store). Used by the dashboard and the manual list so they agree with the API. */
+export function effectiveDeliveryStatus(status: string | null | undefined, attemptedAt: string | null | undefined, env: Env = process.env, now: Date = new Date()): string {
+  const st = status || 'NOT_ATTEMPTED'
+  if (st !== 'SENDING') return st
+  const t = attemptedAt ? Date.parse(attemptedAt) : NaN
+  return Number.isFinite(t) && now.getTime() - t < deliveryStaleMinutes(env) * 60_000 ? 'SENDING' : 'UNKNOWN'
+}
+/** True when the delivery outcome needs a person's attention (the scheduler/manual endpoints answer 502 and ok:false). */
+export const isDeliveryProblem = (status: string): boolean => status === 'FAILED' || status === 'UNKNOWN'
 const SEND_DEADLINE_MS = 35_000
 const SAFE_CODES = new Set(['EAUTH', 'EDNS', 'ETLS', 'EREQUIRETLS', 'EENVELOPE'])
 /** SAFE = the message was provably not accepted, so a retry cannot duplicate it. Everything else is AMBIGUOUS. */

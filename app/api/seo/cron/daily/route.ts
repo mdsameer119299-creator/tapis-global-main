@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { bearerMatches } from '@/lib/seo-command/auth'
 import { isSeoDbConfigured } from '@/lib/seo-command/db'
 import { runDailyPipeline } from '@/lib/seo-command/daily-pipeline'
+import { isDeliveryProblem } from '@/lib/seo-command/report-delivery'
 
 export const dynamic = 'force-dynamic'
 export const maxDuration = 60
@@ -14,7 +15,7 @@ export async function GET(req: Request) {
   try {
     const r = await runDailyPipeline({ trigger: 'SCHEDULE', triggeredBy: 'system:cron-daily' })
     const failed = r.report.outcome === 'FAILED'
-    const deliveryProblem = r.delivery.status === 'FAILED' || r.delivery.status === 'UNKNOWN'
+    const deliveryProblem = isDeliveryProblem(r.delivery.status)
     return NextResponse.json({ ok: !failed && !deliveryProblem && r.report.outcome !== 'BUSY', result: r }, { status: failed ? 500 : r.report.outcome === 'BUSY' ? 409 : deliveryProblem ? 502 : 200 })
   } catch { return NextResponse.json({ ok: false, error: 'failed' }, { status: 500 }) }
 }

@@ -38,7 +38,9 @@ export async function runDailyPipeline(a: { trigger: 'SCHEDULE' | 'MANUAL'; trig
         // Record the outcome with a few retries. If the database stays unreachable the row remains SENDING and later reads as UNKNOWN: it is never re-sent automatically.
         let recorded = false
         for (let i = 0; i < 3 && !recorded; i++) { try { await q(`UPDATE seo_reports SET data = jsonb_set(data, '{delivery}', $2::jsonb) WHERE id=$1`, [report.reportId, JSON.stringify(delivery)]); recorded = true } catch { await new Promise((r) => setTimeout(r, 200 * (i + 1))) } }
-        if (!recorded) delivery = { ...delivery, recordFailed: true }
+        // The outcome could not be stored. Never report it as SENT: the message may well have been delivered, but the system cannot prove its own state.
+        // The row stays SENDING (displayed as UNKNOWN once stale) and is never resent automatically. The SMTP message id is kept for diagnosis.
+        if (!recorded) delivery = { status: 'UNKNOWN', code: delivery.status === 'SENT' ? 'SMTP_ACCEPTED_NOT_RECORDED' : 'RESULT_NOT_RECORDED', messageId: delivery.messageId, attemptedAt: delivery.attemptedAt, recordFailed: true }
       }
     }
   }

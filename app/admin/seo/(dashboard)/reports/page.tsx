@@ -2,6 +2,7 @@ import { requireSeoPageSession, loadSeo } from '@/lib/seo-command/auth'
 import { buildReport, getTrend, getChanges, listRuns } from '@/lib/seo-command/queries'
 import { seoQuery } from '@/lib/seo-command/db'
 import { istDate } from '@/lib/seo-command/daily-report'
+import { effectiveDeliveryStatus } from '@/lib/seo-command/report-delivery'
 import { DailyReportButton } from '@/components/seo-command/actions'
 import { Gate, Panel, Stat, Sparkline, Empty, SeverityBadge, fmtDate, codeLabel } from '@/components/seo-command/ui'
 
@@ -10,7 +11,7 @@ export const dynamic = 'force-dynamic'
 export default async function ReportsPage({ searchParams }: { searchParams: { days?: string } }) {
   await requireSeoPageSession()
   const days = [7, 30, 90].includes(Number(searchParams.days)) ? Number(searchParams.days) : 30
-  const result = await loadSeo(async (siteId) => ({ report: await buildReport(siteId, days), trend: await getTrend(siteId, 60), changes: await getChanges(siteId), runs: await listRuns(siteId, 15), daily: await seoQuery<{ id: string; reportDate: string; title: string; summaryMd: string; createdAt: string; delivery: string | null }>(`SELECT id, "periodStart"::text "reportDate", title, "summaryMd", "createdAt", data->'delivery'->>'status' "delivery" FROM seo_reports WHERE "siteId"=$1 AND kind='DAILY' ORDER BY "periodStart" DESC LIMIT 14`, [siteId]) }))
+  const result = await loadSeo(async (siteId) => ({ report: await buildReport(siteId, days), trend: await getTrend(siteId, 60), changes: await getChanges(siteId), runs: await listRuns(siteId, 15), daily: await seoQuery<{ id: string; reportDate: string; title: string; summaryMd: string; createdAt: string; delivery: string | null; attemptedAt: string | null }>(`SELECT id, "periodStart"::text "reportDate", title, "summaryMd", "createdAt", data->'delivery'->>'status' "delivery", data->'delivery'->>'attemptedAt' "attemptedAt" FROM seo_reports WHERE "siteId"=$1 AND kind='DAILY' ORDER BY "periodStart" DESC LIMIT 14`, [siteId]) }))
   return (
     <>
       <div className="flex items-center justify-between"><h1 className="font-display text-2xl text-ink">Reports & history</h1>
@@ -23,7 +24,7 @@ export default async function ReportsPage({ searchParams }: { searchParams: { da
               <DailyReportButton hasToday={daily[0]?.reportDate === istDate(new Date())} />
               {daily.length === 0 ? <Empty>No daily report has been generated yet.</Empty> : (
                 <>
-                  <table className="mt-3 w-full text-left text-sm"><thead className="text-2xs uppercase text-ink-m"><tr><th className="py-1">Date (IST)</th><th>Delivery</th><th>Generated</th></tr></thead><tbody>{daily.map((d: any) => <tr key={d.id} className="border-t border-ivory-k"><td className="py-1">{d.reportDate}</td><td>{d.delivery ?? 'NOT_ATTEMPTED'}</td><td>{fmtDate(d.createdAt)}</td></tr>)}</tbody></table>
+                  <table className="mt-3 w-full text-left text-sm"><thead className="text-2xs uppercase text-ink-m"><tr><th className="py-1">Date (IST)</th><th>Delivery</th><th>Generated</th></tr></thead><tbody>{daily.map((d: any) => <tr key={d.id} className="border-t border-ivory-k"><td className="py-1">{d.reportDate}</td><td>{effectiveDeliveryStatus(d.delivery, d.attemptedAt)}</td><td>{fmtDate(d.createdAt)}</td></tr>)}</tbody></table>
                   <details className="mt-3" open><summary className="cursor-pointer text-sm font-medium">Latest report — {daily[0].reportDate}</summary><pre className="mt-2 max-h-[600px] overflow-auto whitespace-pre-wrap rounded bg-ivory p-3 text-xs">{daily[0].summaryMd}</pre></details>
                 </>
               )}
