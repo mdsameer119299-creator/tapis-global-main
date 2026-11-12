@@ -21,7 +21,7 @@ t('there are routes and pages to check', () => { assert.ok(apiFiles.length >= 7)
 
 t('every admin SEO API handler is wrapped in seoApi, mutating ones flagged', () => {
   // connectivity-test guards itself (session + origin + READ ONLY tx; checked in the next test) because seoApi() upserts seo_sites
-  const PUBLIC_AUTH_ROUTES = ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts', 'gsc/connectivity-test/route.ts', 'gsc/dry-run/route.ts', 'gsc/import/route.ts', 'role-diagnostic/route.ts', 'smtp-verify/route.ts']
+  const PUBLIC_AUTH_ROUTES = ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts', 'gsc/connectivity-test/route.ts', 'gsc/dry-run/route.ts', 'gsc/import/route.ts', 'smtp-verify/route.ts']
   for (const f of apiFiles) {
     if (PUBLIC_AUTH_ROUTES.some((x) => f.endsWith(x))) continue
     const s = read(f)
@@ -47,7 +47,7 @@ t('every SEO page checks the SEO session itself (not only the layout); only the 
 t('login/logout routes are same-origin protected and the only unguarded SEO API routes', () => {
   for (const r of ['auth/login', 'auth/logout']) assert.match(read(path.join(ROOT, `app/api/admin/seo/${r}/route.ts`)), /originMatchesHost\(/)
   const open = apiFiles.filter((f) => !/seoApi\(/.test(read(f)))
-  assert.deepEqual(open.map((f) => path.relative(path.join(ROOT, 'app/api/admin/seo'), f)).sort(), ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts', 'gsc/connectivity-test/route.ts', 'gsc/dry-run/route.ts', 'gsc/import/route.ts', 'role-diagnostic/route.ts', 'smtp-verify/route.ts'])
+  assert.deepEqual(open.map((f) => path.relative(path.join(ROOT, 'app/api/admin/seo'), f)).sort(), ['auth/login/route.ts', 'auth/logout/route.ts', 'gsc/callback/route.ts', 'gsc/connectivity-test/route.ts', 'gsc/dry-run/route.ts', 'gsc/import/route.ts', 'smtp-verify/route.ts'])
   // smtp-verify needs no database and must write nothing, so it guards itself (session before anything else, same origin, POST only)
   const sv = read(path.join(ROOT, 'app/api/admin/seo/smtp-verify/route.ts'))
   assert.match(sv, /verifySeoSession\(/); assert.match(sv, /originMatchesHost\(/); assert.ok(sv.indexOf('verifySeoSession(') < sv.indexOf('handleSmtpVerify('))
