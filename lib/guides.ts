@@ -90,7 +90,7 @@ export const GUIDES: Guide[] = [
       { q: 'Which rug is best for high-traffic areas?', a: 'Flatweaves, sisal and dense wool constructions handle high traffic well. We advise on fibre and construction for each location.' },
       { q: 'Can rugs be made in custom sizes?', a: 'Yes. As a manufacturer we make rugs in any custom size and shape, across all constructions.' },
     ],
-    relatedGuides: ['how-carpets-are-manufactured', 'jute-vs-sisal-rugs', 'kilim-vs-dhurrie'],
+    relatedGuides: ['how-carpets-are-manufactured', 'jute-vs-sisal-rugs', 'kilim-vs-dhurrie', 'rug-manufacturing-process-explained'],
     relatedProducts: ['hand-knotted-carpet', 'jute-sisal-rugs', 'shaggy-rugs'],
   },
   {

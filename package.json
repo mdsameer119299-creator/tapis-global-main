@@ -12,6 +12,7 @@
     "lint": "next lint",
     "favicon": "node scripts/generate-favicon.mjs",
     "seo:audit": "node scripts/seo-audit.mjs",
+    "test:seo-indexing": "node scripts/seo-indexing.test.mjs",
     "seo:audit:links": "node scripts/link-equity-audit.mjs",
     "seo:audit:production": "node scripts/seo-audit-production.mjs",
     "seo:audit:production:test": "node scripts/seo-audit-production.test.mjs",
