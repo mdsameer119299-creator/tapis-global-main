@@ -13,6 +13,7 @@
     "favicon": "node scripts/generate-favicon.mjs",
     "seo:audit": "node scripts/seo-audit.mjs",
     "test:seo-indexing": "node scripts/seo-indexing.test.mjs",
+    "test:seo-rendered": "tsx --tsconfig scripts/tsconfig.render.json scripts/seo-rendered-links.test.mts",
     "seo:audit:links": "node scripts/link-equity-audit.mjs",
     "seo:audit:production": "node scripts/seo-audit-production.mjs",
     "seo:audit:production:test": "node scripts/seo-audit-production.test.mjs",

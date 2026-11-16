@@ -51,7 +51,7 @@ export const COUNTRIES: SeoLanding[] = [
     relatedProducts: PRODUCTS_CORE,
     relatedIndustries: ['hotel-carpets', 'villa-carpets', 'retail-carpets'],
     relatedSolutions: ['carpet-exporter-india', 'wholesale-carpet-supplier'],
-    relatedCountries: ['uk', 'germany', 'australia', 'canada'],
+    relatedCountries: ['uk', 'germany', 'australia'],
     relatedUsaStates: ['new-york', 'california', 'texas', 'illinois'],
     relatedUsaCities: ['new-york-city', 'los-angeles'],
     importProcess: 'Buyers begin with a specification enquiry — construction, size, colourway and quantity — followed by lab-dip and sample approval before production starts. Once samples are signed off, we manufacture, run in-process and pre-dispatch quality checks, and prepare the commercial invoice, packing list and certificates of origin US customs brokers typically request.',

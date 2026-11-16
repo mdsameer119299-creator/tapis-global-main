@@ -40,7 +40,6 @@ t('no fabricated lastModified (policy: omit unless a real date exists)', () => {
 t('no private/api/admin/crafttrack URLs listed', () => {
   for (const e of sitemap) assert(!/\/(api|admin|private|crafttrack|_next)(\/|$)/.test(e.url), e.url)
 })
-t('redirect sources from next.config are not listed', async () => {})
 {
   const cfg = require(resolve(ROOT, 'next.config.js'))
   const redirects = await cfg.redirects()
@@ -49,19 +48,26 @@ t('redirect sources from next.config are not listed', async () => {})
     for (const r of redirects) assert(!urls.has(BASE + r.source), `redirect source in sitemap: ${r.source}`)
   })
 }
-t('every cluster page that is meant to be indexable is in the sitemap (except documented holdbacks)', () => {
+t('every indexable cluster page is in the sitemap; held-back countries are exactly those without the deep-dive content set', () => {
   const urls = new Set(sitemap.map((e) => e.url))
-  const HELD_BACK = new Set(['/countries/austria', '/countries/ireland', '/countries/south-africa'])
   const expect = [
     ...seo.getAllIndustrySlugs().map((s) => `/industries/${s}`),
     ...seo.getAllSolutionSlugs().map((s) => `/solutions/${s}`),
-    ...seo.getAllCountrySlugs().map((s) => `/countries/${s}`),
     ...seo.getAllDhurrieSlugs().map((s) => `/dhurries/${s}`),
     ...seo.getAllCompanySlugs().map((s) => `/company/${s}`),
     ...seo.getAllUsaStateSlugs().map((s) => `/usa/${s}`),
     ...seo.USA_CITIES.map((c) => `/usa/${c.parentUsaState}/${c.slug}`),
   ]
-  for (const p of expect) if (!HELD_BACK.has(p)) assert(urls.has(BASE + p), `missing from sitemap: ${p}`)
+  for (const p of expect) assert(urls.has(BASE + p), `missing from sitemap: ${p}`)
+  const heldBack = seo.getAllCountrySlugs().filter((s) => !urls.has(`${BASE}/countries/${s}`)).sort()
+  assert.deepStrictEqual(heldBack, ['austria', 'ireland', 'south-africa'])
+  // Documented reason (docs/SEO-SITEMAP-ROLLOUT.md, app/sitemap.ts): held until they get the same deep-dive
+  // treatment (buyer segments, popular styles, material recommendations, 8 FAQs) as the promoted markets.
+  const deep = (s) => { const p = seo.getCountry(s); return (p.buyerSegments || []).length > 0 && (p.popularStyles || []).length > 0 && (p.faqs || []).length >= 8 }
+  for (const s of heldBack) assert(!deep(s), `${s} now has deep-dive content: promote it in app/sitemap.ts COUNTRY_SITEMAP_EXCLUDE`)
+  // Known inconsistency, asserted so it cannot change silently: poland is listed but has NOT had the deep-dive.
+  const listedShallow = seo.getAllCountrySlugs().filter((s) => urls.has(`${BASE}/countries/${s}`) && !deep(s))
+  assert.deepStrictEqual(listedShallow, ['poland'])
 })
 
 console.log('Robots')
