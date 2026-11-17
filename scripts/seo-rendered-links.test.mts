@@ -3,11 +3,7 @@
 // asserts on the anchors that actually reach the HTML — not on related[] data. Needed because LandingPage
 // caps its related-landing block at 5 links, so a slug present in data can still never be rendered.
 //
-// Optional: drop the Search Console "Crawled – currently not indexed" export at
-// docs/gsc/crawled-not-indexed.csv (any CSV containing full page URLs) to add per-URL assertions.
 import assert from 'assert'
-import { existsSync, readFileSync } from 'fs'
-import { resolve } from 'path'
 import { renderToStaticMarkup } from 'react-dom/server'
 import { createElement } from 'react'
 import * as LPm from '@/components/landing/LandingPage'
@@ -154,8 +150,7 @@ t('held-back country pages (austria, ireland, south-africa) are still linked fro
 })
 
 console.log('Search Console "Crawled – currently not indexed" coverage')
-// The 24 reported URLs were NOT supplied to this repo/session. This block (a) asserts every page in every
-// group named in the report, and (b) will assert the exact 24 URLs the moment the CSV is committed.
+// Group-level coverage of every page type named in the report; exact-URL checks: test:seo-gsc.
 const GROUPS: [string, (p: string) => boolean][] = [
   ['USA state pages', (p) => /^\/usa\/[^/]+$/.test(p)], ['USA city pages', (p) => /^\/usa\/[^/]+\/[^/]+$/.test(p)],
   ['India location pages', (p) => /^\/india\/[^/]+$/.test(p)], ['Dhurrie pages', (p) => p.startsWith('/dhurries/')],
@@ -177,12 +172,7 @@ for (const [name, test] of GROUPS)
     const fails: string[] = []; for (const p of ps) { try { checkUrlPath(p) } catch (e: any) { fails.push(e.message) } }
     assert.deepStrictEqual(fails, [])
   })
-const csv = resolve(process.cwd(), 'docs/gsc/crawled-not-indexed.csv')
-if (existsSync(csv)) {
-  const urls = [...new Set([...readFileSync(csv, 'utf8').matchAll(/https?:\/\/[^\s,"]+/g)].map((m) => m[0].replace(SEO_BASE_URL, '').replace(/\/$/, '') || '/'))]
-  t(`GSC CSV lists exactly 24 distinct URLs (found ${urls.length})`, () => assert.strictEqual(urls.length, 24))
-  for (const u of urls) t(`GSC URL ${u}`, () => checkUrlPath(u))
-} else { skipped++; console.log('  SKIP  per-URL GSC assertions: docs/gsc/crawled-not-indexed.csv not provided (NOT counted as passed)') }
+// Per-URL assertions for the exact 24 reported URLs live in scripts/seo-gsc-urls.test.mts (npm run test:seo-gsc).
 
 console.log(`\n${passed} passed, ${failed} failed, ${skipped} skipped`)
 process.exit(failed ? 1 : 0)

@@ -302,7 +302,7 @@ export const COMPANY_PAGES: SeoLanding[] = [
     seoTitle: 'Carpet Production Capacity | TAPIS GLOBAL INTERNATIONAL',
     seoDescription: 'TAPIS GLOBAL INTERNATIONAL production capacity: in-house Bhadohi facility, hundreds of artisans, held dye-lots and phased delivery for bulk and export orders.',
     seoKeywords: ['carpet production capacity', 'bulk carpet manufacturer', 'contract carpet manufacturing capacity', 'large volume carpet supplier', 'carpet factory capacity India'],
-    h1: 'Our Production Capacity',
+    h1: 'Our Carpet Production Capacity in Bhadohi',
     intro: 'Scale matters for projects, tenders and export programmes. Tapis Global combines a large in-house Bhadohi facility, hundreds of skilled artisans and disciplined planning to deliver large volumes without compromising handmade quality.',
     overview: 'Capacity is not just output — it is the ability to hold dye-lots, phase production and hit fixed programme dates while maintaining consistency. Our integrated facility and experienced project team give buyers confidence on large and recurring orders.',
     sections: [
