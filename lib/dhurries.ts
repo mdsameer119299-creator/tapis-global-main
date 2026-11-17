@@ -391,7 +391,7 @@ export const DHURRIES: SeoLanding[] = [
     relatedProducts: ['dhurrie-rugs', 'flat-weaves', 'kilim-rugs'],
     relatedIndustries: ['villa-carpets', 'hotel-carpets', 'retail-carpets'],
     relatedSolutions: ['designer-rugs', 'carpet-exporter-india'],
-    relatedDhurries: ['cotton-dhurrie-manufacturer', 'jute-dhurrie-manufacturer', 'handloom-dhurrie-manufacturer'],
+    relatedDhurries: ['cotton-dhurrie-manufacturer', 'jute-dhurrie-manufacturer', 'handloom-dhurrie-manufacturer', 'cotton-wool-dhurrie-manufacturer'],
   },
   {
     slug: 'jute-dhurrie-manufacturer', kind: 'dhurrie', label: 'Jute Dhurrie Manufacturer', heroImage: '/images/jute-rugs-manufacturing.webp',
@@ -467,7 +467,7 @@ export const DHURRIES: SeoLanding[] = [
     relatedProducts: ['dhurrie-rugs', 'flat-weaves', 'kilim-rugs'],
     relatedIndustries: ['retail-carpets', 'villa-carpets', 'museum-gallery-carpets'],
     relatedSolutions: ['designer-rugs', 'carpet-exporter-india'],
-    relatedDhurries: ['cotton-dhurrie-manufacturer', 'wool-dhurrie-manufacturer', 'floor-seating-dhurrie-manufacturer'],
+    relatedDhurries: ['cotton-dhurrie-manufacturer', 'wool-dhurrie-manufacturer', 'floor-seating-dhurrie-manufacturer', 'red-black-stripe-dhurrie-manufacturer'],
   },
   {
     slug: 'floor-seating-dhurrie-manufacturer', kind: 'dhurrie', label: 'Floor Seating Dhurrie Manufacturer', heroImage: '/images/tgi-banner-3.webp',
@@ -505,7 +505,7 @@ export const DHURRIES: SeoLanding[] = [
     relatedProducts: ['dhurrie-rugs', 'tat-patti', 'jute-sisal-rugs'],
     relatedIndustries: ['school-carpets', 'temple-carpets', 'mosque-carpets'],
     relatedSolutions: ['wholesale-carpet-supplier', 'contract-carpet-supplier'],
-    relatedDhurries: ['school-dhurrie-supplier', 'tat-patti-manufacturer', 'handloom-dhurrie-manufacturer'],
+    relatedDhurries: ['school-dhurrie-supplier', 'tat-patti-manufacturer', 'handloom-dhurrie-manufacturer', 'red-black-stripe-dhurrie-manufacturer'],
   },
   {
     slug: 'bulk-dhurrie-supplier', kind: 'dhurrie', label: 'Bulk & Wholesale Dhurrie Supplier', heroImage: '/images/tgi-banner-4.webp',
@@ -543,7 +543,7 @@ export const DHURRIES: SeoLanding[] = [
     relatedProducts: REL_PRODUCTS,
     relatedIndustries: ['retail-carpets', 'school-carpets', 'government-carpets'],
     relatedSolutions: ['wholesale-carpet-supplier', 'carpet-exporter-india'],
-    relatedDhurries: ['cotton-dhurrie-manufacturer', 'dhurrie-exporter-india', 'government-tender-dhurrie-supplier'],
+    relatedDhurries: ['cotton-dhurrie-manufacturer', 'dhurrie-exporter-india', 'government-tender-dhurrie-supplier', 'dhurrie-manufacturer-bhadohi'],
   },
   {
     slug: 'dhurrie-exporter-india', kind: 'dhurrie', label: 'Dhurrie Exporter India', heroImage: '/images/tgi-banner-7.webp',
@@ -581,7 +581,7 @@ export const DHURRIES: SeoLanding[] = [
     relatedProducts: REL_PRODUCTS,
     relatedIndustries: ['retail-carpets', 'villa-carpets', 'hotel-carpets'],
     relatedSolutions: ['carpet-exporter-india', 'wholesale-carpet-supplier'],
-    relatedDhurries: ['cotton-dhurrie-manufacturer', 'wool-dhurrie-manufacturer', 'bulk-dhurrie-supplier'],
+    relatedDhurries: ['cotton-dhurrie-manufacturer', 'wool-dhurrie-manufacturer', 'bulk-dhurrie-supplier', 'dhurrie-manufacturer-bhadohi'],
   },
   {
     slug: 'dhurrie-manufacturer-bhadohi', kind: 'dhurrie', label: 'Dhurrie Manufacturer Bhadohi', heroImage: '/images/manufacturing-rug-img.webp',

@@ -166,7 +166,7 @@ export const INDUSTRIES: SeoLanding[] = [
       { q: 'Which is better for offices — tiles or broadloom?', a: 'Tiles suit high-wear and cabled access-floor zones for easy replacement; broadloom suits boardrooms and feature spaces. We often combine both and advise per area.' },
     ],
     relatedProducts: ['wall-to-wall-carpets', 'hand-tufted-carpet', 'flat-weaves'],
-    relatedIndustries: ['hotel-carpets', 'auditorium-carpets', 'retail-carpets'],
+    relatedIndustries: ['hotel-carpets', 'auditorium-carpets', 'retail-carpets', 'bank-carpets'],
     relatedSolutions: ['commercial-carpet-manufacturer', 'contract-carpet-supplier'],
   },
 
@@ -248,7 +248,7 @@ export const INDUSTRIES: SeoLanding[] = [
       { q: 'Can you handle large terminal contract volumes?', a: 'Yes. Our Bhadohi campus manufactures large contract volumes with phased delivery aligned to construction programmes.' },
     ],
     relatedProducts: ['wall-to-wall-carpets', 'hand-tufted-carpet', 'coco-coir'],
-    relatedIndustries: ['hotel-carpets', 'office-carpets', 'retail-carpets'],
+    relatedIndustries: ['hotel-carpets', 'office-carpets', 'retail-carpets', 'cruise-yacht-carpets'],
     relatedSolutions: ['commercial-carpet-manufacturer', 'contract-carpet-supplier'],
   },
 
@@ -412,7 +412,7 @@ export const INDUSTRIES: SeoLanding[] = [
       { q: 'Do you make carpets for showrooms and exhibitions?', a: 'Yes. We produce refined showroom carpets and characterful pieces for pop-ups, exhibitions and experiential retail.' },
     ],
     relatedProducts: ['hand-tufted-carpet', 'leather-carpets', 'wall-to-wall-carpets'],
-    relatedIndustries: ['hotel-carpets', 'office-carpets', 'restaurant-carpets'],
+    relatedIndustries: ['hotel-carpets', 'office-carpets', 'restaurant-carpets', 'exhibition-carpets'],
     relatedSolutions: ['designer-rugs', 'custom-carpets'],
   },
 
@@ -554,7 +554,7 @@ export const INDUSTRIES: SeoLanding[] = [
       { q: 'Are the carpets durable for daily use?', a: 'Yes. We build contract-grade constructions for chairs, castors and constant meeting-room use.' },
     ],
     relatedProducts: ['wall-to-wall-carpets', 'carpet-tiles', 'hand-tufted-carpet'],
-    relatedIndustries: ['office-carpets', 'banquet-hall-carpets', 'coworking-carpets'],
+    relatedIndustries: ['office-carpets', 'banquet-hall-carpets', 'coworking-carpets', 'exhibition-carpets'],
     relatedSolutions: ['commercial-carpet-manufacturer', 'contract-carpet-supplier'],
   },
   {
@@ -659,7 +659,7 @@ export const INDUSTRIES: SeoLanding[] = [
       { q: 'Do you export casino carpets?', a: 'Yes, with documentation and coordinated freight.' },
     ],
     relatedProducts: ['wall-to-wall-carpets', 'hand-tufted-carpet', 'carpet-tiles'],
-    relatedIndustries: ['hotel-carpets', 'bar-lounge-carpets', 'auditorium-carpets'],
+    relatedIndustries: ['hotel-carpets', 'bar-lounge-carpets', 'auditorium-carpets', 'cruise-yacht-carpets'],
     relatedSolutions: ['custom-carpets', 'commercial-carpet-manufacturer'],
   },
   {
@@ -869,7 +869,7 @@ export const INDUSTRIES: SeoLanding[] = [
       { q: 'Can you meet fixed government project timelines?', a: 'Yes — phased production and delivery planned to programme dates.' },
     ],
     relatedProducts: ['wall-to-wall-carpets', 'carpet-tiles', 'hand-tufted-carpet'],
-    relatedIndustries: ['office-carpets', 'museum-gallery-carpets', 'school-carpets'],
+    relatedIndustries: ['office-carpets', 'museum-gallery-carpets', 'school-carpets', 'bank-carpets'],
     relatedSolutions: ['contract-carpet-supplier', 'commercial-carpet-manufacturer'],
   },
   {
