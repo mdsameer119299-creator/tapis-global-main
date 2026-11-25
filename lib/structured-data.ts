@@ -23,8 +23,8 @@ export function organizationSchema() {
     },
     image: OG_IMAGE.url,
     description:
-      'Tapis Global International Pvt Ltd is a third-generation, family-owned handmade carpet and rug manufacturer based in Bhadohi, Uttar Pradesh, India — continuing a family carpet-making legacy since 1965. Serving architects, hospitality projects, commercial interiors and pan India supply, with export programmes across international markets.',
-    slogan: 'Third Generation Carpet & Rug Manufacturer — Family Heritage Since 1965',
+      'Tapis Global International Pvt Ltd is a third-generation, family-owned handmade carpet and rug manufacturer based in Bhadohi, Uttar Pradesh, India — continuing a family carpet-making legacy with roots dating back to 1965. Serving architects, hospitality projects, commercial interiors and pan India supply, with export programmes across international markets.',
+    slogan: 'Third Generation Carpet & Rug Manufacturer — Roots Dating Back to 1965',
     foundingLocation: {
       '@type': 'Place',
       name: 'Bhadohi, Uttar Pradesh, India',

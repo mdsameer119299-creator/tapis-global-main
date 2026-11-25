@@ -5,6 +5,8 @@
 // substantive (intro + multiple H2 sections + takeaways + FAQs). Article schema.
 // ─────────────────────────────────────────────────────────────────────────────
 
+import { V31_GUIDES } from './guides-v31'
+
 export type GuideCategory = 'manufacturing' | 'comparison' | 'buying' | 'export'
 
 export type GuideSection = { h2: string; body: string }
@@ -61,6 +63,8 @@ export const GUIDES: Guide[] = [
       { q: 'How long does it take to manufacture a carpet?', a: 'It varies hugely by construction: a hand tufted carpet may take days to a few weeks, while a fine hand knotted carpet can take months. Lead times also depend on size, quantity and finishing.' },
       { q: 'What is the most important stage in carpet manufacturing?', a: 'Yarn dyeing and construction are the most decisive — they set colour accuracy, durability and the overall quality of the finished carpet.' },
       { q: 'Are handmade carpets better than machine-made?', a: 'Handmade carpets generally offer superior character, durability and value retention, while machine-made carpets are faster and cheaper. The right choice depends on use and budget.' },
+      { q: 'What is a dye-lot and why does it matter?', a: 'A dye-lot is a batch of yarn dyed together. Holding dye-lots keeps a large or phased order colour-consistent, which matters for hotels and multi-room projects.' },
+      { q: 'What affects the cost of a carpet most?', a: 'Fibre quality, construction type, density and size are the biggest cost drivers, followed by design complexity and finishing.' },
     ],
     relatedGuides: ['hand-tufted-carpet-manufacturing-process', 'hand-knotted-carpet-manufacturing-process', 'handmade-vs-machine-made-carpets'],
     relatedProducts: ['hand-tufted-carpet', 'hand-knotted-carpet', 'wall-to-wall-carpets'],
@@ -89,6 +93,10 @@ export const GUIDES: Guide[] = [
       { q: 'What is the most durable type of rug?', a: 'Hand knotted wool rugs are among the most durable and can last generations. Sisal and tightly woven flatweaves are also very hard-wearing for high-traffic areas.' },
       { q: 'Which rug is best for high-traffic areas?', a: 'Flatweaves, sisal and dense wool constructions handle high traffic well. We advise on fibre and construction for each location.' },
       { q: 'Can rugs be made in custom sizes?', a: 'Yes. As a manufacturer we make rugs in any custom size and shape, across all constructions.' },
+      { q: 'What should buyers know about raw materials, dye-lots and specification?', a: 'For architects and procurement teams, the process explains lead times, cost drivers and why quality varies between suppliers. Fibre grade and backing affect durability and price; lab-dips are approved against references before bulk; dye-lots keep large and phased orders colour-consistent; and the specification (pile height, density, construction and backing) is where performance is engineered. Ask which documents apply to the exact product before ordering.' },
+      { q: 'What determines a rug\'s quality and value?', a: 'Yarn quality sets the ceiling. Knot density (KPSI) in hand knotted rugs and pile weight (GSM) in tufted rugs indicate detail and durability, and washing and finishing give the final lustre and hand-feel. Confirm dye type and colourfastness for the selected product, and ask for specifications before ordering.' },
+      { q: 'What does KPSI mean in rugs?', a: 'KPSI is knots per square inch, a measure of knot density in hand knotted rugs. Higher KPSI allows finer detail.' },
+      { q: 'How can I tell if a rug is good quality?', a: 'Check fibre quality, knot density or pile weight, evenness of the weave, colour consistency and edge finishing, and ask the manufacturer for the specification.' },
     ],
     relatedGuides: ['how-carpets-are-manufactured', 'jute-vs-sisal-rugs', 'kilim-vs-dhurrie', 'rug-manufacturing-process-explained'],
     relatedProducts: ['hand-knotted-carpet', 'jute-sisal-rugs', 'shaggy-rugs'],
@@ -118,7 +126,7 @@ export const GUIDES: Guide[] = [
       { q: 'What is a dye-lot and why does it matter?', a: 'A dye-lot is a batch of yarn dyed together. Holding dye-lots ensures colour consistency across a large or phased order — essential for hotels and multi-room projects.' },
       { q: 'What documentation should I ask a carpet manufacturer for?', a: 'Ask for a product specification sheet and any applicable test report or certificate. Confirm the exact product, test standard, validity and scope; request export and commercial documents relevant to the destination.' },
     ],
-    relatedGuides: ['how-carpets-are-manufactured', 'wool-vs-viscose-carpets', 'hotel-carpet-buying-guide'],
+    relatedGuides: ['how-carpets-are-manufactured', 'wool-vs-viscose-carpets', 'hotel-carpet-buying-guide', 'carpet-density-gsm-backing-explained'],
     relatedProducts: ['wall-to-wall-carpets', 'hand-tufted-carpet', 'carpet-tiles'],
   },
   {
@@ -174,7 +182,7 @@ export const GUIDES: Guide[] = [
       { q: 'How durable are hand tufted carpets?', a: 'Very durable when well made — the latex and secondary backing lock the pile firmly. They suit homes, hotels and commercial interiors. Density (GSM) influences longevity.' },
       { q: 'Can hand tufted carpets be fully custom?', a: 'Yes — any size, colour, pattern, pile height and carved texture, developed from your artwork with lab-dip approval.' },
     ],
-    relatedGuides: ['hand-knotted-carpet-manufacturing-process', 'hand-tufted-vs-hand-knotted-carpet', 'how-carpets-are-manufactured'],
+    relatedGuides: ['hand-knotted-carpet-manufacturing-process', 'hand-tufted-vs-hand-knotted-carpet', 'how-carpets-are-manufactured', 'carpet-pile-types-explained', 'carpet-and-rug-care-guide'],
     relatedProducts: ['hand-tufted-carpet', 'wall-to-wall-carpets', 'area-rugs'],
   },
   {
@@ -232,7 +240,7 @@ export const GUIDES: Guide[] = [
       { q: 'How can I tell hand tufted from hand knotted?', a: 'Look at the back: hand knotted shows the design clearly with visible knots and no secondary backing; hand tufted has a fabric secondary backing covering the latex.' },
       { q: 'Which is better for a hotel?', a: 'Hand tufted is usually preferred for hotels — it offers custom design at scale and better value, with strong durability when specified correctly.' },
     ],
-    relatedGuides: ['hand-tufted-carpet-manufacturing-process', 'hand-knotted-carpet-manufacturing-process', 'handmade-vs-machine-made-carpets'],
+    relatedGuides: ['hand-tufted-carpet-manufacturing-process', 'hand-knotted-carpet-manufacturing-process', 'handmade-vs-machine-made-carpets', 'axminster-carpets-manufacturing-types-applications', 'carpet-pile-types-explained'],
     relatedProducts: ['hand-tufted-carpet', 'hand-knotted-carpet', 'wall-to-wall-carpets'],
   },
   {
@@ -317,7 +325,7 @@ export const GUIDES: Guide[] = [
       { q: 'Why does viscose mark with water?', a: 'Viscose is a regenerated cellulose fibre that weakens and discolours when wet, so water spills can leave marks. It needs careful, specialist cleaning.' },
       { q: 'Can you blend wool and viscose?', a: 'Yes. Wool-viscose blends are popular — wool provides durability while viscose adds sheen and softness. We manufacture custom blends.' },
     ],
-    relatedGuides: ['handmade-vs-machine-made-carpets', 'carpet-manufacturing-process-explained', 'hotel-carpet-buying-guide'],
+    relatedGuides: ['handmade-vs-machine-made-carpets', 'carpet-manufacturing-process-explained', 'hotel-carpet-buying-guide', 'wool-vs-synthetic-carpet', 'carpet-and-rug-care-guide'],
     relatedProducts: ['hand-tufted-carpet', 'hand-knotted-carpet', 'shaggy-rugs'],
   },
   {
@@ -345,7 +353,7 @@ export const GUIDES: Guide[] = [
       { q: 'How can I tell handmade from machine made?', a: 'Check the back and fringes: handmade carpets show slight natural irregularities and fringes that are part of the weave; machine-made carpets are perfectly uniform with sewn-on fringes.' },
       { q: 'Do you make handmade carpets?', a: 'Yes. We are a handmade carpet manufacturer in Bhadohi — hand knotted, hand tufted and handwoven flatweaves, fully customisable.' },
     ],
-    relatedGuides: ['hand-tufted-vs-hand-knotted-carpet', 'how-carpets-are-manufactured', 'why-bhadohi-carpet-capital'],
+    relatedGuides: ['hand-tufted-vs-hand-knotted-carpet', 'how-carpets-are-manufactured', 'why-bhadohi-carpet-capital', 'carpet-vs-rug-vs-floor-covering'],
     relatedProducts: ['hand-knotted-carpet', 'hand-tufted-carpet', 'flat-weaves'],
   },
   {
@@ -373,7 +381,7 @@ export const GUIDES: Guide[] = [
       { q: 'Which is better for acoustics?', a: 'Wall-to-wall carpet provides the most acoustic absorption across a whole room; area rugs soften sound where placed.' },
       { q: 'Can you supply both for one project?', a: 'Yes. We manufacture wall-to-wall carpets, carpet tiles and area rugs, and can coordinate colours across a project.' },
     ],
-    relatedGuides: ['carpet-manufacturing-process-explained', 'hotel-carpet-buying-guide', 'office-carpet-buying-guide'],
+    relatedGuides: ['carpet-manufacturing-process-explained', 'hotel-carpet-buying-guide', 'office-carpet-buying-guide', 'carpet-vs-rug-vs-floor-covering', 'rug-size-guide', 'carpet-tiles-types-applications-selection'],
     relatedProducts: ['wall-to-wall-carpets', 'area-rugs', 'carpet-tiles'],
   },
 
@@ -403,7 +411,7 @@ export const GUIDES: Guide[] = [
       { q: 'Do hotel carpets need to be fire-rated?', a: 'Requirements depend on the jurisdiction, building use, installation location and applicable code. Confirm the project requirement with the architect or fire consultant and verify the proposed product against it.' },
       { q: 'How do you keep colour consistent across a hotel?', a: 'By holding dye-lots and phasing production and delivery to the installation programme, so every area and phase matches.' },
     ],
-    relatedGuides: ['auditorium-carpet-buying-guide', 'office-carpet-buying-guide', 'wool-vs-viscose-carpets'],
+    relatedGuides: ['auditorium-carpet-buying-guide', 'office-carpet-buying-guide', 'wool-vs-viscose-carpets', 'commercial-hospitality-flooring-guide', 'axminster-carpets-manufacturing-types-applications'],
     relatedProducts: ['wall-to-wall-carpets', 'hand-tufted-carpet', 'carpet-tiles'],
   },
   {
@@ -487,7 +495,7 @@ export const GUIDES: Guide[] = [
       { q: 'Do office carpets improve acoustics?', a: 'Yes — carpet absorbs sound, improving speech privacy and reducing distraction in open-plan workplaces.' },
       { q: 'Can you match our corporate brand colours?', a: 'Yes. We develop custom colours and logo medallions with dye-lot consistency across multi-floor projects.' },
     ],
-    relatedGuides: ['hotel-carpet-buying-guide', 'area-rugs-vs-wall-to-wall-carpets', 'carpet-manufacturing-process-explained'],
+    relatedGuides: ['hotel-carpet-buying-guide', 'area-rugs-vs-wall-to-wall-carpets', 'carpet-manufacturing-process-explained', 'carpet-tiles-types-applications-selection'],
     relatedProducts: ['carpet-tiles', 'wall-to-wall-carpets', 'hand-tufted-carpet'],
   },
   {
@@ -573,7 +581,7 @@ export const GUIDES: Guide[] = [
       { q: 'What payment terms are used when importing from India?', a: 'Common terms are TT (bank transfer), Letters of Credit (LC), DA and DP. Terms are often negotiable for established buyers.' },
       { q: 'How are carpets shipped from India?', a: 'Usually by sea freight. A manufacturer-exporter packs carpets for international transit and coordinates freight to your preferred port and Incoterms.' },
     ],
-    relatedGuides: ['why-buy-carpets-from-india', 'why-bhadohi-carpet-capital', 'how-custom-rug-manufacturing-works'],
+    relatedGuides: ['why-buy-carpets-from-india', 'why-bhadohi-carpet-capital', 'how-custom-rug-manufacturing-works', 'how-to-choose-a-carpet-manufacturer', 'private-label-rugs-from-india'],
     relatedProducts: ['hand-knotted-carpet', 'hand-tufted-carpet', 'jute-sisal-rugs'],
   },
   {
@@ -601,7 +609,7 @@ export const GUIDES: Guide[] = [
       { q: 'Are Indian carpets good quality?', a: 'Indian handmade carpets are among the finest in the world. Quality varies by manufacturer, so buy from a verified, reputable maker with proper QC.' },
       { q: 'Is buying carpets from India good value?', a: 'Yes — India combines skilled craftsmanship with competitive pricing, offering exceptional value, particularly when buying direct from manufacturers.' },
     ],
-    relatedGuides: ['how-to-import-carpets-from-india', 'why-bhadohi-carpet-capital', 'handmade-vs-machine-made-carpets'],
+    relatedGuides: ['how-to-import-carpets-from-india', 'why-bhadohi-carpet-capital', 'handmade-vs-machine-made-carpets', 'private-label-rugs-from-india'],
     relatedProducts: ['hand-knotted-carpet', 'hand-tufted-carpet', 'kilim-rugs'],
   },
   {
@@ -629,7 +637,7 @@ export const GUIDES: Guide[] = [
       { q: 'What is GI recognition for Bhadohi carpets?', a: 'Geographical Indication recognition protects "Bhadohi handmade carpet" as originating from the region, signifying authentic local craftsmanship.' },
       { q: 'Is it better to buy carpets from Bhadohi?', a: 'Buying from Bhadohi means buying at source — authentic construction, source-direct pricing and access to the region\'s skilled artisan community.' },
     ],
-    relatedGuides: ['why-buy-carpets-from-india', 'how-to-import-carpets-from-india', 'handmade-vs-machine-made-carpets'],
+    relatedGuides: ['why-buy-carpets-from-india', 'how-to-import-carpets-from-india', 'handmade-vs-machine-made-carpets', 'how-to-choose-a-carpet-manufacturer'],
     relatedProducts: ['hand-knotted-carpet', 'hand-tufted-carpet', 'dhurrie-rugs'],
   },
   {
@@ -660,6 +668,8 @@ export const GUIDES: Guide[] = [
     relatedGuides: ['how-to-import-carpets-from-india', 'hand-tufted-carpet-manufacturing-process', 'why-bhadohi-carpet-capital'],
     relatedProducts: ['hand-tufted-carpet', 'hand-knotted-carpet', 'area-rugs'],
   },
+  // V3.1 standalone guides (lib/guides-v31.ts)
+  ...V31_GUIDES,
 ]
 
 // ─── HELPERS ───────────────────────────────────────────────────────────────

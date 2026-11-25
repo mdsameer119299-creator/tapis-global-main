@@ -56,7 +56,7 @@ export const SOLUTIONS: SeoLanding[] = [
     heroImage: '/images/rug5.webp',
     eyebrow: 'For Architects & Designers',
     tagline: 'Designer rugs developed with architects and interior designers — concept to crafted reality.',
-    seoTitle: 'Designer Rug Manufacturer India — Tapis Global',
+    seoTitle: 'Designer Rug Manufacturer India for Architects — Tapis Global',
     seoDescription: 'Designer rug manufacturer in India working with architects and designers. Custom contemporary rugs from Bhadohi to artwork and Pantone. Request a catalogue.',
     seoKeywords: ['designer rug manufacturer India', 'designer carpets', 'custom rugs for designers', 'contemporary rug manufacturer', 'rugs for interior designers'],
     h1: 'Designer Rug Manufacturer for Architects & Interior Designers',
@@ -222,7 +222,7 @@ export const SOLUTIONS: SeoLanding[] = [
     heroImage: '/images/tgi-banner-3.webp',
     eyebrow: 'Wholesale & Bulk',
     tagline: 'Wholesale carpet and rug supplier — bulk manufacturing direct from the Bhadohi factory.',
-    seoTitle: 'Wholesale Carpet Supplier India — Tapis Global',
+    seoTitle: 'Wholesale Carpet & Rug Supplier India — Tapis Global',
     seoDescription: 'Wholesale carpet and rug supplier in India. Bulk manufacturing direct from Bhadohi for distributors, retailers and importers. Private label available.',
     seoKeywords: ['wholesale carpet supplier India', 'bulk carpet manufacturer', 'wholesale rugs supplier', 'bulk rug supplier India', 'carpet wholesaler India'],
     h1: 'Wholesale Carpet & Rug Supplier in India',
@@ -339,3 +339,5 @@ export const SOLUTIONS: SeoLanding[] = [
     relatedSolutions: ['commercial-carpet-manufacturer', 'wholesale-carpet-supplier'],
   },
 ]
+import { applyLandingExpansion } from './landing-seo-expansion'
+applyLandingExpansion(SOLUTIONS)

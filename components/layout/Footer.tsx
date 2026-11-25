@@ -56,7 +56,7 @@ export default function Footer() {
         <div className="relative w-full h-full">
           <Image
             src="/images/tgi-banner-7.webp"
-            alt="Tapis Global artisan weaving — Bhadohi, India"
+            alt="Patterned carpet in a banquet hall with round dining tables"
             fill
             loading="lazy"
             placeholder="blur"
