@@ -145,7 +145,7 @@ export const KEYWORDS_ALL = [
 export const PAGE_META = {
 
   home: {
-    title:       'Carpet Manufacturer in India | Tapis Global',
+    title:       'Carpet Manufacturer in India | Handmade Rugs | Tapis Global',
     description: 'Tapis Global manufactures handmade carpets and rugs in Bhadohi, India for wholesale buyers, hotels, architects, interior designers and international projects.',
     keywords:    [
       'carpet manufacturer India',
@@ -185,7 +185,7 @@ export const PAGE_META = {
   },
 
   contact: {
-    title:       `Contact Tapis Global | Carpet & Rug Enquiries`,
+    title:       `Contact Tapis Global | Wholesale Carpet & Rug Enquiries`,
     description: `TAPIS GLOBAL INTERNATIONAL: wholesale carpets, custom rugs, hospitality and export enquiries. Call +91 84482 91631 or email sales@tapisglobalinternational.com.`,
     keywords:    [...KEYWORDS_PRIMARY, 'carpet project enquiry', 'custom rug supplier India'],
     canonical:   `${SEO_BASE_URL}/contact`,

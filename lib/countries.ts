@@ -1617,3 +1617,29 @@ export const COUNTRIES: SeoLanding[] = [
     relatedCountries: ['uae', 'uk', 'australia'],
   },
 ]
+
+// ─── Additive import-planning FAQ per market (V3.1 folded content) ───────────
+// General planning information only: no duties, tariffs, freight prices or legal
+// advice. Buyers should confirm requirements with their customs broker or the
+// official authority of the destination country.
+const IMPORT_FAQ: Record<string, string> = {
+  usa: 'the United States',
+  uk: 'the United Kingdom',
+  germany: 'Germany',
+  uae: 'the UAE',
+  australia: 'Australia',
+  canada: 'Canada',
+}
+for (const c of COUNTRIES) {
+  const name = IMPORT_FAQ[c.slug]
+  if (!name) continue
+  const q = `How do I plan an import of rugs from India to ${name}?`
+  if (c.faqs.some((f) => f.q === q)) continue
+  c.faqs = [
+    ...c.faqs,
+    {
+      q,
+      a: `A practical order is to agree the specification and an approved sample, then the production schedule, packing and shipping term. Import duties, product and labelling requirements and documents vary by product and change over time, so confirm them with your customs broker or the official authority for ${name} before you order. Share your destination and preferred shipping term and we will advise on the export documents we prepare. See our guide to importing carpets from India for the general process.`,
+    },
+  ]
+}

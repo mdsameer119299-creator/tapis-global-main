@@ -5,6 +5,8 @@
 // applications, manufacturing process, customization, technical specs, FAQs
 // and related products. No duplicate routes — one rich data model drives all.
 
+import { PRODUCT_SEO_EXPANSION } from '@/lib/product-seo-expansion'
+
 export type ProductGalleryImage = {
   src: string
   alt: string
@@ -617,7 +619,7 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     heroImage: '/images/wall-to-wall/w2w-09.webp',
     tagline:   'Wall to wall carpets — seamless broadloom elegance for hospitality, commercial and residential scale. Made in India.',
     seoTitle:  'Wall to Wall Carpet Manufacturer in India — Tapis Global',
-    seoDescription: 'Wall to wall carpet manufacturer in India. Broadloom & carpet tiles from Bhadohi for hotels, offices and commercial projects. Request a catalogue.',
+    seoDescription: 'Wall to wall carpet manufacturer in India. Axminster, tufted broadloom & carpet tiles from Bhadohi for hotels, offices and commercial projects. Request a catalogue.',
     seoKeywords: ['wall to wall carpet manufacturer India', 'broadloom carpet manufacturer India', 'hotel carpet supplier India', 'commercial carpet supplier India', 'carpet tiles manufacturer India', 'contract carpet manufacturer', 'Bhadohi wall to wall carpet'],
     h1:        'Wall to Wall Carpet Manufacturer in India',
     intro:     'Tapis Global International is a wall to wall carpet manufacturer and supplier in India, producing broadloom and carpet tile programmes engineered for hotels, offices and large-format residential projects — fire-rated, durable and available in custom colour runs.',
@@ -1086,8 +1088,8 @@ export const PRODUCT_CATEGORIES: ProductCategory[] = [
     cardImage: '/images/tgi-banner-4.webp',
     heroImage: '/images/tgi-banner-4.webp',
     tagline:   'Modular carpet tiles manufactured for offices, commercial and high-traffic interiors — durable, replaceable, design-led.',
-    seoTitle:  'Carpet Tiles Manufacturer in India | Tapis Global',
-    seoDescription: 'Carpet tiles manufacturer and supplier in India. Modular, durable commercial carpet tiles from Bhadohi for offices and retail. Request a quote.',
+    seoTitle:  'Carpet Tiles Manufacturer in India | Modular Tiles | Tapis Global',
+    seoDescription: 'Carpet tiles manufacturer and supplier in India. Modular, durable commercial carpet tiles from Bhadohi for offices, hotels and retail. Request a quote.',
     seoKeywords: ['carpet tiles manufacturer India', 'modular carpet tiles supplier', 'office carpet tiles India', 'commercial carpet tiles manufacturer', 'carpet tile supplier India'],
     h1:        'Carpet Tiles Manufacturer in India',
     intro:     'Tapis Global International is a carpet tiles manufacturer and supplier in India, producing modular commercial carpet tiles from our Bhadohi facility. Durable, replaceable and design-flexible, our carpet tiles serve offices, retail, institutions and high-traffic spaces across India and international markets.',
@@ -1431,7 +1433,7 @@ const PRODUCT_DEPTH: Record<string, ProductDepth> = {
       'We supply wall-to-wall carpet to international hospitality and commercial projects with fire-rating and performance documentation to destination standards. Broadloom is shipped in rolls and carpet tiles in cartons, with dye-lots held for multi-phase and multi-country roll-outs.',
       'Project freight is coordinated to your installation programme and Incoterms, with phased dispatch and on-site measurement guidance available for large contracts.',
     ],
-    relatedGuides: ['carpet-manufacturing-process-explained', 'hotel-carpet-buying-guide', 'area-rugs-vs-wall-to-wall-carpets'],
+    relatedGuides: ['carpet-manufacturing-process-explained', 'hotel-carpet-buying-guide', 'area-rugs-vs-wall-to-wall-carpets', 'axminster-carpets-manufacturing-types-applications', 'carpet-tiles-types-applications-selection'],
     extraFaqs: [
       { q: 'What traffic classification do your wall-to-wall carpets meet?', a: 'We manufacture to heavy-contract traffic classes for hospitality and commercial use and specify the construction to your project\'s rating. Share your spec and we will match it.' },
       { q: 'Can you match broadloom and carpet tiles in one project?', a: 'Yes. We control dye-lots across both formats so broadloom areas and tiled areas read as a single coordinated scheme.' },
@@ -1617,7 +1619,7 @@ const PRODUCT_DEPTH: Record<string, ProductDepth> = {
       'Area rugs export across every market we serve, from luxury single pieces to private-label retail collections. We ship in any construction with full material documentation, and offer OEM programmes with custom branding and packaging.',
       'Single bespoke pieces are protected and crated; bulk and repeat collections ship with held dye-lots on standard trade terms to your Incoterms.',
     ],
-    relatedGuides: ['area-rugs-vs-wall-to-wall-carpets', 'how-rugs-are-manufactured', 'how-custom-rug-manufacturing-works'],
+    relatedGuides: ['area-rugs-vs-wall-to-wall-carpets', 'how-rugs-are-manufactured', 'how-custom-rug-manufacturing-works', 'rug-size-guide', 'carpet-and-rug-care-guide'],
     extraFaqs: [
       { q: 'What size area rug do I need?', a: 'As a rule, the rug should sit under at least the front legs of the furniture group, ideally all legs. We manufacture any custom size and shape, so we size to your exact room and layout.' },
       { q: 'Which construction is best for an area rug?', a: 'It depends on use and budget — hand tufted for plush value, hand knotted for heirloom luxury, flat weave for casual durability, shaggy for softness. We make all four and advise per project.' },
@@ -1648,7 +1650,7 @@ const PRODUCT_DEPTH: Record<string, ProductDepth> = {
       'Carpet tiles export to commercial and institutional projects internationally with fire-rating and performance documentation to destination standards. Tiles ship in cartons with dye-lots held for multi-phase and multi-site roll-outs and future replacements.',
       'We coordinate freight to your fit-out programme and Incoterms, with private-label and bulk contract programmes available.',
     ],
-    relatedGuides: ['office-carpet-buying-guide', 'carpet-manufacturing-process-explained', 'area-rugs-vs-wall-to-wall-carpets'],
+    relatedGuides: ['office-carpet-buying-guide', 'carpet-manufacturing-process-explained', 'area-rugs-vs-wall-to-wall-carpets', 'carpet-tiles-types-applications-selection'],
     extraFaqs: [
       { q: 'Why choose carpet tiles over broadloom?', a: 'Tiles let you replace worn tiles individually, access under-floor cabling and lay directional patterns — reducing waste and long-term maintenance cost. We coordinate tiles with broadloom for consistency.' },
       { q: 'Are your carpet tiles fire-rated?', a: 'Yes. We manufacture fire-rated carpet tiles to contract standards and provide documentation for commercial and institutional buildings.' },
@@ -1723,6 +1725,16 @@ for (const cat of PRODUCT_CATEGORIES) {
     cat.faqs            = [...cat.faqs, ...depth.extraFaqs]
   }
   cat.faqs = [...cat.faqs, ...makeBaseFaqs(cat.name)]
+}
+
+// SEO expansion: extra keywords, buyer FAQs and buyer-guide paragraphs (additive).
+for (const cat of PRODUCT_CATEGORIES) {
+  const x = PRODUCT_SEO_EXPANSION[cat.slug]
+  if (!x) continue
+  cat.seoKeywords = Array.from(new Set([...cat.seoKeywords, ...x.keywords]))
+  const have = new Set(cat.faqs.map((f) => f.q))
+  cat.faqs = [...cat.faqs, ...x.faqs.filter((f) => !have.has(f.q))]
+  cat.deepDive = [...(cat.deepDive ?? []), ...x.paragraphs]
 }
 
 export function getProductCategory(slug: string): ProductCategory | undefined {

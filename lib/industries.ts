@@ -14,7 +14,7 @@ export const INDUSTRIES: SeoLanding[] = [
     eyebrow: 'Hospitality Flooring',
     tagline: 'Custom hotel carpets manufactured in Bhadohi for lobbies, guest rooms, corridors and banquet halls.',
     seoTitle: 'Hotel Carpet Manufacturer & Supplier India — Tapis Global',
-    seoDescription: 'Hotel carpet manufacturer in India. Custom hand tufted hospitality carpets from Bhadohi for lobbies, guest rooms and banquet halls. Request a catalogue.',
+    seoDescription: 'Hotel carpet manufacturer in India. Custom hand tufted & Axminster hospitality carpets from Bhadohi for lobbies, guest rooms and banquet halls. Request a catalogue.',
     seoKeywords: ['hotel carpet manufacturer India', 'hospitality carpet supplier', 'custom hotel carpets', 'resort carpet manufacturer', 'banquet hall carpet supplier', 'guest room carpet manufacturer'],
     h1: 'Hotel & Hospitality Carpet Manufacturer in India',
     intro: 'Tapis Global International manufactures custom hotel carpets for hospitality groups, architects and procurement teams across India and international markets. From statement lobby medallions to durable corridor runs and guest-room broadloom, we supply specification-led carpets engineered for the demands of 5-star and boutique properties.',
@@ -1118,3 +1118,5 @@ export const INDUSTRIES: SeoLanding[] = [
     relatedSolutions: ['commercial-carpet-manufacturer', 'custom-carpets'],
   },
 ]
+import { applyLandingExpansion } from './landing-seo-expansion'
+applyLandingExpansion(INDUSTRIES)
