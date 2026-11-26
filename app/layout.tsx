@@ -115,10 +115,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
             var style = document.createElement('style');
             style.id = 'tapis-image-copy-deterrence';
-            style.textContent = [
-              'img, picture, video { -webkit-user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }',
-              'img { -webkit-user-drag: none; }'
-            ].join('\\n');
+            style.textContent = 'img, picture, video { -webkit-user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }';
             document.head.appendChild(style);
           })();
         `}</Script>
