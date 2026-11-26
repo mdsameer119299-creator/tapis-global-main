@@ -89,6 +89,37 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Analytics />
         <AttributionInit />
 
+        {/* Image-copy deterrence: blocks casual context-menu saving and dragging.
+            This is a deterrent only; images delivered to a browser can still be
+            captured through screenshots, developer tools, or direct requests. */}
+        <Script id="image-copy-deterrence" strategy="afterInteractive">{`
+          (function () {
+            if (document.documentElement.dataset.tapisImageProtectionInstalled === 'true') return;
+            document.documentElement.dataset.tapisImageProtectionInstalled = 'true';
+
+            function isMediaTarget(target) {
+              return target instanceof Element && !!target.closest('img, picture, video');
+            }
+
+            document.addEventListener('contextmenu', function (event) {
+              if (!isMediaTarget(event.target)) return;
+              event.preventDefault();
+              event.stopPropagation();
+            }, true);
+
+            document.addEventListener('dragstart', function (event) {
+              if (!isMediaTarget(event.target)) return;
+              event.preventDefault();
+              event.stopPropagation();
+            }, true);
+
+            var style = document.createElement('style');
+            style.id = 'tapis-image-copy-deterrence';
+            style.textContent = 'img, picture, video { -webkit-user-drag: none; -webkit-touch-callout: none; user-select: none; -webkit-user-select: none; }';
+            document.head.appendChild(style);
+          })();
+        `}</Script>
+
         {/* Custom cursor — desktop pointer devices only */}
         <Script id="cursor-init" strategy="lazyOnload">{`
           (function() {
