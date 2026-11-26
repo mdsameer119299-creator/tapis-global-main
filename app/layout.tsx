@@ -92,10 +92,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Image-copy deterrence: blocks casual context-menu saving and dragging.
             This is a deterrent only; images delivered to a browser can still be
             captured through screenshots, developer tools, or direct requests. */}
-        <Script id="image-copy-deterrence" strategy="afterInteractive">{\`
+        <Script id="image-copy-deterrence" strategy="afterInteractive">{`
           (function () {
-            if (window.__tapisImageProtectionInstalled) return;
-            window.__tapisImageProtectionInstalled = true;
+            if (document.documentElement.dataset.tapisImageProtectionInstalled === 'true') return;
+            document.documentElement.dataset.tapisImageProtectionInstalled = 'true';
 
             function isMediaTarget(target) {
               return target instanceof Element && !!target.closest('img, picture, video');
@@ -121,7 +121,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             ].join('\\n');
             document.head.appendChild(style);
           })();
-        \`}</Script>
+        `}</Script>
 
         {/* Custom cursor — desktop pointer devices only */}
         <Script id="cursor-init" strategy="lazyOnload">{`
